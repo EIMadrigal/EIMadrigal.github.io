@@ -20,16 +20,17 @@
     var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="数据对齐存储 在32位系统中：int占4Bytes，short占2Bytes，char占1Byte，加起来应该是7Bytes，但是下面这段代码输出却是8。 12345678910111213141516171819#define _CRT_SECURE_NO_WARNINGS#include &lt;iostream&gt;#include &lt;cstdio&gt;using namespa">
+  <meta name="description" content="OPPO">
 <meta property="og:type" content="article">
-<meta property="og:title" content="INTERVIEW">
+<meta property="og:title" content="INTERVIEW 1">
 <meta property="og:url" content="https://eimadrigal.github.io/2019/03/06/INTERVIEW%201/index.html">
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
-<meta property="og:description" content="数据对齐存储 在32位系统中：int占4Bytes，short占2Bytes，char占1Byte，加起来应该是7Bytes，但是下面这段代码输出却是8。 12345678910111213141516171819#define _CRT_SECURE_NO_WARNINGS#include &lt;iostream&gt;#include &lt;cstdio&gt;using namespa">
+<meta property="og:description" content="OPPO">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2019-03-06T00:54:00.000Z">
-<meta property="article:modified_time" content="2022-01-14T10:47:13.520Z">
+<meta property="article:published_time" content="2019-03-06T08:54:00.000Z">
+<meta property="article:modified_time" content="2022-01-14T11:03:50.667Z">
 <meta property="article:author" content="EIMadrigal">
+<meta property="article:tag" content="Interview">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2019/03/06/INTERVIEW%201/">
@@ -45,7 +46,7 @@
   };
 </script>
 
-  <title>INTERVIEW | EI Madrigal's Space</title>
+  <title>INTERVIEW 1 | EI Madrigal's Space</title>
   
 
 
@@ -206,7 +207,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          INTERVIEW
+          INTERVIEW 1
         </h1>
 
         <div class="post-meta">
@@ -218,7 +219,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-03-06 08:54:00" itemprop="dateCreated datePublished" datetime="2019-03-06T08:54:00+08:00">2019-03-06</time>
+              <time title="Created: 2019-03-06 16:54:00" itemprop="dateCreated datePublished" datetime="2019-03-06T16:54:00+08:00">2019-03-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -229,6 +239,7 @@
               <span class="post-meta-item-text">Views: </span>
               <span id="busuanzi_value_page_pv"></span>
             </span>
+            <div class="post-description">OPPO</div>
 
         </div>
       </header>
@@ -241,7 +252,7 @@
       
         <h2 id="数据对齐存储">数据对齐存储</h2>
 <p>在32位系统中：int占4Bytes，short占2Bytes，char占1Byte，加起来应该是7Bytes，但是下面这段代码输出却是8。 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> x;</span><br><span class="line">    <span class="keyword">short</span> y;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, <span class="built_in"><span class="keyword">sizeof</span></span>(Node));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>计算机对于基本类型数据在内存中的存储位置有些限制，即<strong>内存对齐</strong>。 处理器取数据一般不按照单个字节，而是双字节、四字节等进行，假设这种存取粒度为4Bytes，也就是说处理器只能从首地址为4的倍数的地址读取数据。如果没有对齐存储，取数据会很麻烦，可能需要两次读取并且剔除掉无用的字节。 每个编译器都有默认的对齐模数，那么<strong>有效对齐值=min{对齐模数，结构体中最长数据类型长度}。</strong> <strong>规则1：第一个成员offset为0，其后成员的offset=min{有效对齐值，该类型字节数}；</strong> <strong>规则2：结构体总大小必须为有效对齐值的整数倍，否则编译器会自动填充。</strong> 再看前面的例子，int占0<sub>3，short占4</sub>5，char占6，总长度为7，不是4的整数倍，所以地址7是填充字节，共8Bytes。</p>
+<p>计算机对于基本类型数据在内存中的存/储位置有些限制，即<strong>内存对齐</strong>。 处理器取数据一般不按照单个字节，而是双字节、四字节等进行，假设这种存取粒度为4Bytes，也就是说处理器只能从首地址为4的倍数的地址读取数据。如果没有对齐存储，取数据会很麻烦，可能需要两次读取并且剔除掉无用的字节。 每个编译器都有默认的对齐模数，那么<strong>有效对齐值=min{对齐模数，结构体中最长数据类型长度}。</strong> <strong>规则1：第一个成员offset为0，其后成员的offset=min{有效对齐值，该类型字节数}；</strong> <strong>规则2：结构体总大小必须为有效对齐值的整数倍，否则编译器会自动填充。</strong> 再看前面的例子，int占0<sub>3，short占4</sub>5，char占6，总长度为7，不是4的整数倍，所以地址7是填充字节，共8Bytes。</p>
 <h2 id="栈-堆不是数据结构中的栈和堆">栈 &amp; 堆（不是数据结构中的栈和堆）</h2>
 <ol type="1">
 <li>内存栈区 编译器自动进行分配和释放，存放局部变量、函数的参数等。 Windows下栈向低地址扩展，大小只有几MB，如果开一个很大的局部数组，就会提示stack overflow。</li>
@@ -285,7 +296,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://eimadrigal.github.io/2019/03/06/INTERVIEW%201/" title="INTERVIEW">https://eimadrigal.github.io/2019/03/06/INTERVIEW 1/</a>
+    <a href="https://eimadrigal.github.io/2019/03/06/INTERVIEW%201/" title="INTERVIEW 1">https://eimadrigal.github.io/2019/03/06/INTERVIEW 1/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -295,6 +306,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Interview/" rel="tag"># Interview</a>
+          </div>
 
         
 
