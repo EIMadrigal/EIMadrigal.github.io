@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="向量空间 向量空间对于该空间内任意向量的线性组合(数乘&#x2F;加法)都是封闭的，并且必然包含零向量(数乘0)。 \(R^2\)本身就是一个向量空间，它的子空间有下面几种：  过原点直线； 零向量。  \(R^3\)本身也是一个向量空间，它的子空间：  过(0,0,0)的平面； 过(0,0,0)的直线； 零向量。  从矩阵构造的角度来看，假设\(A&#x3D;\begin{bmatrix}">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT Linear Algebra#2 Vector Spaces and Subspaces">
+<meta property="og:url" content="https://eimadrigal.github.io/2020/05/25/MIT%20Linear%20Algebra#2%20Vector%20Spaces%20and%20Subspaces/index.html">
+<meta property="og:site_name" content="EI Madrigal&#39;s Space">
+<meta property="og:description" content="向量空间 向量空间对于该空间内任意向量的线性组合(数乘&#x2F;加法)都是封闭的，并且必然包含零向量(数乘0)。 \(R^2\)本身就是一个向量空间，它的子空间有下面几种：  过原点直线； 零向量。  \(R^3\)本身也是一个向量空间，它的子空间：  过(0,0,0)的平面； 过(0,0,0)的直线； 零向量。  从矩阵构造的角度来看，假设\(A&#x3D;\begin{bmatrix}">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-25T04:16:00.000Z">
+<meta property="article:modified_time" content="2022-01-13T16:01:43.624Z">
+<meta property="article:author" content="EIMadrigal">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://eimadrigal.github.io/2020/05/25/MIT%20Linear%20Algebra#2%20Vector%20Spaces%20and%20Subspaces/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>MIT Linear Algebra#2 Vector Spaces and Subspaces | EI Madrigal's Space</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EI Madrigal's Space</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/05/25/MIT%20Linear%20Algebra#2%20Vector%20Spaces%20and%20Subspaces/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT Linear Algebra#2 Vector Spaces and Subspaces
+        </h1>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-25 12:16:00" itemprop="dateCreated datePublished" datetime="2020-05-25T12:16:00+08:00">2020-05-25</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="向量空间">向量空间</h2>
+<p>向量空间对于该空间内任意向量的线性组合(数乘/加法)都是封闭的，并且必然包含零向量(数乘0)。 <span class="math inline">\(R^2\)</span>本身就是一个向量空间，它的子空间有下面几种：</p>
+<ul>
+<li>过原点直线；</li>
+<li>零向量。</li>
+</ul>
+<p><span class="math inline">\(R^3\)</span>本身也是一个向量空间，它的子空间：</p>
+<ul>
+<li>过(0,0,0)的平面；</li>
+<li>过(0,0,0)的直线；</li>
+<li>零向量。</li>
+</ul>
+<p>从矩阵构造的角度来看，假设<span class="math inline">\(A=\begin{bmatrix}  1 &amp; 3\\  2 &amp; 3\\  4 &amp; 1  \end{bmatrix}\)</span>，<span class="math inline">\(A\)</span>的每一列属于<span class="math inline">\(R^3\)</span>，<span class="math inline">\(A\)</span>的col1和col2的所有线性组合构成了一个向量空间，称作<strong>列空间</strong>，记作<span class="math inline">\(C(A)\)</span>。 从列空间的角度重新来看<span class="math inline">\(Ax=b\)</span>： <span class="math display">\[
+A=\begin{bmatrix}
+   1 &amp; 1 &amp; 2\\
+   2 &amp; 1 &amp; 3\\
+   3 &amp; 1 &amp; 4\\
+   4 &amp; 1 &amp; 5
+  \end{bmatrix}
+\]</span> <span class="math inline">\(A\)</span>的所有列向量的线性组合构成了<span class="math inline">\(R^4\)</span>的一个子空间，<span class="math inline">\(Ax\)</span>恰是<span class="math inline">\(A\)</span>的所有列向量的线性组合，即列空间<span class="math inline">\(C(A)\)</span>，故只有<span class="math inline">\(b\)</span>在<span class="math inline">\(C(A)\)</span>中时方程组才有解。 3列无论怎样线性组合，都无法充满整个4维空间，同时注意到<span class="math inline">\(col1+col2=col3\)</span>，即使去掉第三列，仍然可以生成原来的列空间，<span class="math inline">\(col3\)</span>与<span class="math inline">\(col1\)</span>和<span class="math inline">\(col2\)</span>是<strong>线性相关</strong>的，所以实际上矩阵<span class="math inline">\(A\)</span>的列空间只是<span class="math inline">\(R^4\)</span>中的2维子空间。</p>
+<p>再来看看<span class="math inline">\(Ax=0\)</span>，所有解<span class="math inline">\(x\)</span>构成了<span class="math inline">\(A\)</span>的<strong>零空间</strong>，记作<span class="math inline">\(N(A)\)</span>。 <span class="math display">\[
+Ax=\begin{bmatrix}
+   1 &amp; 1 &amp; 2\\
+   2 &amp; 1 &amp; 3\\
+   3 &amp; 1 &amp; 4\\
+   4 &amp; 1 &amp; 5
+  \end{bmatrix}\begin{bmatrix}
+  x_1\\
+  x_2\\
+  x_3
+  \end{bmatrix}=\begin{bmatrix}
+  0\\
+  0\\
+  0\\
+  0
+  \end{bmatrix}
+\]</span> 虽然<span class="math inline">\(A\)</span>的每一列都属于<span class="math inline">\(R^4\)</span>，但是零空间研究的是<span class="math inline">\(x\)</span>，<span class="math inline">\(x\)</span>属于<span class="math inline">\(R^3\)</span>。 傻子都看得出来<span class="math inline">\((0,0,0)\)</span>是一组解，此前我们知道<span class="math inline">\(col1+col2=col3\)</span>，所以<span class="math inline">\(c(1,1,-1)\)</span>也是一组解，所有解其实就是<span class="math inline">\(R^3\)</span>中的一个子空间，一条直线而已，也就是<span class="math inline">\(A\)</span>的零空间<span class="math inline">\(N(A)\)</span>。 如果<span class="math inline">\(Ax=b\)</span>中<span class="math inline">\(b\neq0\)</span>，那么<span class="math inline">\(x\)</span>是不能构成子空间的，因为其中没有零向量。</p>
+<p>由此我们可以得到构造子空间的两种方法：</p>
+<ul>
+<li>矩阵各列的所有线性组合；</li>
+<li>方程组满足特定条件，让<span class="math inline">\(x\)</span>生成子空间。</li>
+</ul>
+<h2 id="求解零空间">求解零空间</h2>
+<p>在上一节中我们知道，求解<span class="math inline">\(A\)</span>的零空间其实就是求解<span class="math inline">\(Ax=0\)</span>，还是要用到高斯消元。 <span class="math display">\[
+A=\begin{bmatrix}
+   1 &amp; 2 &amp; 2 &amp; 2\\
+   2 &amp; 4 &amp; 6 &amp; 8\\
+   3 &amp; 6 &amp; 8 &amp; 10
+  \end{bmatrix}-&gt;\begin{bmatrix}
+   1 &amp; 2 &amp; 2 &amp; 2\\
+   0 &amp; 0 &amp; 2 &amp; 4\\
+   0 &amp; 0 &amp; 0 &amp; 0
+  \end{bmatrix}=U
+\]</span> 很显然，主元(每一行中第一个非零元素)是<span class="math inline">\(U(0,0)=1\)</span>和<span class="math inline">\(U(2,3)=2\)</span>，pivot col是第一列和第三列，第二列和第四列是free col，也可知<span class="math inline">\(rank(A)=\#pivots=2\)</span>，<span class="math inline">\(\#自由变量=n-rank(A)\)</span>，于是写出化简后的方程组： <span class="math display">\[
+\begin{cases}
+x_1+2x_2+2x_3+2x_4=0&amp; \text{}\\
+2x_3+4x_4=0&amp; \text{}
+\end{cases}\]</span> 对自由变量<span class="math inline">\(x_2\)</span>和<span class="math inline">\(x_4\)</span>，一般取<span class="math inline">\((0,1)\)</span>和<span class="math inline">\((1,0)\)</span>，所以特解(<strong>零空间的一组基</strong>)为： <span class="math display">\[
+\begin{bmatrix}
+  -2\\
+  1\\
+  0\\
+  0
+  \end{bmatrix}、\begin{bmatrix}
+  2\\
+  0\\
+  -2\\
+  1
+  \end{bmatrix}\]</span> 两个特解的线性组合即是整个零空间，也即是<span class="math inline">\(Ax=0\)</span>的全部解： <span class="math display">\[
+x=c\begin{bmatrix}
+  -2\\
+  1\\
+  0\\
+  0
+  \end{bmatrix}+d\begin{bmatrix}
+  2\\
+  0\\
+  -2\\
+  1
+  \end{bmatrix}\]</span> 其实矩阵<span class="math inline">\(U\)</span>还可以变得更加简单，可以化为简化行阶梯<span class="math inline">\(R=\begin{bmatrix}  1 &amp; 2 &amp; 0 &amp; -2\\  0 &amp; 0 &amp; 1 &amp; 2\\  0 &amp; 0 &amp; 0 &amp; 0  \end{bmatrix}\)</span>，即主元全部为1。 仔细观察矩阵<span class="math inline">\(R\)</span>，如果将pivot col全部移到左边，将free col移到右边，我们可以得到<span class="math inline">\(R\)</span>的一般形式：<span class="math inline">\(R=\begin{bmatrix}  I &amp; F\\  0 &amp; 0\\  \end{bmatrix}\)</span>，由此得出<span class="math inline">\(x\)</span>的一般形式：<span class="math inline">\(x=\begin{bmatrix}  -F\\  I\\  \end{bmatrix}\)</span>。 ## 求解Ax=b 上一节中我们求解了<span class="math inline">\(Ax=0\)</span>，接着看看更加复杂的情况： <span class="math display">\[
+[A\ b]=\begin{bmatrix}
+   1 &amp; 2 &amp; 2 &amp; 2 &amp; b_1\\
+   2 &amp; 4 &amp; 6 &amp; 8 &amp; b_2\\
+   3 &amp; 6 &amp; 8 &amp; 10 &amp; b_3
+  \end{bmatrix}-&gt;\begin{bmatrix}
+   1 &amp; 2 &amp; 2 &amp; 2 &amp; b_1\\
+   0 &amp; 0 &amp; 2 &amp; 4 &amp; b_2-2b_1\\
+   0 &amp; 0 &amp; 0 &amp; 0 &amp; b_3-b_2-b_1
+  \end{bmatrix}
+\]</span> 我们知道，当<span class="math inline">\(b\)</span>属于<span class="math inline">\(C(A)\)</span>时方程组有解，不妨设<span class="math inline">\(b=(1,5,6)\)</span>，那么化简的矩阵为<span class="math inline">\(\begin{bmatrix}  1 &amp; 2 &amp; 2 &amp; 2 &amp; 1\\  0 &amp; 0 &amp; 2 &amp; 4 &amp; 3\\  0 &amp; 0 &amp; 0 &amp; 0 &amp; 0  \end{bmatrix}\)</span>，求解过程有3步：</p>
+<ul>
+<li>特解：一般令自由变量取0，即<span class="math inline">\(x_2=x_4=0\)</span>，求主变量： <span class="math display">\[
+\begin{cases}
+x_1+2x_3=1&amp; \text{}\\
+2x_3=3&amp; \text{}
+\end{cases}\]</span> 所以特解<span class="math inline">\(x_p=\begin{bmatrix}  -2\\  0\\  1.5\\  0  \end{bmatrix}\)</span></li>
+<li>求零空间，即<span class="math inline">\(Ax=0\)</span>的解<span class="math inline">\(x_{null}\)</span>；</li>
+<li>所有解<span class="math inline">\(x=x_p+x_{null}\)</span>。 因为<span class="math inline">\(Ax_p=b, Ax_{null}=0\)</span>，故<span class="math inline">\(A(x_p+x_{null})=b\)</span>。</li>
+</ul>
+<p>对于矩阵<span class="math inline">\(A_{mn}\)</span>，我们知道<span class="math inline">\(r(A)=\#pivots\)</span>，所以<span class="math inline">\(r\leq m\)</span>，<span class="math inline">\(r\leq n\)</span>。 先看看<strong>列满秩</strong>的情况：每列都有主元，<span class="math inline">\(r=n&lt;m\)</span>，没有自由变量，零空间只有零向量： 举例来看： <span class="math display">\[
+\begin{bmatrix}
+   1 &amp; 3\\
+   2 &amp; 1\\
+   6 &amp; 1\\
+   5 &amp; 1
+  \end{bmatrix}-&gt;\begin{bmatrix}
+   1 &amp; 0\\
+   0 &amp; 1\\
+   0 &amp; 0\\
+   0 &amp; 0
+  \end{bmatrix}=\begin{bmatrix}
+   I\\
+   0\\
+  \end{bmatrix}
+\]</span> 如果特解恰好存在，有1个解，否则无解。 接着看看<strong>行满秩</strong>的情况：每行都有主元，<span class="math inline">\(r=m&lt;n\)</span>，<strong>自由变量有<span class="math inline">\(n-r=n-m\)</span>个</strong>，零空间有<span class="math inline">\(n-m\)</span>个基，<span class="math inline">\(Ax=b\)</span>有无穷多解： 举例来看： <span class="math display">\[
+\begin{bmatrix}
+   1 &amp; 2 &amp; 6 &amp; 5\\
+   3 &amp; 1 &amp; 1 &amp; 1
+  \end{bmatrix}-&gt;\begin{bmatrix}
+   1 &amp; 0 &amp; a &amp; b\\
+   0 &amp; 1 &amp; c &amp; d
+  \end{bmatrix}=\begin{bmatrix}
+   I &amp; F\\
+  \end{bmatrix}
+\]</span> 还有<strong>满秩</strong>的情况：<span class="math inline">\(r=m=n\)</span>，没有自由变量，零空间只有零向量，必有唯一的特解： 举例来看： <span class="math display">\[
+\begin{bmatrix}
+   1 &amp; 2\\
+   3 &amp; 1\\
+  \end{bmatrix}-&gt;\begin{bmatrix}
+   1 &amp; 0\\
+   0 &amp; 1\\
+  \end{bmatrix}=I
+\]</span> 最后一种情况就是<strong>不满秩</strong>：<span class="math inline">\(r&lt;m\)</span>，<span class="math inline">\(r&lt;n\)</span>，<span class="math inline">\(R=\begin{bmatrix}  I &amp; F\\  0 &amp; 0\\  \end{bmatrix}\)</span>，如果特解存在，就有无穷多解；否则无解。 ## 线性相关/基/维数 我们知道，对于矩阵<span class="math inline">\(A_{mn}(m&lt;n)\)</span>，因为有<span class="math inline">\(n-r\geq n-m\)</span>个自由变量，将这些自由变量赋一些非零值，即可解得主元，所以<span class="math inline">\(Ax=0\)</span>必有非零解。 对于一组向量<span class="math inline">\(x_1, x_2..., x_n\)</span>，除了系数全0以外，没有其他的线性组合可以得到零向量，那么这组向量<strong>线性无关</strong>，即<span class="math inline">\(c_1x_1+c_2x_2+...+c_nx_n\neq0(c_i不全为0)\)</span>。 举例来看：二维空间中的三个向量必然线性相关： <span class="math display">\[
+A=\begin{bmatrix}
+   2 &amp; 1 &amp; 3\\
+   1 &amp; 2 &amp; -1\\
+  \end{bmatrix}
+\]</span> 因为<span class="math inline">\(n-r&gt;0\)</span>，故必然有自由变量，所以<span class="math inline">\(Ax=0\)</span>必有非零解，即线性相关。 <strong>基</strong>也是一组向量<span class="math inline">\(v_1, v_2..., v_d\)</span>，不过要满足2个条件：</p>
+<ul>
+<li>线性无关；</li>
+<li>可以生成整个空间。</li>
+</ul>
+<p><strong>空间维度</strong>即可以生成该空间的<strong>基向量的个数</strong>，前面我们知道：<span class="math inline">\(r(A)=\#pivot\ cols\)</span>，所以<span class="math inline">\(dim(C(A))=r(A)\)</span>，因为只需要pivot col就能生成整个列空间，并且列空间属于<span class="math inline">\(R^m\)</span>，因为每个基向量都有<span class="math inline">\(m\)</span>个元素。 对于零空间来说，特解的个数就是自由变量的个数，也就是基向量的个数，即<span class="math inline">\(dim(N(A))=\#自由变量=n-r(A)\)</span>，并且零空间属于<span class="math inline">\(R^n\)</span>，因为每个解向量都有<span class="math inline">\(n\)</span>个元素。 ## 四个基本子空间 前面我们学习了列空间和零空间，很自然地，就会有行空间和<span class="math inline">\(A^T\)</span>的零空间： 行空间，顾名思义，即是矩阵行向量的所有线性组合生成的向量空间，其实就是<span class="math inline">\(C(A^T)\)</span>，<span class="math inline">\(dim(C(A^T))=r(A)\)</span>，属于<span class="math inline">\(R^n\)</span>； <span class="math inline">\(A^T\)</span>的零空间，即<span class="math inline">\(A^Tx=0\)</span>的所有解向量生成的向量空间，即<span class="math inline">\(N(A^T)\)</span>，<span class="math inline">\(dim(N(A^T))=m-r(A)\)</span>，属于<span class="math inline">\(R^m\)</span>。 回忆消元的过程，我们不停地进行初等行变换，这个过程中，行空间没有改变，列空间改变，最终的行空间就是<span class="math inline">\(R\)</span>矩阵的前<span class="math inline">\(r(A)\)</span>行生成的向量空间。 对于<span class="math inline">\(N(A^T)\)</span>，即<span class="math inline">\(A^Ty=0\)</span>，转置即有<span class="math inline">\(y^TA=0\)</span>，所以<span class="math inline">\(N(A^T)\)</span>又叫<strong>左零空间</strong>。 学习消元时我们知道，左乘一系列的初等阵可以将<span class="math inline">\(A\)</span>化为<span class="math inline">\(R\)</span>： <span class="math display">\[
+E\begin{bmatrix}
+   A_{mn} &amp; I_{mm}\\
+  \end{bmatrix}-&gt;\begin{bmatrix}
+   R_{mn} &amp; E_{mm}\\
+  \end{bmatrix}
+\]</span> 矩阵<span class="math inline">\(E\)</span>记录了我们的变换过程，举例来看： <span class="math display">\[
+EA=\begin{bmatrix}
+   -1 &amp; 2 &amp; 0\\
+   1 &amp; -1 &amp; 0\\
+   -1 &amp; 0 &amp; 1
+  \end{bmatrix}\begin{bmatrix}
+   1 &amp; 2 &amp; 3 &amp; 1\\
+   1 &amp; 1 &amp; 2 &amp; 1\\
+   1 &amp; 2 &amp; 3 &amp; 1
+  \end{bmatrix}-&gt;\begin{bmatrix}
+   1 &amp; 0 &amp; 1 &amp; 1\\
+   0 &amp; 1 &amp; 1 &amp; 1\\
+   0 &amp;  0&amp; 0 &amp; 0
+  \end{bmatrix}=R
+\]</span> <span class="math inline">\(dim(N(A^T))=m-r(A)=3-2=1\)</span>，左零空间中唯一一个基向量即<span class="math inline">\(E\)</span>的最后一行，因为<span class="math inline">\(\begin{bmatrix}  -1 &amp; 0 &amp; 1  \end{bmatrix}A=0\)</span>。 ## 矩阵空间 前面我们研究了若干向量生成的空间，上升一个高度，若干矩阵也可以构成一种特殊的向量空间，即矩阵空间。 所有的三阶矩阵构成矩阵空间<span class="math inline">\(M\)</span>，也就是<span class="math inline">\(R^{3*3}\)</span>。 <span class="math inline">\(M\)</span>的子空间有上三角矩阵<span class="math inline">\(U\)</span>和对称矩阵<span class="math inline">\(S\)</span>(可以用封闭性验证)。明确了空间后，就要研究该空间的维数和基向量。 <span class="math inline">\(dim(M)=9\)</span>，因为需要9个矩阵构成一组基，而且我们可以写出一组基： <span class="math display">\[
+\begin{bmatrix}
+   1 &amp; 0 &amp; 0\\
+   0 &amp; 0 &amp; 0\\
+   0 &amp; 0 &amp; 0
+  \end{bmatrix}、\begin{bmatrix}
+   0 &amp; 1 &amp; 0\\
+   0 &amp; 0 &amp; 0\\
+   0 &amp; 0 &amp; 0
+  \end{bmatrix}、\begin{bmatrix}
+   0 &amp; 0 &amp; 1\\
+   0 &amp; 0 &amp; 0\\
+   0 &amp; 0 &amp; 0
+  \end{bmatrix}
+  ...\begin{bmatrix}
+   0 &amp; 0 &amp; 0\\
+   0 &amp; 0 &amp; 0\\
+   0 &amp; 0 &amp; 1
+  \end{bmatrix}
+\]</span> <span class="math inline">\(dim(S)=6\)</span>，因为需要对角线的3个元素和对角线下面(上面)3个元素； <span class="math inline">\(dim(U)=6\)</span>，因为需要对角线的3个元素和对角线上面3个元素。 再来看看<span class="math inline">\(S\bigcap U\)</span>，既是上三角矩阵又是对称矩阵，其实就是对角阵，<span class="math inline">\(dim(S\bigcap U)=3\)</span>； 那么<span class="math inline">\(S\bigcup U\)</span>呢？属于上三角或者对称，很显然这无法构成子空间； 那么<span class="math inline">\(S+U\)</span>呢？对应元素求和，实际上这就是<span class="math inline">\(M\)</span>。 由此我们得到一个性质： <span class="math display">\[
+dim(S)+dim(U)=dim(S\bigcap U)+dim(S+U)
+\]</span> 对于向量空间和基，不应局限于线性代数中，例如熟悉的微分方程： <span class="math display">\[
+\frac{d^2y}{dx^2}+y=0
+\]</span> 它的所有解<span class="math inline">\(y=c_1cosx+c_2sinx\)</span>也构成零空间，那么<span class="math inline">\(cosx\)</span>和<span class="math inline">\(sinx\)</span>就是一组基，并且解空间的维数是2。</p>
+<p>最后看一种很有趣的矩阵，秩为1的矩阵： 对于这种矩阵，有<span class="math inline">\(dim(C(A))=dim(C(A^T))=r=1\)</span>，不妨举个例子： <span class="math display">\[
+A=\begin{bmatrix}
+   1 &amp; 4 &amp; 5\\
+   2 &amp; 8 &amp; 10
+  \end{bmatrix}=\begin{bmatrix}
+   1\\
+   2\\
+  \end{bmatrix}\begin{bmatrix}
+   1 &amp; 4 &amp; 5\\
+  \end{bmatrix}=uv^T
+\]</span> 用一个例子作为结尾： 在<span class="math inline">\(R^4\)</span>中，<span class="math inline">\(v=\begin{bmatrix}  v_1\\  v_2\\  v_3\\  v_4  \end{bmatrix}\)</span>，<span class="math inline">\(s\)</span>是满足<span class="math inline">\(v_1+v_2+v_3+v_4=0\)</span>的所有<span class="math inline">\(v\)</span>，那么<span class="math inline">\(s\)</span>显然是子空间，并且可以写成矩阵形式<span class="math inline">\(Av=\begin{bmatrix}  1 &amp; 1 &amp; 1 &amp; 1\\  \end{bmatrix}v=0\)</span>，接着看看<span class="math inline">\(A\)</span>的四个基本子空间：</p>
+<ul>
+<li>零空间：<span class="math inline">\(dim(N(A))=n-r=4-1=3\)</span>，给每个自由变量赋值后，得到一组特解(基)： <span class="math display">\[
+\begin{bmatrix}
+-1\\
+1\\
+0\\
+0
+  \end{bmatrix}、\begin{bmatrix}
+-1\\
+0\\
+1\\
+0
+  \end{bmatrix}、\begin{bmatrix}
+-1\\
+0\\
+0\\
+1
+  \end{bmatrix}
+\]</span></li>
+<li>列空间：<span class="math inline">\(dim(C(A))=r=1\)</span>，基可以取任意一列；</li>
+<li>行空间：<span class="math inline">\(dim(C(A^T))=r=1\)</span>，基向量即第一行；</li>
+<li>左零空间：<span class="math inline">\(dim(N(A^T))=m-r=0\)</span>，基向量只有零向量。 ## 作业 Under what possible conditions is the matrix <span class="math inline">\(A=uv^T+wz^T\)</span> not of rank 2? 对于<span class="math inline">\(uv^T=\begin{bmatrix} a\\ b\\ c\\  \end{bmatrix}\begin{bmatrix} v_1&amp;v_2&amp;v_3\\  \end{bmatrix}\)</span>，结果就是<span class="math inline">\(u\)</span>的线性组合<span class="math inline">\(\begin{bmatrix} v_1u&amp;v_2u&amp;v_3u\\  \end{bmatrix}\)</span>，所以<span class="math inline">\(C(uv^T)\subset C(u)=xu,x\in R\)</span>；同样地，<span class="math inline">\(C(wz^T)\subset C(w)=yw,y\in R\)</span>，如果<span class="math inline">\(u\)</span>和<span class="math inline">\(w\)</span>共线，那么<span class="math inline">\(C(A)=xu\)</span>，即<span class="math inline">\(r(A)\leq1\)</span>； 从行向量组合的角度：<span class="math inline">\(uv^T=\begin{bmatrix} av^T\\ bv^T\\ cv^T\\  \end{bmatrix}\)</span>，故<span class="math inline">\(uv^T\)</span>的行空间<span class="math inline">\(\subset v^T\)</span>的行空间<span class="math inline">\(=xv^T\)</span>，<span class="math inline">\(wz^T\)</span>的行空间<span class="math inline">\(\subset z^T\)</span>的行空间<span class="math inline">\(=yz^T\)</span>，所以如果<span class="math inline">\(v\)</span>和<span class="math inline">\(z\)</span>共线，那么行空间就可以合并，即<span class="math inline">\(r(A)\leq1\)</span>。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="EIMadrigal WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="EIMadrigal Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>EIMadrigal
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://eimadrigal.github.io/2020/05/25/MIT%20Linear%20Algebra#2%20Vector%20Spaces%20and%20Subspaces/" title="MIT Linear Algebra#2 Vector Spaces and Subspaces">https://eimadrigal.github.io/2020/05/25/MIT Linear Algebra#2 Vector Spaces and Subspaces/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/23/MIT%20Linear%20Algebra#1%20Solving%20Linear%20Equations/" rel="prev" title="MIT Linear Algebra#1 Solving Linear Equations">
+      <i class="fa fa-chevron-left"></i> MIT Linear Algebra#1 Solving Linear Equations
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/27/MIT%20Linear%20Algebra#3%20Orthogonality/" rel="next" title="MIT Linear Algebra#3 Orthogonality">
+      MIT Linear Algebra#3 Orthogonality <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%91%E9%87%8F%E7%A9%BA%E9%97%B4"><span class="nav-number">1.</span> <span class="nav-text">向量空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%82%E8%A7%A3%E9%9B%B6%E7%A9%BA%E9%97%B4"><span class="nav-number">2.</span> <span class="nav-text">求解零空间</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="EIMadrigal"
+      src="/images/favicon.png">
+  <p class="site-author-name" itemprop="name">EIMadrigal</p>
+  <div class="site-description" itemprop="description">Hello World</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">167</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/EIMadrigal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:andrew.renj@gmail.com" title="E-Mail → mailto:andrew.renj@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.cnblogs.com/EIMadrigal" title="cnblogs → https:&#x2F;&#x2F;www.cnblogs.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-codiepie fa-fw"></i>cnblogs</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/EIMadrigal" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018-02 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EIMadrigal</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">Total views: <span id="busuanzi_value_site_pv"></span></span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">Total visitors: <span id="busuanzi_value_site_uv"></span></span>
+    <span class="post-meta-divider">|</span>
+
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);
+    var countOffset = 20000;
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset);
+            clearInterval(int);
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

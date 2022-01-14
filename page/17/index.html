@@ -190,6 +190,72 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/04/20/Process%20Synchronization-Example%202/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/04/20/Process%20Synchronization-Example%202/" class="post-title-link" itemprop="url">Process Synchronization-Example 2</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-04-20 12:59:00" itemprop="dateCreated datePublished" datetime="2018-04-20T12:59:00+08:00">2018-04-20</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="问题描述">问题描述</h2>
+<p>理发店有一位理发师，一把理发椅和N把供等候的顾客坐的椅子。 如果没有顾客，理发师在理发椅上睡觉； 当有一个顾客到来时，他必须先唤醒理发师； 如果顾客来时理发师正在理发，如果有空椅子，坐下等待，否则离开。 用PV操作解决上述问题中的同步和互斥关系。</p>
+<h2 id="分析">分析</h2>
+<p>将顾客看作N个生产者，理发师是1个消费者。 理发师和椅子是临界资源，故顾客间是互斥关系； 理发师和顾客是同步关系。</p>
+<p>信号量设置： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Semaphore barberReady = <span class="number">0</span>  互斥量，只能取<span class="number">0</span>或<span class="number">1</span>  </span><br><span class="line">Semaphore accessSeat = <span class="number">1</span>  互斥量，如果为<span class="number">1</span>，表明椅子数可以增加或减少，相当于给椅子加锁，避免两个顾客同时坐一把椅子</span><br><span class="line">Semaphore num_wait = <span class="number">0</span>   坐在椅子上等待的顾客数</span><br><span class="line"><span class="keyword">int</span> seat_free    空着的椅子数目</span><br></pre></td></tr></table></figure> <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Sleeping_barber_problem">参考wiki</a></p>
+<h2 id="解答">解答</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*顾客进程*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">customer</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(accessSeat);  <span class="comment">//试图坐下</span></span><br><span class="line">        <span class="keyword">if</span>(seat_free &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            seat_free--;  <span class="comment">//坐下</span></span><br><span class="line">            V(num_wait);  <span class="comment">//试图唤醒理发师，</span></span><br><span class="line">            V(accessSeat);  <span class="comment">//不用再锁着椅子</span></span><br><span class="line">            P(baberReady); <span class="comment">//等待理发师ready</span></span><br><span class="line">            理发;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            V(accessSeat);  <span class="comment">//释放加在椅子上的锁</span></span><br><span class="line">            离开;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*理发师进程*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">barber</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(num_wait);   <span class="comment">//尝试获得一位顾客，如果没有，去睡觉</span></span><br><span class="line">        P(accessSeat);   <span class="comment">//尝试获得椅子锁，更改空闲椅子数目</span></span><br><span class="line">        seat_free++;    <span class="comment">//空椅子加1</span></span><br><span class="line">        V(baberReady);    <span class="comment">//理发师准备好了</span></span><br><span class="line">        V(accessSeat);    <span class="comment">//无需继续锁着椅子</span></span><br><span class="line">        理发;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/04/11/Process%20Synchronization-Example%201/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -216,16 +282,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-04-11 17:16:32" itemprop="dateCreated datePublished" datetime="2018-04-11T17:16:32+08:00">2018-04-11</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
-                </span>
+              <time title="Created: 2018-04-11 09:16:00" itemprop="dateCreated datePublished" datetime="2018-04-11T09:16:00+08:00">2018-04-11</time>
             </span>
 
           
@@ -239,15 +296,21 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>考试问题</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/04/11/Process%20Synchronization-Example%201/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="问题描述">问题描述</h2>
+<p>把学生和监考老师都看作进程，学生有N人，教师1人。考场门口每次只能进出一个人，进考场原则是先来先进。当N个学生都进入考场后，教师才能发卷子。学生交卷后可以离开考场，教师要等收上来全部卷子并封装卷子后才能离开考场。问： - 需要设置几个进程？ - 用PV操作解决上述问题的同步互斥关系。</p>
+<h2 id="分析">分析</h2>
+<blockquote>
+<p>考场门口每次只能进出一个人</p>
+</blockquote>
+<p>考场门口是共享资源。</p>
+<blockquote>
+<p>当N个学生都进入考场后，教师才能发卷子 教师要等收上来全部卷子并封装卷子后才能离开考场</p>
+</blockquote>
+<p>这是两个同步行为。</p>
+<p>信号量设置： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">door = <span class="number">1</span>    <span class="comment">//能否进出门口</span></span><br><span class="line">mutex1 = <span class="number">1</span></span><br><span class="line">mutex2 = <span class="number">1</span>   <span class="comment">//互斥信号量</span></span><br><span class="line">sr = <span class="number">0</span>   <span class="comment">//学生是否到齐</span></span><br><span class="line">eb = <span class="number">0</span>    <span class="comment">//考试开始</span></span><br><span class="line">eo = <span class="number">0</span>     <span class="comment">//考试结束</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> num_stu = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> num_paper = <span class="number">0</span>;</span><br></pre></td></tr></table></figure></p>
+<h2 id="解答">解答</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*学生进程*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">student</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    P(door);</span><br><span class="line">    进门;</span><br><span class="line">    V(door);</span><br><span class="line">    P(mutex1);  <span class="comment">//增加学生人数</span></span><br><span class="line">    num_stu++;</span><br><span class="line">    <span class="keyword">if</span>(num_stu == N)</span><br><span class="line">    V(sr);</span><br><span class="line">    V(mutex1);</span><br><span class="line">    P(eb);  <span class="comment">//等教师宣布开始考试</span></span><br><span class="line">    考试;</span><br><span class="line">    交卷;</span><br><span class="line">    P(mutex2);   <span class="comment">//增加试卷份数</span></span><br><span class="line">    num_paper++;</span><br><span class="line">    <span class="keyword">if</span>(num_paper == N)</span><br><span class="line">    V(eo);</span><br><span class="line">    V(mutex2);</span><br><span class="line">    P(door);</span><br><span class="line">    出门;</span><br><span class="line">    V(door);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*教师进程*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">teacher</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    P(door);</span><br><span class="line">    进门;</span><br><span class="line">    V(door);</span><br><span class="line">    P(sr);  <span class="comment">//最后一个学生唤醒老师</span></span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">1</span>;i &lt;= N;i++)</span><br><span class="line">    发卷子;</span><br><span class="line">    V(eb);     <span class="comment">//开始考试</span></span><br><span class="line">    P(eo);   <span class="comment">//等待考试结束</span></span><br><span class="line">    封装;</span><br><span class="line">    P(door);</span><br><span class="line">    出门;</span><br><span class="line">    V(door);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
       
     </div>
 
@@ -292,16 +355,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-04-02 21:03:32" itemprop="dateCreated datePublished" datetime="2018-04-02T21:03:32+08:00">2018-04-02</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
-                </span>
+              <time title="Created: 2018-04-02 13:03:00" itemprop="dateCreated datePublished" datetime="2018-04-02T13:03:00+08:00">2018-04-02</time>
             </span>
 
           
@@ -315,91 +369,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>字符串模式匹配</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/04/02/Pattern%20Matching/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
+          <p>字符串模式匹配，即子串的定位操作。就是判断主串S中是否存在给定的子串，如果存在，那么返回子串在S中的位置，否则返回-1。 实现这种操作有两种算法：</p>
+<h2 id="朴素的模式匹配算法">朴素的模式匹配算法</h2>
+<p>设主串S长度为n，子串T长度为m。 对于主串的每个字符，做长度为m的循环，判断是否与子串匹配。 最好的情况就是一开始就匹配成功，时间复杂度<span class="math inline">\(O(1)\)</span>；最坏的情况就是每次匹配失败都是在T的最后一个元素，复杂度<span class="math inline">\(O(nm)\)</span>;平均情况复杂度<span class="math inline">\(O(n+m)\)</span>。 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">match</span><span class="params">(string s, string t)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (t.<span class="built_in">size</span>() &gt; s.<span class="built_in">size</span>())</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; s.<span class="built_in">size</span>() &amp;&amp; j &lt; t.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (t[j] == s[i]) &#123;</span><br><span class="line">            ++i;</span><br><span class="line">            ++j;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            i = i - j + <span class="number">1</span>;</span><br><span class="line">            j = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (j == t.<span class="built_in">size</span>())</span><br><span class="line">        <span class="keyword">return</span> i - j;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="kmp算法">KMP算法</h2>
+<p>KMP主要分两步： 1. 进行T的自匹配，这一步关键在于得到Next数组，从T的第一位开始对自身匹配，在某一位置能匹配的最长长度即是当前位置Next值。 Next中的值是字符串的前缀集合与后缀集合的交集中最长元素的长度，将Next[0] = -1。 举例来说：T=ababaca，前缀为pre，后缀为post。 i = 1: 要处理"a", pre = "", post = "", Next[1] = 0; i = 2: 要处理"ab", pre = a, post = b, Next[2] = 0; i = 3: 要处理"aba", pre = {a, ab}, post = {ba, a}, Next[3] = 1; i = 4: 要处理"abab", pre = {a, ab, aba}, post = {bab, ab, b}, Next[4] = 2; i = 5: 要处理"ababa", pre = {a, ab, aba, abab}, post = {baba, aba, ba, a}, Next[5] = 3; ...... Next数组{-1，0，0，1，2，3，0，1} 2. S与T的匹配，这步的匹配和朴素匹配没有太大差异，只是主串S的指针不用回溯，而将子串的指针j回溯到Next[j]位置。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">nextCompute</span><span class="params">(string t, vector&lt;<span class="keyword">int</span>&gt;&amp; next)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; t.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (j == <span class="number">-1</span> || t[i] == t[j]) &#123;</span><br><span class="line">            ++i;</span><br><span class="line">            ++j;</span><br><span class="line">            next[i] = j;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            j = next[j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">KMP</span><span class="params">(string s, string t)</span> </span>&#123;</span><br><span class="line">    <span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">next</span><span class="params">(t.size() + <span class="number">1</span>, <span class="number">-1</span>)</span></span>;</span><br><span class="line">    <span class="built_in">nextCompute</span>(t, next);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; (<span class="keyword">int</span>)s.<span class="built_in">size</span>() &amp;&amp; j &lt; (<span class="keyword">int</span>)t.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (j == <span class="number">-1</span> || s[i] == t[j]) &#123;</span><br><span class="line">            ++i;</span><br><span class="line">            ++j;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            j = next[j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (j == t.<span class="built_in">size</span>())</span><br><span class="line">        <span class="keyword">return</span> i - j;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="改进kmp算法">改进KMP算法</h2>
+<p>主要改进了Next数组。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 计算next数组 */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">next_compute</span><span class="params">(<span class="keyword">char</span> T[], <span class="keyword">int</span>* next)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">-1</span>;</span><br><span class="line">    next[<span class="number">0</span>] = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; <span class="built_in">strlen</span>(T)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="number">-1</span> == j || T[i] == T[j]) &#123;   <span class="comment">// 自匹配</span></span><br><span class="line">            i++;</span><br><span class="line">            j++;</span><br><span class="line">            <span class="keyword">if</span> (T[i] != T[j])</span><br><span class="line">                next[i] = j;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                next[i] = next[j];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            j = next[j];  <span class="comment">// 字符不同，j值回溯</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p></int></int></p>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/03/29/B%E6%A0%91%E7%BA%A2%E9%BB%91%E6%A0%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/03/29/B%E6%A0%91%E7%BA%A2%E9%BB%91%E6%A0%91/" class="post-title-link" itemprop="url">高级树</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-03-29 13:09:32" itemprop="dateCreated datePublished" datetime="2018-03-29T13:09:32+08:00">2018-03-29</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>硬盘损坏及重装系统</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/03/29/B%E6%A0%91%E7%BA%A2%E9%BB%91%E6%A0%91/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
       
     </div>
 
@@ -444,16 +424,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-03-29 13:09:32" itemprop="dateCreated datePublished" datetime="2018-03-29T13:09:32+08:00">2018-03-29</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
-                </span>
+              <time title="Created: 2018-03-29 05:09:00" itemprop="dateCreated datePublished" datetime="2018-03-29T05:09:00+08:00">2018-03-29</time>
             </span>
 
           
@@ -467,167 +438,21 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>硬盘损坏及重装系统</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/03/29/Damaged%20Hard%20Drive%20and%20Reinstall%20System/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
+          <h2 id="缘由">缘由</h2>
+<p>我是ACER笔记本，电脑从桌子上重摔，之后几天可以正常使用。可是后来看完视频准备退出的时候，发现所有页面已经卡死了，内存占用已经超过了80%，任务管理器没有反应，不得已按了电源键强制关机。 接着就再也启动不了，开机后一直显示No bootable device。 进入BIOS发现检测不到硬盘，估计是硬盘损坏了。啊~所有数据全都GG了！！！</p>
+<h2 id="硬盘处理">硬盘处理</h2>
+<p>先是用WinPE启动盘进入DiskGenius查看，没有我的HDD； 接着拆机，把硬盘重新插拔一下（也许是连接松了呢~），还是没用； 最后用硬盘盒子接到室友电脑，还是无法检测，这下彻底确认硬盘凉了； 拿去维修店，专业人员检测后说是磁头坏了，修复数据1T要800RMB，哇穷~ 换块新的要480，有点坑哦！ 还是自己买一块希捷的，加上各种优惠，不到300RMB。</p>
+<h2 id="重装系统">重装系统</h2>
+<p>第一次重装系统，折腾了很久，试错的细节记不清了，只说一下大体的步骤：</p>
+<ol type="1">
+<li>插上新硬盘之后，先用WinPE启动，用DiskGenius将硬盘的MBR格式转为GPT格式，此时不用分区；</li>
+<li>插上U盘启动盘，重启电脑，按F2进入BIOS，切记关掉Boot Security，否则系统无法安装；</li>
+<li>如果出现安装程序无法创建新的系统分区，也无法定位现有系统分区的提示，建议如下处理： a-在安装界面按Shift+F10进入命令行； b-输入diskpart启动磁盘程序，接着输入list disk查看电脑的硬盘； c-按提示输入select disk 0，选中编号为0的磁盘，输入clean，删除硬盘所有数据； d-输入convert GPT，转换格式，然后list partition，查看分区情况； e-输入create partition efi size<em>100，创建EFI分区，大小100MB； f-输入create partition msr size</em>128，创建MSR分区，大小128MB； g-输入create partition primary size*50000，创建主分区，大小50GB。(建议这个系统盘分的大一点，否则以后清理很麻烦)； h-输入list partition，查看分区情况。 P.s. 遇到这种情况，网上有的说可以重新插拔u盘启动盘，刷新；或者利用Windows自带的引导文件安装，具体的可以自己试试~</li>
+<li>下来一路Next，装系统即可。</li>
+</ol>
+<h2 id="再次遭殃">再次遭殃</h2>
+<p>距离上次硬盘事件已经过去了一年半，当我开心地吃着零食追着剧，想把页面切到咪咕下几首歌时，电脑瞬间卡死。 后来反思了一下：一是我习惯长期不关电脑，只是进入睡眠状态，可能资源本身已经占用很多了；二是打开的页面太多，而且切换太过频繁。 强制关机后就Game Over了~（遇到这种情况，一定不要继续操作，等着吧！等到听不到硬盘的转动声再按电源键！！！） BIOS偶尔还能检测到HDD，经过专业人士检测：硬盘损坏，600RMB修复1T，好像比上次便宜了一些~ 一般机械硬盘保修期都是2年，所以就免费换了块新的~ 建议有条件的直接上固态吧，条件差点的可以固态装系统、机械存文件，没条件的就凑合用吧。。。 这次数据损失不大，吃了一堑还是有点用的，不过备份频率得改为一周一次了。 重装系统可以去老毛桃做个启动盘，把Windows的ISO镜像拷到U盘根目录，开机进入Win PE系统后，里面有个一键装机的软件~ 不过不知道是不是由于机型的原因，那个软件我的本用不了（垃圾Acer）： 所以就利用UltraISO把ISO镜像写入到U盘，插上之后开机，就会进入Windows的安装引导程序，分区也会在其中的一步引导你去做。 不同机型可能稍有差异，具体步骤可以参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43175701/article/details/84349445">笔记本换硬盘装系统完整教程</a>。</p>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/03/29/%E4%B8%AD%E9%80%94%E5%B2%9B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/03/29/%E4%B8%AD%E9%80%94%E5%B2%9B/" class="post-title-link" itemprop="url">中途岛</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-03-29 13:09:32" itemprop="dateCreated datePublished" datetime="2018-03-29T13:09:32+08:00">2018-03-29</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Arts/" itemprop="url" rel="index"><span itemprop="name">Arts</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>硬盘损坏及重装系统</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/03/29/%E4%B8%AD%E9%80%94%E5%B2%9B/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/03/29/%E5%AE%8C%E7%BE%8E%E4%B8%BB%E4%B9%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/03/29/%E5%AE%8C%E7%BE%8E%E4%B8%BB%E4%B9%89/" class="post-title-link" itemprop="url">Damaged Hard Drive and Reinstall System</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-03-29 13:09:32" itemprop="dateCreated datePublished" datetime="2018-03-29T13:09:32+08:00">2018-03-29</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>硬盘损坏及重装系统</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/03/29/%E5%AE%8C%E7%BE%8E%E4%B8%BB%E4%B9%89/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
       
     </div>
 
@@ -672,16 +497,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-02-07 19:21:32" itemprop="dateCreated datePublished" datetime="2018-02-07T19:21:32+08:00">2018-02-07</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
-                </span>
+              <time title="Created: 2018-02-07 11:21:00" itemprop="dateCreated datePublished" datetime="2018-02-07T11:21:00+08:00">2018-02-07</time>
             </span>
 
           
@@ -695,15 +511,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>斐波那契数列</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/02/07/Fibonacci%20Sequence/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="递归">递归</h2>
+<p>斐波那契数列定义： <span class="math display">\[
+F(n)=\left\{\begin{matrix}0, n=0\\
+1, n=1\\
+F(n-1)+F(n-2), n&gt;1\end{matrix}\right.
+\]</span> 递归解法最直观，但是复杂度也最高：<span class="math inline">\(O(2^n)\)</span> <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Fibonacci</span><span class="params">(<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) <span class="comment">//细节可以处理非法输入</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (<span class="number">1</span> == n)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> Fibonacci(n - <span class="number">1</span>) + Fibonacci(n - <span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 为了避免重复计算，可以将每一步计算得到的<span class="math inline">\(F(i)\)</span>存起来，这样的话时间复杂度降为<span class="math inline">\(O(n)\)</span>，但空间复杂度升为<span class="math inline">\(O(n)\)</span>。 ## 通项 求解通项的方法有好几种，下面展示一种用线性代数求解的方法： 斐波那契数列的递推公式是二阶差分方程，先用一点小技巧将其化为一阶： <span class="math display">\[
+\begin{cases}F_{k+2}=F_{k+1}+F_{k}\text{}\\F_{k+1}=F_{k+1}\text{}\\\end{cases}
+\]</span> 我们令<span class="math inline">\(u_k=\begin{bmatrix}F_{k+1}\\F_{k}\\\end{bmatrix}\)</span>，那么<span class="math inline">\(u_{k+1}=\begin{bmatrix}F_{k+2}\\F_{k+1}\\\end{bmatrix}=\begin{bmatrix}1\ 1\\1\ 0\\\end{bmatrix}u_k\)</span>。 矩阵<span class="math inline">\(A=\begin{bmatrix} 1\ 1\\1\ 0\\\end{bmatrix}\)</span>，令<span class="math inline">\(det(A-\lambda I)=\lambda^2-\lambda-1=0\)</span>，求得<span class="math inline">\(\lambda=\frac{1\pm \sqrt5}{2}\)</span>，对应于两个特征值的特征向量为<span class="math inline">\(x_1=\begin{bmatrix} \lambda_1\\ 1\\ \end{bmatrix},x_2=\begin{bmatrix} \lambda_2\\ 1\\ \end{bmatrix}\)</span>。 求得特征值和特征向量后，我们将<span class="math inline">\(u_0=\begin{bmatrix} F_1\\ F_0\\ \end{bmatrix}=\begin{bmatrix} 1\\ 0\\ \end{bmatrix}=c_1x_1+c_2x_2\)</span>，解得<span class="math inline">\(c_1=-\frac{1}{\sqrt5}, c_2=\frac{1}{\sqrt5}\)</span> 故 <span class="math inline">\(u_k=S\Lambda^{k}c=\begin{bmatrix} c_1\lambda_1^{k+1}+c_2\lambda_2^{k+1}\\c_1\lambda_1^{k}+c_2\lambda_2^{k}\\\end{bmatrix}\)</span> 所以通项公式可以表示为<span class="math inline">\(F(n)=C_1\lambda_1^n+C_2\lambda_2^n\)</span>。 故斐波那契数列的通项公式为：<span class="math inline">\(F(n)=\frac{1}{\sqrt5}[(\frac{1+\sqrt5}{2})^n-(\frac{1-\sqrt5}{2})^n]\)</span> 用公式求解的复杂度为<span class="math inline">\(O(1)\)</span>，但是由于无理数在计算机中的存储不是精确的，所以结果的精度很难保证。 ## 分治 通过矩阵形式的递推： <span class="math display">\[\begin{bmatrix}F(n)\\ F(n-1)\end{bmatrix}=\begin{bmatrix}1\  1\\ 1\  0\end{bmatrix}\begin{bmatrix}F(n-1)\\ F(n-2)\end{bmatrix}\]</span> 不断向下递推，可以得到： <span class="math display">\[\begin{bmatrix}F(n)\\ F(n-1)\end{bmatrix}={\begin{bmatrix}1\  1\\ 1\  0\end{bmatrix}}^{n-1}\begin{bmatrix}F(1)\\ F(0)\end{bmatrix}\]</span> 接下来就是求解矩阵的高次方，通过<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/快速幂/5500243">快速幂</a>可以在<span class="math inline">\(O(logn)\)</span>时间内进行计算： 整数的快速幂代码： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">QuickPow</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (n)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (n &amp; <span class="number">1</span>)</span><br><span class="line">            ans *= a;</span><br><span class="line">        a *= a;</span><br><span class="line">        n &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 递归版本</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">raise</span><span class="params">(<span class="keyword">int</span> base, <span class="keyword">int</span> <span class="built_in">exp</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">exp</span> == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> half = raise(base, <span class="built_in">exp</span> / <span class="number">2</span>);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">exp</span> % <span class="number">2</span>)</span><br><span class="line">        <span class="keyword">return</span> base * half * half;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> half * half;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>将传入的参数改为矩阵，乘法改为矩阵乘法，就可以得到矩阵快速幂： 以二阶矩阵为例，求解斐波那契数列： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Matrix</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> a[<span class="number">2</span>][<span class="number">2</span>];</span><br><span class="line">&#125;base,ans;</span><br><span class="line"></span><br><span class="line"><span class="function">Matrix <span class="title">multi</span><span class="params">(Matrix a, Matrix b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Matrix res;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span>; i++) <span class="comment">//第i行</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">2</span>; j++)  <span class="comment">//第j列</span></span><br><span class="line">        &#123;</span><br><span class="line">            res.a[i][j] = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; <span class="number">2</span>; k++)</span><br><span class="line">                res.a[i][j] += a.a[i][k] * b.a[k][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Matrix <span class="title">QuickPow</span><span class="params">(<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    base.a[<span class="number">0</span>][<span class="number">0</span>] = base.a[<span class="number">0</span>][<span class="number">1</span>] = base.a[<span class="number">1</span>][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    base.a[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">0</span>;   <span class="comment">//初始化矩阵</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//结果矩阵初始化为单位阵</span></span><br><span class="line">    ans.a[<span class="number">0</span>][<span class="number">0</span>] = ans.a[<span class="number">1</span>][<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">    ans.a[<span class="number">1</span>][<span class="number">0</span>] = ans.a[<span class="number">0</span>][<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (n)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (n &amp; <span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            ans = multi(ans, base);</span><br><span class="line">        &#125;</span><br><span class="line">        base = multi(base, base);</span><br><span class="line">        n &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line"></span><br><span class="line">    QuickPow(n);</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; ans.a[<span class="number">1</span>][<span class="number">0</span>] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> ## 动态规划 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Fibonacci</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">0</span>, b = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;++i) &#123;</span><br><span class="line">        ans = a + b;</span><br><span class="line">        a = b;</span><br><span class="line">        b = ans;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> ## Refs <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/28062458/answer/39763094">斐波那契数列</a></p>
+
       
     </div>
 
@@ -748,16 +565,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-01-20 15:39:32" itemprop="dateCreated datePublished" datetime="2018-01-20T15:39:32+08:00">2018-01-20</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
-                </span>
+              <time title="Created: 2018-01-20 07:39:00" itemprop="dateCreated datePublished" datetime="2018-01-20T07:39:00+08:00">2018-01-20</time>
             </span>
 
           
@@ -771,15 +579,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>计算机硬件简介</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/01/20/Hardware%20Introduction/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>计算机硬件组成可以概括为下图： <img src="https://img2020.cnblogs.com/blog/1260581/202007/1260581-20200709090940726-1373637720.png" /> ## CPU CPU生产商主要是Intel和AMD。 Intel的产品主要有四种：</p>
+<ul>
+<li>Celeron(赛扬)：低端处理器</li>
+<li>Pentium(奔腾)：比赛扬强，比酷睿弱</li>
+<li>Xeon(至强)：属于服务器处理器 -E3 -E5 -E7</li>
+<li>Core(酷睿) -i3 -i5 -i7</li>
+</ul>
+<p>AMD产品主要有三种： - FX系列：旗舰级多核处理器，AMD FX-8350 - Athlon(速龙)系列：入门级多核处理器，AMD Athlon X4 870K - A系列(APU)：A4，A6，A8，A10依次增强，集成了核心显卡，A10-7870K</p>
+<p>以Core i7-4770K为例，Core系列i7级别第4代处理器，770代表性能编号，代数相同，编号越大，性能越好；K代表可超频。 笔记本CPU可能带有后缀U/Y/M等： - U：超低功耗笔记本CPU - Y：极低功耗笔记本CPU，比U更省电 - M：笔记本CPU</p>
+<h2 id="显卡">显卡</h2>
+<p>显卡分为核显和独显，核显集成于CPU内部，独显与CPU独立。 独显由GPU(图形处理器)和其他结构(显存，散热模块，PCB板等)组成。 目前生产GPU的主流厂商有三家：AMD，NVIDIA，Intel： - AMD(A卡) -HD系列：AMD HD 7970 x2---第7代高端(数字9代表高端，8中端，7低端)双核GPU，第三位7代表性能，3，5，7，9依次增强，x2代表双核心。 -R系列：AMD R9 M290X---R9：R系列高端；M：笔记本GPU；290X：2代高性能增强型GPU。</p>
+<ul>
+<li><p>NVIDIA(N卡) NVIDIA GTX 980 TI：X表示性能比GT系列更强；980：9代高性能；TI：增强型。</p></li>
+<li><p>Intel(I卡) I卡都是核显，有两个系列： -HD系列：HD P4600---P：企业级；4600：代表性能，一般数字越大，性能越好。 -Iris(锐炬)系列：Iris Pro 5200---Pro：专业版；5200：代表性能，同上。</p></li>
+</ul>
+<p>显存：SDDR3，DDR3，GDDR3，GDDR5，同容量下性能依次增加。</p>
+
       
     </div>
 
@@ -824,16 +640,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2016-10-15 22:48:32" itemprop="dateCreated datePublished" datetime="2016-10-15T22:48:32+08:00">2016-10-15</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2016-10-15 14:48:00" itemprop="dateCreated datePublished" datetime="2016-10-15T14:48:00+08:00">2016-10-15</time>
             </span>
 
           
@@ -847,15 +654,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>兔子与乌龟</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2016/10/15/Rabbit%20and%20Turtle/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>知乎上有这样一个问题：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/22364825/answer/27255001">如果兔子都在拼命奔跑，是什么给了作为乌龟的你前进的动力？</a> 随着视野的不断开阔，我们难免怀疑自身前进的意义，曾经有很长一段时间我也深陷其中，直到看到余亦多先生的回答才有所感悟。</p>
+<blockquote>
+<p>我想每个人成长的经历中，都会或多或少曾被“自卑”的情绪所笼罩。我自己就是一个一直纠缠于“失败者”情结的人。</p>
+<p>小时候因为痴肥，体育课上在同学面前抬不起头；搬到大城市，因为口音以及内向的性格，成为全班男生的出气筒；到了高中，进到全省理科实验班，才知道有些学霸的智商，是自己一辈子都无法企及的；初到美国，被身边同学认为是FOB，来自第三世界国家的乡巴佬；混进所谓的世界名校，看到身边一大波牛人，陷入平庸的沮丧；好不容易挤到纽约华尔街，看到名校中选出的所谓“精华”，才开始面对自己综合能力的缺失。</p>
+<p>再回到香港，身边很多投行同事的业务能力与人际能力都远胜于我，只能在高压力的环境下苟延残喘；从乙方转到甲方开始做PE投资后，当跟索罗斯的儿子同桌斗智斗勇时，才能深刻体会“家学渊源”与“赢在起跑线”对一个人的意义。</p>
+<p>由外资换到国企，开始看到体制内藏龙卧虎的主流玩家真正在玩什么，才意识到以前在边缘化外资环境下膨胀出各种不接地气的泡沫有多么可笑；随后开始接触到保险、银行以及其他金融领域的强人们，才知道在整个金融大版图中，十倍百倍于自己原来折腾的小池塘规模的资金，是在做什么。</p>
+<p>分享了上面一大段，其实我想说的，最重要是如下几点：<br />
+1、就像talich老师在我去斯坦福念书以前赠我的那句话： 到了那儿，不用指望成为牛人，但至少你知道大海有多宽，能看到牛人在做什么，就够了。 对乌龟来讲，兔子存在的意义在于，至少让它知道这世界还有“兔子”的存在，以及兔子跑得有多快。盗用一句标语：让你看到更大的世界，这本身就是最大的意义。 2、兔子的存在，能够让乌龟直面自己就是一只乌龟这个事实。有勇气面对真实的自己，才能准确的定位自己的位置，也才能冷静的思考最适合自己的人生规划。而这，很多时候恰恰是最知易行难的事。 3、其实人越往后走，越会深刻体会到“阶级”的不可逾越性。愤青的时候会咒骂：“这世界为什么这么不公平。”可当你不再被荷尔蒙冲昏头脑时，也许你会开始思考：既然现在是这种情况，那我应该做点什么呢？当你绞尽心机让自己变得更好的同时，也许你也在让这个世界变得更好。</p>
+<p>当樱木花道完成两万球的训练之后，他才知道流川枫有多厉害。 因为在一次比赛中，他看到流川枫的一个中投，这个起跳，这个姿势，这个弧线，竟然是他训练中想象的最完美的画面。 他很气，紧握这拳头，又不甘心，他问教练：这只狐狸是从什么时候开始打篮球的？ 安西教练：你应该好好的盯着流川枫的姿势，尽可能的模仿他，然后用3倍于他的训练量训练。这样，你才有可能在高中阶段之内超越他。 流川枫是那只兔子，幸运的是，樱木大概也是。</p>
+<p>题主的困惑在于，樱木是个天才，尚且如此，而你，可能只是木暮。 李宗盛有一首歌，歌词是这样的： 最近比较烦比较烦比较烦，我看那远方怎么也看不到岸，那个后面还有一班天才追赶，写一首皆大欢喜的歌，是越来越难。</p>
+<p>中年危机全都是这样的： 前面比你牛逼的人一眼都望不到岸，后面一班天才，比你有精力，比你聪明，比你学历高，比你国际化。而你，小孩成绩你得操心，老婆吃秘书的醋你也得操心，父母身体逐渐糟糕，最可怕的是你头发越来越少，身体越来越胖。</p>
+<p>题主的困惑在于，比你天才的那个人，还比你努力；比题主的困惑更可怕的是，这个比你努力的天才，还比你年轻，比你有精力，这意味着，即使你想努力，你也没有那个精力努力。这就更无力了。</p>
+<p>《蜗居》里面，宋思明想抢郭海藻。他比小贝成熟、稳重、懂得女孩的心思，样貌也不差；他有钱，有人际，能帮海藻解决问题。 若是宋思明未婚，小贝拿什么跟人家拼？小贝可能一辈子都达不到宋思明的高度，即使拼尽全力。 这才是无力感。 所以，我们能做什么。</p>
+<p>如果你是个绝对的蠢蛋，那我只能说，请你尽量少的认识这个世界，最好一辈子不要离开你生活的地方，有时候知道的越多，越痛苦。当你看到那么繁华的城市，那么美丽的女孩，那么高端大气上档次的生活都与你无关的时候，更多的痛苦便会袭来。 如果你是个笨蛋，又不肯努力，那也请你知道少一点。 如果你不是个绝对的蠢蛋，又愿意努力，请你参考第一段安西老师的话：盯着那只兔子的每一个动作，能学多少学多少，然后以他三倍的训练量训练。</p>
+<p>兔子一定会打盹的，即使牛逼如牛顿，30岁之后也再无建树；也不是每个像科比一样的天才，都知道洛杉矶凌晨四点的样子；你知道洛克李吗？火影里那个相信笨鸟先飞的热血少年，他说，努力的天才也是天才。 我曾经在一个答案中说过，勤奋，可能是这个世界上最被高估的美德。但是对于一个毫无天赋的人来讲，可以依仗的就只有勤奋了。</p>
+<p>如此，即便你还是追不上兔子，你可以是乌龟里跑得快的那一个。 如此，即便你是木暮，你也能做成一个，每天都比昨天好一点点的木暮。</p>
+</blockquote>
+
       
     </div>
 
@@ -941,21 +757,9 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">169</span>
+          <span class="site-state-item-count">167</span>
           <span class="site-state-item-name">posts</span>
         </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">5</span>
-        <span class="site-state-item-name">categories</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">15</span>
-        <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
 </div>

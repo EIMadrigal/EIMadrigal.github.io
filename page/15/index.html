@@ -190,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/06/03/Learn%20to%20Learn/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/01/04/TCP%203-Way%20Handshake/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -204,7 +204,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/06/03/Learn%20to%20Learn/" class="post-title-link" itemprop="url">Learn to Learn</a>
+            <a href="/2019/01/04/TCP%203-Way%20Handshake/" class="post-title-link" itemprop="url">TCP 3-Way Handshake</a>
         </h2>
 
         <div class="post-meta">
@@ -216,16 +216,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-06-03 18:20:32" itemprop="dateCreated datePublished" datetime="2021-06-03T18:20:32+08:00">2021-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2019-01-04 05:35:00" itemprop="dateCreated datePublished" datetime="2019-01-04T05:35:00+08:00">2019-01-04</time>
             </span>
 
           
@@ -239,15 +230,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>学会学习</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/03/Learn%20to%20Learn/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>TCP是面向连接的协议，其数据传输过程分为建立连接、数据传送、释放连接三个阶段。 ## 0 建立连接 建立连接的过程也就是常说的“三次握手”：</p>
+<ul>
+<li><p>客户端向服务器端发送一个SYN报文（SYN=1表示这是一个连接请求或连接接收报文），并随机选取一个起始序号x；</p></li>
+<li><p>服务器端应答一个SYN报文，同时ACK（确认位）置1【ACK=1时TCP报文段首部中的ack（确认号字段）才有效】，随机选取一个服务器端的起始序号y，并将ack字段设为x+1，表示已经收到客户端发来的SYN报文，期待收到序号为x+1的下一个报文；</p></li>
+<li><p>客户端应答一个ACK报文，将序号设为x+1，并且ack字段设为y+1，表示已经收到服务器端的SYN报文，期待收到序号为y+1的下一个报文。 <em>注：序列号seq也称ISN(Initial Sequence Number)</em> <img src="https://img-blog.csdnimg.cn/20190920214108996.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="图片来自百度" /> 之所以要采用三次握手机制而不是两次或四次，要从握手机制的目的说起： 握手主要是为了确认<strong>双方的发送、接收能力</strong>是否正常，顺带初始化序号seq，为以后的数据传送做好准备，所以： 第一次握手：服务器收到客户端发来的网络包，<strong>服务器就明白</strong>客户端的发送能力、服务器的接收能力正常； 第二次握手：服务器发包，客户端收到后，<strong>客户端就明白</strong>服务器的发送、接收，客户端的发送、接收都是正常的； 二次握手后，客户端倒是全明白了，但是<strong>服务器端无法确认客户端能否正常接收、服务器是否正常发送</strong>，所以两次握手不够； 第三次握手：服务器收到客户端发送的网络包，服务器确认了自己上次的发送正常、客户端接收也正常，所以四次握手是多余的。 ## 1 补充问题</p></li>
+<li><p>序列号(ISN)之所以随机生成，是为了避免被攻击（若固定，则下一次传送的ack就显而易见）；</p></li>
+<li><p>前两次握手不可以携带数据，第三次可以携带。第一次握手服务器端接收能力未知，如果携带数据就可能丢失。第二次客户端接收能力未知，如果携带数据也可能丢失。第三次客户端知道服务器接收正常，并且自己已经处于ESTABLISHED状态；</p></li>
+<li><p>服务器发出SYN报文后，处于SYN-RCVD状态，此时不同的连接请求会被放在<strong>半连接队列</strong>里，三次握手完成后的连接请求被放在<strong>全连接队列</strong>里。</p></li>
+</ul>
+<h2 id="连接释放">2 连接释放</h2>
+<p>连接释放的过程也就是常说的“四次挥手”： P.S. <em>图中以客户端发起释放请求为例</em></p>
+<ol type="1">
+<li>客户端发送释放请求，将FIN（终止位）置1，表示客户端已经发完数据，请求释放；</li>
+<li>服务器发一个ACK报文，确认号ack为u+1，这时从客户端到服务器的连接被释放，处于<strong>半关闭状态</strong>；</li>
+<li>如果服务器也要断开连接，就向客户端发送连接释放报文（FIN=1）；</li>
+<li>客户端发送一个应答报文，序列号seq为u+1，等待一段时间（2MSL）确保服务器收到ACK报文，之后关闭连接。</li>
+</ol>
+<p><img src="https://img-blog.csdnimg.cn/20190920223118842.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="图片源自百度" /> 客户端之所以要等待2MSL时间才关闭，有两个原因：</p>
+<ul>
+<li>一旦服务器没有收到ACK报文，服务器就会重发FIN报文，客户端再次收到FIN报文，就知道之前发送的ACK报文丢失，会重置时间等待计时器为2MSL并重传ACK报文。 如果没有这段等待时间，万一服务器没有正常接收ACK报文，接下来重传的FIN报文段就无法到达客户端，服务器无法正常关闭。</li>
+<li>客户端发完最后一个ACK报文，经过2MSL，本次连接产生的报文都会从网络中消失，避免下一次新连接出现本次旧的连接请求报文段。</li>
+</ul>
+
       
     </div>
 
@@ -266,7 +271,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/01/03/Shell%20Sort/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -280,7 +285,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC/" class="post-title-link" itemprop="url">Learn to Learn</a>
+            <a href="/2019/01/03/Shell%20Sort/" class="post-title-link" itemprop="url">Shell Sort</a>
         </h2>
 
         <div class="post-meta">
@@ -292,16 +297,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-06-03 18:20:32" itemprop="dateCreated datePublished" datetime="2021-06-03T18:20:32+08:00">2021-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2019-01-03 14:22:00" itemprop="dateCreated datePublished" datetime="2019-01-03T14:22:00+08:00">2019-01-03</time>
             </span>
 
           
@@ -315,15 +311,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>学会学习</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="思想">思想</h2>
+<p>希尔排序(Shell Sort)是基于插入排序的一种<strong>不稳定</strong>排序方法。 1，将整个序列分为h个子序列； 2，第一趟将每个子序列进行插入排序； 3，第二趟将增量缩小，重复2； 4，直至增量为1，就是简单插入排序。</p>
+<p>eg: <img src="https://img-blog.csdn.net/20180707130824188?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述" /> <img src="https://img-blog.csdn.net/20180707130836718?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述" /> ## 实现 ##</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">#define MAXSIZE 100</span><br><span class="line"></span><br><span class="line">typedef struct</span><br><span class="line">&#123;</span><br><span class="line">	int a[MAXSIZE + 1];  //a[1]~a[MAXSIZE]存储元素</span><br><span class="line">	int length;</span><br><span class="line">&#125;Sqlist;</span><br><span class="line"></span><br><span class="line">/*升序排列*/</span><br><span class="line">void Shell_Sort(Sqlist* L)</span><br><span class="line">&#123;</span><br><span class="line">	int h = 1;</span><br><span class="line">	while (h &lt; L-&gt;length / 3)</span><br><span class="line">		h = 3 * h + 1;         //增量取值</span><br><span class="line">	while (h &gt;= 1)</span><br><span class="line">	&#123;</span><br><span class="line">		//从增量的那组进行插入排序</span><br><span class="line">		for (int i = h; i &lt;= L-&gt;length; i++)</span><br><span class="line">		&#123;</span><br><span class="line">			int j = i;</span><br><span class="line">			int get = L-&gt;a[j];</span><br><span class="line">			//同组元素中与其前一个比较</span><br><span class="line">			while (j - h &gt;= 0 &amp;&amp; L-&gt;a[j - h] &gt; get)</span><br><span class="line">			&#123;</span><br><span class="line">				L-&gt;a[j] = L-&gt;a[j - h];</span><br><span class="line">				j = j - h;</span><br><span class="line">			&#125;</span><br><span class="line">			L-&gt;a[j] = get;</span><br><span class="line">		&#125;</span><br><span class="line">		h = h / 3;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(int argc, char** argv)</span><br><span class="line">&#123;</span><br><span class="line">	Sqlist L;</span><br><span class="line"></span><br><span class="line">	scanf(&quot;%d&quot;, &amp;(L.length));</span><br><span class="line">	for (int i = 1; i &lt;= L.length; i++)</span><br><span class="line">		scanf(&quot;%d&quot;, &amp;(L.a[i]));</span><br><span class="line"></span><br><span class="line">	Shell_Sort(&amp;L);</span><br><span class="line"></span><br><span class="line">	for (int i = 1; i &lt;= L.length; i++)</span><br><span class="line">		printf(&quot;%d &quot;, L.a[i]);</span><br><span class="line">	printf(&quot;\n&quot;);</span><br><span class="line"></span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="复杂度">复杂度</h2>
+<p>希尔排序最优时间复杂度<span class="math inline">\(O(n)\)</span>，最差情况下也突破了平方级别的运行时间。 对于最差情况，之前的冒泡、选择要消除逆序，采用交换相邻元素的方法，也就是每次只能消除一个逆序，那么希尔每次交换隔得很远的元素，每次可以消除多个逆序，这样就节省了大量的交换时间。</p>
+
       
     </div>
 
@@ -342,7 +336,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/06/08/%E7%97%9B%E6%92%9E%E5%8D%97%E5%A2%99%E6%89%8D%E5%9B%9E%E5%A4%B4---%E9%AB%98%E8%80%83%E4%BA%94%E5%B9%B4%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/01/02/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%20FAQ/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -356,7 +350,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/06/08/%E7%97%9B%E6%92%9E%E5%8D%97%E5%A2%99%E6%89%8D%E5%9B%9E%E5%A4%B4---%E9%AB%98%E8%80%83%E4%BA%94%E5%B9%B4%E8%AE%B0/" class="post-title-link" itemprop="url">痛撞南墙才回头---高考五年记</a>
+            <a href="/2019/01/02/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%20FAQ/" class="post-title-link" itemprop="url">计算机网络 FAQ</a>
         </h2>
 
         <div class="post-meta">
@@ -368,16 +362,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-06-08 01:32:32" itemprop="dateCreated datePublished" datetime="2020-06-08T01:32:32+08:00">2020-06-08</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Life/" itemprop="url" rel="index"><span itemprop="name">Life</span></a>
-                </span>
+              <time title="Created: 2019-01-02 14:19:00" itemprop="dateCreated datePublished" datetime="2019-01-02T14:19:00+08:00">2019-01-02</time>
             </span>
 
           
@@ -391,15 +376,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>五年之思</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/06/08/%E7%97%9B%E6%92%9E%E5%8D%97%E5%A2%99%E6%89%8D%E5%9B%9E%E5%A4%B4---%E9%AB%98%E8%80%83%E4%BA%94%E5%B9%B4%E8%AE%B0/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="tcp连接">TCP连接</h2>
+<p>建立TCP连接的过程需要使用一些系统调用</p>
+
       
     </div>
 
@@ -418,7 +397,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/05/22/%E5%8F%98%E6%80%81%E7%9A%84%E9%AB%98%E7%AD%89%E6%95%99%E8%82%B2/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/12/24/Notations/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -432,7 +411,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/05/22/%E5%8F%98%E6%80%81%E7%9A%84%E9%AB%98%E7%AD%89%E6%95%99%E8%82%B2/" class="post-title-link" itemprop="url">变态的高等教育</a>
+            <a href="/2018/12/24/Notations/" class="post-title-link" itemprop="url">Notations</a>
         </h2>
 
         <div class="post-meta">
@@ -444,16 +423,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-05-22 00:11:32" itemprop="dateCreated datePublished" datetime="2020-05-22T00:11:32+08:00">2020-05-22</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Life/" itemprop="url" rel="index"><span itemprop="name">Life</span></a>
-                </span>
+              <time title="Created: 2018-12-24 02:22:00" itemprop="dateCreated datePublished" datetime="2018-12-24T02:22:00+08:00">2018-12-24</time>
             </span>
 
           
@@ -467,15 +437,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>教育</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/05/22/%E5%8F%98%E6%80%81%E7%9A%84%E9%AB%98%E7%AD%89%E6%95%99%E8%82%B2/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>下面四种记号是为了建立函数间的相对级别。 CLRS上的一张图很直观： <img src="https://img-blog.csdn.net/20180517130818654" alt="这里写图片描述" /></p>
+<h2 id="大o记号"><strong>大O记号</strong></h2>
+<p>定义：如果存在正常数<span class="math inline">\(c\)</span>和<span class="math inline">\(n_0\)</span>，使得当<span class="math inline">\(N\ge n_o\)</span>时<span class="math inline">\(T(N)\le cf(N)\)</span>，记<span class="math inline">\(T(N)=O(f(N))\)</span>。</p>
+<p>举个栗子： 当<span class="math inline">\(N &lt; 1000\)</span>时，<span class="math inline">\(1000N\gt N^2\)</span>，但<span class="math inline">\(N^2\)</span>增长率更大，所以最终<span class="math inline">\(N^2\)</span>会更大，即<span class="math inline">\(O(N^2)=1000N\)</span>。</p>
+<p>也就是说，总会存在某个点<span class="math inline">\(n_0\)</span>，从这个点以后<span class="math inline">\(cf(N)\)</span>至少和<span class="math inline">\(T(N)\)</span>一样大，忽略常数因子，即<span class="math inline">\(T(N)\)</span>的<strong>增长率</strong>小于等于<span class="math inline">\(f(N)\)</span>的增长率。</p>
+<p>那么为什么这个常数因子<span class="math inline">\(c\)</span>可以忽略呢？ 当<span class="math inline">\(N\ge n_o\)</span>时，<span class="math inline">\(T(N)\le cf(N)\)</span>，也就是<span class="math inline">\(\frac{T(N)}{f(N)}\le c\)</span>。此时如果<span class="math inline">\(T(N)\)</span>的<strong>增长率</strong>大于<span class="math inline">\(f(N)\)</span>的增长率，那么<span class="math inline">\(\frac{T(N)}{f(N)}\)</span>不可能小于某个常数，也就是<span class="math inline">\(c\)</span>不存在，与我们的前提条件矛盾，所以说忽略掉常数因子后，<span class="math inline">\(T(N)\)</span>的<strong>增长率</strong>仍然小于等于<span class="math inline">\(f(N)\)</span>的增长率。</p>
+<p>那么既然<span class="math inline">\(T(N)\)</span>是以不快于<span class="math inline">\(f(N)\)</span>的速度增长，也就可以说<span class="math inline">\(f(N)\)</span>是<span class="math inline">\(T(N)\)</span>的一个上界(upper bound)，即<strong>最坏情况</strong>。</p>
+<h2 id="omega记号"><strong><span class="math inline">\(\Omega\)</span>记号</strong></h2>
+<p>定义：如果存在正常数<span class="math inline">\(c\)</span>和<span class="math inline">\(n_0\)</span>，使得当<span class="math inline">\(N\ge n_o\)</span>时<span class="math inline">\(T(N)\ge cg(n)\)</span>，记<span class="math inline">\(T(N)=\Omega(g(n))\)</span>。</p>
+<p>与上述大O的分析类似，可知： <span class="math inline">\(T(N)\)</span>的<strong>增长率</strong>大于等于<span class="math inline">\(g(N)\)</span>的增长率，<span class="math inline">\(g(N)\)</span>是<span class="math inline">\(T(N)\)</span>的一个下界(lower bound)，即<strong>最好情况</strong>。</p>
+<h2 id="theta记号"><strong><span class="math inline">\(\Theta\)</span>记号</strong></h2>
+<p>定义：当且仅当<span class="math inline">\(T(N)=\Omega(h(n))\)</span>、<span class="math inline">\(T(N)=O(h(n))\)</span>时， <span class="math inline">\(T(N)=\Theta(f(n))\)</span>。</p>
+<p>那么这个就是说<span class="math inline">\(T(N)\)</span>的<strong>增长率</strong>等于<span class="math inline">\(h(N)\)</span>的增长率，即<strong>最坏情况和最好情况相同</strong>。</p>
+<h2 id="小o记号"><strong>小o记号</strong></h2>
+<p>定义：若<span class="math inline">\(T(N)=O(p(n))\)</span>且<span class="math inline">\(T(N)\neq\Theta(p(n))\)</span>时， <span class="math inline">\(T(N)=o(f(n))\)</span>。</p>
+<p>与大O不同，小o表示<span class="math inline">\(T(N)\)</span>的<strong>增长率</strong>小于<span class="math inline">\(p(N)\)</span>的增长率，不包括等于。</p>
+
       
     </div>
 
@@ -494,7 +472,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/03/21/%E9%A3%8E%E9%9B%A8%E6%B7%B7%E6%B2%8C%20%E6%9B%99%E5%85%89%E9%9A%BE%E8%A7%85/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/11/18/Nakamori%20Akina/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -508,7 +486,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/03/21/%E9%A3%8E%E9%9B%A8%E6%B7%B7%E6%B2%8C%20%E6%9B%99%E5%85%89%E9%9A%BE%E8%A7%85/" class="post-title-link" itemprop="url">风雨混沌 曙光难觅</a>
+            <a href="/2018/11/18/Nakamori%20Akina/" class="post-title-link" itemprop="url">Nakamori Akina</a>
         </h2>
 
         <div class="post-meta">
@@ -520,16 +498,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-03-21 15:37:32" itemprop="dateCreated datePublished" datetime="2020-03-21T15:37:32+08:00">2020-03-21</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Life/" itemprop="url" rel="index"><span itemprop="name">Life</span></a>
-                </span>
+              <time title="Created: 2018-11-18 14:08:00" itemprop="dateCreated datePublished" datetime="2018-11-18T14:08:00+08:00">2018-11-18</time>
             </span>
 
           
@@ -543,15 +512,26 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>Social Issues</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/21/%E9%A3%8E%E9%9B%A8%E6%B7%B7%E6%B2%8C%20%E6%9B%99%E5%85%89%E9%9A%BE%E8%A7%85/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>听过中森明菜的歌以后，一直想写点什么。恰好前段时间看过她的一个<a target="_blank" rel="noopener" href="https://b23.tv/av13810011">访谈</a>，节目里已经39岁左右的明菜看着已经有些衰老，但是那份属于她的天真却好像要溢出屏幕。</p>
+<p>节目里主持人问她为什么不用手机还在用电话卡，像是昭和时代穿越来的一样，她回答说自己没什么朋友去联系，一个人也不怎么去其他地方。看到这，我马上想到了《难破船》的热评：</p>
+<p><img src="https://img2020.cnblogs.com/blog/1260581/202005/1260581-20200518233734136-841229768.jpg" /></p>
+<p>你可能很难想象患有严重社交障碍的她当年是怎样的风姿绰约： 安利1：李健的《车站》大家应该都听过，翻唱的水准很高，不过我还是更喜欢<a target="_blank" rel="noopener" href="https://b23.tv/av5270243">《駅》</a>，这是竹内玛莉亚专门为中森明菜创作的歌曲； 安利2：<a target="_blank" rel="noopener" href="https://b23.tv/av7033508">《难破船》</a>的混剪视频，惊为天人。</p>
+<p>上世纪70年代的日本乐坛是山口百惠的天下，然而在1980年，只有20岁的山口百惠突然宣布退出娱乐圈，随后与三浦友和结婚，如此退隐使得日本乐坛出现了一片巨大的空白。</p>
+<p>中森明菜通过选秀节目出道，甜美的外表、独特的嗓音加上经纪公司的宣传，她迅速蹿红，被誉为继山口百惠之后新的“歌姬”。</p>
+<p>80年代中期，凭借《ミ・アモーレ》和《DESIRE -情热-》，中森明菜连续两年获得日本唱片大赏。热情的舞台形象和不俗的唱功使得她成为了当时日本乐坛无可动摇的霸主，甚至被人称为“昭和时代的Lady Gaga”。后来据徐克回忆：《倩女幽魂》的聂小倩本来是邀请中森明菜扮演的，不过被拒绝了。</p>
+<p>与在事业上的蒸蒸日上不同的是，她与近藤真彦的恋情危机开始逐渐爆发。近藤被誉为“日本第一渣男”，与松田圣子、梅艳芳等女星之间有着无数绯闻，媒体的报导更是推波助澜，中森明菜受到了很大的打击。也正是在这时候，她发布了单曲《难破船》，曲风开始变得哀伤深沉。</p>
+<p>爱情的坎坷加上家人的天坑，中森明菜于1989年在近藤的住所割腕自杀，不过在送往医院后得救。在这一年的最后一天，为了挽救不断下滑的人气，近藤哄骗着明菜说会在记者会上宣布两人结婚，并特意在会场挂上了金屏风（婚礼常用装饰）。</p>
+<p>傻傻的明菜出席之后，近藤在记者会上翻脸，把所有错误全部归因于明菜一个人，并且声称明菜的自杀与自己丝毫没有关系，也完全没有和明菜结婚的打算。而深陷爱情之中的明菜一个人承担了所有过错，在发布会上道歉。</p>
+<p>之后近藤迅速与某富家女子成婚，并且利用权势限制明菜的发展。</p>
+<p>回过头来再去听《难破船》，只觉得情到深处无怨尤：</p>
+<blockquote>
+<p>折れた翼広げたまま 展开折断的翅膀</p>
+<p>あなたの上に落ちて行きたい<br />
+好想坠落在你身上</p>
+<p>海の底へ沈んだなら 如果能沉入海底</p>
+<p>泣きたいだけ抱いてほしい 好想你能拥抱我到尽情哭泣</p>
+</blockquote>
+
       
     </div>
 
@@ -570,7 +550,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/12/02/%E8%80%81%E5%AE%9E%E4%BA%BA%E7%9A%84%E6%91%B8%E7%B4%A2%E4%B8%8E%E5%8F%8D%E6%80%9D---%E5%86%99%E5%9C%A8%E9%AB%98%E8%80%83%E4%B8%83%E5%B9%B4%E5%90%8E/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/09/24/%E6%95%8F%E6%84%9F%E8%AF%8D%E8%BF%87%E6%BB%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -584,7 +564,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2019/12/02/%E8%80%81%E5%AE%9E%E4%BA%BA%E7%9A%84%E6%91%B8%E7%B4%A2%E4%B8%8E%E5%8F%8D%E6%80%9D---%E5%86%99%E5%9C%A8%E9%AB%98%E8%80%83%E4%B8%83%E5%B9%B4%E5%90%8E/" class="post-title-link" itemprop="url">老实人的摸索与反思---写在高考七年后</a>
+            <a href="/2018/09/24/%E6%95%8F%E6%84%9F%E8%AF%8D%E8%BF%87%E6%BB%A4/" class="post-title-link" itemprop="url">敏感词过滤</a>
         </h2>
 
         <div class="post-meta">
@@ -596,16 +576,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-12-02 22:46:32" itemprop="dateCreated datePublished" datetime="2019-12-02T22:46:32+08:00">2019-12-02</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2018-09-24 14:27:00" itemprop="dateCreated datePublished" datetime="2018-09-24T14:27:00+08:00">2018-09-24</time>
             </span>
 
           
@@ -619,15 +590,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>老实人！</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/12/02/%E8%80%81%E5%AE%9E%E4%BA%BA%E7%9A%84%E6%91%B8%E7%B4%A2%E4%B8%8E%E5%8F%8D%E6%80%9D---%E5%86%99%E5%9C%A8%E9%AB%98%E8%80%83%E4%B8%83%E5%B9%B4%E5%90%8E/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="需求">需求</h2>
+<p>在一个非常大的文件中存在着很多敏感词，现在需要将这些敏感词全部替换为*，时间响应要求较高（几百毫秒）。 ## 思路 要做这个事，首先需要知道哪些词是敏感的，因此需要有一个敏感词词库。 例如文本是"abcdefghi"，长度为<span class="math inline">\(n\)</span>，敏感词库是{"de", "bca", "bcf"}，词库长度为<span class="math inline">\(l_1\)</span>，每个词的长度为<span class="math inline">\(l_2\)</span>。</p>
+<p>比较直接的做法：对每个敏感词，利用暴力匹配或KMP算法查找并作替换，这些单模式串匹配算法的缺点很明显，需要多次扫描文本<span class="math inline">\(O(n(l_1+l_2))\)</span>。</p>
+<p>目前主流的做法主要是多模式串匹配算法： 1. Trie树：将敏感词库建树，用3个指针去搞，<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/65115496">具体在这里</a>，查询复杂度<span class="math inline">\(O(nl_2)\)</span>，建树复杂度<span class="math inline">\(O(l_1l_2)\)</span>。 2. AC自动机：是Trie树的扩展，增加了一个fail指针，避免指针回溯，<a target="_blank" rel="noopener" href="https://www.cnblogs.com/shengyang17/p/13719653.html">具体在这里</a>，复杂度一般优于Trie树。 3. DFA确定有穷自动机：利用状态转移，<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_36586120/article/details/113482752">具体在这里</a>，时间复杂度<span class="math inline">\(O(n)\)</span>。</p>
+
       
     </div>
 
@@ -646,7 +613,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/09/10/%E7%90%83%E5%91%98%E5%BD%92%E5%8C%96/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/08/16/Onedrive%20File%20Open%20Problem/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -660,7 +627,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2019/09/10/%E7%90%83%E5%91%98%E5%BD%92%E5%8C%96/" class="post-title-link" itemprop="url">球员归化</a>
+            <a href="/2018/08/16/Onedrive%20File%20Open%20Problem/" class="post-title-link" itemprop="url">Onedrive File Open Problem</a>
         </h2>
 
         <div class="post-meta">
@@ -672,16 +639,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-09-10 23:59:32" itemprop="dateCreated datePublished" datetime="2019-09-10T23:59:32+08:00">2019-09-10</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Arts/" itemprop="url" rel="index"><span itemprop="name">Arts</span></a>
-                </span>
+              <time title="Created: 2018-08-16 15:00:00" itemprop="dateCreated datePublished" datetime="2018-08-16T15:00:00+08:00">2018-08-16</time>
             </span>
 
           
@@ -695,15 +653,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>中国足球</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/09/10/%E7%90%83%E5%91%98%E5%BD%92%E5%8C%96/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>在用Onenote 2016写笔记时，同步到Onedrive后就变成了Internet快捷方式，而且直接打开时会出现提示： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108200433406-2018295429.png" alt="image" /></p>
+<h2 id="原因">原因</h2>
+<p>用Onenote客户端在Onedrive上创建的笔记本是一种特殊文件，用Onedrive客户端将文件同步到本地的话，就会变成Internet快捷方式，不能直接打开； 但是如果用Onedrive网页版的话，就可以正常使用。</p>
+<h2 id="解决">解决</h2>
+<p>在Onenote客户端，“文件”-&gt;“打开”，找到你的笔记本，打开即可看到内容。</p>
+<h2 id="参考">参考</h2>
+<p><a target="_blank" rel="noopener" href="http://cn.onenotegem.com/24120352653838239064/-onedrive-onenote-internet-url">onedrive-onenote-internet-url</a></p>
+
       
     </div>
 
@@ -722,7 +679,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/09/06/%E9%AB%98%E5%A2%99%E4%B8%8E%E9%B8%A1%E8%9B%8B/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/07/14/JSON%20Introduction/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -736,7 +693,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2019/09/06/%E9%AB%98%E5%A2%99%E4%B8%8E%E9%B8%A1%E8%9B%8B/" class="post-title-link" itemprop="url">高墙与鸡蛋</a>
+            <a href="/2018/07/14/JSON%20Introduction/" class="post-title-link" itemprop="url">JSON Introduction</a>
         </h2>
 
         <div class="post-meta">
@@ -748,16 +705,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-09-06 00:00:32" itemprop="dateCreated datePublished" datetime="2019-09-06T00:00:32+08:00">2019-09-06</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Arts/" itemprop="url" rel="index"><span itemprop="name">Arts</span></a>
-                </span>
+              <time title="Created: 2018-07-14 09:48:00" itemprop="dateCreated datePublished" datetime="2018-07-14T09:48:00+08:00">2018-07-14</time>
             </span>
 
           
@@ -771,15 +719,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>村上春树在耶路撒冷</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/09/06/%E9%AB%98%E5%A2%99%E4%B8%8E%E9%B8%A1%E8%9B%8B/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="理解">理解</h2>
+<p>JSON（JavaScript Object Notation），一种轻量级的数据交换格式，基于JS的一个子集，但其数据格式与语言无关。 通俗来说，如果你是PHP，要和JS互相发送信息，那么这时候就可以先将PHP发的信息转为JSON，再发给JS。 那么有人要问了，为什么自己不能直接学会PHP和JS，直接先将PHP的信息转为JS，不就OK了？ 没错，但是如果你要发给C++，发给Python，发给其他各种各样的语言呢？难道你要学会所有语言，再去发信息？显然不可能。 所以： &gt; You are now able to learn only one programming language, in addition to the communications language, JSON, in order to communicate with ANY other programming language.</p>
+<p>但要注意：JSON并不是编程语言，只是一种规定的数据格式，这种格式的数据便于计算机处理。 JSON比较规范的定义是： &gt; JSON is the text grammer/format for the information that is being sent between programming language.</p>
+<p>除了JSON以外，还有一种用于交流的数据格式，XML（Extensiable Markup Language）。但是JSON更加流行。</p>
+<h2 id="格式">格式</h2>
+<p>JSON有两种结构： 1，Object：对象用<code>&#123;</code>开始，用<code>&#125;</code>结束，对象中的一系列非排序的pair中，名称和值之间用<code>:</code>分开； 2，Array：数组用<code>[</code>开始，用<code>]</code>结束，数组成员之间用<code>,</code>分开。 名称（name）是字符串； 值（value）可以是：字符串、数值、对象、布尔值、数组或者<code>null</code>。 字符串：用<code>""</code>表示； 数值：可以是小数或负数，也可用<code>e</code>、<code>E</code>表示为指数格式； 对象：就是上述的Object； 布尔值：<code>true</code>或<code>false</code>； 数组：就是上述的Array。 举个栗子： <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Object &amp; Array</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Andrew&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;age&quot;</span>: <span class="string">&quot;36&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;number&quot;</span>:</span><br><span class="line">    [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;mobile&quot;</span>: <span class="string">&quot;12345678&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;fax&quot;</span>: <span class="string">&quot;87654321&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">&quot;address&quot;</span>:</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">&quot;city&quot;</span>: <span class="string">&quot;Beijing&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;code&quot;</span>: <span class="string">&quot;10000&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="参考">参考</h2>
+<p><a target="_blank" rel="noopener" href="https://www.quora.com/What-is-JSON-2/answers/50464172?share=8534699f&amp;srid=5OZ0m">quora</a> <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/JSON">wiki</a></p>
+
       
     </div>
 
@@ -798,7 +746,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/08/31/%E7%BF%BB%E5%94%B1%E4%B8%8E%E6%8A%84%E8%A2%AD/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/07/02/System%20Call/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -812,7 +760,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2019/08/31/%E7%BF%BB%E5%94%B1%E4%B8%8E%E6%8A%84%E8%A2%AD/" class="post-title-link" itemprop="url">翻唱与抄袭</a>
+            <a href="/2018/07/02/System%20Call/" class="post-title-link" itemprop="url">System Call</a>
         </h2>
 
         <div class="post-meta">
@@ -824,16 +772,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-08-31 23:31:32" itemprop="dateCreated datePublished" datetime="2019-08-31T23:31:32+08:00">2019-08-31</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Arts/" itemprop="url" rel="index"><span itemprop="name">Arts</span></a>
-                </span>
+              <time title="Created: 2018-07-02 11:08:00" itemprop="dateCreated datePublished" datetime="2018-07-02T11:08:00+08:00">2018-07-02</time>
             </span>
 
           
@@ -847,15 +786,42 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>华语乐坛加油咯</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/08/31/%E7%BF%BB%E5%94%B1%E4%B8%8E%E6%8A%84%E8%A2%AD/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="内容">内容</h2>
+<p>设计系统调用，将系统的相关信息(CPU型号、操作系统的版本号、系统中的进程等类似于Windows的任务管理器的信息)以文本形式列表显示于屏幕，并编写用户程序予以验证。</p>
+<h2 id="思想">思想</h2>
+<ul>
+<li>系统调用是应用程序和操作系统内核之间的功能接口，可以使用户使用操作系统提供的有关设备管理、输入输出系统、文件系统和进程控制、通信以及存储管理等方面的功能，不必了解系统程序的内部结构和有关硬件细节，从而减轻用户负担、保护系统以及提高系统资源利用率的作用。</li>
+<li>模块是在内核空间运行的程序，实际上是一种目标文件，不能单独运行但其代码可在运行时链接到系统中作为内核的一部分运行或卸载。Linux内核模块是一个编译好的、具有特定格式的独立目标文件，用户可以通过系统提供的一组与模块相关的命令将模块加载进内核，当内核模块被加载后，有如下特点：</li>
+<li>与内核一起运行在相同的内核态和内核地址空间；</li>
+<li>运行时与内核具有同样的特权级；</li>
+<li>可方便地访问内核中的各种数据结构。</li>
+<li>内核模块还可以很容易地被移出内核，当用户不再需要某模块功能时，可以从内核卸载以节省系统主存开销。</li>
+<li>用户修改代码后，只需重新编译加载模块，不必重新编译内核和引导系统。</li>
+</ul>
+<h2 id="基础知识">基础知识</h2>
+<ul>
+<li>内核模块编程与用户态编程的区别：</li>
+</ul>
+<ol type="1">
+<li>内核模块编程不能使用C函数库，内核模块只能使用一些内核函数。比如，输出信息时使用内核函数<code>printk</code>，而不是标准库函数<code>printf</code>。</li>
+<li>内核模块代码运行在核心态，这意味着函数使用的栈是核心栈，这个空间非常有限，一般是4KB或者8KB，所以不能定义占用很大空间的自动变量。</li>
+<li>内核代码为了节省开销，不能使用浮点运算。</li>
+</ol>
+<ul>
+<li>典型内核模块组成：</li>
+</ul>
+<ol type="1">
+<li>头文件声明。其中<code>module.h</code>和<code>init.h</code>是必不可少的。<code>Module.h</code>包含加载模块时需要的函数和符号定义；<code>init.h</code>包含模块初始化和清理函数的定义。如果在加载时允许用户传递参数，模块中还应包含<code>moduleparam.h</code>头文件。</li>
+<li>模块许可声明。从内核2.4.10版本开始，模块必须通过<code>MODULE_LICENSE</code>宏声明此模块的许可证，否则在加载模块时会显示"kernel tainted(内核被污染)"的警告信息。从<code>linux/module.h</code>文件中可以看到，被内核接受的许可证有GPL、GPL v2、GPL and additional rights、Dual BSD/GPL、Dual MPL/GPL、Dual MIT/GPL和Proprietaty。</li>
+<li>初始化和清理函数声明。 内核模块必须调用宏<code>module_init</code>和<code>module_exit</code>去注册初始化和清理函数。初始化和清理函数必须在宏<code>module_init</code>和<code>module_exit</code>使用前定义，否则会出现编译错误。这两个函数配对使用，例如当初始化函数申请了一个资源，那么清理函数就应该释放这个资源，使得模块不留下任何副作用。除了模块初始化函数和清理函数，还可以根据需要设计编写其它函数。</li>
+</ol>
+<ul>
+<li>proc文件系统 在linux操作系统中，提供了一套在用户态检查内核状态和系统特征的机制，就是进程文件系统(process file system)。 Proc文件系统将进程信息、系统的硬件信息(包括CPU、内存状态及网卡等各种硬件设备)、系统相关机制(中断、I/O)等内容全部映射为虚拟的linux文件。它以一种特殊的文件系统的方式，为访问系统内核数据的操作提供接口。这些文件的内容都不存在于任何存储设备上，而是在读/写的时候才根据系统中的有关信息生成出来，或者映射到系统中的有关变量或者数据结构。 系统中当前运行的每一个每一个进程都有一个对应的目录在/proc下，以进程的ID为目录名： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195514838-1179859005.png" alt="image" /></li>
+</ul>
+<p>除了与进程有关的子目录，/proc还有一些内核信息的目录： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195533943-914673534.png" alt="image" /></p>
+<h2 id="实现">实现</h2>
+<p><a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/system_call">源代码、实现过程及结果</a></p>
+
       
     </div>
 
@@ -874,7 +840,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/08/26/Norwegian%20Wood/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/06/30/%E8%BF%9B%E7%A8%8B%E8%BD%AF%E4%B8%AD%E6%96%AD%E9%80%9A%E4%BF%A1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -888,7 +854,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2019/08/26/Norwegian%20Wood/" class="post-title-link" itemprop="url">Norwegian Wood</a>
+            <a href="/2018/06/30/%E8%BF%9B%E7%A8%8B%E8%BD%AF%E4%B8%AD%E6%96%AD%E9%80%9A%E4%BF%A1/" class="post-title-link" itemprop="url">进程软中断通信</a>
         </h2>
 
         <div class="post-meta">
@@ -900,16 +866,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-08-26 22:32:32" itemprop="dateCreated datePublished" datetime="2019-08-26T22:32:32+08:00">2019-08-26</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Arts/" itemprop="url" rel="index"><span itemprop="name">Arts</span></a>
-                </span>
+              <time title="Created: 2018-06-30 09:42:00" itemprop="dateCreated datePublished" datetime="2018-06-30T09:42:00+08:00">2018-06-30</time>
             </span>
 
           
@@ -923,15 +880,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>挪威的森林-小说的背后故事</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/08/26/Norwegian%20Wood/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="描述">描述</h2>
+<p>使用系统调用fork()创建两个子进程，再用系统调用signal()让父进程捕捉键盘上发出的中断信号（即按ctrl+c键），当父进程接收到这两个软中断的某一个后，父进程用系统调用kill()向两个子进程分别发出整数值为16和17软中断信号，子进程获得对应软中断信号，然后分别输出下列信息后终止： Child process 1 is killed by parent !! Child process 2 is killed by parent !! 父进程调用wait()函数等待两个子进程终止后，输入以下信息，结束进程执行： Parent process is killed!!</p>
+<p>流程图： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108194427772-238897206.png" alt="image" /></p>
+<h2 id="实现">实现</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> wait_flag = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">stop1</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">stop2</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>** argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pid_t</span> pid1,pid2;</span><br><span class="line"></span><br><span class="line">    signal(<span class="number">2</span>,stop1);   <span class="comment">//signal 3 is ctrl+\,signal 2 is ctrl+c</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>((pid1 = fork()) == <span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">if</span>(pid1 &gt; <span class="number">0</span>)      <span class="comment">//now is in the parent process</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">while</span>((pid2 = fork()) == <span class="number">-1</span>);   <span class="comment">//creat child process 2</span></span><br><span class="line">        <span class="keyword">if</span>(pid2 &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            sleep(<span class="number">5</span>);       <span class="comment">//sleep函数被信号中断后，就会导致延时失效，直接跳到sleep的下一行</span></span><br><span class="line">            kill(pid1,<span class="number">16</span>);  <span class="comment">//kill process1,send 16</span></span><br><span class="line">            wait(<span class="number">0</span>);</span><br><span class="line">            kill(pid2,<span class="number">17</span>); <span class="comment">//kill process2, send 17</span></span><br><span class="line">            wait(<span class="number">0</span>);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;\nParent process is killed!\n&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            signal(<span class="number">17</span>,stop2);   <span class="comment">//wait for 2 about 17</span></span><br><span class="line">            <span class="keyword">while</span>(wait_flag)</span><br><span class="line">                ;</span><br><span class="line"></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;\nChild process 2 is killed by parent!\n&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        signal(<span class="number">16</span>,stop2);</span><br><span class="line">        <span class="keyword">while</span>(wait_flag)</span><br><span class="line">            ;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\nChild process 1 is killed by parent!\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);   <span class="comment">//execute normally and quit</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">stop1</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\nParent process catches the interruption signal!\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">stop2</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    wait_flag = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\nChild process catches the interruption signal!\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="结果">结果</h2>
+<p>5s内没有按终止键： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108194549740-1526578900.png" alt="image" /></p>
+<p>5s内按下ctrl+c： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108194609530-785223659.png" alt="image" /></p>
+<h2 id="附">附</h2>
+<p>系统调用signal(sig,function)：捕捉中断信号sig后执行function规定的操作。 参数定义：<code>int sig</code>，<code>void* func()</code> sig共有19个值： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108194710456-891175051.png" alt="image" /></p>
+
       
     </div>
 
@@ -1017,21 +976,9 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">169</span>
+          <span class="site-state-item-count">167</span>
           <span class="site-state-item-name">posts</span>
         </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">5</span>
-        <span class="site-state-item-name">categories</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">15</span>
-        <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
 </div>

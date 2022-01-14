@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="行列式本质上是要通过一个数字反应矩阵的某些信息，目前看来不是很重要，快速过一遍。 ## 性质 引入是通过3个基本性质：  \(det(I)&#x3D;1\) 交换两行，行列式的值变号：置换矩阵\(det(P)&#x3D;\begin{cases} 1&amp; \text{交换偶数次}\\ -1&amp; \text{交换奇数次}\\ \end{cases}\) \(\left|\begin{array}{c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT Linear Algebra#4 Determinants">
+<meta property="og:url" content="https://eimadrigal.github.io/2020/05/29/MIT%20Linear%20Algebra#4%20Determinants/index.html">
+<meta property="og:site_name" content="EI Madrigal&#39;s Space">
+<meta property="og:description" content="行列式本质上是要通过一个数字反应矩阵的某些信息，目前看来不是很重要，快速过一遍。 ## 性质 引入是通过3个基本性质：  \(det(I)&#x3D;1\) 交换两行，行列式的值变号：置换矩阵\(det(P)&#x3D;\begin{cases} 1&amp; \text{交换偶数次}\\ -1&amp; \text{交换奇数次}\\ \end{cases}\) \(\left|\begin{array}{c">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-28T18:59:00.000Z">
+<meta property="article:modified_time" content="2022-01-13T16:01:43.622Z">
+<meta property="article:author" content="EIMadrigal">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://eimadrigal.github.io/2020/05/29/MIT%20Linear%20Algebra#4%20Determinants/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>MIT Linear Algebra#4 Determinants | EI Madrigal's Space</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EI Madrigal's Space</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/05/29/MIT%20Linear%20Algebra#4%20Determinants/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT Linear Algebra#4 Determinants
+        </h1>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-29 02:59:00" itemprop="dateCreated datePublished" datetime="2020-05-29T02:59:00+08:00">2020-05-29</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>行列式本质上是要通过一个数字反应矩阵的某些信息，目前看来不是很重要，快速过一遍。 ## 性质 引入是通过3个基本性质：</p>
+<ol type="1">
+<li><span class="math inline">\(det(I)=1\)</span></li>
+<li>交换两行，行列式的值变号：置换矩阵<span class="math inline">\(det(P)=\begin{cases} 1&amp; \text{交换偶数次}\\ -1&amp; \text{交换奇数次}\\ \end{cases}\)</span></li>
+<li><span class="math inline">\(\left|\begin{array}{cccc} ta &amp; tb\\ c &amp; d\\ \end{array}\right|=t\left|\begin{array}{cccc} a &amp; b\\ c &amp; d\\ \end{array}\right|,\left|\begin{array}{cccc} a+a&#39; &amp; b+b&#39;\\ c &amp; d\\ \end{array}\right|=\left|\begin{array}{cccc} a &amp; b\\ c &amp; d\\ \end{array}\right|+\left|\begin{array}{cccc} a&#39; &amp; b&#39;\\ c &amp; d\\ \end{array}\right|\)</span></li>
+</ol>
+<p>由3个基本性质可以推出若干：</p>
+<ol type="1">
+<li>若两行相等，则<span class="math inline">\(det(A)=0\)</span> 交换相等的2行，矩阵不变，行列式的值不变，根据性质2：<span class="math inline">\(det(A)=-det(A)\)</span>，得证。</li>
+<li>初等行变换不改变行列式的值 <span class="math display">\[
+\left|\begin{array}{cccc}
+a &amp; b\\ 
+c-la &amp; d-lb\\
+\end{array}\right|=\left|\begin{array}{cccc}
+a &amp; b\\ 
+c &amp; d\\
+\end{array}\right|+\left|\begin{array}{cccc}
+a &amp; b\\ 
+-la &amp; -lb\\
+\end{array}\right|=\left|\begin{array}{cccc}
+a &amp; b\\ 
+c &amp; d\\
+\end{array}\right|
+\]</span></li>
+<li>有一行全为0，行列式为0</li>
+<li><strong>上三角矩阵的行列式等于主对角线元素之积</strong>：<span class="math inline">\(det(U)=d_1d_2...d_n\)</span> 对于任意矩阵，通过初等行变换可以得到<span class="math inline">\(U\)</span>，接着向上消元并提出对角线的因子，可以得到<span class="math inline">\(I\)</span>。 这也是Matlab求行列式的方法。</li>
+<li><span class="math inline">\(det(A)=0\Leftrightarrow A是奇异矩阵(消元后有全0行)\)</span> <span class="math inline">\(det(A)\neq0\Leftrightarrow A可逆\Rightarrow U\Rightarrow d_1d_2...d_n\neq0\)</span></li>
+<li><span class="math inline">\(det(AB)=det(A)*det(B) \Rightarrow det(A^{-1})=\frac{1}{det(A)}\)</span></li>
+<li><span class="math inline">\(det(A^T)=det(A)\)</span>，可以通过LU分解去证，这也意味着对行成立的性质对列也成立。 ## 计算方法 上一节中介绍了消元化上三角求行列式的方法，本节介绍2种不常用的方法，所有计算都可以通过上一节的3个基本性质获得： 对于二阶，拆解后有2个非零项： <span class="math display">\[
+\left|\begin{array}{cccc}
+a &amp; b\\ 
+c &amp; d\\
+\end{array}\right|=\left|\begin{array}{cccc}
+a &amp; 0\\ 
+c &amp; d\\
+\end{array}\right|+\left|\begin{array}{cccc}
+0 &amp; b\\ 
+c &amp; d\\
+\end{array}\right|=\left|\begin{array}{cccc}
+a &amp; 0\\ 
+c &amp; 0\\
+\end{array}\right|+\left|\begin{array}{cccc}
+a &amp; 0\\ 
+0 &amp; d\\
+\end{array}\right|+\left|\begin{array}{cccc}
+0 &amp; b\\ 
+0 &amp; d\\
+\end{array}\right|+\left|\begin{array}{cccc}
+0 &amp; b\\ 
+c &amp; 0\\
+\end{array}\right|=ad-bc
+\]</span> 对于三阶，拆解后有6个非零项： <span class="math display">\[
+\left|\begin{array}{cccc} 
+a_{11} &amp; a_{12} &amp; a_{13}\\ 
+a_{21} &amp; a_{22} &amp; a_{23}\\ 
+a_{31} &amp; a_{32} &amp; a_{33}\\ 
+\end{array}\right|=\left|\begin{array}{cccc} 
+a_{11} &amp;  &amp; \\ 
+ &amp; a_{22} &amp; \\ 
+ &amp;  &amp; a_{33}\\ 
+\end{array}\right|+\left|\begin{array}{cccc} 
+a_{11} &amp;  &amp; \\ 
+ &amp;  &amp; a_{23}\\ 
+ &amp;  a_{32}&amp; \\ 
+\end{array}\right|+\left|\begin{array}{cccc} 
+ &amp;a_{12}  &amp; \\ 
+ a_{21}&amp;  &amp; \\ 
+ &amp;  &amp;a_{33}\\ 
+\end{array}\right|+\left|\begin{array}{cccc} 
+ &amp;a_{12}  &amp; \\ 
+ &amp;  &amp;a_{23} \\ 
+ a_{31}&amp;  &amp;\\ 
+\end{array}\right|+\left|\begin{array}{cccc} 
+ &amp;  &amp;a_{13} \\ 
+ a_{21}&amp;  &amp; \\ 
+ &amp;a_{32}  &amp;\\ 
+\end{array}\right|+\left|\begin{array}{cccc} 
+ &amp;  &amp;a_{13} \\ 
+ &amp;a_{22}  &amp; \\ 
+ a_{31}&amp;  &amp;\\ 
+\end{array}\right|
+\]</span> 接着可以通过交换行得到对角阵并求得结果。 如果我们观察每一项：从第一行到最后一行，<strong>列下标</strong>是<span class="math inline">\((1,2,3)\)</span>的某个全排列，因此可以知道展开以后非零项一共有<span class="math inline">\(n!\)</span>项(第一行有<span class="math inline">\(n\)</span>种选择，第二行有<span class="math inline">\(n-1\)</span>种选择...)，于是可以得到第二种计算行列式的方法： <span class="math display">\[
+det(A)=\Sigma_{n!项}\pm a_{1x}a_{1y}...a_{1w},(x,y,...w)是(1,n)的某个全排列
+\]</span> 正负号取决于交换了几次得到<span class="math inline">\((1,2,3...)\)</span>这种朴素的排列。 举例来看： <span class="math display">\[
+\left|\begin{array}{cccc} 
+0 &amp; 0 &amp; 1 &amp; 1\\ 
+0 &amp; 1 &amp; 1 &amp; 0\\ 
+1 &amp; 1 &amp; 0 &amp; 0\\ 
+1 &amp; 0 &amp; 0 &amp; 1\\ 
+\end{array}\right|
+\]</span> 可以先取<span class="math inline">\((1,3)\)</span>位置，接着只能取<span class="math inline">\((2,2)\)</span>，接着<span class="math inline">\((3,1)\)</span>，最后<span class="math inline">\((4,4)\)</span>，所以列的排列是<span class="math inline">\((3,2,1,4)\)</span>，交换一次可得<span class="math inline">\((1,2,3,4)\)</span>，故有一非零项-1； 还可以先取<span class="math inline">\((1,4)\)</span>，接着<span class="math inline">\((2,3)\)</span>，<span class="math inline">\((3,2)\)</span>，最后<span class="math inline">\((4,1)\)</span>，列的排列是<span class="math inline">\((4,3,2,1)\)</span>，交换2次可得<span class="math inline">\((1,2,3,4)\)</span>，故有一非零项1，除此以外，没有别的选择，所以行列式的值是0。</li>
+</ol>
+<p>如果我们对上述拆解三阶行列式的结果提取公因子： <span class="math display">\[
+det(A)=a_{11}(a_{22}a_{33}-a_{23}a_{32})+a_{12}(-a_{21}a_{33}+a_{23}a_{31})+a_{13}(a_{21}a_{32}-a_{22}a_{31})
+\]</span> 我们穷举了第一行的3种可能的选择<span class="math inline">\(a_{11},a_{12},a_{13}\)</span>，对于每种选择，当前行与当前列都不能再用，括号中的式子叫做<strong>代数余子式</strong><span class="math inline">\(C_{ij}\)</span>：去掉<span class="math inline">\(a_{ij}\)</span>所在行列的<span class="math inline">\(n-1\)</span>阶行列式，并且正负号取决于<span class="math inline">\(i+j\)</span>的奇(-)偶(+)。 这样我们得到了求行列式的第三种方法： <span class="math display">\[
+det(A)=a_{11}C_{11}+a_{12}C_{12}+...+a_{1n}C_{1n}
+\]</span> 举例来看，对于三对角行列式： <span class="math display">\[
+\left|\begin{array}{cccc} 
+1 &amp; 1 &amp; 0 &amp; 0\\ 
+1 &amp; 1 &amp; 1 &amp; 0\\ 
+0 &amp; 1 &amp; 1 &amp; 1\\ 
+0 &amp; 0 &amp; 1 &amp; 1\\ 
+\end{array}\right|
+\]</span> 容易知：<span class="math inline">\(det(A_1)=1,det(A_2)=\left|\begin{array}{cccc} 1 &amp; 1\\ 1 &amp; 1\\ \end{array}\right|=0,det(A_3)=\left|\begin{array}{cccc} 1 &amp; 1 &amp; 0\\ 1 &amp; 1 &amp; 1\\ 0 &amp; 1 &amp; 1\\ \end{array}\right|=-1\)</span>。 对于四阶，我们<strong>按第一列展开</strong>：<span class="math inline">\(det(A_4)=1*det(A_3)-1*det(A_2)=-1\)</span>，此式可以推广：<span class="math inline">\(det(A_n)=det(A_{n-1})-det(A_{n-2})\)</span>，可以发现上述三对角行列式是以6为周期的。 ## 应用</p>
+<ul>
+<li>求逆矩阵 记得当年矩阵求逆教了一种伴随矩阵的方法：<span class="math inline">\(A^{-1}=\frac{1}{det(A)}C^T\)</span>，不知为何物？ 只要证明<span class="math inline">\(AC^T=det(A)I\)</span>即可： <span class="math display">\[
+\left[\begin{array}{cccc} 
+a_{11} &amp; ... &amp; a_{1n}\\ 
+... &amp;  &amp; ...\\ 
+a_{n1} &amp; ... &amp; a_{nn}\\ 
+\end{array}\right]\left[\begin{array}{cccc} 
+C_{11} &amp; ... &amp; C_{n1}\\ 
+... &amp;  &amp; ...\\ 
+C_{1n} &amp; ... &amp; C_{nn}\\ 
+\end{array}\right]=\left[\begin{array}{cccc} 
+det(A) &amp; ... &amp;0\\ 
+... &amp;  &amp; ...\\ 
+0 &amp; ... &amp; det(A)\\ 
+\end{array}\right]
+\]</span> 对于主对角线上的元素：<span class="math inline">\(a_{11}C_{11}+...+a_{1n}C_{1n}=det(A)\)</span>； 对于其它元素：<span class="math inline">\(a_{11}C_{n1}+...+a_{1n}C_{nn}=\left|\begin{array}{cccc} a_{11} &amp; ... &amp; a_{1n}\\ ... &amp; &amp; ...\\ a_{11} &amp; ... &amp; a_{1n}\\ \end{array}\right|=0\)</span>。</li>
+<li>求解<span class="math inline">\(Ax=b\)</span> 求解：<span class="math inline">\(x=A^{-1}b=\frac{1}{det(A)}C^Tb\)</span>，那么考虑<span class="math inline">\(x_1=\frac{1}{det(A)}(b_1c_{11}+..+b_nc_{n1})\)</span>，<span class="math inline">\(b_1c_{11}+..+b_nc_{n1}\)</span>其实是将矩阵<span class="math inline">\(A\)</span>的第一列换为<span class="math inline">\(b\)</span>，按照第一列展开求行列式的值即可，同理可以求得其它<span class="math inline">\(x_i\)</span>，这种差到没人用的方法竟然被国内教材奉为圭臬。</li>
+<li>求体积 <span class="math inline">\(det(A)\)</span>的绝对值可以定义为一个平行六面体的体积，正负表示左手系还是右手系。 将三阶矩阵<span class="math inline">\(A\)</span>的每行(列)当作平行六面体的一条边，如果<span class="math inline">\(A=I\)</span>，我们得到一个标准的单位立方体；如果<span class="math inline">\(A=Q\)</span>，我们得到一个旋转过的单位立方体，体积仍然为1，可以通过<span class="math inline">\(Q^TQ=I\)</span>验证。 如果是二维情况，那么<span class="math inline">\(det(A)\)</span>的绝对值就是平行四边形的面积： <span class="math display">\[
+S=\left|\begin{array}{cccc}
+a &amp; b\\ 
+c &amp; d\\
+\end{array}\right|=ad-bc
+\]</span> 那么三角形的面积就是<span class="math inline">\(\frac{1}{2}S\)</span>，推广到向量的起始位置不在<span class="math inline">\((0,0)\)</span>的情况： <span class="math display">\[
+S_{三角形}=\frac{1}{2}\left|\begin{array}{cccc}
+x_1 &amp; y_1 &amp; 1\\ 
+x_2 &amp; y_2 &amp; 1\\ 
+x_3 &amp; y_3 &amp; 1\\ 
+\end{array}\right|
+\]</span> 可以通过平移到原点去证明。 ## 作业 A Hadamard matrix H is a matrix with entries ±1 and orthogonal columns. What is the determinant of H as a function of n? (Hadamard matrices are conjectured to exist for every n that is a multiple of 4, but nobody knows if there is such a matrix even for n=668). 由于<span class="math inline">\(H\)</span>各列正交，故<span class="math inline">\(H^TH=cI\)</span>；又<span class="math inline">\(H\)</span>的元素只有±1，故<span class="math inline">\(c=n\)</span>。所以<span class="math inline">\(det(H)^2=n^n,det(H) = \pm\sqrt{n^n}\)</span>，即<span class="math inline">\(n\)</span>阶Hadamard矩阵的行列式既可以为正，也可以为负。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="EIMadrigal WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="EIMadrigal Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>EIMadrigal
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://eimadrigal.github.io/2020/05/29/MIT%20Linear%20Algebra#4%20Determinants/" title="MIT Linear Algebra#4 Determinants">https://eimadrigal.github.io/2020/05/29/MIT Linear Algebra#4 Determinants/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/27/MIT%20Linear%20Algebra#3%20Orthogonality/" rel="prev" title="MIT Linear Algebra#3 Orthogonality">
+      <i class="fa fa-chevron-left"></i> MIT Linear Algebra#3 Orthogonality
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/31/MIT%20Linear%20Algebra#5%20Eigenvalues%20and%20Eigenvectors/" rel="next" title="MIT Linear Algebra#5 Eigenvalues and Eigenvectors">
+      MIT Linear Algebra#5 Eigenvalues and Eigenvectors <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="EIMadrigal"
+      src="/images/favicon.png">
+  <p class="site-author-name" itemprop="name">EIMadrigal</p>
+  <div class="site-description" itemprop="description">Hello World</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">167</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/EIMadrigal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:andrew.renj@gmail.com" title="E-Mail → mailto:andrew.renj@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.cnblogs.com/EIMadrigal" title="cnblogs → https:&#x2F;&#x2F;www.cnblogs.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-codiepie fa-fw"></i>cnblogs</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/EIMadrigal" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018-02 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EIMadrigal</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">Total views: <span id="busuanzi_value_site_pv"></span></span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">Total visitors: <span id="busuanzi_value_site_uv"></span></span>
+    <span class="post-meta-divider">|</span>
+
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);
+    var countOffset = 20000;
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset);
+            clearInterval(int);
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

@@ -190,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(134)/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/11/28/Malloc%20Lab/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -204,7 +204,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(134)/" class="post-title-link" itemprop="url">Learn to Learn</a>
+            <a href="/2020/11/28/Malloc%20Lab/" class="post-title-link" itemprop="url">Malloc Lab</a>
         </h2>
 
         <div class="post-meta">
@@ -216,16 +216,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-06-03 18:20:32" itemprop="dateCreated datePublished" datetime="2021-06-03T18:20:32+08:00">2021-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2020-11-28 02:12:00" itemprop="dateCreated datePublished" datetime="2020-11-28T02:12:00+08:00">2020-11-28</time>
             </span>
 
           
@@ -239,15 +230,77 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>学会学习</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(134)/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="basic-info">Basic Info</h2>
+<p>这是CMU 15-213的Malloc Lab，本来没打算做，被同学安利了一波~ 需要用C实现A Dynamic Storage Allocator，类似于<code>libc</code>中的<code>malloc/free/realloc</code>，整体来看难度较大。</p>
+<p>开始没什么思路，看了下CSAPP动态内存分配那一节。 内存的划分是这样子的： <img src="https://img-blog.csdnimg.cn/2020101116464245.png" alt="在这里插入图片描述" /> 运行时分配的虚拟内存主要是Heap，Allocator将堆视作不同size的块，Allocator有2种：</p>
+<ul>
+<li>Explicit Allocators：需要应用程序手动释放申请的内存块，<code>malloc/free</code></li>
+<li>Implicit Allocators：就是garbage collectors</li>
+</ul>
+<p><code>malloc</code>返回的对齐地址取决于编译环境，32位是8的倍数，64位是16的倍数；<code>malloc</code>不会初始化申请的内存，<code>calloc</code>会初始化内存为0。 堆的增长是通过增加内核的<code>brk</code>指针来增加/减小堆： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">sbrk</span><span class="params">(<span class="keyword">intptr_t</span> incr)</span></span>;  <span class="comment">// success: old brk pointer; error: -1</span></span><br></pre></td></tr></table></figure> 如果<code>free</code>的是一个非法指针，那么结果未定义。</p>
+<p>主要实现在<code>mm.c</code>中，有4个主要函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mm_init</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">mm_malloc</span><span class="params">(<span class="keyword">size_t</span> size)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mm_free</span><span class="params">(<span class="keyword">void</span> *ptr)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">mm_realloc</span><span class="params">(<span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> size)</span></span>;</span><br></pre></td></tr></table></figure>
+<p><code>mm_init</code>负责初始化，比如分配初始的堆空间，成功返回0，失败返回-1； <code>mm_malloc</code>负责分配指定大小的空间，但是这个空间必须在已经初始化的堆里，不能与其他空间冲突；返回的指针按照8B对齐，与<code>libc</code>中实现的<code>malloc</code>类似，最后会有一个PK； <code>mm_realloc</code>负责：</p>
+<ul>
+<li><code>ptr</code>为<code>NULL</code>，等价于<code>void *mm_malloc(size)</code></li>
+<li>size=0，等价于<code>mm_free(ptr)</code></li>
+<li>如果<code>ptr</code>不为<code>NULL</code>，把<code>ptr</code>所指的内存块增加/减小到<code>size</code>个字节，返回新地址（可能与原来的块相同，也可能不同，取决于实现方式、原块里内碎片的数量以及请求<code>size</code>的大小），保持原块的内容不变（如果申请变大，剩下的空间是未初始化的；如果申请变小，那么只保留<code>size</code>大小的原块内容）</li>
+</ul>
+<p><code>memlib.c</code>为我们的分配器模拟了内存系统，可以调用里面的一些函数： <code>void *mem_sbrk(int incr)</code>: 将堆扩展<code>incr</code>B，参数是正整数，返回新分配的内存首地址； <code>void *mem_heap_lo(void)</code>: 返回堆的首地址； <code>void *mem_heap_hi(void)</code>: 返回堆的最后一个字节的地址； <code>size_t mem_heapsize(void)</code>: 返回当前堆的大小； <code>size_t mem_pagesize(void)</code>: 返回系统页面大小。 ## Implementation 首先明确设计约束条件：</p>
+<ul>
+<li>可以处理任意的请求释放序列</li>
+<li>请求需要被立即响应</li>
+<li>内存对齐要求</li>
+<li>不能修改已经分配的内存块</li>
+</ul>
+<p>再明确设计目标：</p>
+<ul>
+<li>最大化吞吐量</li>
+<li>最大化内存利用率</li>
+</ul>
+<p>吞吐量最大化：单位时间处理的请求，分配复杂度<span class="math inline">\(O(n)\)</span>，n是空闲块的数目，释放复杂度<span class="math inline">\(O(1)\)</span>； 内存利用率最大化：用peak utilization衡量，假设有<span class="math inline">\(n\)</span>个请求：<span class="math inline">\(R_0, R_1, ... R_k, ..., R_{n-1}\)</span>，在<span class="math inline">\(R_k\)</span>完成后，将aggregate payload(申请的字节总数)记作<span class="math inline">\(P_k\)</span>，当前的堆的大小记作<span class="math inline">\(H_k\)</span>(单调不减)，单调不减的条件可以通过使<span class="math inline">\(H_k\)</span>为high-water mark来松弛，这样堆就可以上下都增长。那么peak utilization为： <span class="math display">\[U_k=\frac{max_{i\leq k}P_i}{H_k}\]</span> 我们的目标是最大化<span class="math inline">\(U_{n-1}\)</span>。</p>
+<p>这两目标是需要trade-off的，吞吐量越大，意味着需要减小操作的时间，往往就不能花费时间去处理碎片；内存利用率越大，意味着要精心处理分配和回收的块，自然需要更多的时间。</p>
+<p>具体来说，有以下几点： <img src="https://img-blog.csdnimg.cn/20201023215211206.png" alt="在这里插入图片描述" /> 这些关键细节的设计非常重要，再BB一次：程序架构、数据结构和接口设计是一门艺术！</p>
+<ul>
+<li><code>free</code>只给一个指针，怎么知道要释放多少空间：记录每一块的大小；</li>
+<li>空闲块的组织管理：隐式链表、显式链表（双向链表）（存储指针域开销太大）、Segregated Free Lists、将空闲块始终按大小排序；</li>
+<li>Placement: 有多个满足要求的空闲块，如何选择以放置新的申请：First Fit, Next Fit, Best Fit</li>
+<li>Splitting: 在一个空闲块放置申请后如何处理剩余的空闲空间。可以直接将整个空闲块分配出去，也可以将剩余的空闲空间重新利用；</li>
+<li>无法找到合适的满足请求的块：做空闲块合并后再次检查是否可以满足；用<code>sbrk</code>向内核申请更多的内存，插入空闲链表；</li>
+<li><strong>空闲块合并</strong>：需要考虑何时合并：立即合并（可能引发抖动）、延迟合并（申请失败时合并整个堆里所有的空闲块）；合并后面的块很容易，但是要高效合并前面的空闲块，需要用双向的Boundary Tag(可以优化以减少空间开销)；</li>
+</ul>
+<p>不仅需要记录每块的大小，还需要区分已分配块和空闲块，所以block的格式可以设计如下： <img src="https://img-blog.csdnimg.cn/20201011195117307.png" alt="在这里插入图片描述" /> 如果要求double-word(8B)对齐，那么Block size总是8的倍数，所以低3位都是0，可以利用其存储分配状态。</p>
+<p>这样整个堆就可以组织为连续的分配和空闲块，由于已经存储了每块的大小，所以隐式空闲链表就应运而生： <img src="https://img-blog.csdnimg.cn/20201014165121101.png" alt="在这里插入图片描述" /> 隐式链表可以在<span class="math inline">\(O(1)\)</span>的时间里合并之后的空闲块，但是要合并之前的空闲块，需要<span class="math inline">\(O(n)\)</span>的时间扫描整个堆，这显然无法接受。Knuth大佬提出了boundary tags，这样实际上相当于隐式双向链表： <img src="https://img-blog.csdnimg.cn/20201011214226551.png" alt="在这里插入图片描述" /> 这样就可以通过Footer在<span class="math inline">\(O(1)\)</span>检查之前的块的状态及其开始位置，缺点在于如果小的内存块比较多的话，内存开销太大。 双向tag带来的内存开销可以优化：只有前面的块是空闲，才需要它footer里的大小，所以可以在每个块用后3位里的某一位来存储前面块的状态，那么已分配块就不需要footer了，可以把footer的空间用来当作payload，但是空闲块仍然需要2个tag。</p>
+<p>那么现在整个堆变成了这样： <img src="https://img-blog.csdnimg.cn/20201016204303577.png" alt="在这里插入图片描述" /> 这里的<code>heap_listp</code>指向Prologue block的中间是做了一些小优化，方便直接定位到下一块的数据位置。</p>
+<p>这里的实现非常tricky和subtle，一开始只申请了4words，unused(1)+Prologue(2)+Epilogue(1)，后续的<code>extend_heap</code>申请一个空闲块后，将原来的Epilogue作为空闲块的header，空闲块的最后一个word变为新的Epilogue。</p>
+<p>由于对齐要求（Headers在非对齐位置，Payloads对齐），分配器应该有一个minimum block size，即使只请求了1B，也要分配minimum block size，这里是16B。</p>
+<p>写代码时先实现并测试<code>malloc</code>和<code>free</code>，如果能正确并且高效执行，再去实现<code>realloc</code>。 ## Evaluation 性能主要考虑2方面因素：</p>
+<ul>
+<li>空间利用率<span class="math inline">\(U\)</span>：peak ratio即评测程序申请的总内存（<code>mm_malloc/mm_realloc</code>但是还没有<code>mm_free</code>）与分配器使用的堆容量的比值，需要用好的策略减小碎片，使得该值接近1；</li>
+<li>吞吐量<span class="math inline">\(T\)</span>：每秒完成的操作数量</li>
+</ul>
+<p>评测程序会综合考虑2个方面，计算一个performance index <span class="math display">\[P=wU+(1-w)min(1,\frac{T}{T_{libc}})\]</span> <span class="math inline">\(T_{libc}\)</span>是<code>libc</code>中的<code>malloc</code>的吞吐量，大概在600Kops/s左右，<span class="math inline">\(w=0.6\)</span>。 这个<span class="math inline">\(P\)</span>既考虑了内存资源，又考虑了CPU资源，两个矛盾的指标需要适当权衡。</p>
+<p>第一个版本<code>mm1.c</code>基本就是抄书，Implicit Free Lists+First Fit+Bi Boundary Tag，抄书也就将将及格。。 <img src="https://img-blog.csdnimg.cn/20201115143013580.png" alt="在这里插入图片描述" /> 将First-Fit改成Next-Fit，还不错： <img src="https://img-blog.csdnimg.cn/20201115202312126.png" alt="在这里插入图片描述" /> 可以看到：Next-Fit在速度上有很大提升，主要是因为它是从上次终止的块开始搜索，避免了前面很多块的无效搜索。</p>
+<p>最后对于Implicit Lists的性能做个总结： 分配：<span class="math inline">\(O(n)\)</span> 释放：<span class="math inline">\(O(1)\)</span> Memory Overhead：取决于First Fit等策略</p>
+<p>感觉这个性能已经不错了，但是一些无聊的计算机科学家还是不满意分配时的效率。接着我们看下更加🐂🍺的方法Segregated Free Lists： <img src="https://img-blog.csdnimg.cn/20201024204031234.png" alt="在这里插入图片描述" /> 每个size级别的块都有自己的free list，分配大小为n的块时：</p>
+<ul>
+<li>搜索合适的free list使得size&gt;n</li>
+<li>找到：split并将remainder放入应该去的list</li>
+<li>未找到：向操作系统申请更大的内存，分出去n，将剩下的放入相应的list</li>
+</ul>
+<p>释放时合并空闲块并且放入相应的free list即可。</p>
+<p>这实际上近似模拟了Best Fit，而且不用搜索整个free list，Best Fit一般有着最优的内存利用率，但是运行时间<span class="math inline">\(O(n)\)</span>，又是吞吐量和内存利用率的trade-off，终于明白了为什么官方的<code>malloc</code>要用这个方式了：吞吐量更大<span class="math inline">\(O(lgn)\)</span>、更优的内存利用率Best Fit。</p>
+<p>Segregated Free Lists中的空闲块包含Header+prev+next+padding+Footer，已分配块没有前后指针。 写代码要注意：整个堆中的块位置是不变的，只是状态（分配、释放）在改变，整个堆中的空闲块是用seg list的方式串起来的。</p>
+<p>Debug可以自己写一下<code>mm_check</code>，还是很有用的。 <code>realloc</code>快de疯了，整整一个晚上。。。其实就4种情况：</p>
+<ol type="1">
+<li>如果当前已分配块后面是结尾块，直接申请新的堆空间，与原块组合返回；</li>
+<li>如果当前已分配块后面是一个空闲块，且两者之和&gt;=size，组合返回；</li>
+<li>如果当前已分配块后是一个空闲块，但两者之和&lt;size，但是空闲块后是结束块，申请新的堆空间，三者组合返回；</li>
+<li>malloc新块，将原块复制，释放原块。</li>
+</ol>
+<p>第一次写完，只有85，内存利用率太差了： <img src="https://img-blog.csdnimg.cn/20201117220719669.png" alt="在这里插入图片描述" /> <code>place</code>的时候，如果申请块比较大，我们将其分配到后半部分，将前半部分切割为空闲： <img src="https://img-blog.csdnimg.cn/2020111909030584.png" alt="在这里插入图片描述" /> 之前class的划分是1，2-3，4-7，8-15... 但是最小块是16B，所以16B以下的用不到，所以改为16-31，32-63，64-127，128-255...</p>
+<p>这样优化后直接96： <img src="https://img-blog.csdnimg.cn/20201119092357832.png" alt="在这里插入图片描述" /> 后面还可以继续优化榨干性能，比如去掉已分配块的Footer，<code>realloc</code>组合块以后对remainder进行split... 以后有时间再说......</p>
+
       
     </div>
 
@@ -266,7 +319,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(136)/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/11/17/Stacking/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -280,7 +333,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(136)/" class="post-title-link" itemprop="url">Learn to Learn</a>
+            <a href="/2020/11/17/Stacking/" class="post-title-link" itemprop="url">Stacking</a>
         </h2>
 
         <div class="post-meta">
@@ -292,16 +345,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-06-03 18:20:32" itemprop="dateCreated datePublished" datetime="2021-06-03T18:20:32+08:00">2021-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2020-11-17 02:29:00" itemprop="dateCreated datePublished" datetime="2020-11-17T02:29:00+08:00">2020-11-17</time>
             </span>
 
           
@@ -315,15 +359,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>学会学习</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(136)/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>Ensemble Learning的基本思想就是将多个基学习器组合在一起，产生泛化能力更强的模型。 组合策略有许多种，包括Voting、平均法和Stacking等，Stacking就是选择某种学习器作为组合基学习器的方式。 <img src="https://img-blog.csdnimg.cn/20200926193430376.png" alt="在这里插入图片描述" /> 既然要结合多个基学习器的优点，那么基学习器的选择最好是“准而不同”，元学习器一般选择比较简单的模型（如逻辑回归），防止过拟合。 比较简单的想法就是将全部训练集用于训练基学习器，将基学习器的预测结果作为元学习器的训练集，从而得到整个模型。 这样做的问题在于：基学习器最终在训练集上的表现非常好，再用基学习器在该训练集上的预测结果作为次级训练集，同样元学习器在该训练集上表现也会非常好，但是模型的泛化能力不一定很好，有过拟合的风险。 因此，采用K折交叉验证的方式，用训练基学习器未使用的样本来产生次级训练集。 <img src="https://img-blog.csdnimg.cn/20201109191045436.jpg" alt="在这里插入图片描述" /> 具体来讲： 在训练阶段（假设训练集<span class="math inline">\(400*10\)</span>），对于每个基学习器（假设有3个基学习器），进行5次训练与验证，得到<span class="math inline">\(400*1\)</span>的验证结果，那么最终次级训练集是<span class="math inline">\(400*3\)</span>（类标签还是原始类标签），用这些数据训练次级学习器，完成后再用全部的训练集训练所有的基学习器（可选，提高基学习器性能）； 在测试阶段，如果训练阶段选了最后一步，那么每个基学习器直接得到一个结果，就会得到3个测试结果，送入次级学习器，得到最终的预测结果；如果训练时没有选最后一步，那么每个基学习器都有5个小模型，将测试样本用5个小模型分别测试，将5个结果平均得到某个基学习器的预测结果，也会得到3个测试结果。 <img src="https://img-blog.csdnimg.cn/20201109192340496.png" alt="在这里插入图片描述" /> Weka里的实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Buildclassifier selects a classifier from the set of classifiers</span></span><br><span class="line"><span class="comment">   * by minimising error on the training data.</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> data the training data to be used for generating the</span></span><br><span class="line"><span class="comment">   * boosted classifier.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@throws</span> Exception if the classifier could not be built successfully</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="comment">// 建立整个模型</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildClassifier</span><span class="params">(Instances data)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_MetaClassifier == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;No meta classifier has been set&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 判断分类器是否有能力处理该数据集</span></span><br><span class="line">    getCapabilities().testWithFail(data);</span><br><span class="line">    <span class="comment">// 删除类标签缺失数据</span></span><br><span class="line">    Instances newData = <span class="keyword">new</span> Instances(data);</span><br><span class="line">    m_BaseFormat = <span class="keyword">new</span> Instances(data, <span class="number">0</span>);</span><br><span class="line">    newData.deleteWithMissingClass();</span><br><span class="line">    </span><br><span class="line">    Random random = <span class="keyword">new</span> Random(m_Seed);</span><br><span class="line">    newData.randomize(random); <span class="comment">// 打乱整个数据集</span></span><br><span class="line">    <span class="comment">// 如果是分类问题，分层抽样</span></span><br><span class="line">    <span class="comment">// 原始数据按照类标签集中在一起，按m_NumFolds为步长重新抽取数据，保持训练集/验证集数据分布一致性, 避免因数据划分引入额外的偏差</span></span><br><span class="line">    <span class="keyword">if</span> (newData.classAttribute().isNominal()) &#123;</span><br><span class="line">      newData.stratify(m_NumFolds);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 处理原始数据得到新的数据，建立meta classifier</span></span><br><span class="line">    generateMetaLevel(newData, random);</span><br><span class="line">  </span><br><span class="line">    <span class="comment">// restart the executor pool because at the end of processing</span></span><br><span class="line">    <span class="comment">// a set of classifiers it gets shutdown to prevent the program</span></span><br><span class="line">    <span class="comment">// executing as a server</span></span><br><span class="line">    <span class="comment">// 创建线程池，为下面的基学习器训练做准备</span></span><br><span class="line">    <span class="keyword">super</span>.buildClassifier(newData);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 提高基础模型的准确度，使其在测试数据表现更好，用所有的训练集进行基学习器的训练</span></span><br><span class="line">    <span class="comment">// 这里为了节省时间，测试时，可以直接在多个基学习器预测后取平均</span></span><br><span class="line">    <span class="comment">// Rebuild all the base classifiers on the full training data</span></span><br><span class="line">    buildClassifiers(newData);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Generates the meta data</span></span><br><span class="line"><span class="comment">   * </span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> newData the data to work on</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> random the random number generator to use for cross-validation</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@throws</span> Exception if generation fails</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">generateMetaLevel</span><span class="params">(Instances newData, Random random)</span> </span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// 先用newData得到metaData的格式m_MetaFormat</span></span><br><span class="line">    <span class="comment">// 确定元分类器需要的属性</span></span><br><span class="line">    Instances metaData = metaFormat(newData);</span><br><span class="line">    m_MetaFormat = <span class="keyword">new</span> Instances(metaData, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; m_NumFolds; j++) &#123;</span><br><span class="line">      <span class="comment">// 得到训练集</span></span><br><span class="line">      Instances train = newData.trainCV(m_NumFolds, j, random);</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// start the executor pool (if necessary)</span></span><br><span class="line">      <span class="comment">// has to be done after each set of classifiers as the</span></span><br><span class="line">      <span class="comment">// executor pool gets shut down in order to prevent the</span></span><br><span class="line">      <span class="comment">// program executing as a server (and not returning to</span></span><br><span class="line">      <span class="comment">// the command prompt when run from the command line</span></span><br><span class="line">      <span class="comment">// 线程池，多线程并行构建基学习器</span></span><br><span class="line">      <span class="keyword">super</span>.buildClassifier(train);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 构建基学习器</span></span><br><span class="line">      buildClassifiers(train);</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// Classify test instances and add to meta data</span></span><br><span class="line">      <span class="comment">// 将未使用过的原始训练数据通过基学习器预测后加入metadata作为新的训练集</span></span><br><span class="line">      Instances test = newData.testCV(m_NumFolds, j);</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; test.numInstances(); i++) &#123;</span><br><span class="line">	    metaData.add(metaInstance(test.instance(i)));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 利用元数据建立元分类器</span></span><br><span class="line">    m_MetaClassifier.buildClassifier(metaData);    </span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>因为基学习器之间的训练是独立的，所以每次交叉验证划分好数据后，都是利用线程池并行训练。 如果是在分层抽样的基础上划分训练集和验证集，<code>trainCV()</code>抽取数据后，需要将新的训练集Shuffle，保证独立同分布。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Makes the format for the level-1 data.</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> instances the level-0 format</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> the format for the meta data</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@throws</span> Exception if the format generation fails</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="comment">// 生成元数据格式</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> Instances <span class="title">metaFormat</span><span class="params">(Instances instances)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// 如果m_BaseFormat属性连续，就加入m_Classifiers.length个属性</span></span><br><span class="line">    <span class="comment">// 如果是离散的，每次要加入level 0类别属性取值个数个属性</span></span><br><span class="line">    ArrayList&lt;attribute&gt; attributes = <span class="keyword">new</span> ArrayList&lt;attribute&gt;();</span><br><span class="line">    Instances metaFormat;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历基学习器</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; m_Classifiers.length; k++) &#123;</span><br><span class="line">      Classifier classifier = (Classifier) getClassifier(k);</span><br><span class="line">      String name = classifier.getClass().getName() + <span class="string">&quot;-&quot;</span> + (k+<span class="number">1</span>);</span><br><span class="line">      <span class="keyword">if</span> (m_BaseFormat.classAttribute().isNumeric()) &#123;</span><br><span class="line">	    attributes.add(<span class="keyword">new</span> Attribute(name));</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="comment">// 如果离散，后续会通过每个取值的概率来判断，比如杂色、圆花，这2种特性不能用一个属性表示，所以每个取值都要独立成单独的属性</span></span><br><span class="line">          <span class="comment">// 来保存概率值</span></span><br><span class="line">	      <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; m_BaseFormat.classAttribute().numValues(); j++) &#123;</span><br><span class="line">	        attributes.add(</span><br><span class="line">	          <span class="keyword">new</span> Attribute(</span><br><span class="line">		      name + <span class="string">&quot;:&quot;</span> + m_BaseFormat.classAttribute().value(j)));</span><br><span class="line">	    &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 加上原始类标签</span></span><br><span class="line">    attributes.add((Attribute) m_BaseFormat.classAttribute().copy());</span><br><span class="line">    <span class="comment">// 形成元数据格式</span></span><br><span class="line">    metaFormat = <span class="keyword">new</span> Instances(<span class="string">&quot;Meta format&quot;</span>, attributes, <span class="number">0</span>);</span><br><span class="line">    metaFormat.setClassIndex(metaFormat.numAttributes() - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> metaFormat;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>生成元数据格式时，如果是分类问题，类标签的每个属性都被作为一个新的属性： <img src="https://img-blog.csdnimg.cn/20201109195503863.png" alt="在这里插入图片描述" /> 这里我个人这样理解：有的基分类器可以输出属于某个类的概率（如逻辑回归），将概率作为元属性而不是直接将基学习器的分类结果作为元属性，这样做能够减小基学习器的分类误差带给元学习器的影响，模型整体更加精确： <img src="https://img-blog.csdnimg.cn/20201109195918632.png#pic_center" alt="在这里插入图片描述" /></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Makes a level-1 instance from the given instance.</span></span><br><span class="line"><span class="comment">   * </span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> instance the instance to be transformed</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> the level-1 instance</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@throws</span> Exception if the instance generation fails</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="comment">// 产生元数据</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> Instance <span class="title">metaInstance</span><span class="params">(Instance instance)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// values保存分类结果，连续属性直接保存，离散属性则先求得分布，将每种取值的分布加入values，设置为m_MetaFormat格式返回</span></span><br><span class="line">    <span class="keyword">double</span>[] values = <span class="keyword">new</span> <span class="keyword">double</span>[m_MetaFormat.numAttributes()];</span><br><span class="line">    Instance metaInstance;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; m_Classifiers.length; k++) &#123;</span><br><span class="line">      Classifier classifier = getClassifier(k);</span><br><span class="line">      <span class="keyword">if</span> (m_BaseFormat.classAttribute().isNumeric()) &#123;</span><br><span class="line">	    values[i++] = classifier.classifyInstance(instance);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 基学习器对该实例的分类的概率分布, sum(dist)=1</span></span><br><span class="line">	    <span class="keyword">double</span>[] dist = classifier.distributionForInstance(instance);</span><br><span class="line">	    <span class="comment">// 将该基学习器对该实例的预测概率输出到对应的元属性</span></span><br><span class="line">	    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; dist.length; j++) &#123;</span><br><span class="line">	      values[i++] = dist[j];</span><br><span class="line">	    &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 标签值对应最后一个元属性</span></span><br><span class="line">    values[i] = instance.classValue();</span><br><span class="line">    metaInstance = <span class="keyword">new</span> DenseInstance(<span class="number">1</span>, values);</span><br><span class="line">    metaInstance.setDataset(m_MetaFormat);</span><br><span class="line">    <span class="keyword">return</span> metaInstance;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>在实际数据集上的结果其实不一定比其他模型效果好，可能是我参数调的不好吧（雾）~ </attribute></attribute></p>
+
       
     </div>
 
@@ -342,7 +386,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(135)/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/11/07/Bear%20Maps/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -356,7 +400,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(135)/" class="post-title-link" itemprop="url">Learn to Learn</a>
+            <a href="/2020/11/07/Bear%20Maps/" class="post-title-link" itemprop="url">Bear Maps</a>
         </h2>
 
         <div class="post-meta">
@@ -368,16 +412,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-06-03 18:20:32" itemprop="dateCreated datePublished" datetime="2021-06-03T18:20:32+08:00">2021-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2020-11-07 07:45:00" itemprop="dateCreated datePublished" datetime="2020-11-07T07:45:00+08:00">2020-11-07</time>
             </span>
 
           
@@ -391,15 +426,60 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>学会学习</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(135)/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="intro">Intro</h2>
+<p>这是CS 61B的Project 3，也是最后一个Proj。刚好上完这门课出去旅个游，放松下心情开始15213。 完成基本的要求花了5天时间，当然现在的版本还十分简陋，这个工程我是想做得比较大，后面还得抽时间消化理解、完善优化。</p>
+<p>SP18用了<a target="_blank" rel="noopener" href="https://maven.apache.org/">Apache Maven</a>做项目建构工具，<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41431457/article/details/102999439">折腾</a>了一天也没有配好，<del>不知道这么垃圾的工具有啥用</del> ，最后实在没辙就把该项目所有需要的jar包导进来，后来发现SP19就抛弃了maven。 <img src="https://img-blog.csdnimg.cn/20200623161825813.png" alt="在这里插入图片描述" /> 项目需要的地图集以及地图上的点/路信息都是Google采集好的，可在<a target="_blank" rel="noopener" href="https://github.com/Berkeley-CS61B">这里</a>下载，当然这个地图只是一小部分，后面想要扩展可以去下载需要的<a target="_blank" rel="noopener" href="https://www.openstreetmap.org/">数据集</a>，包括tile images和map feature data。</p>
+<p>整体需求是实现一个网页端地图，用户通过浏览器输入URL，Java程序接收，然后生成相应的地图结果并返回，在浏览器中显示。服务器框架用的是<a target="_blank" rel="noopener" href="http://sparkjava.com/documentation.html#getting-started">Spark</a>，前端以及前后端交互的部分已经写好了（TA真的太强了），其实我有时候觉得这些dirty的工作比较考验码力，这些代码写得漂亮说明System的能力是挺强的。</p>
+<p>后端至少需要实现3个类：</p>
+<ul>
+<li><code>Rasterer</code> 输入upper left latitude and longitude, lower right latitude and longitude, a window width, and a window height. 输出2D array of filenames corresponding to the files to be rendered.</li>
+<li><code>GraphDB</code> 输入Open Street Map数据集，将其转为图存储起来：每个结点是a single intersection，每条边是一条路。</li>
+<li><code>Router</code> 输入GraphDB, a starting latitude and longitude, and a destination latitude and longitude. 输出从起点到终点的一系列结点，以及路径导航信息。 ## Map Rastering 首先要将用户查询的真实世界的经纬度信息转为实际地图，<code>Rasterer.java</code>会接收用户请求的矩形参数<code>Map&lt;String, Double&gt; params</code>，生成对应的图像名称<code>String[][]</code>： 主要工作在<code>getMapRaster()</code>方法中完成，用户输入的查询请求共有6个参数：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;lrlon=-<span class="number">122.2104604264636</span>, ullon=-<span class="number">122.30410170759153</span>, w=<span class="number">1085.0</span>, h=<span class="number">566.0</span>, ullat=<span class="number">37.870213571328854</span>, lrlat=<span class="number">37.8318576119893</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>表示用户希望显示经度范围<code>lrlon</code>~<code>ullon</code>，纬度范围<code>ullat</code>~<code>lrlat</code>的区域，并且分辨率大概是<code>w*h</code>。</p>
+<p>街景图采用<strong>冗余存储</strong>，所有图片都是<code>256*256</code>：<code>d0_x0_y0.png</code>是整个区域的街景，但是分辨率最低，<code>d1_x0_y0.png/d1_x0_y1.png/d1_x1_y0.png/d1_x1_y1.png</code>分别代表西北/东北/西南/东南四个角的街景，但是分辨率加倍。</p>
+<p>更加规范的说：在第D个缩放级别，共有<span class="math inline">\(4^D\)</span>张图片，<code>dD_x0_y0.png</code>到<code>dD_xk_yk.png</code>，<span class="math inline">\(k=2^D-1\)</span>，随<code>x</code>增大向东移动，随<code>y</code>增大向南移动，我们需要返回<code>String[][]</code>代表用户请求区域的图片文件名矩阵，当然还有一些其他参数（查询是否成功等）：由于Java只能返回一个值，所以结果组装成<code>Map&lt;String, Object&gt;</code>返回。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[[d2_x0_y1.png, d2_x1_y1.png, d2_x2_y1.png, d2_x3_y1.png],</span><br><span class="line">[d2_x0_y2.png, d2_x1_y2.png, d2_x2_y2.png, d2_x3_y2.png],</span><br><span class="line">[d2_x0_y3.png, d2_x1_y3.png, d2_x2_y3.png, d2_x3_y3.png]]</span><br></pre></td></tr></table></figure>
+<p>上述返回结果的分辨率为<code>1024*768</code>，几乎满足用户分辨率要求<code>1085*556</code>。</p>
+<p>这样对于同一个区域，可以有很多选择：可以用更多张高分辨率图片的组合，也可以用较少几张低分辨率的图片组合，只要满足用户要求，比如对于上述例子，<code>d2_x0_y1.png</code>可以采用<code>d3_x0_y2.png/d3_x1_y2.png/d3_x0_y3.png/d3_x1_y3.png</code>代替，这样返回的图片是<code>6*8</code>共48张，分辨率可达<code>2048*1536</code>。</p>
+<p>但这样做很可能overflow，远远超过用户要求，浪费时间和资源，因为分辨率高就意味着展示的空间小，并且前端是不会做缩放的，如果用很多高分辨率图片，浏览器会有太多太多照片加载显示，因为大家都是<code>256*256</code>的。</p>
+<p>所以定义单位像素的经度距离：<span class="math inline">\(\text{LonDPP} = \frac{\text{lower right longitude} - \text{upper left longitude}}{\text{width of the image (or box) in pixels}}\)</span>，我们要展示的是小于用户要求的LonDPP的最大值，比方说用户要求每个像素2度，如果我们大于2，那么分辨率低到不能满足要求，只有小于2才能满足要求。又不能太小，分辨率太高展示范围变小。当然如果用户要求的LonDPP很低，只能用现有的最低的LonDPP图片，即<code>d7</code>系列。 可以将LonDPP理解为模糊程度，LonDPP越大，显示的图片越模糊，比如<code>d0</code>系列就有最大的LonDPP。 纬度也要做类似处理。</p>
+<p>举例来看：<code>d2</code>系列共有16张图片，用户请求Query Box应该返回9张图片： <img src="https://img-blog.csdnimg.cn/20200624205748557.png" alt="在这里插入图片描述" /> 具体实现只有1个方法<code>public Map&lt;String, Object&gt; getMapRaster(Map&lt;String, Double&gt; params)</code>，分2步：</p>
+<ul>
+<li>需要的图片的<code>depth</code> 全图即<code>d0</code>的经纬度范围是：<code>-122.29980, 37.89220/-122.21191, 37.82280</code> 因为地球不是规则的，但是在确定Depth时，经度方向的LonDPP满足要求即可，不需考虑纬度方向的影响。</li>
+<li>确定四个角的下标</li>
+<li>corner case 判断输入是否合法时，边界判断一定要加EPS，不然一点小误差会崩掉程序。 输入不合法（用户拖动至全图外等），将<code>query_success</code>置为<code>false</code>返回即可。</li>
+</ul>
+<p>Bug：读取图片文件时，总是<code>javax.imageio.IOException: Can't read input file!</code>。一般都是路径问题。 ## Routing &amp; Location Data 明确了前端需要显示哪些图片后，接下来就是要建一个图，因为最后要路径规划嘛。 路由和位置数据是通过<code>berkeley-2018.osm.xml</code>文件给的，是整个<a target="_blank" rel="noopener" href="https://download.bbbike.org/osm/">地球数据</a>的一部分，文件格式是<a target="_blank" rel="noopener" href="https://wiki.openstreetmap.org/wiki/OSM_XML">OSM XML</a>。</p>
+<p>解析XML数据用的是SAX Parser，遍历每个element，在每个元素的开始和结束位置，调用<code>startElement</code>和<code>endElement</code>回调函数。</p>
+<p>先来熟悉下OSM XML文档： <img src="https://img-blog.csdnimg.cn/20200625122049178.png" alt="在这里插入图片描述" /> <code>node</code>元素是组成地图的主干，有id/lat/lon等属性。如果结点是一个位置，那么<code>tag</code>标签就会有<code>name</code>，如果是其他的，比如路上的一个点，那么就没有<code>tag</code>。 <img src="https://img-blog.csdnimg.cn/20200625122412890.png" alt="在这里插入图片描述" /> <code>way</code>元素表示一条路，路上可能有很多<code>node</code>，用<code>id</code>表示。<code>tag</code>会包含额外信息，如果<code>name</code>是highway，那么<code>v</code>就是道路类型。假设所有道路都是双向的。</p>
+<p>在类<code>GraphDB</code>中存储图，要求允许插入和删除结点，最后要用<code>clean()</code>清理掉没有连接的结点。 <code>GraphBuildingHandler</code>会解析XML文件并调用<code>GraphDB</code>的一些接口函数构建整个图。</p>
+<p>如果选择邻接矩阵存储，由于这是一个动态的图，可能要增加或者删除结点，所以一开始顶点个数是不确定的，也就不能用<code>int[][]</code>表示。所以选择邻接表，因为有<code>clean()</code>操作，需要判断结点是否与其他结点相邻，邻接表速度更快。</p>
+<p><code>GraphBuildingHandler</code>每次只处理XML的一行，也就是一个标签，<code>GraphBuildingHandler</code>这个类可以被其它方法多次调用去处理完所有的XML，我发现这种拆分很有用，系统会变得简单，只需要考虑当前状态就很好写。清楚需求后，需要设计类的接口，数据结构和算法，这才是最难的部分。</p>
+<p>由于parser的解析是从上到下的，所以处理<code>way</code>时最好不要直接把边和边上的结点直接加进图里，因为后面的<code>highway</code>的值可能不在合法范围内，这种边是不算的。所以在碰到边上的点，先存到一个数组里，最后<code>endElement()</code>时候如果路合法，再加进图里。处理<code>node</code>也同理，在<code>endElement()</code>时加入图。记得每次做完一个<code>node</code>或<code>way</code>要<code>clear()</code>上一个的状态信息。</p>
+<p>每个<code>node</code>有一些属性（id/lat/lon），每条边也有一些属性（fromID/toID/name），所以首先要有<code>Node</code>类和<code>Edge</code>类。 邻接表的顶点表<code>Map&lt;Long, Node&gt; vertex</code>，边表<code>Map&lt;Long, Set&lt;Edge&gt;&gt; adj</code>。</p>
+<p>Bug：对<code>ArrayList</code>等在迭代时同时进行修改就会引发异常<code>ConcurrentModificationException</code>。</p>
+<p><code>long closest(double lon, double lat)</code>方法会被用来找最短路，需要返回最近的<strong>有邻居</strong>的<code>node</code>，一个点可能没有邻居，因为他是饭店啥的，不能用来找最短路。另外，这个方法复杂度要求<span class="math inline">\(O(lgn)\)</span>，先实现一个<span class="math inline">\(O(n)\)</span>的做法，后续有时间再去优化吧。 ## Route Search 建好地图后，就要做路由工作：给定起点和终点的经纬度，选一条距离最短的路径，需要在类<code>Router</code>中实现<code>shortestPath</code>方法。 应该从距起点最近的<code>node</code>开始导航到距终点最近的<code>node</code>结束，当然这些<code>node</code>必须是connected的。</p>
+<p>两个<code>node</code>间的距离采用<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Great-circle_distance">great-circle distance</a>，即当作球模型来计算弧长距离。整体距离就是计算1/2之间、2/3之间...的距离之和，还要考虑经度和纬度有不同的尺度，并且随着纬度变化，每度代表的实际距离也是不同的，还好计算距离的函数已经由🐂🍺的TA写好了。</p>
+<p>最好用A*而不是Dijkstra，启发函数h(n)用结点n到终点的great-circle distance就行，要注意目标不可达的情况。</p>
+<p>开始只能在<code>berkeley-2018-small-osm.xml</code>上跑起来，我以为是笔记本配置太烂，跑大的数据集跑不动，只能用小的来测试，后来发现<code>GraphDB</code>里一行写错了。。。debug真痛苦啊！！</p>
+<p>找到最优路线后，这里有一个optional feature，就是显示方向导航信息Turn-by-turn Navigation，需要在类<code>Router</code>中实现<code>routeDirections</code>方法。导航方向的表示是在<code>Router</code>类中写了一个新类<code>NavigationDirection</code>，具体的导航信息格式如下： DIRECTION on WAY for DISTANCE miles 其中，DIRECTION有8种选择： - “Start” - “Continue straight” - “Slight left/right” - “Turn left/right” - “Sharp left/right”</p>
+<p>所以我们需要确定正确的DIRECTION/WAY/DISTANCE，方向取决于当前结点和上一个节点间的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Bearing_(navigation)">relative bearing</a>：</p>
+<ul>
+<li>Between -15 and 15 degrees the direction should be “Continue straight”.</li>
+<li>Beyond -15 and 15 degrees but between -30 and 30 degrees the direction should be “Slight left/right”.</li>
+<li>Beyond -30 and 30 degrees but between -100 and 100 degrees the direction should be “Turn left/right”.</li>
+<li>Beyond -100 and 100 degrees the direction should be “Sharp left/right”.</li>
+</ul>
+<p>难点在于：一条<code>way</code>上可能包含了若干<code>node</code>，如何在遍历<code>node</code>的过程中判断<code>way</code>是否发生了改变，只有<code>way</code>变化后才能产生一条新的导航信息。如果恰好来到了一条没有<code>name</code>的路，就将WAY设为“unknown road”。</p>
+<p>举例来说： 假设出发的<code>node</code>在“Shattuck Avenue”这条路上，那么DIRECTION应该设为“Start”，遍历接下来的<code>node</code>时，需要累加在这条路上走过的距离，最终到达一个不在“Shattuck Avenue”的<code>node</code>时，设置WAY为“Shattuck Avenue”，DISTANCE为之前的累加值。接着，下一条导航信息的DIRECTION应该根据相对方位计算，WAY是当前<code>node</code>所在的路，DISTANCE重新累加。</p>
+<p>最终的效果：蓝色线表示最优路线： <img src="https://img-blog.csdnimg.cn/20201126192103548.png" alt="在这里插入图片描述" /> 单元测试还是非常重要的，只有确保每一个函数都是正确的，最终组合的功能才可能正确。 ## Autocomplete and Search 作为一个很有用的Feature，自动补全还是很酷的：搜索地名时只输入一部分，就返回以它开头的所有地名。需要在<code>MapServer</code>类中实现<code>List&lt;String&gt; getLocationsByPrefix(String prefix)</code>方法。</p>
+<p>输入的参数<code>prefix</code>是clean后的字符串：除了大小写字母以及空格外，其它字符全部被移除，全部由小写字母组成。 需要返回所有locations（有<code>name</code>的<code>node</code>）的全名，前提是clean后的全名与<code>prefix</code>匹配。 复杂度要求<span class="math inline">\(O(k)\)</span>，k是共享同一前缀的所有地名。</p>
+<p>比如这样： <img src="https://img-blog.csdnimg.cn/20200902160016738.png" alt="在这里插入图片描述" /> 除了自动补全，还需要完成Search功能：clean后的用户输入与clean后的<code>locationName</code>完全匹配，同名的<code>location</code>都需要加入<code>List</code>。 复杂度要求<span class="math inline">\(O(k)\)</span>，k是匹配的地名个数。 需要在<code>MapServer</code>类中实现<code>List&lt;Map&lt;String, Object&gt;&gt; getLocations(String locationName)</code>方法，返回同名的所有地方的信息，如果正确实现，那么就会有一个mark标记在那个地方： <img src="https://img-blog.csdnimg.cn/20200906101859262.png" alt="在这里插入图片描述" /> 具体实现一般用Trie，这里的难点在于输入是clean后的字符串，需要输出clean前的全名，所以我们的Trie结点除了有<code>children</code>和<code>isWord</code>外，还需要保存一些额外的信息（clean前的<code>name</code>/<code>id</code>/<code>lat</code>/<code>lon</code>），当然这些信息只有叶子结点才需要保存，用<code>List&lt;Map&lt;String, Object&gt;&gt; extraInfo</code>来存储。这样重名的地点虽然占用了相同的叶子，但是所有地点的信息都存在了该叶子的<code>extraInfo</code>当中，可以直接展示出来。</p>
+<p>Debug好痛苦啊！！有一次怎么样在浏览器都渲染不出来，折腾了一天，最后发现是因为html文件里一个js文件要FQ才可以访问，醉了。 ## Extensions - Front-end Integration 现在是每调用一次，就在后台raster the entire image，然后传到前端显示。实际中前端可以缓存用过的tiles以及路线，下次调用无需后台计算。 - Vectored Tiles 现在的数据是一张张图片，实际上这些图片是可以从roads, lines, filled areas, buildings等基础矢量几何图形提取，可以用OpenGL/WebGL将其全部绘制为三角形，这样非常同一的工作就可以用GPU去做，速度比CPU要快很多，这些矢量图形可以在<a target="_blank" rel="noopener" href="https://wiki.openstreetmap.org/wiki/Vector_tiles">这里</a>下载。 - <a target="_blank" rel="noopener" href="https://sp19.datastructur.es/materials/proj/proj2c/heroku">Deploy on Heroku</a> 目前为止，我们的地图还只能在本地运行，下来就将它部署到服务器~ 具体的部署过程可以参考上述链接，完成后APP就会部署到<a target="_blank" rel="noopener" href="http://bearmaps-fun.herokuapp.com/map.html">这里</a>。 后续的代码更改需要rebuild jar包，然后redeploy。 ## TODO 做工程真是长期的活，遇到bug每天能写50行就不错了。</p>
+<p>所有<a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/CS61B/tree/master/proj3">代码</a>均已通过AG的测试： Part I： <img src="https://img-blog.csdnimg.cn/20200917210047412.png" alt="在这里插入图片描述" /> PART II &amp; III： <img src="https://img-blog.csdnimg.cn/20200917210119434.png" alt="在这里插入图片描述" /> 附加Feature： <img src="https://img-blog.csdnimg.cn/20201127214331958.png" alt="在这里插入图片描述" /> 单元测试除了<code>TestDirections</code>外全部通过。 <img src="https://img-blog.csdnimg.cn/20201129193519713.png" alt="在这里插入图片描述" /> 这个Bug真的有些诡异，不过： <img src="https://img-blog.csdnimg.cn/20201201103328818.png" alt="在这里插入图片描述" /> 尽量少用<code>protected</code>修饰成员变量，写一个函数接口去访问。 ## Reference <a target="_blank" rel="noopener" href="https://sp18.datastructur.es/materials/proj/proj3/proj3">Project 3: Bear Maps, version 3.0</a> <a target="_blank" rel="noopener" href="https://sp19.datastructur.es/materials/proj/proj2c/proj2c">Project 2C: Bear Maps, version 4.0</a></p>
+
       
     </div>
 
@@ -418,7 +498,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(137)/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/11/02/Support%20Vector%20Machine/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -432,7 +512,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(137)/" class="post-title-link" itemprop="url">Learn to Learn</a>
+            <a href="/2020/11/02/Support%20Vector%20Machine/" class="post-title-link" itemprop="url">Support Vector Machine</a>
         </h2>
 
         <div class="post-meta">
@@ -444,16 +524,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-06-03 18:20:32" itemprop="dateCreated datePublished" datetime="2021-06-03T18:20:32+08:00">2021-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2020-11-02 04:52:00" itemprop="dateCreated datePublished" datetime="2020-11-02T04:52:00+08:00">2020-11-02</time>
             </span>
 
           
@@ -467,15 +538,91 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>学会学习</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(137)/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>SVM是入门机器学习绕不开的一个话题，但愿这篇文章我能把它讲清楚。 ## 线性可分 SVM的核心思想是：对于<span class="math inline">\(p\)</span>维输入数据集，找一个有着maximum margin的<span class="math inline">\(p-1\)</span>维的超平面去做decision boundary，这与直觉是相符的： <img src="https://img-blog.csdnimg.cn/20200903193214259.png" alt="在这里插入图片描述" /> 回忆下小学数学讲过的几何知识：空间中一个超平面由法向量<span class="math inline">\(\vec w\)</span>和截距<span class="math inline">\(b\)</span>唯一确定： <span class="math display">\[a(x-x_1)+b(y-y_1)+c(z-z_1)+...=0, \\
+w^Tx+b=0\]</span> 那么如何求解最优超平面的<span class="math inline">\(w\)</span>和<span class="math inline">\(b\)</span>呢？</p>
+<p>假设<span class="math inline">\(\vec w\)</span>指向的一侧为正类（设为负类也没关系，后面会统一表示的），还<strong>假设</strong>在正类的支持向量上有<span class="math inline">\(w^Tx+b=1\)</span>，在负类的支持向量上有<span class="math inline">\(w^Tx+b=-1\)</span>，这里之所以将间隔假设为1主要是为了方便表示和求解，并不影响最终求得的最优超平面和决策函数，证明如下：</p>
+<p>假设正类支持向量距最优超平面距离为<span class="math inline">\(c(c&gt;0)\)</span>，即<span class="math inline">\(w^Tx+b=c\)</span>，此时对应的最优超平面为<span class="math inline">\(w^Tx+b=0\)</span>；又<span class="math inline">\(\frac{w^T}{c}x+\frac{b}{c}=1\)</span>，即<span class="math inline">\(w\)</span>和<span class="math inline">\(b\)</span>同时缩小<span class="math inline">\(c\)</span>倍，那么这时超平面方程同除以<span class="math inline">\(c\)</span>并不改变其形式。</p>
+<p>因此对于正负样本有： <span class="math display">\[w\cdot x_++b\geq 1 \\
+w\cdot x_-+b\leq -1
+\]</span> 为了统一表示上面2种情况，引入<span class="math inline">\(y_i=\begin{cases} 1,&amp;\text{+sample}\\ -1,&amp;\text{-sample} \end{cases}\)</span>，所有样本统一表示为： <span class="math display">\[y_i(w\cdot x_i+b)-1\geq 0\]</span> 如果能确定<span class="math inline">\(b\)</span>和<span class="math inline">\(w\)</span>，那么分类超平面和决策函数也就随即确定。</p>
+<p>根据小学数学，间隔即为2个平行超平面的距离： <span class="math display">\[width=\frac{(b+1)-(b-1)}{||w||}=\frac{2}{||w||}\tag{1}\]</span></p>
+<p>综上，<strong>原优化问题</strong>为： <span class="math display">\[
+\begin{array}{ll}
+\min _{w, b} &amp; \frac{1}{2}\|w\|^{2} \\
+\text { s.t. } &amp; y_{i}\left(w \cdot x_{i}+b\right)-1 \geqslant 0, \quad i=1,2, \cdots, N
+\end{array}\tag{2}
+\]</span> 这里之所以构造为<span class="math inline">\(\frac{1}{2}\|w\|^{2}\)</span>而不是<span class="math inline">\(||w||\)</span>是为了后面构造的Lagrangian求导的便利。</p>
+<p>明眼人都看得出来：优化目标是一个Convex Quadratic Optimization Problem，并且只有线性约束条件，意味着不会卡在局部极大，一定可以找到全局最优解。此时上述问题已经完全可以用一些QP软件求解了。之所以还要继续讨论下去得到其对偶形式，一是为了在高维空间应用kernel，二是对偶形式的求解有着更加高效的算法。</p>
+<p>回忆下学过的高等数学：有约束优化问题可以通过拉格朗日乘子法求解。首先构造Lagrangian： <span class="math display">\[L(w,b,\alpha)=\frac{||w||^2}{2}-\sum_{i=1}^{N}\alpha_i[y_i(w\cdot x_i+b)-1],\alpha_i\geq0\tag{3}\]</span> 如果<span class="math inline">\(w\)</span>和<span class="math inline">\(b\)</span>满足<span class="math inline">\((2)\)</span>中的约束，那么<span class="math inline">\(\max_{\alpha}L(w,b,\alpha)=\frac{||w||^2}{2}\)</span>； 如果<span class="math inline">\(w\)</span>和<span class="math inline">\(b\)</span>不满足<span class="math inline">\((2)\)</span>中的约束，那么<span class="math inline">\(\max_{\alpha}L(w,b,\alpha)=+\infin\)</span>。 因此下式的优化问题与<span class="math inline">\((2)\)</span>完全等价： <span class="math display">\[
+\min_{w, b}\max_{\alpha} L(w, b, \alpha)\tag{4}
+\]</span> 根据拉格朗日对偶性（不懂就暂时当作成立吧嘻嘻），<span class="math inline">\((4)\)</span>的对偶问题为： <span class="math display">\[
+\max_{\alpha} \min_{w, b} L(w, b, \alpha)\tag{5}
+\]</span> 为了求解对偶问题<span class="math inline">\((4)\)</span>，先求<span class="math inline">\(L\)</span>对<span class="math inline">\(w,b\)</span>的极小，再求对<span class="math inline">\(\alpha\)</span>的极大：</p>
+<ol type="1">
+<li>固定<span class="math inline">\(\alpha\)</span>，求<span class="math inline">\(\min_{w, b} L(w, b, \alpha)\)</span> 分别求<span class="math inline">\(L\)</span>对<span class="math inline">\(\vec{w}\)</span>和<span class="math inline">\(b\)</span>的偏导并令其为0： <span class="math display">\[\frac{\partial L}{\partial\vec{w}}=\vec{w}-\Sigma\alpha_iy_ix_i=0, \vec{w}=\Sigma\alpha_iy_ix_i \\
+\frac{\partial L}{\partial b}=\Sigma\alpha_iy_i=0, \Sigma\alpha_iy_i=0\tag{6}\]</span> 决策向量<span class="math inline">\(\vec{w}\)</span>是样本的线性和，将<span class="math inline">\(\vec{w}\)</span>代入<span class="math inline">\((3)\)</span>： <span class="math display">\[\min_{w, b}L=\Sigma\alpha_i-\frac{1}{2}\Sigma_i\Sigma_j\alpha_i\alpha_jy_iy_jx_i\cdot x_j\tag{7}\]</span></li>
+<li>求<span class="math inline">\(\min_{w, b} L(w, b, \alpha)\)</span>对<span class="math inline">\(\alpha\)</span>的极大 即求<span class="math inline">\((7)\)</span>对<span class="math inline">\(\alpha\)</span>的极大，等价于取负号求对<span class="math inline">\(\alpha\)</span>的极小，于是终于得到了<strong>原优化问题</strong><span class="math inline">\((2)\)</span>的<strong>对偶优化问题</strong>： <span class="math display">\[
+\begin{array}{ll}
+\min _{\alpha} &amp; \frac{1}{2} \sum_{i=1}^{N} \sum_{j=1}^{N} \alpha_{i} \alpha_{j} y_{i} y_{j}\left(x_{i} \cdot x_{j}\right)-\sum_{i=1}^{N} \alpha_{i} \\
+\text { s.t. } &amp; \sum_{i=1}^{N} \alpha_{i} y_{i}=0 \\
+&amp; \alpha_{i} \geqslant 0, \quad i=1,2, \cdots, N
+\end{array}\tag{8}
+\]</span></li>
+</ol>
+<p>利用SMO等算法可以比普通的二次规划算法更高效求得最优的<span class="math inline">\(\alpha^*\)</span>，进而根据<span class="math inline">\((6)\)</span>求得： <span class="math display">\[w^{*}=\sum_{i=1}^{N} \alpha_{i}^{*} y_{i} x_{i}\tag{9}\]</span> 再利用KKT条件（不懂就装懂吧嘻嘻）求得： <span class="math display">\[b^{*}=y_{j}-(w^*)^Tx_j=y_{j}-\sum_{i=1}^{N} \alpha_{i}^{*} y_{i}\left(x_{i} \cdot x_{j}\right)\tag{10}\]</span> 其中，<span class="math inline">\(y_{j}\)</span>为任意一个支持向量。</p>
+<p>最终的分类超平面为： <span class="math display">\[w^{*}\cdot x+b^{*}=0,\sum_{i=1}^{N} \alpha_{i}^{*} y_{i}(x_{i}\cdot x)+b^{*}=0\tag{11}\]</span> 分类决策函数为： <span class="math display">\[f(x)=sign(w^{*}\cdot x+b^{*})=\sum_{i=1}^{N} \alpha_{i}^{*} y_{i}(x_{i}\cdot x)+b^{*}\tag{12}\]</span> 最后要bb的是关于支持向量，根据KKT条件里的互补条件<span class="math inline">\(\alpha_{i}^{*}[y_{i}(x_{i}\cdot w^*+b^{*})-1]=0\)</span>：非支持向量必然有<span class="math inline">\(\alpha_{i}^{*}=0\)</span>，只有支持向量才可能出现<span class="math inline">\(\alpha_{i}^{*}&gt;0\)</span>。</p>
+<p>如果回头看<span class="math inline">\((9)(10)(11)(12)\)</span>，所有的非支持向量对SVM没有任何影响，最优超平面以及决策函数都只由少量的支持向量决定，这大概就是支持向量机名称的由来吧~ ## 近似线性可分 上面讨论了完全线性可分的情况，然而在现实情况中，训练数据会有一些outliers，除去这些点后数据是线性可分的。为了处理这种情况，允许SVM分错一些样本。对每个样本点引入松弛因子<span class="math inline">\(\xi_{i} \geqslant 0\)</span>，即样本点的函数间隔只需要大于<span class="math inline">\(1-\xi_{i}\)</span>，放松了限制条件，<strong>原优化问题</strong>变为： <span class="math display">\[
+\begin{array}{ll}
+\min _{w, b, \xi} &amp; \frac{1}{2}\|w\|^{2}+C \sum_{i=1}^{N} \xi_{i} \\
+\text { s.t. } &amp; y_{i}\left(w \cdot x_{i}+b\right) \geqslant 1-\xi_{i}, \quad i=1,2, \cdots, N \\
+&amp; \xi_{i} \geqslant 0, \quad i=1,2, \cdots, N
+\end{array}\tag{13}
+\]</span> 如果样本点严格满足约束，对于损失函数没有贡献；如果不严格满足即<span class="math inline">\(\xi_{i}&gt;0\)</span>，损失函数就会有相应的惩罚。惩罚参数<span class="math inline">\(C\)</span>控制了一种权衡：既要间隔最大（即<span class="math inline">\(min\ ||w||\)</span>），又要分对尽可能多的样本点。</p>
+<p>类似地，<span class="math inline">\((13)\)</span>可以通过拉格朗日乘子法转换为对偶问题后再去求解，建议吃饱的同学自己尝试一下。<span class="math inline">\((13)\)</span>的<strong>对偶优化问题</strong>是： <span class="math display">\[
+\begin{array}{ll}
+\min _{\alpha} &amp; \frac{1}{2} \sum_{i=1}^{N} \sum_{j=1}^{N} \alpha_{i} \alpha_{j} y_{i} y_{j}\left(x_{i} \cdot x_{j}\right)-\sum_{i=1}^{N} \alpha_{i} \\
+\text { s.t. } &amp; \sum_{i=1}^{N} \alpha_{i} y_{i}=0 \\
+&amp; 0 \leqslant \alpha_{i} \leqslant C, \quad i=1,2, \cdots, N
+\end{array}\tag{14}
+\]</span> 此时此刻恰如彼时彼刻，使用普通的二次规划算法或者更高效的SMO求解<span class="math inline">\((14)\)</span>得到最优的<span class="math inline">\(\alpha_{i}^{*}\)</span>，进而得到软间隔SVM的解： <span class="math display">\[
+w^{*}=\sum_{i=1}^{N} \alpha_{i}^{*} y_{i} x_{i} \\
+b^{*}=y_{j}-\sum_{i=1}^{N} \alpha_{i}^{*} y_{i}\left(x_{i} \cdot x_{j}\right)\tag{15}
+\]</span> 其中，<span class="math inline">\(y_{j}\)</span>要满足<span class="math inline">\(0&lt;\alpha_j&lt;C\)</span>。 ## 非线性可分 上面讨论了线性分类问题，对于非线性可分问题，SVM的思想是做一个变换<span class="math inline">\(\phi(\vec{x})\)</span>，将样本映射到另外一个空间，也许就线性可分了。 由于目标函数和决策函数<strong>只依赖于样本对之间的点积</strong>，所以无需显式定义变换<span class="math inline">\(\phi(\vec{x})\)</span>，只要定义一个函数<span class="math inline">\(K(\vec{x_i},\vec{x_j})=\phi(\vec{x_i})\cdot\phi(\vec{x_j})\)</span>提供新空间的样本点的点积即可，<span class="math inline">\(K\)</span>叫做<strong>Kernel Function</strong>。 此时原优化问题为： <span class="math display">\[
+\begin{array}{ll}
+\min _{w, b, \xi} &amp; \frac{1}{2}\|w\|^{2}+C \sum_{i=1}^{N} \xi_{i} \\
+\text { s.t. } &amp; y_{i}\left(w^T \phi(x_{i})+b\right) \geqslant 1-\xi_{i}, \quad i=1,2, \cdots, N \\
+&amp; \xi_{i} \geqslant 0, \quad i=1,2, \cdots, N
+\end{array}
+\]</span> 对偶问题为： <span class="math display">\[
+\begin{array}{ll}
+\min _{\alpha} &amp; \frac{1}{2} \sum_{i=1}^{N} \sum_{j=1}^{N} \alpha_{i} \alpha_{j} y_{i} y_{j}\left(K(x_{i},x_{j})\right)-\sum_{i=1}^{N} \alpha_{i} \\
+\text { s.t. } &amp; \sum_{i=1}^{N} \alpha_{i} y_{i}=0 \\
+&amp; 0 \leqslant \alpha_{i} \leqslant C, \quad i=1,2, \cdots, N
+\end{array}
+\]</span> 一种常用的kernel是线性的：<span class="math inline">\((\vec{u}\cdot\vec{v}+1)^n\)</span>，当前空间的<span class="math inline">\(u\)</span>和<span class="math inline">\(v\)</span>通过简单的点积映射到了另一个空间； 另一种kernel是高斯核：<span class="math inline">\(e^{-\frac{||x_i-x_j||^2}{\sigma}}=e^{-\gamma{||x_i-x_j||}^2}\)</span>。 高斯核对应高斯径向基函数分类器，这里有2个参数<span class="math inline">\(C\)</span>和<span class="math inline">\(\gamma\)</span>需要调节：惩罚系数<span class="math inline">\(C\)</span>表示分类器对于误差的宽容度，<span class="math inline">\(C\)</span>越大表示越不能容忍误差，容易过拟合，按照经验可以在<span class="math inline">\([10^{-4},10^4]\)</span>间调节；<span class="math inline">\(\gamma\)</span>控制径向作用范围，<span class="math inline">\(\gamma\)</span>越大，径向作用范围越小，有可能将每个样本点单独形成一个分类，容易过拟合，<span class="math inline">\(\gamma\)</span>过小，径向范围过大，容易将2个样本映射为同一个点，无法区分，一般<span class="math inline">\(\gamma=\frac{1}{样本特征数}\)</span>。另外，这2个参数可以通过交叉验证和grid-search来调整。 ## 扩展 SVM处理多分类问题的方式主要有2种：</p>
+<ul>
+<li>one-against-one 在每2个类之间都构造一个binary SVM，共有<span class="math inline">\(C_m^2\)</span>个SVM，对新数据采用Voting的方式进行分类。</li>
+<li>one-against-the-rest 对每个类，将其作为正类，其余<span class="math inline">\(m-1\)</span>个类作为负类，共<span class="math inline">\(m\)</span>个SVM，对新数据采用winner-takes-all策略。</li>
+</ul>
+<p>如果样本不均衡，目标函数中的惩罚项主要由多数类构成，超平面偏向少数类，甚至将所有样本都分在同一侧。 此时目标变为了在不严重损失多数类精度的情况下，在少数类上获得尽可能高的分类正确率。一般来讲有2种做法：</p>
+<ul>
+<li>数据合成 对少数类样本进行分析并根据其特点人工插值合成新样本添加到数据集中，构成均衡数据集。比较常用的方法是SMOTE(Synthetic Minority Oversampling Technique)。</li>
+<li>加权SVM 将少数类分错的代价很大，所以在惩罚项中对两个类设置不同的惩罚系数，少数类的系数设置更大，甚至可以对每个样本都设置不同的惩罚系数，此时原优化问题变为： <span class="math display">\[
+\begin{array}{ll}
+\min _{w, b, \xi} &amp; \frac{1}{2}\|w\|^{2}+C^+ \sum_{y_i=1} \xi_{i}+C^-\sum_{y_i=-1} \xi_{i} \\
+\text { s.t. } &amp; y_{i}\left(w^T \phi(x_{i})+b\right) \geqslant 1-\xi_{i}, \quad i=1,2, \cdots, N \\
+&amp; \xi_{i} \geqslant 0, \quad i=1,2, \cdots, N
+\end{array}
+\]</span> 对偶问题： <span class="math display">\[
+\begin{array}{ll}
+\min _{\alpha} &amp; \frac{1}{2} \sum_{i=1}^{N} \sum_{j=1}^{N} \alpha_{i} \alpha_{j} y_{i} y_{j}\left(K(x_{i},x_{j})\right)-\sum_{i=1}^{N} \alpha_{i} \\
+\text { s.t. } &amp; \sum_{i=1}^{N} \alpha_{i} y_{i}=0 \\
+&amp; 0 \leqslant \alpha_{i} \leqslant C^+, y_i=+1 \\
+&amp; 0 \leqslant \alpha_{i} \leqslant C^-, y_i=-1
+\end{array}
+\]</span></li>
+</ul>
+
       
     </div>
 
@@ -494,7 +641,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(138)/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/10/23/IO%20Multiplexing/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -508,7 +655,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(138)/" class="post-title-link" itemprop="url">Learn to Learn</a>
+            <a href="/2020/10/23/IO%20Multiplexing/" class="post-title-link" itemprop="url">IO Multiplexing</a>
         </h2>
 
         <div class="post-meta">
@@ -520,16 +667,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-06-03 18:20:32" itemprop="dateCreated datePublished" datetime="2021-06-03T18:20:32+08:00">2021-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2020-10-23 10:28:00" itemprop="dateCreated datePublished" datetime="2020-10-23T10:28:00+08:00">2020-10-23</time>
             </span>
 
           
@@ -543,15 +681,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>学会学习</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(138)/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>当多个独立的I/O事件同时发生时，I/O多路复用是一种解决方式。 为了提高服务器的吞吐量，<strong>单个线程</strong>通过记录跟踪每个I/O流的状态同时管理多个I/O流，非常类似时分复用技术。 <img src="https://img-blog.csdnimg.cn/20200825092905568.gif#pic_center" alt="在这里插入图片描述" /> I/O多路复用的具体实现方式有3种：<code>select()</code>、<code>poll()</code>和<code>epoll()</code>。 ## select <code>select()</code>系统调用：<code>int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);</code> <code>select()</code>会一直阻塞直到至少一个文件描述符就绪，可以读写，或者出现异常。 中间3个参数会被修改，表示哪个FD准备好了，最后一个表示等待时间，NULL表示无限等待。 返回就绪的FD数目，有错-1。只知道有就绪，不知道哪个FD就绪了。 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> s = socket();</span><br><span class="line">bind();</span><br><span class="line">listen();</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> fd[];  <span class="comment">// 需要监听的socket集合</span></span><br><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">	<span class="keyword">int</span> n = select();</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; fd.size(); ++i) &#123;</span><br><span class="line">		<span class="keyword">if</span> (FD_ISSET()) &#123;  <span class="comment">// 判断哪个socket接收到数据</span></span><br><span class="line">			<span class="comment">// 处理数据</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> <code>select()</code>是阻塞方法，只有某个socket接收到数据才会继续执行，唤醒进程。 直接的方式缺点就比较多：</p>
+<ul>
+<li>时间开销大，所以规定最多监听1024个socket；</li>
+<li>每次调用都要把fd集合从用户态拷贝到内核态。</li>
+<li>线程不安全：</li>
+</ul>
+<blockquote>
+<p>If a file descriptor being monitored by select() is closed in another thread, the result is unspecified. ## poll 去掉了1024的限制，线程不安全。 ## epoll 线程安全，知道哪个FD就绪，只有Linux支持。 相比于<code>select()</code>，<code>epoll()</code>不会无差别轮询，只处理接收到数据的socket，这样复杂度就降低为<span class="math inline">\(O(k)\)</span>。 ## Reference <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/32163005/answer/55772739">I/O多路复用是什么意思</a></p>
+</blockquote>
+
       
     </div>
 
@@ -570,7 +709,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(139)/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/10/18/%E9%AD%8F%E6%99%8B%E9%A3%8E%E5%BA%A6%E6%B5%85%E6%8E%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -584,7 +723,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(139)/" class="post-title-link" itemprop="url">Learn to Learn</a>
+            <a href="/2020/10/18/%E9%AD%8F%E6%99%8B%E9%A3%8E%E5%BA%A6%E6%B5%85%E6%8E%A2/" class="post-title-link" itemprop="url">魏晋风度浅探</a>
         </h2>
 
         <div class="post-meta">
@@ -596,16 +735,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-06-03 18:20:32" itemprop="dateCreated datePublished" datetime="2021-06-03T18:20:32+08:00">2021-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2020-10-18 14:00:00" itemprop="dateCreated datePublished" datetime="2020-10-18T14:00:00+08:00">2020-10-18</time>
             </span>
 
           
@@ -619,15 +749,56 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>学会学习</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(139)/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>从小学作文开始，就喜欢写一些辞藻华丽的诗歌文章。 竹林七贤我当时只听说过山涛、阮籍和嵇康，引用之意是觉这几位遗世独立、傲然风骨，没有世俗羁绊，整日琴棋书画、饮酒作乐、不问世事，潇洒写意的生活，正是吾向往之。《广陵散》和《与山巨源绝交书》更是勾起了我对于嵇康无限的崇拜。 我极喜欢嵇康和纳兰性德，即使一些毫无关联的题目，也要用他们的事例强行去阐述论点。但由于只喜欢钻研近现代的战争史（可以原谅，男孩一般都喜欢枪支、火炮等近现代武器），一直对古代史不感兴趣，觉得几千年前的文化故事不过是落后、腐朽的代名词而已，所以其实对一些人物只是略知一二，最近花了些时间重新捋了一下魏晋那段历史，故分享于此。 ## 历史背景 我一直觉得想要真正了解一段文化、一个人物，就首先要了解他们所处的历史时代。 曹操在东汉末年的群雄逐鹿中“挟天子以令诸侯”，在三国末期势力最强。曹操去世后，其子曹丕于公元220年建立曹魏政权。公元265年，司马炎建立西晋，史称晋武帝。竹林七贤就是生活在这样一段历史时期： 山涛：205~283 阮籍：210~263 嵇康：224~263 刘伶：221~300 向秀：227~272 阮咸：不详 王戎：234~305 曹丕去世后，曹叡即位，公元239年隆冬时节，曹叡驾崩之际，将皇位传给仅仅8岁的曹芳，并将其同时托孤给司马懿和曹爽，于是在接下来漫长的几十年中，曹氏集团和司马氏集团开始了你死我活的政治斗争，史称“曹马之争”。 ## 竹林七贤 在那个极其黑暗动荡的乱世之中，文学和艺术却得到了出乎意料的大发展，人们对自由解放的追求达到了极致，鲁迅先生称之为魏晋风度。当时盛行清谈和隐逸，古人的心灵更加丰富和缠绵，规则的约束压抑了个性与自我，却在频频交流中迎来了文化的繁荣。不要用成王败寇的观点去评价历史人物，参差百态，实乃幸福本源。</p>
+<p>而对魏晋风度影响最大的自然就是竹林七贤，虽然百年之后后人将其称之为七贤，但这个文人沙龙的规模其实大于7人，之所以定为七贤，据刘强老师的说法是为了攀附《论语》：</p>
+<blockquote>
+<p>贤者辟世，其次辟地，其次辟色，其次辟言。作者七人矣。</p>
+</blockquote>
+<p>另外，关于竹林七贤是否因为经常在竹林活动而得名也存疑。陈寅恪先生认为有可能是借佛经之中的“竹林精舍”的故事来表达出世的理想。据考证，他们的活动地点在都城洛阳以及山阳（今云台山）附近，后来当地可能为了借竹林七贤的名声促进旅游业的发展，所以人工栽种了一些竹林。</p>
+<p>当时流行修身齐家治国平天下，但是这些才华横溢的文人开始却不愿做官，这是为什么呢？</p>
+<p>“曹马之争”愈演愈烈，再加上这些名士的名气和影响力，他们被逼站队才能得以生存。那么问题来了，是站在司马家族一边，还是支持曹氏集团呢？曹爽此时被封为大将军，司马懿则是太尉，选择稍有不慎，很可能会被秋后算账。</p>
+<p>作为老大哥，山涛最先受到“曹马之争”的冲击。</p>
+<p>山涛早年丧父，出身庶族，隐居不仕，刘老师说可能是因为时机不成熟，2个政治集团的形势不明朗。山涛本人是有政治抱负的，但为了自保只能暂时推脱出仕邀请。</p>
+<p>公元244年，他觉得形势明朗，自己的机会来了，终于在40岁时开始了官宦生涯，并且选择站到曹爽队伍里。</p>
+<p>为了彻底击败曹氏集团，司马懿称病不朝，以退为进。极富政治头脑的山涛嗅出了不同的味道，突然醒悟，夜半弃官。</p>
+<p>山涛弃官以后，司马懿在称病迷惑曹爽的同时，积累军事力量、联络曹魏老臣取得道义支持、散播舆论蛊惑人心，家族势力日渐强大。而就在此时，山涛结交了阮籍、嵇康等名士，整日醉饮玩乐。</p>
+<p>公元249年，司马懿发动政变，一举粉碎了政敌曹爽集团，史称“高平陵之变”，以谋反罪处死了曹氏整个家族，数千人惨死，竹林七贤也受到了惊吓。接着为了缓解白色恐怖的气氛，司马家族开始招贤纳士、笼络人心，竹林七贤自然也在招贤之列：</p>
+<p>山涛由于和司马氏的姻亲关系，第二次做官便凭借亲戚的身份主动投靠司马师，从此以后官运亨通，步入了仕途的快车道。</p>
+<p>相比之下，在音乐、诗赋方面才华横溢的阮籍就显得异常凄惨。</p>
+<p>阮籍的背景十分复杂，他的父亲阮瑀是建安七子之一，和曹魏关系密切；同时他又是司马氏的亲戚。 被招纳时，由于害怕司马懿的屠刀，于是阮籍答应为官，做了一个闲职。但他尸位素餐，整日划水摸鱼，几乎没有作为。并且他和司马氏倡导的封建礼教格格不入（司马氏当时号召“以孝治天下”，公元258年左右，阮籍丧母，他公然违背礼法，在葬礼期间喝酒吃肉），生活得极其痛苦但又不想过早结束生命，所以只能寄托于司马懿的死亡。</p>
+<p>司马懿死后，其子司马师又把阮籍召去做官。司马昭上台后，为了拉拢阮籍，想要将阮籍的女儿嫁给司马昭的儿子司马炎，阮籍只能用烂醉如泥来应付。天天这样也不是办法，他就主动求官，调往外地，金蝉脱壳之计，但很不幸，十天后又被司马昭看穿并召回幕府。从此慎言慎行、明哲保身、郁郁寡欢。</p>
+<p>嵇康死后，阮籍抑郁而终，晚年被迫为司马昭写了一篇歌功颂德的《劝进文》，成为了人生的污点。</p>
+<p>向秀跟嵇康关系最好，嵇康的死给他带去了巨大的阴影，后来为了自保也踏上了仕途。</p>
+<p>王戎后来做了大官，却变得非常吝啬，跟年轻时候判若两人，但是他依然很重情谊。 阮咸后来被山涛举荐，但没有被任用。</p>
+<p>刘伶据说是7人里最丑的，但是他的精神自我十分强大，整日烂醉如泥，在酒中放飞自我，晚景凄凉。代表作《酒德颂》，刘强老师说他是真正的行为艺术家hh。 ## 嵇康 嵇康出身普通，自幼颠沛流离。和曹操同乡，其妻子是曹操的曾孙女长乐亭主，嵇康最后被司马昭所杀可能与这个因素也有关系。诗歌、文章、书法、乐理造诣很高，据传还是个大帅哥，史书记载：</p>
+<blockquote>
+<p>嵇康为人，肃肃如松下风，酒醉时倾倒，若玉山之将崩。</p>
+</blockquote>
+<p>他提出越名教任自然，反对礼教，追求自然和本我，厌恶政治斗争，据传嵇康在打铁时，司马氏的走狗钟会前来探访，所谓道不同不相与谋，故意把钟会晾在一边不说，走前还冷嘲热讽了一通。</p>
+<p>当时司马师废掉了曹芳，引起淮南兵变，嵇康也想起兵响应，被山涛劝阻。</p>
+<p>公元255年，司马师在平定叛乱时，由于得病死掉了。随后司马昭上台，希望招纳嵇康，嵇康借口避地河东。</p>
+<p>嵇康以宽厚待人，虽然他的哥哥嵇喜还有几个朋友做了司马氏的官，但仍然没有影响他们的友谊。对待朋友友好，但是对待敌人却像严冬一样冷峻无情，也导致了后来悲剧的发生。</p>
+<p>后来他又多次拒绝司马昭的邀请，但很不幸，嵇康最终还是卷进了政治斗争： 皇帝曹髦一直被司马昭操控，被迫封其为相国，眼看分分钟就要被取代的节奏。后来也由此诞生一个成语：司马昭之心——路人皆知。公元260年，曹髦很快就被司马昭干掉了，又找了一个傀儡。</p>
+<p>公元261年，山涛升迁，找到嵇康希望他代替自己之前的官职。两人虽然“契若金兰”，但嵇康依然愤怒地写下《与山巨源绝交书》，极尽讽刺羞辱山涛，他觉得山涛拉拢他是为了缓解自己的尴尬，一起下水就不觉得那么罪过了。嵇康在书里自明心志：自己生性疏懒，阐述了自己做官的七不堪、二不可： 没法睡懒觉；喜欢休闲弹琴，出去玩不自由；需要正襟危坐；不喜欢写公务信；不喜欢吊丧；不喜欢和俗人共事；性情不耐烦，不喜欢做繁琐的事情。 菲薄古代的圣贤，被发现就挂了；性格刚烈、嫉恶如仇，沉不住气，不适合做官。</p>
+<p>历史上关于两人是否真的绝交有争论：尤其是后来还发生了托孤事件。</p>
+<p>屋漏偏逢连夜雨，接下来又发生了吕安事件，直接将嵇康送入了火坑之中：</p>
+<p>吕巽是吕安的哥哥，对吕安的妻子有非分之想并且给他带了绿帽子，吕安告诉了嵇康，嵇康严词谴责了吕巽，但为了声誉，劝吕安隐忍不发，事情就这样被捂了下来。</p>
+<p>吕巽和钟会关系很好，为了报复吕安，他向钟会进献谗言，钟会很可能为了牵出嵇康，以报一箭之仇，不久后就抓了吕安。嵇康听到消息后十分愤怒，写了一封《与吕长悌绝交书》，之后只身前往洛阳，去为吕安辩护。</p>
+<p>吕安在流放途中，给嵇康写了一封言辞激烈的信。大意是说天下大乱，自己承受冤屈，他要改天换地。这封信很快落到了钟会手上，钟会终于等到了机会。</p>
+<p>吕安事件由此升级为谋反罪，嵇康被当作同犯抓了。司马昭本来就忌惮嵇康，对他的不合作态度怀恨在心，但对于是否要杀嵇康也犹豫不决，此时钟会又站了出来上纲上线，说嵇康上不臣天子，下不事王侯，私下又罗织了几个理由：他说嵇康是人中龙凤，并且当年有起兵谋反之意。</p>
+<p>欲加之罪，何患无辞？于是吕安和嵇康被关入死囚牢房，等待秋后问斩。</p>
+<p>命犯小人，嵇康入狱后，有几千太学生为他抱打不平。他也在狱中反思自己，写下了《幽愤诗》，觉得自己虽然心地善良，但却没有识别坏人的能力。</p>
+<p>临死前将其儿子嵇绍托付给山涛，有人说这是为了缓解山涛的愧疚之意，山涛接受了嵇康的托孤，把嵇绍培养的很好：</p>
+<blockquote>
+<p>巨源在，汝不孤矣！</p>
+</blockquote>
+<p>就在行刑前，太学生又请愿释放嵇康当太学老师。司马昭看到嵇康如此的影响力，杀心更重： 公元263年，嵇康与吕安一起在都城洛阳被处死。</p>
+<p>据记载，行刑那天人山人海，嵇康顾看日影、神色坦然。</p>
+<p>嵇康找哥哥嵇喜要了一把琴，嵇喜果然随身携带，而且嵇康的弹奏要求竟然被同意： 在刑场上，他平静呼吸，调整琴弦，弹完了最后的哀歌《广陵散》后说到：当年有一个朋友袁孝尼求学此散，自己由于吝惜，没有教给他：</p>
+<blockquote>
+<p>广陵散于今绝矣！ ## Reference 同济大学的刘强老师是魏晋史的专家，百家讲坛和上海图书馆系列讲座中都收录了他的精彩分享： <a target="_blank" rel="noopener" href="http://tv.cctv.com/lm/bjjt/index.shtml#&amp;Type=0&amp;Y=2010&amp;M=10">百家讲坛之竹林七贤</a> <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Zt411d7Fr">竹林七贤与魏晋风度</a></p>
+</blockquote>
+
       
     </div>
 
@@ -646,7 +817,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(14)/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/10/04/Bomb%20Lab/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -660,7 +831,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(14)/" class="post-title-link" itemprop="url">Learn to Learn</a>
+            <a href="/2020/10/04/Bomb%20Lab/" class="post-title-link" itemprop="url">Bomb Lab</a>
         </h2>
 
         <div class="post-meta">
@@ -672,16 +843,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-06-03 18:20:32" itemprop="dateCreated datePublished" datetime="2021-06-03T18:20:32+08:00">2021-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2020-10-04 09:09:00" itemprop="dateCreated datePublished" datetime="2020-10-04T09:09:00+08:00">2020-10-04</time>
             </span>
 
           
@@ -695,15 +857,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>学会学习</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(14)/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>给了<code>bomb.c</code>和<code>bomb</code>二进制可执行目标程序，<code>bomb.c</code>不能直接编译和运行，只是有一些提示，但是程序大致结构是：有6个关卡，每个都需要输入（stdin/文件）一个字符串，运行后判断是否输入了正确的字符串。我们需要反汇编<code>bomb</code>，找到这6个正确的字符串。 我是在Amazon的云服务器上完成的，64位Red Hat。</p>
+<p>第一步把汇编代码扔到一个文件中，方便调试。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -d bomb &gt; bomb.asm</span><br></pre></td></tr></table></figure>
+<h2 id="phase-1">phase 1</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">0000000000400ee0 &lt;phase_1&gt;:</span><br><span class="line">  400ee0:	48 83 ec 08          	sub    $0x8,%rsp</span><br><span class="line">  400ee4:	be 00 24 40 00       	mov    $0x402400,%esi</span><br><span class="line">  400ee9:	e8 4a 04 00 00       	callq  401338 &lt;strings_not_equal&gt;</span><br><span class="line">  400eee:	85 c0                	test   %eax,%eax</span><br><span class="line">  400ef0:	74 05                	je     400ef7 &lt;phase_1+0x17&gt;</span><br><span class="line">  400ef2:	e8 43 05 00 00       	callq  40143a &lt;explode_bomb&gt;</span><br><span class="line">  400ef7:	48 83 c4 08          	add    $0x8,%rsp</span><br><span class="line">  400efb:	c3                   	retq</span><br></pre></td></tr></table></figure>
+<p>当参数少于7个时， 参数从左到右放入寄存器: rdi, rsi, rdx, rcx, r8, r9。 我们的input作为第一个参数存入rdi，第二个参数0x402400存入rsi，传入函数处理， 调用了<code>401338</code>处的函数<code>strings_not_equal</code>：</p>
+<p>在400ee4设个断点，看看402400里是啥：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">gdb</span><br><span class="line">file bomb</span><br><span class="line">b *0x400ee4</span><br><span class="line">run</span><br><span class="line">x/s Addr// 显示内存值为字符串</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200703101513705.png" alt="在这里插入图片描述" /> 为了确认这就是我们要的答案，再去看看调用的函数： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">0000000000401338 &lt;strings_not_equal&gt;:</span><br><span class="line">  401338:	41 54                	push   %r12</span><br><span class="line">  40133a:	55                   	push   %rbp</span><br><span class="line">  40133b:	53                   	push   %rbx</span><br><span class="line">  40133c:	48 89 fb             	mov    %rdi,%rbx # 第一个参数(地址)存入rbx</span><br><span class="line">  40133f:	48 89 f5             	mov    %rsi,%rbp # 第二个参数(地址)存入rbp</span><br><span class="line">  401342:	e8 d4 ff ff ff       	callq  40131b &lt;string_length&gt; # 用rdi的值调用string_length</span><br><span class="line">  401347:	41 89 c4             	mov    %eax,%r12d # 返回值存入r12d</span><br><span class="line">  40134a:	48 89 ef             	mov    %rbp,%rdi # 第二个参数作为入参调用string_length</span><br><span class="line">  40134d:	e8 c9 ff ff ff       	callq  40131b &lt;string_length&gt;</span><br><span class="line">  401352:	ba 01 00 00 00       	mov    $0x1,%edx</span><br><span class="line">  401357:	41 39 c4             	cmp    %eax,%r12d # 比较两个字符串的长度</span><br><span class="line">  40135a:	75 3f                	jne    40139b &lt;strings_not_equal+0x63&gt; # 不相等跳转</span><br><span class="line">  40135c:	0f b6 03             	movzbl (%rbx),%eax # 将rbx地址中的值(input的第一个字母)存入eax</span><br><span class="line">  40135f:	84 c0                	test   %al,%al</span><br><span class="line">  401361:	74 25                	je     401388 &lt;strings_not_equal+0x50&gt;</span><br><span class="line">  401363:	3a 45 00             	cmp    0x0(%rbp),%al # 比较rbp地址中的值(待比较的第一个字母)</span><br><span class="line">  401366:	74 0a                	je     401372 &lt;strings_not_equal+0x3a&gt; # 相等跳转</span><br><span class="line">  401368:	eb 25                	jmp    40138f &lt;strings_not_equal+0x57&gt; # 不相等跳转</span><br><span class="line">  40136a:	3a 45 00             	cmp    0x0(%rbp),%al</span><br><span class="line">  40136d:	0f 1f 00             	nopl   (%rax)</span><br><span class="line">  401370:	75 24                	jne    401396 &lt;strings_not_equal+0x5e&gt;</span><br><span class="line">  401372:	48 83 c3 01          	add    $0x1,%rbx # 指针+1</span><br><span class="line">  401376:	48 83 c5 01          	add    $0x1,%rbp # 指针+1</span><br><span class="line">  40137a:	0f b6 03             	movzbl (%rbx),%eax</span><br><span class="line">  40137d:	84 c0                	test   %al,%al</span><br><span class="line">  40137f:	75 e9                	jne    40136a &lt;strings_not_equal+0x32&gt; # 跳回循环</span><br><span class="line">  401381:	ba 00 00 00 00       	mov    $0x0,%edx</span><br><span class="line">  401386:	eb 13                	jmp    40139b &lt;strings_not_equal+0x63&gt;</span><br><span class="line">  401388:	ba 00 00 00 00       	mov    $0x0,%edx</span><br><span class="line">  40138d:	eb 0c                	jmp    40139b &lt;strings_not_equal+0x63&gt;</span><br><span class="line">  40138f:	ba 01 00 00 00       	mov    $0x1,%edx</span><br><span class="line">  401394:	eb 05                	jmp    40139b &lt;strings_not_equal+0x63&gt;</span><br><span class="line">  401396:	ba 01 00 00 00       	mov    $0x1,%edx</span><br><span class="line">  40139b:	89 d0                	mov    %edx,%eax</span><br><span class="line">  40139d:	5b                   	pop    %rbx</span><br><span class="line">  40139e:	5d                   	pop    %rbp</span><br><span class="line">  40139f:	41 5c                	pop    %r12</span><br><span class="line">  4013a1:	c3                   	retq</span><br></pre></td></tr></table></figure> 所以这个函数就是比较两个字符串是否相同，先比较长度，再比较每个字符。故我们的第一个key就是Border relations with Canada have never been better. ## phase 2 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">0000000000400efc &lt;phase_2&gt;:</span><br><span class="line">  400efc:	55                   	push   %rbp</span><br><span class="line">  400efd:	53                   	push   %rbx</span><br><span class="line">  400efe:	48 83 ec 28          	sub    $0x28,%rsp # 栈指针-40</span><br><span class="line">  400f02:	48 89 e6             	mov    %rsp,%rsi # 栈指针作为第二个参数</span><br><span class="line">  400f05:	e8 52 05 00 00       	callq  40145c &lt;read_six_numbers&gt;</span><br><span class="line">  400f0a:	83 3c 24 01          	cmpl   $0x1,(%rsp) # 检查是否相等</span><br><span class="line">  400f0e:	74 20                	je     400f30 &lt;phase_2+0x34&gt; # 相等跳转</span><br><span class="line">  400f10:	e8 25 05 00 00       	callq  40143a &lt;explode_bomb&gt;</span><br><span class="line">  400f15:	eb 19                	jmp    400f30 &lt;phase_2+0x34&gt;</span><br><span class="line">  400f17:	8b 43 fc             	mov    -0x4(%rbx),%eax # (rbx-4)赋给eax</span><br><span class="line">  400f1a:	01 c0                	add    %eax,%eax</span><br><span class="line">  400f1c:	39 03                	cmp    %eax,(%rbx) # 比较当前数与下一个数</span><br><span class="line">  400f1e:	74 05                	je     400f25 &lt;phase_2+0x29&gt; # 相等跳转</span><br><span class="line">  400f20:	e8 15 05 00 00       	callq  40143a &lt;explode_bomb&gt;</span><br><span class="line">  400f25:	48 83 c3 04          	add    $0x4,%rbx</span><br><span class="line">  400f29:	48 39 eb             	cmp    %rbp,%rbx # 是否比完了6个数</span><br><span class="line">  400f2c:	75 e9                	jne    400f17 &lt;phase_2+0x1b&gt;</span><br><span class="line">  400f2e:	eb 0c                	jmp    400f3c &lt;phase_2+0x40&gt;</span><br><span class="line">  400f30:	48 8d 5c 24 04       	lea    0x4(%rsp),%rbx # 栈指针+4赋给rbx</span><br><span class="line">  400f35:	48 8d 6c 24 18       	lea    0x18(%rsp),%rbp # 栈指针+24赋给rbp</span><br><span class="line">  400f3a:	eb db                	jmp    400f17 &lt;phase_2+0x1b&gt;</span><br><span class="line">  400f3c:	48 83 c4 28          	add    $0x28,%rsp</span><br><span class="line">  400f40:	5b                   	pop    %rbx</span><br><span class="line">  400f41:	5d                   	pop    %rbp</span><br><span class="line">  400f42:	c3                   	retq</span><br></pre></td></tr></table></figure> 第一次是1，第二次是2，4，8，16，32 ## phase 3 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">0000000000400f43 &lt;phase_3&gt;:</span><br><span class="line">  400f43:	48 83 ec 18          	sub    $0x18,%rsp # 栈指针-24</span><br><span class="line">  400f47:	48 8d 4c 24 0c       	lea    0xc(%rsp),%rcx # 栈指针+12赋给rcx</span><br><span class="line">  400f4c:	48 8d 54 24 08       	lea    0x8(%rsp),%rdx # 栈指针+8赋给rdx</span><br><span class="line">  400f51:	be cf 25 40 00       	mov    $0x4025cf,%esi</span><br><span class="line">  400f56:	b8 00 00 00 00       	mov    $0x0,%eax</span><br><span class="line">  400f5b:	e8 90 fc ff ff       	callq  400bf0 &lt;__isoc99_sscanf@plt&gt; # 返回值存入eax</span><br><span class="line">  400f60:	83 f8 01             	cmp    $0x1,%eax</span><br><span class="line">  400f63:	7f 05                	jg     400f6a &lt;phase_3+0x27&gt; # 大于跳转</span><br><span class="line">  400f65:	e8 d0 04 00 00       	callq  40143a &lt;explode_bomb&gt; # 否则爆炸</span><br><span class="line">  400f6a:	83 7c 24 08 07       	cmpl   $0x7,0x8(%rsp) #(rsp+8)即输入的第一个整数与7比较</span><br><span class="line">  400f6f:	77 3c                	ja     400fad &lt;phase_3+0x6a&gt; # 大于爆炸</span><br><span class="line">  400f71:	8b 44 24 08          	mov    0x8(%rsp),%eax # 输入的第一个整数赋给eax</span><br><span class="line">  400f75:	ff 24 c5 70 24 40 00 	jmpq   *0x402470(,%rax,8) # 跳转8*rax+0x402470</span><br><span class="line">  400f7c:	b8 cf 00 00 00       	mov    $0xcf,%eax</span><br><span class="line">  400f81:	eb 3b                	jmp    400fbe &lt;phase_3+0x7b&gt;</span><br><span class="line">  400f83:	b8 c3 02 00 00       	mov    $0x2c3,%eax</span><br><span class="line">  400f88:	eb 34                	jmp    400fbe &lt;phase_3+0x7b&gt;</span><br><span class="line">  400f8a:	b8 00 01 00 00       	mov    $0x100,%eax</span><br><span class="line">  400f8f:	eb 2d                	jmp    400fbe &lt;phase_3+0x7b&gt;</span><br><span class="line">  400f91:	b8 85 01 00 00       	mov    $0x185,%eax</span><br><span class="line">  400f96:	eb 26                	jmp    400fbe &lt;phase_3+0x7b&gt;</span><br><span class="line">  400f98:	b8 ce 00 00 00       	mov    $0xce,%eax</span><br><span class="line">  400f9d:	eb 1f                	jmp    400fbe &lt;phase_3+0x7b&gt;</span><br><span class="line">  400f9f:	b8 aa 02 00 00       	mov    $0x2aa,%eax</span><br><span class="line">  400fa4:	eb 18                	jmp    400fbe &lt;phase_3+0x7b&gt;</span><br><span class="line">  400fa6:	b8 47 01 00 00       	mov    $0x147,%eax</span><br><span class="line">  400fab:	eb 11                	jmp    400fbe &lt;phase_3+0x7b&gt;</span><br><span class="line">  400fad:	e8 88 04 00 00       	callq  40143a &lt;explode_bomb&gt;</span><br><span class="line">  400fb2:	b8 00 00 00 00       	mov    $0x0,%eax</span><br><span class="line">  400fb7:	eb 05                	jmp    400fbe &lt;phase_3+0x7b&gt;</span><br><span class="line">  400fb9:	b8 37 01 00 00       	mov    $0x137,%eax</span><br><span class="line">  400fbe:	3b 44 24 0c          	cmp    0xc(%rsp),%eax</span><br><span class="line">  400fc2:	74 05                	je     400fc9 &lt;phase_3+0x86&gt;</span><br><span class="line">  400fc4:	e8 71 04 00 00       	callq  40143a &lt;explode_bomb&gt;</span><br><span class="line">  400fc9:	48 83 c4 18          	add    $0x18,%rsp</span><br><span class="line">  400fcd:	c3                   	retq</span><br></pre></td></tr></table></figure> 400f51将地址0x4025cf赋给esi，作为第二个参数，看下这个地址有啥：为了方便，我们把前面问题的答案仍在一个文件ans.txt中， <img src="https://img-blog.csdnimg.cn/20200703164446264.png" alt="在这里插入图片描述" /> 输入是2个整数，第一个不能大于7，基于第一个整数（0-7）跳转...... </explode_bomb>&lt;/phase_3+0x86&gt;&lt;/phase_3+0x7b&gt;</explode_bomb>&lt;/phase_3+0x7b&gt;&lt;/phase_3+0x7b&gt;&lt;/phase_3+0x7b&gt;&lt;/phase_3+0x7b&gt;&lt;/phase_3+0x7b&gt;&lt;/phase_3+0x7b&gt;&lt;/phase_3+0x7b&gt;&lt;/phase_3+0x6a&gt;</explode_bomb>&lt;/phase_3+0x27&gt;</phase_3>&lt;/phase_2+0x1b&gt;&lt;/phase_2+0x40&gt;&lt;/phase_2+0x1b&gt;</explode_bomb>&lt;/phase_2+0x29&gt;&lt;/phase_2+0x34&gt;</explode_bomb>&lt;/phase_2+0x34&gt;</read_six_numbers></phase_2>&lt;/strings_not_equal+0x63&gt;&lt;/strings_not_equal+0x63&gt;&lt;/strings_not_equal+0x63&gt;&lt;/strings_not_equal+0x32&gt;&lt;/strings_not_equal+0x5e&gt;&lt;/strings_not_equal+0x57&gt;&lt;/strings_not_equal+0x3a&gt;&lt;/strings_not_equal+0x50&gt;&lt;/strings_not_equal+0x63&gt;</string_length></string_length></strings_not_equal></explode_bomb>&lt;/phase_1+0x17&gt;</strings_not_equal></phase_1></p>
+
       
     </div>
 
@@ -722,7 +885,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(15)/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/09/26/%E8%B0%88%E8%B0%88%E6%88%91%E7%9A%84%E7%90%86%E6%83%B3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -736,7 +899,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(15)/" class="post-title-link" itemprop="url">Learn to Learn</a>
+            <a href="/2020/09/26/%E8%B0%88%E8%B0%88%E6%88%91%E7%9A%84%E7%90%86%E6%83%B3/" class="post-title-link" itemprop="url">谈谈我的理想</a>
         </h2>
 
         <div class="post-meta">
@@ -748,16 +911,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-06-03 18:20:32" itemprop="dateCreated datePublished" datetime="2021-06-03T18:20:32+08:00">2021-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2020-09-26 16:03:00" itemprop="dateCreated datePublished" datetime="2020-09-26T16:03:00+08:00">2020-09-26</time>
             </span>
 
           
@@ -771,15 +925,37 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>学会学习</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(15)/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>今年6月份我写过一篇文章，总结了过去几年发生的一些事情：我提到如果要获得<strong>世俗意义上的成功</strong>应该怎么去做，我自己的选择当然也有这方面的考虑，毕竟一直穷着过来的，对于CS这样的就业形势不可能不动心，当然选择CS也不全是功利，我自己还是挺喜欢做这些事情的。</p>
+<p>这一篇我想接着写写内心更深处的一些想法。起因是前段时间加入了一个豆瓣小组：<em>985废物引进计划</em>，看到了家家那本难念的经，当然更欣慰地看到很多前辈已经迈出了戳破怪圈的第一步，开始去做自己暂时没有勇气去做的事情，我备受鼓舞。</p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/396643886">这个问题</a>的最高赞回答跟我的一些经历颇为相似，评论里也有同学意识到自己的不足： <img src="https://img-blog.csdnimg.cn/20200816165343450.png" alt="在这里插入图片描述" /> 我多多少少有着跟她类似的问题：我自己从小到大理科天赋都不高，原来觉得数学还好点，但是见识了更多世面、学的更加复杂以后，我的数学也是差劲，自然也没什么兴趣。大家都知道，数学是计算机的基础，我对计算机也没有天赋，理解算法很慢，一个点常常需要反复练习。但是喜欢和天分并不矛盾，我并不担心自己在IT业找不到好工作，因为CS其实只需要大量的中等生，其他行业也是如此。我想表达的是：既然没有天分，<strong>虽然喜欢但是没有到那么喜欢，或者具体来说，如果让我在不考虑世俗因素下去选择未来的工作，毫不意外我有更加prefer的选项，那就是去高中教书。</strong></p>
+<p>这个想法其实由来不久，最初是在大一的暑假，支教完回来。我觉得那段时间我有着久违的开心，非常喜欢和学生在一起，不论是出于一些炫耀的目的，包括向一起去的女同学炫耀，或者是向孩子们炫耀，亦或是因为自己过于固执的要实现所谓的理想，还是因为自己从农村出来的一路上的感悟，也包括自己高中那些美好但遗憾的回忆，这些叠加在一起，让我觉得自己的理想就是去高中当老师，去贫困地区的高中当老师。</p>
+<p>后来经历了很多事情，李永乐老师对我影响颇深。前不久我的学生参加了高考，得知他有机会去高校学习，我比自己当年考上大学还要兴奋。</p>
+<p>很感慨：人的欲望总是无穷无尽，想明白了自己还比较喜欢做啥，现在这个方向发展的也还不错，就想着更加精神的，更加完美的方向，这样也好，有超乎金钱、权力的理想总归是好事，可能也是从尊重需求迈向自我需求的跨越。所以我决定来扒一扒，当然这只是包括我在内少部分人的思想境况，我当然不希望大多人都这样，毕竟国家的发展需要方方面面的人才。</p>
+<p>以前看过一篇《肖申克的救赎》的<a target="_blank" rel="noopener" href="https://www.zhihu.com/answer/44595996">影评</a>，作者说自己最大的感悟在于Andy的经历所彰显出来的4步：</p>
+<ol type="1">
+<li>有理想和希望，永远不弃；</li>
+<li>有足够的勇气；</li>
+<li>有坚持行动的毅力；</li>
+<li>有行动的智慧。</li>
+</ol>
+<p>我大致走过了第一步，却没有足够的勇气去真的放弃机会收益，去真的和所谓的成功学搏斗，其实就是和自己的内心搏斗。至少，在我研究生刚毕业时候不敢，有朋友说可以等到35岁财务自由后再去做这件事，我之前也是这么考虑的，如果30岁前没有走到管理层（30以前没有进外企或者国内管理岗，跳槽稳定行业），就进入体制内。但我担心的是：届时我是否也有勇气放弃已经得到的一切，去从头再来。</p>
+<p>我本来就是一个占有欲比较强的人，希望能做到很多事的兼得，这很不好，我已经在改正了。</p>
+<p>目前的打算就是：努力掌握CS公司的选择权，不论是国内高薪还是轻松外企，同时了解高中的教师工作，拿到资格证。下一步就是挣钱，挣很多很多钱，尽可能让自己退出时有底气，接下来就是去实现下理想，在体制内做些事情。</p>
+<p>有段时间也考虑过直接去一个轻松的外企，或者直接进入体制内工作，但我觉得这些选择有点过于自我，我的成就感不会太高，还是帮别人提升价值更好一些。</p>
+<p>明确理想是一个渐进的过程，那个时候我揭开了它的第一层面纱，但还是朦朦胧胧，因为我不知道自己应该怎么去做才能实现？所以也在豆瓣抱怨，这也是我常常给自己贴上伪理想主义者标签的原因，因为不敢勇敢追求的理想实在登不上大雅之堂，但是又有一些经历和交流、思考后，我揭开了它的第二层面纱，我不知道第三层面纱何时才能揭开？</p>
+<p>寻找理想的过程有反复、有曲折， 18年7月：</p>
+<blockquote>
+<p>自己又害怕去找工作，又懒得去考研。整天在知乎上看大神的回答，互相吹捧，月入多少，仿佛自己也是那类人，也在他们的圈子里。 恐怕唯一真正体验到的，就是对死亡的恐惧。我也害怕自己一辈子碌碌无为。</p>
+</blockquote>
+<p>19年4月时：</p>
+<blockquote>
+<p>为尘世所牵绊，渐渐忘记了自己的理想和希望， 没有了理想，也没有了勇气</p>
+<p>我希望能找到这个问题的答案，知乎 看书 交谈等等，不想每天都过得匆匆忙忙，却也浑浑噩噩</p>
+<p>有一个相爱的人，一份不错的工作，朋友都健康快乐。</p>
+</blockquote>
+<p>以前被所谓的成功学欺骗了太久，相信所谓的马云、王健林之流的鬼话，觉得自己一定要挣很多很多钱才可以，简言之：以前追求的是个人利益最大化，当然这没什么不好，也会在一定程度上促进整个人类的进步，但我想，这样的贡献是极其微小的，甚至不值一提，帮人增值也许贡献更大，或者说更适合我。</p>
+<p>后来又觉得活得轻松快乐才是最重要的，于是就想毕业后进入体制/外企，或者挣点钱再去体制内，整天过着人一样的生活，再后来我的思想更加开放，想着能不能在轻松自由的同时做出一点微薄的贡献，帮助他人成长，尤其是帮助贫苦人民成长。</p>
+
       
     </div>
 
@@ -798,7 +974,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(16)/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/09/16/MIT%20Operating%20System%20Engineering#0%20Booting%20a%20PC/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -812,7 +988,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(16)/" class="post-title-link" itemprop="url">Learn to Learn</a>
+            <a href="/2020/09/16/MIT%20Operating%20System%20Engineering#0%20Booting%20a%20PC/" class="post-title-link" itemprop="url">MIT Operating System Engineering#0 Booting a PC</a>
         </h2>
 
         <div class="post-meta">
@@ -824,16 +1000,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-06-03 18:20:32" itemprop="dateCreated datePublished" datetime="2021-06-03T18:20:32+08:00">2021-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2020-09-16 01:25:00" itemprop="dateCreated datePublished" datetime="2020-09-16T01:25:00+08:00">2020-09-16</time>
             </span>
 
           
@@ -847,15 +1014,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>学会学习</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(16)/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p><em>最近在学MIT的OS课程，lab绝对业界良心。 XJTU的操作系统课就是写一个系统调用，改下进程软中断通信的代码，代码量不足500。。。 MIT上课用xv6来教学，lab是做一个完整的小型操作系统JOS。</em></p>
+<hr />
+<h2 id="配置环境">配置环境</h2>
+<p>虽然没什么技术含量，但是这真的是令人头疼的事。附：<a target="_blank" rel="noopener" href="https://blog.csdn.net/eye_water/article/details/80638463">图文教程</a> 需要一台x86机器，一般的Linux发行版应该都可以，可以使用<code>unabenlme -a</code>查看，如果显示<code>xxx GNU/Linux</code>就行，MIT的学生可以使用配置好的远程Server。 本来打算白嫖下Harvard的服务器，但是没有<code>root</code>权限，只能可怜巴巴地在Win环境用虚拟机。 平台：Vmware Player15，<a target="_blank" rel="noopener" href="http://old-releases.ubuntu.com/releases/14.04.5/">Ubuntu-14.04.5-desktop-i386.iso</a></p>
+<ul>
+<li>检验编译链 <code>objdump -i</code>：第二行显示elf32-i386； <code>gcc -m32 -print-libgcc-file-name</code>：打印出/usr/lib/gcc/i686-linux-gnu/4.8/libgcc.a</li>
+<li>安装git：<code>sudo apt-get install git</code></li>
+<li>下载qemu 建议不要作死，安装MIT Patch过的版本：<code>git clone https://github.com/mit-pdos/6.828-qemu.git qemu</code></li>
+<li>安装依赖库 官方说要装5个库，但其实libtool-bin好像找不到，不过不影响后续： <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt<span class="literal">-get</span> install libsdl1.<span class="number">2</span><span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libglib2.<span class="number">0</span><span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libz<span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libpixman<span class="literal">-1</span><span class="literal">-dev</span></span><br></pre></td></tr></table></figure></li>
+<li>配置qemu 切到qemu目录，<code>./configure --disable-kvm --disable-werror --target-list="i386-softmmu x86_64-softmmu"</code> <code>[--prefix=PFX]</code>可选参数是选择安装路径，这里就默认在<code>/usr/local</code></li>
+<li>安装qemu：<code>sudo make &amp;&amp; sudo make install</code></li>
+<li>下载实验代码 根目录下新建6.828目录，切到该目录，<code>git clone https://pdos.csail.mit.edu/6.828/2018/jos.git lab</code>，切到<code>lab</code>目录，<code>make</code>就可以了。 ## PC Bootstrap 物理地址空间： <img src="https://img-blog.csdnimg.cn/20200523082913317.png" alt="在这里插入图片描述" /> 以前的PC内存只有1MB，Low Memory是PC唯一能用的RAM。VGA Display是VGA缓冲区和固件，BIOS以前都在ROM中，不过现今都在闪存中，做完系统初始化（PCI总线等重要设备），寻找bootable设备(硬盘)，读取boot loader加载OS，将控制权转OS。后来内存远远超过1MB，可用的也就有Extended Memory，不过为了后向兼容，还是保留了Low Memory，这样可用的RAM就被分为了两部分。如果64位系统，那么内存更大，这样为了兼容，32-bit memory mapped devices还是要保留，就又被割裂了。 ## The Boot Loader 硬盘的第一个分区存放启动程序，包括一个汇编文件<code>boot/boot.S</code>和一个C文件<code>boot/main.c</code>，启动程序将CPU从实模式转为32位保护模式，通过特殊的I/O指令读取内核。 ## The Kernel</li>
+</ul>
+
       
     </div>
 
@@ -874,7 +1046,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(17)/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/09/04/Web%20Proxy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -888,7 +1060,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(17)/" class="post-title-link" itemprop="url">Learn to Learn</a>
+            <a href="/2020/09/04/Web%20Proxy/" class="post-title-link" itemprop="url">Web Proxy</a>
         </h2>
 
         <div class="post-meta">
@@ -900,16 +1072,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-06-03 18:20:32" itemprop="dateCreated datePublished" datetime="2021-06-03T18:20:32+08:00">2021-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hills/" itemprop="url" rel="index"><span itemprop="name">Hills</span></a>
-                </span>
+              <time title="Created: 2020-09-04 14:26:00" itemprop="dateCreated datePublished" datetime="2020-09-04T14:26:00+08:00">2020-09-04</time>
             </span>
 
           
@@ -923,15 +1086,34 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>学会学习</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/03/Learn%20to%20Learn%20-%20%E5%89%AF%E6%9C%AC%20(17)/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="intro">Intro</h2>
+<p>Web Proxy是浏览器和服务器的中间人：浏览器访问网页时，将请求发给代理，由代理将该请求发给服务器；服务器返回结果时，先发送给代理，由代理发给浏览器。之所以这么做，是因为可以在Proxy这做一些事情： - 防火墙：<del>有些不能直接访问的网站可以通过代理去访问</del> ； - 匿名器：代理可以隐藏浏览器的信息，使其对服务器匿名； - 缓存：暂存服务器返回结果，加快访问速度。</p>
+<p>本项目要实现一个简单的Web Proxy，支持以下Features： - 中间人功能 - 并发 - 缓存 ## Background Knowledge - HTTP/1.0 GET 当用户在浏览器输入URL<code>http://www.cnblogs.com/EIMadrigal</code>并按下回车后，浏览器会向代理发送HTTP请求，请求行可能如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET http://www.cnblogs.com:8080/EIMadrigal HTTP/1.1</span><br></pre></td></tr></table></figure> 代理要将这个请求解析为主机名<code>www.cnblogs.com</code>、端口<code>8080</code>和路径<code>/EIMadrigal</code>，之后代理可以尝试连接<code>www.cnblogs.com</code>并且向服务器发送新的HTTP请求，请求行如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /EIMadrigal HTTP/1.0</span><br></pre></td></tr></table></figure> - Request Header <img src="https://img-blog.csdnimg.cn/20200726153711559.png" alt="在这里插入图片描述" /> 请求头可能有多行，每行的基本组成就是头部字段名和值，需要注意的是：HTTP请求的每一行都以<code>\r\n</code>结束，并且整个请求是以空行<code>\r\n</code>结束。 项目要求：<strong>对于浏览器自带的request header，代理应该原封不动地转发</strong>。但必须将以下4项补齐，即如果自带的请求头包含以下4项之一，就按照自带请求头转发；否则按照下面的默认值转发。对于自带的其它请求头，直接转发即可：</p>
+<p>Host：服务器主机名，如果浏览器自带，直接转发；否则使用请求行里解析出的hostname。 User-Agent：用户的操作系统/浏览器等信息。 Connection：第一次请求/响应完成后，当前连接是否keep alive。 Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Host: www.cnblogs.com</span><br><span class="line">User-Agent: Mozilla/<span class="number">5.0</span> (X11; Linux x86_64; rv:<span class="number">10.0</span><span class="number">.3</span>) Gecko/<span class="number">20120305</span> Firefox/<span class="number">10.0</span><span class="number">.3</span></span><br><span class="line">Connection: close</span><br><span class="line">Proxy-Connection: close</span><br></pre></td></tr></table></figure> - 端口 请求端口：URL中的可选字段，如果用户输入时指定，代理应该连接指定端口，否则使用默认端口80。 监听端口：代理应该在该端口监听用户的连接请求，由命令行参数给出。可以是1024~65536之间的未被其他进程占用的任意值。 ## Implementation - Sequential Web Proxy 代理首先要接收浏览器HTTP请求，将浏览器的标准请求解析，转换为自己的请求发送。 这里的实现不难，只要模仿Tiny Server在一个死循环中监听来自浏览器的请求，接收之后在<code>void doit(int fd)</code>里完成解析请求行、请求头、将处理后的请求发送给server、接收server的响应并写回浏览器。 一些比较方便的函数： <code>int accept(int listenfd, struct sockaddr *addr, int *addrlen)</code>：在<code>listenfd</code>等待连接请求，将client的socket信息和长度存入<code>addr</code>和<code>addrlen</code>； <code>int Open_clientfd(char *hostname, char *port)</code>：Open connection to server at &lt;hostname, port&gt;, return a socket descriptor ready for reading and writing. 读写时可以使用提供的RIO包。</p>
+<p>这里需要注意的是请求的解析：思路是在proxy这里整合所有的请求行和请求头信息，对于所有浏览器发来的请求头的内容，原封不动保存到<code>reqHeader</code>里；对于默认的4个请求头，缺少几个，就按照规定内容增加进去。 还要注意：因为规定<code>Connection</code>和<code>Proxy-Connection</code>都有Connection这个单词，所以用<code>strstr</code>查找的时候：如果浏览器自带的请求头没有<code>Connection</code>但是有<code>Proxy-Connection</code>，这时程序就可能误判为有<code>Connection</code>，所以最好用函数<code>strncmp</code>或者<code>memcmp</code>。</p>
+<p>要写一个非常robust的URI解析器还是挺繁琐的，由于C没有正则表达式（也许可以用其他语言写好编译成库，然后C程序调用？），需要考虑的情况很多。 首先明确URI的格式：一般由4部分组成：protocol://hostname:[port]/path/[parameters][?query][#fragment] 协议目前只支持HTTP和HTTPS，其它一律不合法。 因为一旦和服务器建立连接后，protocol和hostname就没用了，只需要path以及后面的query和fragment，为了方便起见，将/也放入path字段，因为其表示根目录，但是对于query和fragment，没有放?和#，因为找到请求内容的位置后，一些具体的搜索/片段直接用关键字即可，与?和#没关系，只有/特殊一些。 - Multiple Concurrent Requests 对于Iterative Server，同时只能处理一个连接请求：<img src="https://img-blog.csdnimg.cn/20200821122702755.png" alt="在这里插入图片描述" /> 当第二个客户试图去连接：调用<code>connect</code>会正常返回，但Server不会<code>Accept</code>该请求，会用TCP Listen Backlog技术将该请求入队；调用<code>rio_writen</code>也会正常返回，Server会把写入的数据存入缓存；调用<code>rio_readlineb</code>会阻塞，因为Server没有发送任何的response。</p>
+<p>解决方法就是并发处理，我们的代理要能同时处理多个请求，具体的方法很多：多进程、I/O多路复用、预线程化（类似生产者-消费者问题，先创建n个线程，相当于n个缓冲区），最直接的方式就是专门有一个线程负责监听，每收到一个连接请求，就开一个新线程去进行读写。这里要采用<strong>可分离</strong>的线程模型：当其终止时，内存资源会被系统自动回收。</p>
+<p>这部分本来很简单，但是写完后测试发现挂了： <img src="https://img-blog.csdnimg.cn/20200811181713826.png" alt="在这里插入图片描述" /> 这很可能是NOP Server出了问题，这个Server是用Python写的，我去启动了一下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./nop-server.py <span class="number">15000</span></span><br></pre></td></tr></table></figure> 发现： <img src="https://img-blog.csdnimg.cn/20200811182155577.png" alt="在这里插入图片描述" /> 这个问题是Python的版本不匹配，把<code>nop-server.py</code>第一行的<code>#!/usr/bin/python</code>改为<code>#!/usr/bin/python3</code>即可，指定用python3的解释器执行脚本。</p>
+<p>并发这块也妥了： <img src="https://img-blog.csdnimg.cn/20200811182851976.png" alt="在这里插入图片描述" /> 这里的测试逻辑是这样的：Client1通过proxy连接到nop-server，这个服务器永远不会发送response，也就是这条连接一直保持；Client2通过proxy连接到Tiny，看看能不能从Tiny取个文件回来，如果能，说明并发是ok的，如果不能，说明不支持并发。之所以要用nop-server，是因为这东西可以一直连接，比较方便。如果Client1也是通过proxy连Tiny，那么可能很快就执行完了，这时Client2再去连接，很可能就不是并发的访问了，失去了测试的意义。</p>
+<p>做第三部分之前，先实际测试下proxy的健壮性。用FireFox浏览器试试，先升级到最新版本，然后设置浏览器的代理方式： <img src="https://img-blog.csdnimg.cn/20200811194820393.png" alt="在这里插入图片描述" /> 在8080端口运行proxy，然后找个HTTP网站<code>http://csrankings.org/</code>试一下，现在网站基本都是HTTPS，看来后续的Features要支持HTTPS了（先挖个坑）。</p>
+<p>运行proxy之前，画风是这样的： <img src="https://img-blog.csdnimg.cn/20200811200533477.png" alt="在这里插入图片描述" /> 运行proxy之后： <img src="https://img-blog.csdnimg.cn/20200821133459152.png" alt="在这里插入图片描述" /> 通过代理访问该网页时，页面只能加载一部分，收到59420B数据后，会<code>segmentation fault</code> ，最后发现 主要原因是<code>init_cache()</code>时空间分配写错了，但是修改后又出现了如下错误： <img src="https://img-blog.csdnimg.cn/20200824160910224.png" alt="在这里插入图片描述" /> 是<code>memcpy</code>时候数组越界，处理buffer时候要千万小心。</p>
+<p>这里要改下<code>csapp.c</code>中的错误处理，里面都是直接<code>exit(0)</code>，但是作为一个服务器，不能随便终止，所以我们注释掉所有Error-handling functions里的<code>exit()</code>，如果在读数据或者什么时候遇到错误，<code>return</code>即可：<code>exit()</code>是系统调用级别的，结束整个进程；<code>return</code>是函数级别的，返回给调用者，当然在<code>main()</code>里<code>return</code>也就是<code>exit(0)</code>。 - Caching Web Objects 缓存可以说是整个项目的难点，需要考虑的问题比较多。为了模块化，将这一部分单独写作<code>cache.c/cache.h</code>，并修改<code>Makefile</code>。 主要问题有2个： 1、多线程同步：对于cache的访问应当是线程安全的，多个线程可以同时读，但只有一个线程可以写，这就是典型的读者-写者问题（又用到操作系统的知识了）； 2、替换策略：cache块的数量是有限的，没有空间时就需要换出换入。一般来讲都是采用LRU方式，一个单线程的严格的LRU Cache可以参考<a target="_blank" rel="noopener" href="https://leetcode.com/problems/lru-cache/">leetcode146题</a>。</p>
+<p>我们首先来解决问题一： 读者写者问题可以分为读优先、写优先2种： 读优先：来了一个读进程，除非有一个写进程正在访问，否则读者直接去读，可能导致写进程饥饿； 写优先：有进程读时，如果来了写进程，那么禁止后续读进程请求，现有进程读完后，写进程立即去写，可能导致读进程饥饿。 写优先实现起来稍微麻烦一些，所以这里采用读优先。这里就不自己实现读者写者了，使用读写锁<code>pthread_rwlock_t</code>，确保不会死锁。</p>
+<p>接着来解决问题二： 要实现多线程并发LRU Cache，由于C实现双向链表和Hashtable有点繁琐，所以项目要求<strong>近似LRU</strong>即可：我们可以为每一个cache块附加一个时间戳，每当该块被访问时，就更新时间戳。需要替换时，换出时间戳最小的块即可。这样带来的问题就是：读的时候也需要更新时间戳，但更新时间需要加写锁，如果其他线程占用写锁，那么读进程就无法更新时间戳，也就不是严格的LRU了。</p>
+<p>Cache的实现既可以像malloc lab一样采用分级的思想，也可以直接均分所有空间，整体流程如下： - 初始化 - 查Cache - 如果miss，寻找可用位置 - 找到可用块，缓存满足大小条件的Object - 更新时间戳</p>
+<p>最大的缓存对象是100KB，一共的空间1MB，平均可以缓存10个Object，这样会浪费24KB空间。所以采用分级的方法： 100KB * 5块 = 500KB 50KB * 6块 = 300KB 20KB * 5块 = 100KB 10KB * 10块 = 100KB 1KB * 24块 = 24KB 接着来构思下存储结构，<strong>设计数据结构</strong>和<strong>类（函数）接口</strong>是我认为做一个工程最难的部分，当然还有最后的效率优化问题： 一个cache line最基本的构成需要存储URI和OBJ，因为下次用户请求时代理需要知道请求的是哪个网站的什么内容（通过URI确定），进而如果查找到，将内容OBJ直接返回给用户。同时还需要一个时间戳以及用于同步的读写锁： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> *uri;</span><br><span class="line">    <span class="keyword">char</span> *obj;</span><br><span class="line">    <span class="keyword">int</span> objSize;</span><br><span class="line">    <span class="keyword">int64_t</span> time;</span><br><span class="line">    <span class="keyword">pthread_rwlock_t</span> rwlock; </span><br><span class="line">&#125; cache_line;</span><br></pre></td></tr></table></figure> 一共有5种类型的cache，每种类型有一个number，还有一个指向该种cache第一块的指针p，p指向该种的第一小块，p+1指向该种的第二小块，以此类推： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> numOfLine;</span><br><span class="line">    cache_line *cachep;</span><br><span class="line">&#125; cache_type;</span><br></pre></td></tr></table></figure> 数据结构设计完后，需要设计函数接口，cache的操作有初始化、查找、写入（替换）和释放： 初始化需要为cache block分配空间，将每一块的时间戳置0，表示该块没有存储内容； 查找时需要遍历所有的type，再在该type中遍历所有的block，如果时间戳不为0，比对浏览器需要访问的URI与当前块的URI是否相等，相等则表示cache hit，直接写回给相应的fd；更新时间戳时，粒度越细越好，这里用<code>gettimeofday</code>精确到微秒级别；读取时如果能申请到写锁，就更新时间，否则就不更新； 写入时需要先计算object大小，寻找空闲的cache block，没有需要替换，满足要求后存入cache，并且将结果返给浏览器。这里要注意寻找空闲块时要<strong>从小往大</strong>，否则很可能一个很小的object占用了一块很大的block，造成严重浪费，类似于操作系统内存管理动态分配中的最佳适应算法。 那么这种分级的方式的缺点是：每种类型的cache块<strong>大小固定</strong>，很可能50KB的块只存了10KB内容，造成浪费，类似于固定分区分配。 关于替换，我们采取<strong>局部置换</strong>策略：即需要换入的object大小如果是30KB，我们只用50KB这种类型去存储，如果50KB的块用完了，就需要换出一块50KB，即使此时100KB的块有空闲，也仍然完成置换过程。</p>
+<p>写完cache后，需要修改<code>Makefile</code>，在<code>proxy.c</code>中增加cache的部分。运行完以后，可以用<code>make clean</code>清除目录下多余的垃圾文件，比如<code>.o</code>文件等。 ## Test 测试的方式一共有3种：</p>
+<ul>
+<li>自动化测试 利用课程提供的脚本<code>driver.sh</code>自动进行，执行之前，需要安装一些工具： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install net-tools</span><br></pre></td></tr></table></figure> 做完所有内容后，先用<code>driver.sh</code>进行测试，发现cache部分没分。。。得，开始debug吧！我觉得GDB好难用啊，所以都是通过<code>printf</code>de的。</li>
+</ul>
+<p>用curl先通过proxy发个请求，然后看看proxy有没有缓存服务器返回的内容。 最后发现在<code>write_cache</code>时需要用到URI，但是之前解析时候把URI改了，一定注意URI最好不要改，设置为<code>const</code>比较保险。</p>
+<p>完了以后，cache满分了，basic又错了一个，fetch可执行对象文件tiny时： <img src="https://img-blog.csdnimg.cn/20200819212506210.png" alt="在这里插入图片描述" /> 一开始怀疑是tiny太大了，某个数组爆掉了。看了下tiny有36000+B，缓存空间足够，但是可能写入时候有些bug。tiny是二进制文件，可能比较特殊？很奇怪的是：明明<code>objSize</code>是36000+，但是<code>strlen(obj)</code>只有100，怀疑文件中可能有<code>\0</code>，提前终止了<code>strlen</code>的计数。</p>
+<p>解决方案是<code>write_cache</code>参数不仅要有<code>uri</code>和<code>obj</code>，还要有<code>obj</code>的长度<code>len</code>，否则直接用<code>strlen</code>获取长度可能就挂了。后来修改以后就满分了，一定要注意，如果用<code>char*</code>传参，一定要附带参数<code>len</code>，因为不一定读取的是字符串，还有可能是二进制文件，<code>\0</code>也就是<code>0</code>很容易出现，用<code>strlen</code>大概率会爆掉。</p>
+<p>最终测试结果如下： <img src="https://img-blog.csdnimg.cn/20200819221810760.png" alt="在这里插入图片描述" /> <img src="https://img-blog.csdnimg.cn/20200819221846500.png" alt="在这里插入图片描述" /> - 利用<code>curl</code>工具 <code>curl</code>可以用来生成HTTP请求：假设Sever在端口15213监听，代理在端口15214监听，那么可以通过下面命令经由代理发送请求： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v --proxy http:<span class="comment">//localhost:15214 http://localhost:15213/home.html</span></span><br></pre></td></tr></table></figure> 我们用该工具测试下Sequential Web Proxy： 首先启动Tiny Web Server和Proxy： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./tiny 15213</span><br><span class="line">./proxy 15214</span><br></pre></td></tr></table></figure> 然后执行<code>curl</code>命令： <img src="https://img-blog.csdnimg.cn/20200730162654329.png" alt="在这里插入图片描述" /> 说明基本功能是OK的！！ - 实际浏览器测试 满分之后，万里长征走了一半吧，因为要在实际浏览器测试，不断增强程序的<strong>鲁棒性</strong>。 测试之前，先禁用浏览器自带的cache，清空之前的缓存。 测下内存泄漏：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">valgrind --leak-check=full --show-leak-kinds=all ./proxy 8080</span><br></pre></td></tr></table></figure>
+<h2 id="codereference">Code&amp;Reference</h2>
+<p><a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/15-213/tree/master/Web%20Proxy">code here</a> <a target="_blank" rel="noopener" href="http://csapp.cs.cmu.edu/3e/labs.html">reference here</a> ## TODO 接下来的工作可拓展的还有很多，包括但不限于： - 增加对HTTPS的支持（看起来并不简单） - Cache这里还有很多可优化的地方（分配策略、置换策略...） - 目前只支持GET方式，还可以拓展到POST方式</p>
+
       
     </div>
 
@@ -1017,21 +1199,9 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">169</span>
+          <span class="site-state-item-count">167</span>
           <span class="site-state-item-name">posts</span>
         </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">5</span>
-        <span class="site-state-item-name">categories</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">15</span>
-        <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
 </div>

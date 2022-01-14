@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="特征值&#x2F;特征向量 矩阵作用于列向量\(x\)得到列向量\(Ax\)，矩阵的作用相当于函数，对于大部分列向量\(Ax\)，其方向是不同于\(x\)的，我们感兴趣的是其中平行于\(x\)的：\(Ax&#x3D;\lambda x,x\neq0\)。即：向量\(x\)在矩阵\(A\)的作用下，方向不变，只进行比例系数为\(\lambda\)的伸缩。 特征向量所在直线上的向量都是特征向量，并且包含了所有特征向量，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT Linear Algebra#5 Eigenvalues and Eigenvectors">
+<meta property="og:url" content="https://eimadrigal.github.io/2020/05/31/MIT%20Linear%20Algebra#5%20Eigenvalues%20and%20Eigenvectors/index.html">
+<meta property="og:site_name" content="EI Madrigal&#39;s Space">
+<meta property="og:description" content="特征值&#x2F;特征向量 矩阵作用于列向量\(x\)得到列向量\(Ax\)，矩阵的作用相当于函数，对于大部分列向量\(Ax\)，其方向是不同于\(x\)的，我们感兴趣的是其中平行于\(x\)的：\(Ax&#x3D;\lambda x,x\neq0\)。即：向量\(x\)在矩阵\(A\)的作用下，方向不变，只进行比例系数为\(\lambda\)的伸缩。 特征向量所在直线上的向量都是特征向量，并且包含了所有特征向量，">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-31T04:07:00.000Z">
+<meta property="article:modified_time" content="2022-01-13T16:01:43.621Z">
+<meta property="article:author" content="EIMadrigal">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://eimadrigal.github.io/2020/05/31/MIT%20Linear%20Algebra#5%20Eigenvalues%20and%20Eigenvectors/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>MIT Linear Algebra#5 Eigenvalues and Eigenvectors | EI Madrigal's Space</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EI Madrigal's Space</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/05/31/MIT%20Linear%20Algebra#5%20Eigenvalues%20and%20Eigenvectors/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT Linear Algebra#5 Eigenvalues and Eigenvectors
+        </h1>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-31 12:07:00" itemprop="dateCreated datePublished" datetime="2020-05-31T12:07:00+08:00">2020-05-31</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="特征值特征向量">特征值/特征向量</h2>
+<p>矩阵作用于列向量<span class="math inline">\(x\)</span>得到列向量<span class="math inline">\(Ax\)</span>，矩阵的作用相当于函数，对于大部分列向量<span class="math inline">\(Ax\)</span>，其方向是不同于<span class="math inline">\(x\)</span>的，我们感兴趣的是其中<strong>平行于</strong><span class="math inline">\(x\)</span>的：<span class="math inline">\(Ax=\lambda x,x\neq0\)</span>。即：向量<span class="math inline">\(x\)</span>在矩阵<span class="math inline">\(A\)</span>的作用下，方向不变，只进行比例系数为<span class="math inline">\(\lambda\)</span>的伸缩。 特征向量所在直线上的向量都是特征向量，并且包含了所有特征向量，组成了特征空间。如果我们不断左乘矩阵<span class="math inline">\(A\)</span>，得到的列向量会越来越贴合最大特征值对应的特征空间（只对实数而言）。 对于二阶投影矩阵<span class="math inline">\(P\)</span>而言：如果<span class="math inline">\(x\)</span>已经在列空间的平面上，那么<span class="math inline">\(Px=x,\lambda=1\)</span>；如果<span class="math inline">\(x\)</span>垂直于列空间的平面，则<span class="math inline">\(Px=0,\lambda=0\)</span>，除此之外， 没有任何<span class="math inline">\(x\)</span>可以在投影后与原<span class="math inline">\(x\)</span>平行。 若<span class="math inline">\(A\)</span>是奇异阵，那么<span class="math inline">\(Ax=0\)</span>必有非零解，所以<span class="math inline">\(\lambda=0\)</span>必是一个特征值。 特征值还有两条简单的性质： <span class="math display">\[\Sigma_{i=1}^{n}\lambda_i=trace(A),\lambda_1...\lambda_n=det(A)\]</span> 有了理解后，求解<span class="math inline">\(\lambda,x\)</span>也很自然： <span class="math display">\[(A-\lambda I)x=0有非零解，A-\lambda I必奇异\]</span> <span class="math display">\[特征方程det(A-\lambda I)=0\]</span> 解出<span class="math inline">\(\lambda\)</span>，进而求出<span class="math inline">\((A-\lambda I)x=0\)</span>的零空间即可。 举个交换阵的例子：<span class="math inline">\(A=\begin{bmatrix}  0 &amp; 1 \\  1 &amp; 0\\  \end{bmatrix}\)</span>，从物理意义上，交换<span class="math inline">\(x_1=\begin{bmatrix}  1\\  1\\  \end{bmatrix}\)</span>的两行仍然与原向量平行，此时<span class="math inline">\(\lambda=1\)</span>；类似地，交换<span class="math inline">\(x_2=\begin{bmatrix}  1\\  -1\\  \end{bmatrix}\)</span>的两行仍然与原向量平行，只是变成了相反向量，此时<span class="math inline">\(\lambda=-1\)</span>。 如果再看<span class="math inline">\(A+3I=\begin{bmatrix}  3 &amp; 1 \\  1 &amp; 3\\  \end{bmatrix}\)</span>，特征值变为了<span class="math inline">\(\lambda+3=2,4\)</span>，特征向量没有改变。 接着可以看看特征值不为实数的例子：对于<strong>反对称</strong>矩阵<span class="math inline">\(\begin{bmatrix}  0 &amp; -1 \\  1 &amp; 0\\  \end{bmatrix}\)</span>，<span class="math inline">\(\lambda=i,-i\)</span>，从几何上看：该矩阵的作用是将向量旋转90度，旋转之后的向量不可能与之前的平行，所以也就没有实数特征值。 ## 对角化 这一节的前提是<span class="math inline">\(A\)</span><strong>有<span class="math inline">\(n\)</span>个线性无关的特征向量</strong>，这样后面由<strong>特征向量组成的矩阵</strong><span class="math inline">\(S\)</span>才可逆。 对于满足前提的矩阵： <span class="math display">\[AS=A\begin{bmatrix}
+x_1&amp;...&amp; x_n \\
+\end{bmatrix}=\begin{bmatrix}
+\lambda_1x_1&amp;...&amp; \lambda_nx_n \\
+\end{bmatrix}=\begin{bmatrix}
+x_1&amp;...&amp; x_n \\
+\end{bmatrix}\begin{bmatrix}
+   \lambda_1 &amp; ... &amp; 0 \\
+   ... &amp; ... &amp; ...\\
+    0 &amp; ... &amp; \lambda_n \\
+  \end{bmatrix}=S\Lambda\]</span> 这样<span class="math inline">\(S^{-1}AS=\Lambda\)</span>。 如果<span class="math inline">\(A\)</span>的所有特征值互异，必可对角化；如果有重复特征值，那么<strong>不一定</strong>有<span class="math inline">\(n\)</span>个线性无关的特征向量，也不一定可以对角化。</p>
+<p><span class="math inline">\(A\)</span>可以被分解为<span class="math inline">\(A=S\Lambda S^{-1}\)</span>。由此不难得到<span class="math inline">\(A\)</span>的幂：<span class="math inline">\(A^K=S\Lambda^K S^{-1}\)</span>，特征值加倍，但特征向量不变。 当<span class="math inline">\(K\rightarrow+\infin\)</span>，如果所有<span class="math inline">\(|\lambda_i|&lt;1\)</span>，那么<span class="math inline">\(A^K\rightarrow0\)</span>。 <span class="math inline">\(A\)</span>的幂有一个应用：一阶差分方程<span class="math inline">\(u_{k+1}=Au_k\)</span>，通过递推不难发现<span class="math inline">\(u_k=A^ku_0\)</span>，如果直接用<span class="math inline">\(A^K=S\Lambda^K S^{-1}\)</span>求解，求逆开销是不可忽视的，所以我们换一种方式： 我们知道，线性无关的特征向量可以作为基表示其它向量： <span class="math display">\[u_0=c_1x_1+...+c_nx_n=Sc,Au_0=S\Lambda S^{-1}u_0=S\Lambda S^{-1}Sc=S\Lambda c\]</span> <span class="math display">\[A^ku_o=c_1\lambda_1^{k}x_1+...+c_n\lambda_n^{k}x_n=S\Lambda^{k}c\]</span> 很清楚地看到：<span class="math inline">\(u_k\)</span>的增长速度由<span class="math inline">\(\Lambda\)</span>决定，并且越大的特征值起的作用越大。 因此求解差分方程需要三步：</p>
+<ol type="1">
+<li>求解矩阵<span class="math inline">\(A\)</span>的特征值和特征向量；</li>
+<li>将<span class="math inline">\(u_0\)</span>在特征向量上展开，求出向量<span class="math inline">\(c\)</span>；</li>
+<li>按照<span class="math inline">\(u_k=S\Lambda^{k}c\)</span>计算即可。</li>
+</ol>
+<p>这里非常经典的例子就是<a target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/11478906.html">斐波那契数列</a>。 ## 微分方程 我们知道：对于常系数线性微分方程<span class="math inline">\(\frac{dy}{dt}=\lambda y\)</span>，其解为<span class="math inline">\(y(t)=Ce^{\lambda t}\)</span>。现在要研究的是未知函数是向量的情况：<span class="math inline">\(\frac{du}{dt}=Au\)</span>，不难验证<span class="math inline">\(u(t)=e^{\lambda t}x\)</span>是特解，并且微分方程组满足线性性质。 举例来看： <span class="math display">\[
+\begin{cases}
+\frac{du_1}{dt}=-u_1+2u_2&amp; \text{}\\
+\frac{du_2}{dt}=u_1-2u_2&amp; \text{}\\
+\end{cases},u(0)=\begin{bmatrix}
+   1\\
+   0\\
+  \end{bmatrix}
+\]</span> <span class="math inline">\(A=\begin{bmatrix}  -1 &amp; 2 \\  1 &amp; -2\\  \end{bmatrix}\)</span>，求解出<span class="math inline">\(\lambda=0,-3\)</span>，从特征值可以看出：<span class="math inline">\(\lambda=-3\)</span>的项会随着<span class="math inline">\(t\)</span>的增加而消失，<span class="math inline">\(\lambda=0\)</span>的项最终会是稳态。 特征向量<span class="math inline">\(x_1=\begin{bmatrix}  2\\  1\\  \end{bmatrix},x_2=\begin{bmatrix}  1\\  -1\\  \end{bmatrix}\)</span>，这样可以写出通解： <span class="math display">\[
+u(t)=c_1e^{\lambda_1 t}x_1+c_2e^{\lambda_2 t}x_2=\frac{1}{3}\begin{bmatrix}
+   2\\
+   1\\
+  \end{bmatrix}+\frac{1}{3}e^{-3t}\begin{bmatrix}
+   1\\
+   -1\\
+  \end{bmatrix}
+\]</span> 当<span class="math inline">\(t\rightarrow+\infin\)</span>，<span class="math inline">\(\frac{1}{3}\begin{bmatrix}  2\\  1\\  \end{bmatrix}\)</span>这一项将是稳态。 因此从特征值的角度，<span class="math inline">\(||e^{(-3+6i)t}||=e^{-3t}\)</span>，<span class="math inline">\(||e^{6it}||=1\)</span>，在单位圆上运动，所以最终的状态取决于特征值的实部：</p>
+<ul>
+<li><span class="math inline">\(Re(\lambda)&lt;0,e^{\lambda t}\rightarrow0,u(t)\rightarrow0\)</span></li>
+<li>某个特征值为0，其余实部小于0，最终收敛于常量</li>
+<li><span class="math inline">\(Re(\lambda)&gt;0\)</span>，无法收敛</li>
+</ul>
+<p>回头去看上述的微分方程，<span class="math inline">\(u_1\)</span>和<span class="math inline">\(u_2\)</span>耦合在一起，下面我们尝试用特征向量<strong>解耦</strong>： 令<span class="math inline">\(u=Sv\)</span>，则微分方程变为<span class="math inline">\(S\frac{dv}{dt}=ASv,\frac{dv}{dt}=S^{-1}ASv=\Lambda v\)</span>，那么： <span class="math display">\[
+\begin{cases}
+\frac{dv_1}{dt}=\lambda_1v_1&amp; \text{}\\
+\frac{dv_2}{dt}=\lambda_2v_2&amp; \text{}\\
+...
+\end{cases}
+\]</span> 换种思路，如果直接求解<span class="math inline">\(\frac{dv}{dt}=\Lambda v\)</span>，那么类似于标量的答案<span class="math inline">\(v(t)=v(0)e^{\Lambda t},u(t)=Sv(t)=Se^{\Lambda t}S^{-1}u(0)=e^{At}u(0)\)</span>，这里就得到了一个新的概念：<strong>矩阵指数</strong><span class="math inline">\(e^{At}\)</span>。 如果你还记得高数里的泰勒展开： <span class="math display">\[
+\frac{1}{1-x}=\sum\limits_{n=0}^{\infin}x^n,e^x=\sum\limits_{n=0}^{\infin}\frac{x^n}{n!}
+\]</span> 那么矩阵指数同样可以展开： <span class="math display">\[
+(I-At)^{-1}=I+At+(At)^2+...,e^{At}=I+At+\frac{1}{2}(At)^2+...+\frac{(At)^n}{n!}+...
+\]</span> <span class="math inline">\(e^{At}\)</span>一定是收敛的，因为阶乘的增长速度远远大于其它运算，接着将它写成矩阵形式： <span class="math display">\[
+e^{At}=I+S\Lambda S^{-1}t+\frac{1}{2}S\Lambda^2S^{-1}t^2+...=Se^{\Lambda t}S^{-1}
+\]</span> <span class="math inline">\(e^{\Lambda t}\)</span>也是一个矩阵指数，可以写作<span class="math inline">\(\begin{bmatrix}  e^{\lambda_1t} &amp; ... &amp; 0 \\  ... &amp; ... &amp; ...\\  0 &amp; ... &amp; e^{\lambda_nt} \\  \end{bmatrix}\)</span>，这里也可以有相似的收敛性：</p>
+<ul>
+<li>对于矩阵指数<span class="math inline">\(e^{\Lambda t}\)</span>，若<span class="math inline">\(Re(\lambda)&lt;0\)</span>，则收敛；</li>
+<li>对于矩阵幂<span class="math inline">\(A^K=S\Lambda^K S^{-1}\)</span>，若<span class="math inline">\(||\lambda||&lt;1\)</span>，则收敛。</li>
+</ul>
+<p>微分方程也可以像上一节一样，将二阶<span class="math inline">\(y&#39;&#39;+by&#39;+ky=0\)</span>转为一阶，构造： <span class="math display">\[
+\begin{cases}
+y&#39;&#39;+by&#39;+ky=0&amp; \text{}\\
+y&#39;=y&#39;&amp; \text{}\\
+\end{cases}
+\]</span> 令<span class="math inline">\(u=\begin{bmatrix}  y&#39;\\  y\\  \end{bmatrix}\)</span>，则<span class="math inline">\(u&#39;=\begin{bmatrix}  y&#39;&#39;\\  y&#39;\\  \end{bmatrix}=\begin{bmatrix}  -b &amp; -k \\  1 &amp; 0\\  \end{bmatrix}\begin{bmatrix}  y&#39;\\  y\\  \end{bmatrix}=Au\)</span>。 ## 实对称阵/正定阵 <strong>实对称矩阵的特征值必为实数，特征向量正交</strong>。证明略。对于复矩阵，只有<span class="math inline">\(A=\bar A^T(共轭转置)\)</span>，性质才成立。 上一节我们知道：如果<span class="math inline">\(A\)</span>有<span class="math inline">\(n\)</span>个线性无关的特征向量，那么可以被分解成<span class="math inline">\(A=S\Lambda S^{-1}\)</span>。对于正交阵而言<span class="math inline">\(Q^T=Q^{-1}\)</span>，故<span class="math inline">\(A=Q\Lambda Q^{-1}=Q\Lambda Q^{T}\)</span>，如果进一步计算： <span class="math display">\[
+A=\begin{bmatrix}
+q_1&amp;...&amp; q_n \\
+\end{bmatrix}\begin{bmatrix}
+   \lambda_1 &amp; ... &amp; 0 \\
+   ... &amp; ... &amp; ...\\
+    0 &amp; ... &amp; \lambda_n \\
+  \end{bmatrix}\begin{bmatrix}
+   q_1^T\\
+   ...\\
+   q_n^T\\
+  \end{bmatrix}=\lambda_1q_1q_1^T+...+\lambda_nq_nq_n^T
+\]</span> <span class="math inline">\(q_iq_i^T\)</span>是投影矩阵，实对称矩阵可以由投影矩阵线性组合而来，这些投影矩阵我个人感觉非常像矩阵的基，也就是说实对称阵可以完全由其特征值和特征向量确定。</p>
+<p>接着我们来看正定阵，<strong>正定阵的前提是对称阵</strong>，有3个充要条件：</p>
+<ul>
+<li><span class="math inline">\(\lambda_i&gt;0\)</span></li>
+<li><span class="math inline">\(pivot_i&gt;0\)</span></li>
+<li>所有子行列式为正</li>
+</ul>
+<p>实际上，<span class="math inline">\(\#正主元=\#正特征值\)</span>，并且<span class="math inline">\(\Pi pivot=\Pi\lambda_i=det(A)\)</span>。 利用正定阵可以研究二次型的最小值： <span class="math display">\[f(x,y)=x^TAx=ax^2+2bxy+cy^2\]</span> 如果<span class="math inline">\(A\)</span>正定，那么<span class="math inline">\(除(0,0)外,f(x,y)&gt;0\)</span>。 取<span class="math inline">\(A=\begin{bmatrix}  2 &amp; 6 \\  6 &amp; 20\\  \end{bmatrix}\)</span>，那么<span class="math inline">\(f(x,y)=2x^2+12xy+20y^2\)</span>，配方<span class="math inline">\(f(x,y)=2(x+3y)^2+2y^2&gt;0\)</span>，注意各项的系数：两个平方项前的系数是<span class="math inline">\(A\)</span>的两个<strong>主元</strong>，括号中的3是矩阵消元时所用的<strong>乘数</strong>。如果把<span class="math inline">\(A\)</span>做LU分解会看得更清楚：<span class="math inline">\(A=LU=\begin{bmatrix}  1 &amp; 0 \\  3 &amp; 1\\  \end{bmatrix}\begin{bmatrix}  2 &amp; 6 \\  0 &amp; 2\\  \end{bmatrix}\)</span>。 从几何上看，<span class="math inline">\(f(x,y)\)</span>就像是一个<strong>碗</strong>的形状，在<span class="math inline">\((0,0)\)</span>处取极小值0，<span class="math inline">\(f(x,y)=1\)</span>则是椭圆截面。 对于三阶的情况：<span class="math inline">\(A=\begin{bmatrix}  2 &amp; -1 &amp; 0 \\  -1 &amp; 2 &amp; -1 \\  0 &amp; -1 &amp; 2 \\  \end{bmatrix}\)</span>，可以求得<span class="math inline">\(\lambda=2-\sqrt2,2,2+\sqrt2\)</span>，那么此时 <span class="math display">\[
+f=x^TAx&gt;0
+\]</span> 这在几何上已经上升到四维，必然有3个轴，并且轴的方向由相应的特征向量决定，轴的长度由特征值决定，<span class="math inline">\(f=1\)</span>是一个椭球。</p>
+<p>最后，如果<span class="math inline">\(A_{mn}\)</span>的各列线性无关，那么<span class="math inline">\(A^TA\)</span>必然正定，证明可以从<span class="math inline">\(x^TAx&gt;0\)</span>入手。 ## 相似阵 前面我们见过<span class="math inline">\(S^{-1}AS=\Lambda\)</span>，那么<span class="math inline">\(A\sim\Lambda\)</span>。比较正式的说法是：存在可逆阵M，使得<span class="math inline">\(B=M^{-1}AM\)</span>，则称<span class="math inline">\(A\sim B\)</span>。相似阵可以看作一个家族，这个家族的共同点就是<strong>特征值相同</strong>。 之前我们知道：如果<span class="math inline">\(A\)</span>有<span class="math inline">\(n\)</span>个不同的特征值，那么必可相似对角化。如果有重复的特征值，未必可以对角化： 现在考虑<span class="math inline">\(\lambda_1=\lambda_2=4\)</span>的情况，满足条件的矩阵有很多，比如<span class="math inline">\(A=\begin{bmatrix}  4 &amp; 0 \\  0 &amp; 4\\  \end{bmatrix}\)</span>，但如果我们去找<span class="math inline">\(A\)</span>的相似阵，我们尝试用<span class="math inline">\(M^{-1}AM=A\)</span>，无论任何<span class="math inline">\(M\)</span>，最终的结果都是<span class="math inline">\(A\)</span>自己，不会增加任何新的矩阵，矩阵<span class="math inline">\(A\)</span>单独组成了一个家族。 如果去看其余满足条件的矩阵，比如<span class="math inline">\(B=\begin{bmatrix}  4 &amp; 1 \\  0 &amp; 4\\  \end{bmatrix},C=\begin{bmatrix}  4 &amp; 0 \\  17 &amp; 4\\  \end{bmatrix}...\)</span>，这些只有1个特征向量的矩阵虽然不能对角化，但是我们可以找一个<strong>最接近对角阵</strong>的，也就是<span class="math inline">\(B\)</span>，称为Jordan Form。 对于<span class="math inline">\(\begin{bmatrix}  0 &amp; 1 &amp; 0 &amp; 0 \\  0 &amp; 0 &amp; 1 &amp; 0 \\  0 &amp; 0 &amp; 0 &amp; 0 \\  0 &amp; 0 &amp; 0 &amp; 0 \\  \end{bmatrix}和\begin{bmatrix}  0 &amp; 1 &amp; 0 &amp; 0 \\  0 &amp; 0 &amp; 0 &amp; 0 \\  0 &amp; 0 &amp; 0 &amp; 1 \\  0 &amp; 0 &amp; 0 &amp; 0 \\  \end{bmatrix}\)</span>，尽管特征值全为0，但并不相似。只有2个线性无关的特征向量，所以就有2个Jordan Block，每个Jordan Block长这样： <span class="math display">\[
+J_i=\begin{bmatrix}
+   \lambda_i &amp; 1 &amp;...&amp; 0 \\
+  0 &amp; \lambda_i  &amp; 1 &amp; ...\\
+  ...&amp;...&amp;...&amp;...\\
+  0 &amp; 0 &amp; \lambda_i  &amp; 1 \\
+   0 &amp; 0 &amp; 0 &amp; \lambda_i  \\
+  \end{bmatrix}
+\]</span> 每个块只能有1个特征向量，这样做的意义在于任意的矩阵<span class="math inline">\(A\)</span>，即使不能相似对角化，但是都有<span class="math inline">\(A\sim J=\begin{bmatrix}  J_1 &amp; ... &amp; 0 \\  ... &amp; ... &amp; ...\\  0 &amp; ... &amp; J_d \\  \end{bmatrix}\)</span>。 ## SVD分解 假设我们在行空间有一组标准正交基<span class="math inline">\(v_1,v_2,...,v_r\)</span>，左乘矩阵<span class="math inline">\(A\)</span>进入列空间，将结果表示为列空间中的一组标准正交基<span class="math inline">\(u_1,u_2,...,u_r\)</span>： <span class="math display">\[
+AV=A\begin{bmatrix}
+v_1&amp;...&amp; v_r \\
+\end{bmatrix}=\begin{bmatrix}
+u_1&amp;...&amp; u_r \\
+\end{bmatrix}\begin{bmatrix}
+   \sigma_1 &amp; ... &amp; 0 \\
+   ... &amp; ... &amp; ...\\
+    0 &amp; ... &amp; \sigma_r \\
+  \end{bmatrix}=U\Sigma
+\]</span> 故<span class="math inline">\(A\)</span>可以分解为<span class="math inline">\(A=U\Sigma V^T\)</span>。 如果<span class="math inline">\(A=\begin{bmatrix}  4 &amp; 4 \\  -3 &amp; 3\\  \end{bmatrix}\)</span>，试着分解下，关键问题就是如何求得等式右边的3个矩阵。 先来搞定<span class="math inline">\(V\)</span>，最好能去掉<span class="math inline">\(U\)</span>，我们的技巧是用<span class="math inline">\(A^TA\)</span>： <span class="math display">\[
+A^TA=V\Sigma^TU^TU\Sigma V^T=V\begin{bmatrix}
+   \sigma_1^2 &amp; ... &amp; 0 \\
+   ... &amp; ... &amp; ...\\
+    0 &amp; ... &amp; \sigma_r^2 \\
+  \end{bmatrix}V^T
+\]</span> 由于<span class="math inline">\(A^TA\)</span>实对称，所以我们得到了<span class="math inline">\(Q\Lambda Q^{T}\)</span>的形式，接下来只要搞定<span class="math inline">\(A^TA\)</span>的特征值和特征向量即可得到<span class="math inline">\(V\)</span>和<span class="math inline">\(\Sigma\)</span>； 同样地，为了求<span class="math inline">\(U\)</span>，最好先搞掉<span class="math inline">\(V\)</span>： <span class="math display">\[
+AA^T=U\Sigma V^TV\Sigma^TU^T=U\begin{bmatrix}
+   \sigma_1^2 &amp; ... &amp; 0 \\
+   ... &amp; ... &amp; ...\\
+    0 &amp; ... &amp; \sigma_r^2 \\
+  \end{bmatrix}U^T
+\]</span> 只要求得<span class="math inline">\(AA^T\)</span>的特征值和特征向量即可得<span class="math inline">\(U\)</span>。 ## 作业 Suppose we have the rank-r svd of a rank 1 matrix <span class="math inline">\(A = U\Sigma V^T\)</span>. Describe the nullspace of <span class="math inline">\(A\)</span> in terms of possibly <span class="math inline">\(U\)</span>, <span class="math inline">\(Σ\)</span>, and <span class="math inline">\(V\)</span>. Answer: The nullspace of <span class="math inline">\(A\)</span> is the same as the nullspace of <span class="math inline">\(V^T\)</span>. Since <span class="math inline">\(A\)</span> is rank 1, <span class="math inline">\(V\)</span> is a vector. So the nullspace of <span class="math inline">\(V^T\)</span> is a hyperplane given by <span class="math inline">\(V^Tx=0\)</span>, i.e., the space of all the vectors that are perpendicular to <span class="math inline">\(V\)</span>.</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="EIMadrigal WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="EIMadrigal Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>EIMadrigal
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://eimadrigal.github.io/2020/05/31/MIT%20Linear%20Algebra#5%20Eigenvalues%20and%20Eigenvectors/" title="MIT Linear Algebra#5 Eigenvalues and Eigenvectors">https://eimadrigal.github.io/2020/05/31/MIT Linear Algebra#5 Eigenvalues and Eigenvectors/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/29/MIT%20Linear%20Algebra#4%20Determinants/" rel="prev" title="MIT Linear Algebra#4 Determinants">
+      <i class="fa fa-chevron-left"></i> MIT Linear Algebra#4 Determinants
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/01/MIT%20Linear%20Algebra#6%20Linear%20Transformations/" rel="next" title="MIT Linear Algebra#6 Linear Transformations">
+      MIT Linear Algebra#6 Linear Transformations <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%80%BC%E7%89%B9%E5%BE%81%E5%90%91%E9%87%8F"><span class="nav-number">1.</span> <span class="nav-text">特征值&#x2F;特征向量</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="EIMadrigal"
+      src="/images/favicon.png">
+  <p class="site-author-name" itemprop="name">EIMadrigal</p>
+  <div class="site-description" itemprop="description">Hello World</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">167</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/EIMadrigal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:andrew.renj@gmail.com" title="E-Mail → mailto:andrew.renj@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.cnblogs.com/EIMadrigal" title="cnblogs → https:&#x2F;&#x2F;www.cnblogs.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-codiepie fa-fw"></i>cnblogs</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/EIMadrigal" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018-02 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EIMadrigal</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">Total views: <span id="busuanzi_value_site_pv"></span></span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">Total visitors: <span id="busuanzi_value_site_uv"></span></span>
+    <span class="post-meta-divider">|</span>
+
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);
+    var countOffset = 20000;
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset);
+            clearInterval(int);
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

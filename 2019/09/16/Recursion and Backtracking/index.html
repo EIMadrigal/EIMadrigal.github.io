@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Tree Recursion 递归是计算机科学中一个非常重要的概念，对于斐波那契那种比较简单的递归，分析起来比较容易，但是由于二叉树涉及指针操作，所以模拟下遍历过程中系统栈的情况。 以二叉树中序遍历为例演示： 1234567&#x2F;&#x2F; 二叉树定义struct TreeNode &amp;#123;	TreeNode* left;	TreeNode* right;	int val;	TreeNode(int x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Recursion and Backtracking">
+<meta property="og:url" content="https://eimadrigal.github.io/2019/09/16/Recursion%20and%20Backtracking/index.html">
+<meta property="og:site_name" content="EI Madrigal&#39;s Space">
+<meta property="og:description" content="Tree Recursion 递归是计算机科学中一个非常重要的概念，对于斐波那契那种比较简单的递归，分析起来比较容易，但是由于二叉树涉及指针操作，所以模拟下遍历过程中系统栈的情况。 以二叉树中序遍历为例演示： 1234567&#x2F;&#x2F; 二叉树定义struct TreeNode &amp;#123;	TreeNode* left;	TreeNode* right;	int val;	TreeNode(int x">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190915232047750.png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDE4LmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDE5MDkvMTI2MDU4MS0yMDE5MDkxNTIzMTQyMDE5MS0xMTMxOTk2Nzc2LnBuZw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190916223229149.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190916223847870.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190916225924483.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190916230804141.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200704153124426.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200704153731705.png">
+<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211129144559235-1738742177.png">
+<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211129090136628-461210128.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200704162901848.png">
+<meta property="article:published_time" content="2019-09-16T07:24:00.000Z">
+<meta property="article:modified_time" content="2022-01-13T16:01:43.661Z">
+<meta property="article:author" content="EIMadrigal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190915232047750.png">
+
+<link rel="canonical" href="https://eimadrigal.github.io/2019/09/16/Recursion%20and%20Backtracking/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Recursion and Backtracking | EI Madrigal's Space</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EI Madrigal's Space</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/09/16/Recursion%20and%20Backtracking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Recursion and Backtracking
+        </h1>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-09-16 15:24:00" itemprop="dateCreated datePublished" datetime="2019-09-16T15:24:00+08:00">2019-09-16</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="tree-recursion">Tree Recursion</h2>
+<p>递归是计算机科学中一个非常重要的概念，对于斐波那契那种比较简单的递归，分析起来比较容易，但是由于二叉树涉及指针操作，所以模拟下遍历过程中系统栈的情况。 以二叉树中序遍历为例演示： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 二叉树定义</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">TreeNode</span> &#123;</span></span><br><span class="line">	TreeNode* left;</span><br><span class="line">	TreeNode* right;</span><br><span class="line">	<span class="keyword">int</span> val;</span><br><span class="line">	<span class="built_in">TreeNode</span>(<span class="keyword">int</span> x) :<span class="built_in">val</span>(x), <span class="built_in">left</span>(<span class="literal">NULL</span>), <span class="built_in">right</span>(<span class="literal">NULL</span>) &#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure> 中序遍历的递归实现： <img src="https://img-blog.csdnimg.cn/20190915232047750.png" alt="在这里插入图片描述" /> 假设二叉树如图所示： <img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDE4LmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDE5MDkvMTI2MDU4MS0yMDE5MDkxNTIzMTQyMDE5MS0xMTMxOTk2Nzc2LnBuZw?x-oss-process=image/format,png" /> 其中序遍历序列为<span class="math inline">\(2413\)</span>，可以在VS中用单步调试的方法跟踪相应的变量： 当<code>root==NULL(root指向2的左孩子)</code>时，此时的系统栈（将1和2都压栈，因为中序遍历需要先访问左孩子）： <img src="https://img-blog.csdnimg.cn/20190916223229149.png" alt="在这里插入图片描述" /> 这时<code>if</code>不成立，执行83行的<code>return</code>语句，接着退栈，回到78行，此时的<code>root指向2(因为此时程序已经来到了新的栈顶)，并且向这个新栈顶返回了一个空的seq</code>： <img src="https://img-blog.csdnimg.cn/20190916223847870.png" alt="在这里插入图片描述" /> 接着执行79行(因为这是上一个函数<code>return</code>的，所以不会再一次执行78行)，将2存入<code>seq</code>中； 执行80行（<code>root</code>指向4），进而执行78行，<code>root</code>指向4的左孩子，此时的系统栈（很明显可以看到从<strong>栈底到栈顶依次存放根结点到当前<code>root</code>结点的路径</strong>上的结点）： <img src="https://img-blog.csdnimg.cn/20190916225924483.png" alt="在这里插入图片描述" /> 同样，执行<code>return</code>语句，退栈，将<code>seq</code>(里面只有2)返回到这一层，这一层的<code>root</code>指向4，接着将4存入<code>seq</code>； 到80行，调用<code>inOrder()</code>使得<code>root</code>指向4的右孩子，右孩子为空，所以返回并退栈，<code>root</code>重新指向4，此时80行执行完毕，整个<code>if</code>执行完毕，返回<code>seq</code>并退栈，<code>root</code>返回到了2，以2为根结点的子树中序遍历完毕，系统栈： <img src="https://img-blog.csdnimg.cn/20190916230804141.png" alt="在这里插入图片描述" /> 继续执行，return到78行，<code>root</code>指向1，将1存入seq，以此类推，就可以得到整个的遍历序列。</p>
+<p>最关键的是：之所以要递归调用<code>inOrder</code>，就是因为现在还不想访问当前的结点（对于中序，要先找到最左边的结点），所以通过递归的方式将当前暂时不想访问的结点压入系统栈，找到了想访问的结点后，访问它并利用退栈操作返回父结点。 有关树的问题，有一些通用的模板： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// one root</span></span><br><span class="line"><span class="function">func <span class="title">solve</span><span class="params">(root)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(root == null)  <span class="keyword">return</span> ...</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">f</span>(root) <span class="keyword">return</span> ...</span><br><span class="line"></span><br><span class="line">    l = <span class="built_in">solve</span>(root-&gt;left);</span><br><span class="line">    r = <span class="built_in">solve</span>(root-&gt;right);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">g</span>(root, l , r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// two roots</span></span><br><span class="line"><span class="function">func <span class="title">solve</span><span class="params">(p, q)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(p == null &amp;&amp; q == null)  <span class="keyword">return</span> ...</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">f</span>(p, q)  <span class="keyword">return</span> ...</span><br><span class="line"></span><br><span class="line">    l = <span class="built_in">solve</span>(p.child, q.child);</span><br><span class="line">    r = <span class="built_in">solve</span>(p.child, q.child);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">g</span>(p, q, l, r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="经典递归">经典递归</h2>
+<p>除了树这种本身就是递归定义的结构外，还有一些search的问题也可以通过递归解决： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isPalindrome</span><span class="params">(string s)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (s.<span class="built_in">length</span>() &lt;= <span class="number">1</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">return</span> s[<span class="number">0</span>] == s[s.<span class="built_in">length</span>() - <span class="number">1</span>] &amp;&amp;</span><br><span class="line">		<span class="built_in">isPalindrome</span>(s.<span class="built_in">substr</span>(<span class="number">1</span>, s.<span class="built_in">length</span>() - <span class="number">2</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> NotFound = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">BSearch</span><span class="params">(vector&lt;string&gt;&amp; v, <span class="keyword">int</span> start, <span class="keyword">int</span> stop, string key)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (start &gt; stop) <span class="keyword">return</span> NotFound;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> mid = (start + stop) / <span class="number">2</span>;</span><br><span class="line">	<span class="keyword">if</span> (key == v[mid])</span><br><span class="line">		<span class="keyword">return</span> mid;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (key &gt; v[mid])</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">BSearch</span>(v, mid + <span class="number">1</span>, stop, key);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">BSearch</span>(v, start, mid - <span class="number">1</span>, key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">C</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (n == k || k == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">C</span>(n - <span class="number">1</span>, k) + <span class="built_in">C</span>(n - <span class="number">1</span>, k - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">permute</span><span class="params">(string soFar, string rest)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (rest == <span class="string">&quot;&quot;</span>)</span><br><span class="line">		cout &lt;&lt; soFar &lt;&lt; endl;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rest.<span class="built_in">length</span>(); ++i) &#123;</span><br><span class="line">			string next = soFar + rest[i];</span><br><span class="line">			string remaining = rest.<span class="built_in">substr</span>(<span class="number">0</span>, i) + rest.<span class="built_in">substr</span>(i + <span class="number">1</span>);</span><br><span class="line">			<span class="built_in">permute</span>(next, remaining);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// v2</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">per</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> n, <span class="keyword">int</span> d, vector&lt;<span class="keyword">bool</span>&gt;&amp; used, vector&lt;<span class="keyword">int</span>&gt;&amp; cur, vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; ans)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (n == d) &#123;</span><br><span class="line">		ans.<span class="built_in">push_back</span>(cur);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">		<span class="keyword">if</span> (used[i])</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		used[i] = <span class="literal">true</span>;</span><br><span class="line">		cur.<span class="built_in">push_back</span>(nums[i]);</span><br><span class="line">		<span class="built_in">per</span>(nums, n, d + <span class="number">1</span>, used, cur, ans);</span><br><span class="line">		cur.<span class="built_in">pop_back</span>();</span><br><span class="line">		used[i] = <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对数组a的[l, r]做全排列</span></span><br><span class="line"><span class="comment"> * 每个数字都要充当第一个</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">perm</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (l == r) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">			cout &lt;&lt; a[i];</span><br><span class="line">		&#125;</span><br><span class="line">		cout &lt;&lt; endl;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = l; i &lt;= r; ++i) &#123;</span><br><span class="line">		<span class="built_in">swap</span>(a[l], a[i]);  <span class="comment">// 第i个元素充当第一个</span></span><br><span class="line">		<span class="built_in">perm</span>(a, l + <span class="number">1</span>, r);  <span class="comment">// 剩余元素全排列</span></span><br><span class="line">		<span class="built_in">swap</span>(a[l], a[i]);  <span class="comment">// 恢复状态，保证下个做第一个元素的状态正确</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200704153124426.png" alt="在这里插入图片描述" /> <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">com</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> n, <span class="keyword">int</span> d, <span class="keyword">int</span> start, vector&lt;<span class="keyword">int</span>&gt;&amp; cur, vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; ans)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (n == d) &#123;</span><br><span class="line">		ans.<span class="built_in">push_back</span>(cur);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = start; i &lt; nums.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">		cur.<span class="built_in">push_back</span>(nums[i]);</span><br><span class="line">		<span class="built_in">com</span>(nums, n, d + <span class="number">1</span>, i + <span class="number">1</span>, cur, ans);</span><br><span class="line">		cur.<span class="built_in">pop_back</span>();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">subsets</span><span class="params">(string soFar,string rest)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (rest == <span class="string">&quot;&quot;</span>)</span><br><span class="line">		cout &lt;&lt; soFar &lt;&lt; endl;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// add to subset, remove from rest, recur</span></span><br><span class="line">		<span class="built_in">subsets</span>(soFar + rest[<span class="number">0</span>], rest.<span class="built_in">substr</span>(<span class="number">1</span>));</span><br><span class="line">		<span class="comment">// do not add to subset, remove from rest, recur</span></span><br><span class="line">		<span class="built_in">subsets</span>(soFar, rest.<span class="built_in">substr</span>(<span class="number">1</span>));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200704153731705.png" alt="在这里插入图片描述" /> 从递归树可以看到：Permutation和Subsets都是关于<em>选择</em>的问题，树的深度代表选择的次数，每层的宽度代表每次决定时的选项。这种都是Exhaustive Recursion，所以复杂度很高。</p>
+<h2 id="backtracking">Backtracking</h2>
+<figure>
+<img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211129144559235-1738742177.png" alt="" /><figcaption>image</figcaption>
+</figure>
+<p>主要可以解决<strong>组合问题</strong>、<strong>排列问题</strong>、<strong>子集问题</strong>、<strong>字符串切割问题</strong>、<strong>棋盘问题</strong>，这些问题都可以抽象为<strong>多叉树的搜索问题</strong></p>
+<figure>
+<img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211129090136628-461210128.png" alt="" /><figcaption>image</figcaption>
+</figure>
+<p>回溯用来搜索选择性问题（a series of choices）的所有/部分解，每做一次选择，就递归一次，如果约束条件不满足，需要<strong>回退到上一层递归的参数状态</strong>。 通过约束条件的剪枝可以避免对整个搜索空间的穷举，从而提高效率。</p>
+<p>三个关键点：</p>
+<ol type="1">
+<li>Choice 明确要做的决定，<strong>每次递归代表一次决定，每次的决策结果都保存在这一层的call stack中</strong>。 eg. 遍历二叉树时，当处在某一层的某结点时，下一次递归调用是向左还是向右。</li>
+<li>Constraints 怎样剪枝，当前状态已经invalid，不必再从该状态继续搜索，直接返回。</li>
+<li>Goal 找到target后，就要回溯到上一层，进行其它可能性的搜索。</li>
+</ol>
+<p>Pattern： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// backtracking</span></span><br><span class="line"><span class="keyword">bool</span>/<span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">(configuration conf)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (no more choices)  <span class="comment">// base case</span></span><br><span class="line">		<span class="keyword">return</span> (conf is goal state);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (all available choices) &#123;</span><br><span class="line">		<span class="keyword">try</span> one choice c:</span><br><span class="line">		<span class="comment">// solve from here, if works out, you are done</span></span><br><span class="line">		<span class="keyword">if</span> (<span class="built_in">solve</span>(conf with choice c made))</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">		unmake choice c;   <span class="comment">// explore other solutions</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;  <span class="comment">// tried all choices, no soln found</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>几个例子：</p>
+<ol type="1">
+<li>N-Queens 对照N皇后问题，明确三个关键点： 1）对于每一列，要做的决定是将Q放在哪一行，每次递归都会进入下一列的决策； 2）约束条件：不能出现在同一行、同一列、同一斜线； 3）目标：当在最后一列成功放置Q后，就可以回溯到上一层去探索其它解。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">solve</span><span class="params">(grid&lt;<span class="keyword">bool</span>&gt;&amp; board, <span class="keyword">int</span> col)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (col &gt;= board.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> rowToTry = <span class="number">0</span>; rowToTry &lt; board.<span class="built_in">size</span>(); ++rowToTry) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">isSafe</span>(board, rowToTry, col)) &#123;</span><br><span class="line">            <span class="built_in">placeQueen</span>(board, rowToTry, col);</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">solve</span>(board, col + <span class="number">1</span>)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">removeQueen</span>(board, rowToTry, col);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>Sudoku <img src="https://img-blog.csdnimg.cn/20200704162901848.png" alt="在这里插入图片描述" /> 将1-9放入格子，要求每行、每列、每块不能有重复数字。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">solve</span><span class="params">(Grid&lt;<span class="keyword">int</span>&gt;&amp; grid)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// the gird to check, we should check all the grids</span></span><br><span class="line">    <span class="keyword">int</span> row, col;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// all grids assigned successfully</span></span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">findUnassigned</span>(grid, row, col)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num = <span class="number">1</span>; num &lt;= <span class="number">9</span>; ++num) &#123; <span class="comment">// options are 1-9</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">noConflict</span>(grid, row, col, num)) &#123;</span><br><span class="line">            <span class="built_in">grid</span>(row, col) = num; <span class="comment">// try assign</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">solve</span>(grid)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">grid</span>(row, col) = UNASSIGNED; <span class="comment">// undo and try again</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="EIMadrigal WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="EIMadrigal Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>EIMadrigal
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://eimadrigal.github.io/2019/09/16/Recursion%20and%20Backtracking/" title="Recursion and Backtracking">https://eimadrigal.github.io/2019/09/16/Recursion and Backtracking/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/09/10/%E7%90%83%E5%91%98%E5%BD%92%E5%8C%96/" rel="prev" title="球员归化">
+      <i class="fa fa-chevron-left"></i> 球员归化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/09/23/Codeforces%20Round%20#587/" rel="next" title="Codeforces Round">
+      Codeforces Round <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tree-recursion"><span class="nav-number">1.</span> <span class="nav-text">Tree Recursion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%8F%E5%85%B8%E9%80%92%E5%BD%92"><span class="nav-number">2.</span> <span class="nav-text">经典递归</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#backtracking"><span class="nav-number">3.</span> <span class="nav-text">Backtracking</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="EIMadrigal"
+      src="/images/favicon.png">
+  <p class="site-author-name" itemprop="name">EIMadrigal</p>
+  <div class="site-description" itemprop="description">Hello World</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">167</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/EIMadrigal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:andrew.renj@gmail.com" title="E-Mail → mailto:andrew.renj@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.cnblogs.com/EIMadrigal" title="cnblogs → https:&#x2F;&#x2F;www.cnblogs.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-codiepie fa-fw"></i>cnblogs</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/EIMadrigal" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018-02 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EIMadrigal</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">Total views: <span id="busuanzi_value_site_pv"></span></span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">Total visitors: <span id="busuanzi_value_site_uv"></span></span>
+    <span class="post-meta-divider">|</span>
+
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);
+    var countOffset = 20000;
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset);
+            clearInterval(int);
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

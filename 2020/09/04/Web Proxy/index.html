@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Intro Web Proxy是浏览器和服务器的中间人：浏览器访问网页时，将请求发给代理，由代理将该请求发给服务器；服务器返回结果时，先发送给代理，由代理发给浏览器。之所以这么做，是因为可以在Proxy这做一些事情： - 防火墙：有些不能直接访问的网站可以通过代理去访问 ； - 匿名器：代理可以隐藏浏览器的信息，使其对服务器匿名； - 缓存：暂存服务器返回结果，加快访问速度。 本项目要实现一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web Proxy">
+<meta property="og:url" content="https://eimadrigal.github.io/2020/09/04/Web%20Proxy/index.html">
+<meta property="og:site_name" content="EI Madrigal&#39;s Space">
+<meta property="og:description" content="Intro Web Proxy是浏览器和服务器的中间人：浏览器访问网页时，将请求发给代理，由代理将该请求发给服务器；服务器返回结果时，先发送给代理，由代理发给浏览器。之所以这么做，是因为可以在Proxy这做一些事情： - 防火墙：有些不能直接访问的网站可以通过代理去访问 ； - 匿名器：代理可以隐藏浏览器的信息，使其对服务器匿名； - 缓存：暂存服务器返回结果，加快访问速度。 本项目要实现一个">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200726153711559.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200821122702755.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200811181713826.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200811182155577.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200811182851976.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200811194820393.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200811200533477.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200821133459152.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200824160910224.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200819212506210.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200819221810760.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200819221846500.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200730162654329.png">
+<meta property="article:published_time" content="2020-09-04T06:26:00.000Z">
+<meta property="article:modified_time" content="2022-01-13T16:01:43.609Z">
+<meta property="article:author" content="EIMadrigal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200726153711559.png">
+
+<link rel="canonical" href="https://eimadrigal.github.io/2020/09/04/Web%20Proxy/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Web Proxy | EI Madrigal's Space</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EI Madrigal's Space</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/09/04/Web%20Proxy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Web Proxy
+        </h1>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-04 14:26:00" itemprop="dateCreated datePublished" datetime="2020-09-04T14:26:00+08:00">2020-09-04</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="intro">Intro</h2>
+<p>Web Proxy是浏览器和服务器的中间人：浏览器访问网页时，将请求发给代理，由代理将该请求发给服务器；服务器返回结果时，先发送给代理，由代理发给浏览器。之所以这么做，是因为可以在Proxy这做一些事情： - 防火墙：<del>有些不能直接访问的网站可以通过代理去访问</del> ； - 匿名器：代理可以隐藏浏览器的信息，使其对服务器匿名； - 缓存：暂存服务器返回结果，加快访问速度。</p>
+<p>本项目要实现一个简单的Web Proxy，支持以下Features： - 中间人功能 - 并发 - 缓存 ## Background Knowledge - HTTP/1.0 GET 当用户在浏览器输入URL<code>http://www.cnblogs.com/EIMadrigal</code>并按下回车后，浏览器会向代理发送HTTP请求，请求行可能如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET http://www.cnblogs.com:8080/EIMadrigal HTTP/1.1</span><br></pre></td></tr></table></figure> 代理要将这个请求解析为主机名<code>www.cnblogs.com</code>、端口<code>8080</code>和路径<code>/EIMadrigal</code>，之后代理可以尝试连接<code>www.cnblogs.com</code>并且向服务器发送新的HTTP请求，请求行如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /EIMadrigal HTTP/1.0</span><br></pre></td></tr></table></figure> - Request Header <img src="https://img-blog.csdnimg.cn/20200726153711559.png" alt="在这里插入图片描述" /> 请求头可能有多行，每行的基本组成就是头部字段名和值，需要注意的是：HTTP请求的每一行都以<code>\r\n</code>结束，并且整个请求是以空行<code>\r\n</code>结束。 项目要求：<strong>对于浏览器自带的request header，代理应该原封不动地转发</strong>。但必须将以下4项补齐，即如果自带的请求头包含以下4项之一，就按照自带请求头转发；否则按照下面的默认值转发。对于自带的其它请求头，直接转发即可：</p>
+<p>Host：服务器主机名，如果浏览器自带，直接转发；否则使用请求行里解析出的hostname。 User-Agent：用户的操作系统/浏览器等信息。 Connection：第一次请求/响应完成后，当前连接是否keep alive。 Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Host: www.cnblogs.com</span><br><span class="line">User-Agent: Mozilla/<span class="number">5.0</span> (X11; Linux x86_64; rv:<span class="number">10.0</span><span class="number">.3</span>) Gecko/<span class="number">20120305</span> Firefox/<span class="number">10.0</span><span class="number">.3</span></span><br><span class="line">Connection: close</span><br><span class="line">Proxy-Connection: close</span><br></pre></td></tr></table></figure> - 端口 请求端口：URL中的可选字段，如果用户输入时指定，代理应该连接指定端口，否则使用默认端口80。 监听端口：代理应该在该端口监听用户的连接请求，由命令行参数给出。可以是1024~65536之间的未被其他进程占用的任意值。 ## Implementation - Sequential Web Proxy 代理首先要接收浏览器HTTP请求，将浏览器的标准请求解析，转换为自己的请求发送。 这里的实现不难，只要模仿Tiny Server在一个死循环中监听来自浏览器的请求，接收之后在<code>void doit(int fd)</code>里完成解析请求行、请求头、将处理后的请求发送给server、接收server的响应并写回浏览器。 一些比较方便的函数： <code>int accept(int listenfd, struct sockaddr *addr, int *addrlen)</code>：在<code>listenfd</code>等待连接请求，将client的socket信息和长度存入<code>addr</code>和<code>addrlen</code>； <code>int Open_clientfd(char *hostname, char *port)</code>：Open connection to server at &lt;hostname, port&gt;, return a socket descriptor ready for reading and writing. 读写时可以使用提供的RIO包。</p>
+<p>这里需要注意的是请求的解析：思路是在proxy这里整合所有的请求行和请求头信息，对于所有浏览器发来的请求头的内容，原封不动保存到<code>reqHeader</code>里；对于默认的4个请求头，缺少几个，就按照规定内容增加进去。 还要注意：因为规定<code>Connection</code>和<code>Proxy-Connection</code>都有Connection这个单词，所以用<code>strstr</code>查找的时候：如果浏览器自带的请求头没有<code>Connection</code>但是有<code>Proxy-Connection</code>，这时程序就可能误判为有<code>Connection</code>，所以最好用函数<code>strncmp</code>或者<code>memcmp</code>。</p>
+<p>要写一个非常robust的URI解析器还是挺繁琐的，由于C没有正则表达式（也许可以用其他语言写好编译成库，然后C程序调用？），需要考虑的情况很多。 首先明确URI的格式：一般由4部分组成：protocol://hostname:[port]/path/[parameters][?query][#fragment] 协议目前只支持HTTP和HTTPS，其它一律不合法。 因为一旦和服务器建立连接后，protocol和hostname就没用了，只需要path以及后面的query和fragment，为了方便起见，将/也放入path字段，因为其表示根目录，但是对于query和fragment，没有放?和#，因为找到请求内容的位置后，一些具体的搜索/片段直接用关键字即可，与?和#没关系，只有/特殊一些。 - Multiple Concurrent Requests 对于Iterative Server，同时只能处理一个连接请求：<img src="https://img-blog.csdnimg.cn/20200821122702755.png" alt="在这里插入图片描述" /> 当第二个客户试图去连接：调用<code>connect</code>会正常返回，但Server不会<code>Accept</code>该请求，会用TCP Listen Backlog技术将该请求入队；调用<code>rio_writen</code>也会正常返回，Server会把写入的数据存入缓存；调用<code>rio_readlineb</code>会阻塞，因为Server没有发送任何的response。</p>
+<p>解决方法就是并发处理，我们的代理要能同时处理多个请求，具体的方法很多：多进程、I/O多路复用、预线程化（类似生产者-消费者问题，先创建n个线程，相当于n个缓冲区），最直接的方式就是专门有一个线程负责监听，每收到一个连接请求，就开一个新线程去进行读写。这里要采用<strong>可分离</strong>的线程模型：当其终止时，内存资源会被系统自动回收。</p>
+<p>这部分本来很简单，但是写完后测试发现挂了： <img src="https://img-blog.csdnimg.cn/20200811181713826.png" alt="在这里插入图片描述" /> 这很可能是NOP Server出了问题，这个Server是用Python写的，我去启动了一下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./nop-server.py <span class="number">15000</span></span><br></pre></td></tr></table></figure> 发现： <img src="https://img-blog.csdnimg.cn/20200811182155577.png" alt="在这里插入图片描述" /> 这个问题是Python的版本不匹配，把<code>nop-server.py</code>第一行的<code>#!/usr/bin/python</code>改为<code>#!/usr/bin/python3</code>即可，指定用python3的解释器执行脚本。</p>
+<p>并发这块也妥了： <img src="https://img-blog.csdnimg.cn/20200811182851976.png" alt="在这里插入图片描述" /> 这里的测试逻辑是这样的：Client1通过proxy连接到nop-server，这个服务器永远不会发送response，也就是这条连接一直保持；Client2通过proxy连接到Tiny，看看能不能从Tiny取个文件回来，如果能，说明并发是ok的，如果不能，说明不支持并发。之所以要用nop-server，是因为这东西可以一直连接，比较方便。如果Client1也是通过proxy连Tiny，那么可能很快就执行完了，这时Client2再去连接，很可能就不是并发的访问了，失去了测试的意义。</p>
+<p>做第三部分之前，先实际测试下proxy的健壮性。用FireFox浏览器试试，先升级到最新版本，然后设置浏览器的代理方式： <img src="https://img-blog.csdnimg.cn/20200811194820393.png" alt="在这里插入图片描述" /> 在8080端口运行proxy，然后找个HTTP网站<code>http://csrankings.org/</code>试一下，现在网站基本都是HTTPS，看来后续的Features要支持HTTPS了（先挖个坑）。</p>
+<p>运行proxy之前，画风是这样的： <img src="https://img-blog.csdnimg.cn/20200811200533477.png" alt="在这里插入图片描述" /> 运行proxy之后： <img src="https://img-blog.csdnimg.cn/20200821133459152.png" alt="在这里插入图片描述" /> 通过代理访问该网页时，页面只能加载一部分，收到59420B数据后，会<code>segmentation fault</code> ，最后发现 主要原因是<code>init_cache()</code>时空间分配写错了，但是修改后又出现了如下错误： <img src="https://img-blog.csdnimg.cn/20200824160910224.png" alt="在这里插入图片描述" /> 是<code>memcpy</code>时候数组越界，处理buffer时候要千万小心。</p>
+<p>这里要改下<code>csapp.c</code>中的错误处理，里面都是直接<code>exit(0)</code>，但是作为一个服务器，不能随便终止，所以我们注释掉所有Error-handling functions里的<code>exit()</code>，如果在读数据或者什么时候遇到错误，<code>return</code>即可：<code>exit()</code>是系统调用级别的，结束整个进程；<code>return</code>是函数级别的，返回给调用者，当然在<code>main()</code>里<code>return</code>也就是<code>exit(0)</code>。 - Caching Web Objects 缓存可以说是整个项目的难点，需要考虑的问题比较多。为了模块化，将这一部分单独写作<code>cache.c/cache.h</code>，并修改<code>Makefile</code>。 主要问题有2个： 1、多线程同步：对于cache的访问应当是线程安全的，多个线程可以同时读，但只有一个线程可以写，这就是典型的读者-写者问题（又用到操作系统的知识了）； 2、替换策略：cache块的数量是有限的，没有空间时就需要换出换入。一般来讲都是采用LRU方式，一个单线程的严格的LRU Cache可以参考<a target="_blank" rel="noopener" href="https://leetcode.com/problems/lru-cache/">leetcode146题</a>。</p>
+<p>我们首先来解决问题一： 读者写者问题可以分为读优先、写优先2种： 读优先：来了一个读进程，除非有一个写进程正在访问，否则读者直接去读，可能导致写进程饥饿； 写优先：有进程读时，如果来了写进程，那么禁止后续读进程请求，现有进程读完后，写进程立即去写，可能导致读进程饥饿。 写优先实现起来稍微麻烦一些，所以这里采用读优先。这里就不自己实现读者写者了，使用读写锁<code>pthread_rwlock_t</code>，确保不会死锁。</p>
+<p>接着来解决问题二： 要实现多线程并发LRU Cache，由于C实现双向链表和Hashtable有点繁琐，所以项目要求<strong>近似LRU</strong>即可：我们可以为每一个cache块附加一个时间戳，每当该块被访问时，就更新时间戳。需要替换时，换出时间戳最小的块即可。这样带来的问题就是：读的时候也需要更新时间戳，但更新时间需要加写锁，如果其他线程占用写锁，那么读进程就无法更新时间戳，也就不是严格的LRU了。</p>
+<p>Cache的实现既可以像malloc lab一样采用分级的思想，也可以直接均分所有空间，整体流程如下： - 初始化 - 查Cache - 如果miss，寻找可用位置 - 找到可用块，缓存满足大小条件的Object - 更新时间戳</p>
+<p>最大的缓存对象是100KB，一共的空间1MB，平均可以缓存10个Object，这样会浪费24KB空间。所以采用分级的方法： 100KB * 5块 = 500KB 50KB * 6块 = 300KB 20KB * 5块 = 100KB 10KB * 10块 = 100KB 1KB * 24块 = 24KB 接着来构思下存储结构，<strong>设计数据结构</strong>和<strong>类（函数）接口</strong>是我认为做一个工程最难的部分，当然还有最后的效率优化问题： 一个cache line最基本的构成需要存储URI和OBJ，因为下次用户请求时代理需要知道请求的是哪个网站的什么内容（通过URI确定），进而如果查找到，将内容OBJ直接返回给用户。同时还需要一个时间戳以及用于同步的读写锁： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> *uri;</span><br><span class="line">    <span class="keyword">char</span> *obj;</span><br><span class="line">    <span class="keyword">int</span> objSize;</span><br><span class="line">    <span class="keyword">int64_t</span> time;</span><br><span class="line">    <span class="keyword">pthread_rwlock_t</span> rwlock; </span><br><span class="line">&#125; cache_line;</span><br></pre></td></tr></table></figure> 一共有5种类型的cache，每种类型有一个number，还有一个指向该种cache第一块的指针p，p指向该种的第一小块，p+1指向该种的第二小块，以此类推： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> numOfLine;</span><br><span class="line">    cache_line *cachep;</span><br><span class="line">&#125; cache_type;</span><br></pre></td></tr></table></figure> 数据结构设计完后，需要设计函数接口，cache的操作有初始化、查找、写入（替换）和释放： 初始化需要为cache block分配空间，将每一块的时间戳置0，表示该块没有存储内容； 查找时需要遍历所有的type，再在该type中遍历所有的block，如果时间戳不为0，比对浏览器需要访问的URI与当前块的URI是否相等，相等则表示cache hit，直接写回给相应的fd；更新时间戳时，粒度越细越好，这里用<code>gettimeofday</code>精确到微秒级别；读取时如果能申请到写锁，就更新时间，否则就不更新； 写入时需要先计算object大小，寻找空闲的cache block，没有需要替换，满足要求后存入cache，并且将结果返给浏览器。这里要注意寻找空闲块时要<strong>从小往大</strong>，否则很可能一个很小的object占用了一块很大的block，造成严重浪费，类似于操作系统内存管理动态分配中的最佳适应算法。 那么这种分级的方式的缺点是：每种类型的cache块<strong>大小固定</strong>，很可能50KB的块只存了10KB内容，造成浪费，类似于固定分区分配。 关于替换，我们采取<strong>局部置换</strong>策略：即需要换入的object大小如果是30KB，我们只用50KB这种类型去存储，如果50KB的块用完了，就需要换出一块50KB，即使此时100KB的块有空闲，也仍然完成置换过程。</p>
+<p>写完cache后，需要修改<code>Makefile</code>，在<code>proxy.c</code>中增加cache的部分。运行完以后，可以用<code>make clean</code>清除目录下多余的垃圾文件，比如<code>.o</code>文件等。 ## Test 测试的方式一共有3种：</p>
+<ul>
+<li>自动化测试 利用课程提供的脚本<code>driver.sh</code>自动进行，执行之前，需要安装一些工具： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install net-tools</span><br></pre></td></tr></table></figure> 做完所有内容后，先用<code>driver.sh</code>进行测试，发现cache部分没分。。。得，开始debug吧！我觉得GDB好难用啊，所以都是通过<code>printf</code>de的。</li>
+</ul>
+<p>用curl先通过proxy发个请求，然后看看proxy有没有缓存服务器返回的内容。 最后发现在<code>write_cache</code>时需要用到URI，但是之前解析时候把URI改了，一定注意URI最好不要改，设置为<code>const</code>比较保险。</p>
+<p>完了以后，cache满分了，basic又错了一个，fetch可执行对象文件tiny时： <img src="https://img-blog.csdnimg.cn/20200819212506210.png" alt="在这里插入图片描述" /> 一开始怀疑是tiny太大了，某个数组爆掉了。看了下tiny有36000+B，缓存空间足够，但是可能写入时候有些bug。tiny是二进制文件，可能比较特殊？很奇怪的是：明明<code>objSize</code>是36000+，但是<code>strlen(obj)</code>只有100，怀疑文件中可能有<code>\0</code>，提前终止了<code>strlen</code>的计数。</p>
+<p>解决方案是<code>write_cache</code>参数不仅要有<code>uri</code>和<code>obj</code>，还要有<code>obj</code>的长度<code>len</code>，否则直接用<code>strlen</code>获取长度可能就挂了。后来修改以后就满分了，一定要注意，如果用<code>char*</code>传参，一定要附带参数<code>len</code>，因为不一定读取的是字符串，还有可能是二进制文件，<code>\0</code>也就是<code>0</code>很容易出现，用<code>strlen</code>大概率会爆掉。</p>
+<p>最终测试结果如下： <img src="https://img-blog.csdnimg.cn/20200819221810760.png" alt="在这里插入图片描述" /> <img src="https://img-blog.csdnimg.cn/20200819221846500.png" alt="在这里插入图片描述" /> - 利用<code>curl</code>工具 <code>curl</code>可以用来生成HTTP请求：假设Sever在端口15213监听，代理在端口15214监听，那么可以通过下面命令经由代理发送请求： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v --proxy http:<span class="comment">//localhost:15214 http://localhost:15213/home.html</span></span><br></pre></td></tr></table></figure> 我们用该工具测试下Sequential Web Proxy： 首先启动Tiny Web Server和Proxy： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./tiny 15213</span><br><span class="line">./proxy 15214</span><br></pre></td></tr></table></figure> 然后执行<code>curl</code>命令： <img src="https://img-blog.csdnimg.cn/20200730162654329.png" alt="在这里插入图片描述" /> 说明基本功能是OK的！！ - 实际浏览器测试 满分之后，万里长征走了一半吧，因为要在实际浏览器测试，不断增强程序的<strong>鲁棒性</strong>。 测试之前，先禁用浏览器自带的cache，清空之前的缓存。 测下内存泄漏：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">valgrind --leak-check=full --show-leak-kinds=all ./proxy 8080</span><br></pre></td></tr></table></figure>
+<h2 id="codereference">Code&amp;Reference</h2>
+<p><a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/15-213/tree/master/Web%20Proxy">code here</a> <a target="_blank" rel="noopener" href="http://csapp.cs.cmu.edu/3e/labs.html">reference here</a> ## TODO 接下来的工作可拓展的还有很多，包括但不限于： - 增加对HTTPS的支持（看起来并不简单） - Cache这里还有很多可优化的地方（分配策略、置换策略...） - 目前只支持GET方式，还可以拓展到POST方式</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="EIMadrigal WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="EIMadrigal Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>EIMadrigal
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://eimadrigal.github.io/2020/09/04/Web%20Proxy/" title="Web Proxy">https://eimadrigal.github.io/2020/09/04/Web Proxy/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/31/%E7%BB%99%E6%88%91%E6%9C%AA%E6%9D%A5%E7%9A%84%E5%AD%A9%E5%AD%90/" rel="prev" title="给我未来的孩子">
+      <i class="fa fa-chevron-left"></i> 给我未来的孩子
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/16/MIT%20Operating%20System%20Engineering#0%20Booting%20a%20PC/" rel="next" title="MIT Operating System Engineering#0 Booting a PC">
+      MIT Operating System Engineering#0 Booting a PC <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#intro"><span class="nav-number">1.</span> <span class="nav-text">Intro</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#codereference"><span class="nav-number">2.</span> <span class="nav-text">Code&amp;Reference</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="EIMadrigal"
+      src="/images/favicon.png">
+  <p class="site-author-name" itemprop="name">EIMadrigal</p>
+  <div class="site-description" itemprop="description">Hello World</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">167</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/EIMadrigal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:andrew.renj@gmail.com" title="E-Mail → mailto:andrew.renj@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.cnblogs.com/EIMadrigal" title="cnblogs → https:&#x2F;&#x2F;www.cnblogs.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-codiepie fa-fw"></i>cnblogs</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/EIMadrigal" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018-02 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EIMadrigal</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">Total views: <span id="busuanzi_value_site_pv"></span></span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">Total visitors: <span id="busuanzi_value_site_uv"></span></span>
+    <span class="post-meta-divider">|</span>
+
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);
+    var countOffset = 20000;
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset);
+            clearInterval(int);
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>
