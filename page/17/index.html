@@ -190,72 +190,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/04/20/Process%20Synchronization-Example%202/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/20/Process%20Synchronization-Example%202/" class="post-title-link" itemprop="url">Process Synchronization-Example 2</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-04-20 12:59:00" itemprop="dateCreated datePublished" datetime="2018-04-20T12:59:00+08:00">2018-04-20</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="问题描述">问题描述</h2>
-<p>理发店有一位理发师，一把理发椅和N把供等候的顾客坐的椅子。 如果没有顾客，理发师在理发椅上睡觉； 当有一个顾客到来时，他必须先唤醒理发师； 如果顾客来时理发师正在理发，如果有空椅子，坐下等待，否则离开。 用PV操作解决上述问题中的同步和互斥关系。</p>
-<h2 id="分析">分析</h2>
-<p>将顾客看作N个生产者，理发师是1个消费者。 理发师和椅子是临界资源，故顾客间是互斥关系； 理发师和顾客是同步关系。</p>
-<p>信号量设置： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Semaphore barberReady = <span class="number">0</span>  互斥量，只能取<span class="number">0</span>或<span class="number">1</span>  </span><br><span class="line">Semaphore accessSeat = <span class="number">1</span>  互斥量，如果为<span class="number">1</span>，表明椅子数可以增加或减少，相当于给椅子加锁，避免两个顾客同时坐一把椅子</span><br><span class="line">Semaphore num_wait = <span class="number">0</span>   坐在椅子上等待的顾客数</span><br><span class="line"><span class="keyword">int</span> seat_free    空着的椅子数目</span><br></pre></td></tr></table></figure> <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Sleeping_barber_problem">参考wiki</a></p>
-<h2 id="解答">解答</h2>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*顾客进程*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">customer</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(accessSeat);  <span class="comment">//试图坐下</span></span><br><span class="line">        <span class="keyword">if</span>(seat_free &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            seat_free--;  <span class="comment">//坐下</span></span><br><span class="line">            V(num_wait);  <span class="comment">//试图唤醒理发师，</span></span><br><span class="line">            V(accessSeat);  <span class="comment">//不用再锁着椅子</span></span><br><span class="line">            P(baberReady); <span class="comment">//等待理发师ready</span></span><br><span class="line">            理发;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            V(accessSeat);  <span class="comment">//释放加在椅子上的锁</span></span><br><span class="line">            离开;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*理发师进程*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">barber</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(num_wait);   <span class="comment">//尝试获得一位顾客，如果没有，去睡觉</span></span><br><span class="line">        P(accessSeat);   <span class="comment">//尝试获得椅子锁，更改空闲椅子数目</span></span><br><span class="line">        seat_free++;    <span class="comment">//空椅子加1</span></span><br><span class="line">        V(baberReady);    <span class="comment">//理发师准备好了</span></span><br><span class="line">        V(accessSeat);    <span class="comment">//无需继续锁着椅子</span></span><br><span class="line">        理发;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/04/11/Process%20Synchronization-Example%201/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -757,20 +691,20 @@ F(n-1)+F(n-2), n&gt;1\end{matrix}\right.
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">167</span>
+          <span class="site-state-item-count">166</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
