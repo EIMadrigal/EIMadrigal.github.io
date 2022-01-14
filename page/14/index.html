@@ -190,6 +190,220 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/04/10/Simple%20Math%20Problems/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/04/10/Simple%20Math%20Problems/" class="post-title-link" itemprop="url">Simple Math Problems</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-04-10 14:32:00" itemprop="dateCreated datePublished" datetime="2019-04-10T14:32:00+08:00">2019-04-10</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="最大公约数-最小公倍数">最大公约数 &amp; 最小公倍数</h2>
+<p>Euclid's Algorithm：若<span class="math inline">\(b\neq0\)</span>，那么<span class="math inline">\(gcd(a,b)=gcd(b,a\%b)\)</span>。 若<span class="math inline">\(a&lt;b\)</span>，定理会先交换a和b。 注意：0和任意正整数a的gcd是a。 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">gcd</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> !b ? a : gcd(b, a % b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 时间复杂度<span class="math inline">\(O(lgb)\)</span>，因为每次递归问题规模都会缩减一半以上。 最小公倍数<span class="math inline">\(lcm=\frac{a*b}{gcd}\)</span>。</p>
+<ul>
+<li>扩展欧几里得算法 可以计算出满足下式的三元组<span class="math inline">\((d,x,y)\)</span>： <span class="math display">\[d = GCD(a, b) = ax + by\]</span> <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Euclid_extend</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span>* x, <span class="keyword">int</span>* y)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="number">0</span> == b) &#123;</span><br><span class="line">		*x = <span class="number">1</span>;</span><br><span class="line">		*y = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">return</span> a;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">int</span> r = Euclid_extend(b,a%b,x,y);</span><br><span class="line">		<span class="keyword">int</span> temp = *x;</span><br><span class="line">		*x = *y;</span><br><span class="line">		*y = temp - (*y)*(a/b);</span><br><span class="line">		<span class="keyword">return</span> r;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> <em>简单证明：</em> <span class="math inline">\(b=0\)</span>是递归基，易得一组解<span class="math inline">\(x=1,y=0\)</span>; <span class="math inline">\(b \neq0\)</span>时： 首先递归求解： <span class="math display">\[d&#39;=gcd(b,a\%b)=bx&#39;+(a\%b)y&#39; \ \ \ \ \  \ \ \ \ \ \ \ \ \ (1)\]</span> 我们知道： <span class="math display">\[d=gcd(a,b)=d&#39;=gcd(b,a\%b)\ \ \ \ \ \ \ \ \ \ \ \ \ (2)\]</span> <span class="math display">\[a\%b=a-b*\biggl\lfloor a/b \biggr\rfloor\ \ \ \ \ \ \ \ \ \ \ (3)\]</span> 将(2)(3)式带入(1)： <span class="math display">\[d=bx&#39;+(a-b\biggl\lfloor a/b \biggr\rfloor)y&#39;=ay&#39;+b(x&#39;-\biggl\lfloor a/b \biggr\rfloor y&#39;)\]</span> 所以，令<span class="math inline">\(x=y&#39;\)</span>、<span class="math inline">\(y=x&#39;-\biggl\lfloor a/b \biggr\rfloor y&#39;\)</span>，就可以满足<span class="math inline">\(d=ax+by\)</span>。</li>
+</ul>
+<h2 id="分数">分数</h2>
+<p>PAT甲1088是比较经典的分数处理问题，求2个分数的和、差、积、商，输出最简形式。 表示、化简、运算、输出，代码阐释得很清楚。 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">gcd</span><span class="params">(ll a,ll b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> !b ? a : <span class="built_in">gcd</span>(b,a % b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Fraction</span> &#123;</span></span><br><span class="line">        ll nume,deno;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">Fraction <span class="title">reduction</span><span class="params">(Fraction a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(a.deno &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                a.deno = -a.deno;</span><br><span class="line">                a.nume = -a.nume;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(a.nume == <span class="number">0</span>) &#123;</span><br><span class="line">                a.deno = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">               <span class="keyword">int</span> d = <span class="built_in">gcd</span>(<span class="built_in">abs</span>(a.nume),<span class="built_in">abs</span>(a.deno));</span><br><span class="line">               a.nume /= d;</span><br><span class="line">               a.deno /= d;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Fraction <span class="title">add</span><span class="params">(Fraction a,Fraction b)</span> </span>&#123;</span><br><span class="line">        Fraction res;</span><br><span class="line">        res.deno = a.deno * b.deno;</span><br><span class="line">        res.nume = a.deno * b.nume + a.nume * b.deno;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">reduction</span>(res);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Fraction <span class="title">sub</span><span class="params">(Fraction a,Fraction b)</span> </span>&#123;</span><br><span class="line">        Fraction res;</span><br><span class="line">        res.deno = a.deno * b.deno;</span><br><span class="line">        res.nume = a.nume * b.deno - a.deno * b.nume;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">reduction</span>(res);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Fraction <span class="title">times</span><span class="params">(Fraction a,Fraction b)</span> </span>&#123;</span><br><span class="line">        Fraction res;</span><br><span class="line">        res.deno = a.deno * b.deno;</span><br><span class="line">        res.nume = a.nume * b.nume;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">reduction</span>(res);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Fraction <span class="title">divide</span><span class="params">(Fraction a,Fraction b)</span> </span>&#123;</span><br><span class="line">        Fraction res;</span><br><span class="line">        res.deno = a.deno * b.nume;</span><br><span class="line">        res.nume = a.nume * b.deno;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">reduction</span>(res);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">showFrac</span><span class="params">(Fraction a)</span> </span>&#123;</span><br><span class="line">        a = <span class="built_in">reduction</span>(a);</span><br><span class="line">        <span class="keyword">if</span>(a.nume &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;(&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(a.deno == <span class="number">1</span>) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;%lld&quot;</span>,a.nume);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="built_in">abs</span>(a.nume) &gt; <span class="built_in">abs</span>(a.deno)) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;%lld %lld/%lld&quot;</span>,a.nume / a.deno,<span class="built_in">abs</span>(a.nume) % a.deno,a.deno);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;%lld/%lld&quot;</span>,a.nume,a.deno);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(a.nume &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;)&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Fraction a,b;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%lld/%lld%lld/%lld&quot;</span>,&amp;a.nume,&amp;a.deno,&amp;b.nume,&amp;b.deno);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">showFrac</span>(a);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; + &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(b);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; = &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(<span class="built_in">add</span>(a,b));</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">showFrac</span>(a);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; - &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(b);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; = &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(<span class="built_in">sub</span>(a,b));</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">showFrac</span>(a);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; * &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(b);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; = &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(<span class="built_in">times</span>(a,b));</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">showFrac</span>(a);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; / &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(b);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; = &quot;</span>);</span><br><span class="line">        <span class="keyword">if</span>(b.nume == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Inf\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="built_in">showFrac</span>(<span class="built_in">divide</span>(a,b));</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="素数">素数</h2>
+<p>1、判断素数 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isPrime</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">2</span>)  <span class="comment">// 1不是素数，也不是合数</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">int</span> square_root = <span class="built_in">sqrt</span>(n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= square_root; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (n % i == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>2、打素数表</p>
+<p>第一种方法是枚举判断。 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn = <span class="number">10010</span>;</span><br><span class="line"><span class="keyword">int</span> prime[maxn], num = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Prime_table</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; maxn; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">isPrime</span>(i)) &#123;</span><br><span class="line">            prime[num++] = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>第二种是Eratosthenes筛法，复杂度<span class="math inline">\(O(nloglogn)\)</span> <img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211224154934702-698444567.png" alt="image" /></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> isprime[maxn];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">seive</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    std::<span class="built_in">fill</span>(isprime, isprime + n + <span class="number">1</span>, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i * i &lt;= n; ++i)</span><br><span class="line">        <span class="keyword">if</span> (isprime[i])</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i * i; j &lt;= n; j += i)</span><br><span class="line">                isprime[j] = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>进一步的优化是欧拉筛，复杂度<span class="math inline">\(O(n)\)</span> <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> isprime[maxn];</span><br><span class="line">vector&lt;<span class="keyword">int</span>&gt; primes;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">seive</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    std::<span class="built_in">fill</span>(isprime, isprime + n + <span class="number">1</span>, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (isprime[i])</span><br><span class="line">            primes.<span class="built_in">push_back</span>(i);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> p : primes) &#123;</span><br><span class="line">            <span class="keyword">if</span> (p * i &gt; n)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            isprime[p * i] = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">if</span> (i % p == <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 3、分解质因子 注意：1要特判。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//存储</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">factor</span>&#123;</span></span><br><span class="line">        <span class="keyword">int</span> x,cnt; <span class="comment">//x为质因子,cnt为该质因子个数</span></span><br><span class="line">&#125;fac[<span class="number">20</span>];</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> num = <span class="number">0</span>;  <span class="comment">//记录不同因子个数</span></span><br><span class="line"><span class="comment">//枚举小于等于sqrt(n)内的所有质因子,判断哪个是n的因子</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;prime[i] &lt;= <span class="built_in">sqrt</span>(n);i++)</span><br><span class="line">&#123;</span><br><span class="line">        <span class="keyword">if</span>(n % prime[i] == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">                fac[num].x = prime[i];</span><br><span class="line">                fac[num].cnt = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">while</span>(n % prime[i] == <span class="number">0</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                        fac[num].cnt++;</span><br><span class="line">                        n /= primep[i];</span><br><span class="line">                &#125;</span><br><span class="line">                num++;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//如果n仍然大于1,说明n有一个大于sqrt(n)的质因子</span></span><br><span class="line"><span class="keyword">if</span>(n != <span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">        fac[num].x = n;</span><br><span class="line">        fac[num++].cnt = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="reference">Reference</h2>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/100051075">素数筛</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/04/03/Mobile%20Communication/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/04/03/Mobile%20Communication/" class="post-title-link" itemprop="url">Mobile Communication</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-04-03 09:12:00" itemprop="dateCreated datePublished" datetime="2019-04-03T09:12:00+08:00">2019-04-03</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>最近面试有被问到LTE，感觉说得不太清楚，重新整理一遍。</p>
+<h2 id="第一代移动通信系统">第一代移动通信系统</h2>
+<p>1G，诞生于1980年左右。<strong>模拟通信系统</strong>，抗干扰性能差，使用FDMA技术，主要用来传输<strong>话音</strong>信号，最拉风的就是“大哥大”。 采用蜂窝组网，又叫小区制移动通信。将网络服务区划分为许多cell，每个cell设置一个基站，移动站的发送和接收都要通过基站进行。 1G的制式有很多种：瑞士、荷兰、俄罗斯等使用的NMT，美国、澳大利亚使用的AMPS，英国使用的TACS等。</p>
+<h2 id="第二代移动通信系统">第二代移动通信系统</h2>
+<p>2G是<strong>数字通信系统</strong>，因此抗干扰能力大大增强。同时引入了CDMA和TDMA技术，提供了<strong>低速数字通信</strong>（短信）服务。</p>
+<p>2G的制式主要是欧洲的GSM(Global System for Mobile Communication)。 不久，2G就演变为了支持<strong>数据服务</strong>的2.5G（能上网）。2.5G包括了GPRS(General Packet Radio Service)和EDGE(Enhanced Data rate for GSM Evolution)。</p>
+<h2 id="第三代移动通信系统">第三代移动通信系统</h2>
+<p>3G主要采用了CDMA技术，使用混合的交换机制（电路交换、分组交换），可以提供丰富的多媒体服务（话音、数据、视频等）。 3G的标准主要有三种：欧洲的WCDMA（中国联通采用）、美国的CDMA2000（中国电信使用）、中国的TD-SCDMA（中国移动使用）。 制定标准的过程也是利益冲突与妥协的过程，欧洲这边成立了3GPP组织，美国主导了3GPP2组织，中国当然是加入了3GPP。</p>
+<h2 id="第四代移动通信系统">第四代移动通信系统</h2>
+<p>国际电信联盟（ITU）提出了4G的需求，4G的大名是IMT-Advanced(International Mobile Telecommunications-Advanced)。 4G标准的制定者，一个是3GPP，一个是IEEE。 3GPP提出了LTE(Long-Term Evolution)和LTE-Advanced，IEEE提出了WirelessMAN-Advanced。 LTE是3G和4G之间的过渡技术，也被称为3.9G。由于高通放弃了3GPP2转而投向LTE的怀抱，所以LTE应用得很广泛。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/04/01/INTERVIEW%20#3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/04/01/INTERVIEW%20#3/" class="post-title-link" itemprop="url">INTERVIEW</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-04-01 02:29:00" itemprop="dateCreated datePublished" datetime="2019-04-01T02:29:00+08:00">2019-04-01</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><em>菊厂的面试本来没打算记录，因为当时投的是非技术岗（技术支持）。为了全面，就寥做记录。</em> <em>菊厂的面试因为有口头保密协议，所以不能透露具体题目。</em></p>
+<h1 id="群面">0 群面</h1>
+<p>简历通过筛选后，会有短信通知去面试。 非技术岗第一轮是所谓“集体面试”，持续1.5h，菊厂两种形式：小组讨论（6人及以下）、小组辩论（12人分2组，6人/组）。 小组讨论一般是3位面试官会给一个问题，要求讨论之后给出一个解决方案； 小组辩论在分好组之后，会有一个简短的自我介绍环节； 接着拿到辩题，会有15~20Min左右的组内讨论时间； 讨论完毕后，每组需要选一个发言人阐述本方论点（建议口才不是很好的同学不要抢这个发言人）； 再下来就是针对对方的论点论据进行辩论（这时候一定要积极举手回答）； 最后会让每个人选一个要淘汰的本组同学并阐明理由，之后面试官进行总结。 群面结束后，没有通过的人就可以回家了。 我其实比较讨厌辩论，感觉就是两组人围绕着两个极端去互相反驳对方，可是明明很多时候是完全可以trade-off的，并不是非此即彼。</p>
+<h1 id="半技术面">1 半技术面</h1>
+<p>之所以叫做半技术面，是因为菊厂非技术岗的二面有点XX。据说会根据你的专业背景提问，如果不太对口就不会提问技术问题。 很不幸，我的面试官原来也是学通信的。简单聊了下简历上的项目之后，就开始疯狂追问网络问题，我可能没太get到他的point，交流不太顺畅，这一面表现不太好。 不过不知道是不是因为长太帅了（捂脸~），这一面竟然给过了。</p>
+<h1 id="高管面">2 高管面</h1>
+<p>通过二面后，会把你请到一个逼格有点高的地方，等着被高管临幸。 这种聊的就比较随意了，侃天侃地侃人生。 你的人生有嘛规划啊，你遇到最大的挫折是嘛啊，怎么克服的啊，你了解华为公司嘛...... 如果要把你派到非洲，愿不愿意啊，三年你愿意，十年你愿意么？ 总之，华为的文化就是你要绝对服从公司的安排，不怕吃苦，不怕牺牲，为公司倾情奉献。。。 最后你有什么问题的话，可以问他。</p>
+<h1 id="英语测试">3 英语测试</h1>
+<p>如果通过前三轮面试，最后有一个英语测试。 这个不知道什么标准，反正差不多三部分：1、单选题；2、朗读句子？（记不清了）；3、给2个topic，说一段话。 我这感人的口语水平，第三部分噼里啪啦自己都不知道说的啥。。。 全部完成后，就可以回去等消息了。 P.s. 即使四轮面试全部通过，也不意味着就能拿到offer。熟悉菊厂的同学都知道有个资源池，过面试后先进池子里泡着，公司会根据HC和前一批的违约情况从池子里分批捞人，建议不要一棵树上吊死。 <em>其它菊厂面经 ：https://zhuanlan.zhihu.com/p/24427674</em></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/03/28/INTERVIEW%20#2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -569,7 +783,7 @@ E_D[(g^{(D)}(x)-y)^2]=E_D[(f(x)+\epsilon-g^{(D)}(x))^2]\\
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/03/04/CC__%20FAQ/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/03/04/C%20&%20C++%20FAQ/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -583,7 +797,7 @@ E_D[(g^{(D)}(x)-y)^2]=E_D[(f(x)+\epsilon-g^{(D)}(x))^2]\\
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2019/03/04/CC__%20FAQ/" class="post-title-link" itemprop="url">CC__ FAQ</a>
+            <a href="/2019/03/04/C%20&%20C++%20FAQ/" class="post-title-link" itemprop="url">C/C++ FAQ</a>
         </h2>
 
         <div class="post-meta">
@@ -595,7 +809,16 @@ E_D[(g^{(D)}(x)-y)^2]=E_D[(f(x)+\epsilon-g^{(D)}(x))^2]\\
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-03-04 12:37:00" itemprop="dateCreated datePublished" datetime="2019-03-04T12:37:00+08:00">2019-03-04</time>
+              <time title="Created: 2019-03-04 20:37:32" itemprop="dateCreated datePublished" datetime="2019-03-04T20:37:32+08:00">2019-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -609,116 +832,15 @@ E_D[(g^{(D)}(x)-y)^2]=E_D[(f(x)+\epsilon-g^{(D)}(x))^2]\\
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="指针和引用">指针和引用</h2>
-<ol type="1">
-<li>指针是一个新的变量，存储另一个变量的地址，可以通过指针修改另一个变量；引用是一个别名，对引用的操作就是对变量本身的操作。</li>
-<li>指针可以有多级；引用只有一级。</li>
-<li>指针的大小一般4B；引用的大小一般取决于被引用对象大小。</li>
-<li>指针可以为空；引用不能为空。</li>
-<li>传参选择：返回被调函数局部变量的内存时传指针，使用后及时释放避免内存泄漏；返回局部变量的引用没有意义，会自动销毁。传指针需要单独开辟内存；在对栈空间大小敏感时（如递归）传引用，无需创建临时变量，开销更小。类对象作为参数时传引用是C++传递类对象的标准方式。</li>
-</ol>
-<h2 id="空类">空类</h2>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// sizeof(A) = 1</span></span><br></pre></td></tr></table></figure>
-<p>空类的大小之所以为1，因为标准规定完整对象的大小&gt;0，否则两个不同对象可能拥有相同的地址，故编译器会生成1B占位符。 那么两个对象为什么不能地址相同呢？</p>
-<blockquote>
-<p>There would be no way to distinguish between these two objects when referencing them with pointers.</p>
-</blockquote>
-<p>空类中到底都有什么呢？</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">A</span>();  <span class="comment">// 默认构造函数</span></span><br><span class="line">	<span class="built_in">A</span>(<span class="keyword">const</span> A&amp;);  <span class="comment">// 拷贝构造函数</span></span><br><span class="line">	~<span class="built_in">A</span>();  <span class="comment">// 析构函数</span></span><br><span class="line">	A&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> A&amp;);  <span class="comment">// 赋值运算符</span></span><br><span class="line">	A* <span class="keyword">operator</span>&amp;();  <span class="comment">// 取址运算符（非const）</span></span><br><span class="line">	<span class="keyword">const</span> A* <span class="keyword">operator</span>&amp;() <span class="keyword">const</span>;  <span class="comment">// 取址运算符（const）</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>仅仅声明一个类，不会创建这些函数。只有当定义类的对象时，才会产生。 ## 多态和虚函数 面向对象的语言的特点就是封装、继承和多态。封装和继承都比较好理解，那么多态到底什么意思？ 简单来说：不同对象接收相同的消息产生不同的行为。 C++中的多态分为静态多态(函数和运算符重载)和动态多态(继承和虚函数)。 定义虚函数<code>f</code>，是为了用基类的引用或指针调用派生类的<code>f</code>，最终调用哪个<code>f</code>取决于传入的实参，即在运行时选择函数的版本，也就是所谓的动态绑定。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		cout &lt;&lt; <span class="string">&quot;Base&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span> :</span> <span class="keyword">public</span> Base &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;  <span class="comment">// 覆盖Base::f</span></span><br><span class="line">		cout &lt;&lt; <span class="string">&quot;Derived&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">h</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">int</span> j;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	Base* p = <span class="keyword">new</span> <span class="built_in">Derived</span>();</span><br><span class="line">	p-&gt;<span class="built_in">f</span>();  <span class="comment">// 调用派生类的f()</span></span><br><span class="line">	<span class="keyword">delete</span> p;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>基类指针<code>p</code>调用虚函数<code>f</code>，<code>f</code>作用的可能是基类对象，也可能是派生类对象，这就是多态（同样消息作用于不同类型对象产生不同的行为）的一种方式，即动态多态。 正因为编译器无法确定使用哪个虚函数，所以所有的<strong>虚函数必须定义</strong>，否则编译器会报错。</p>
-<p>构造函数不能是虚函数，因为构造对象时必须明确知道其类型。如果是虚函数，调用时只需要提供接口，编译器无法知道你想构造继承树的哪个类型。 C++他爹Bjarne Stroustrup是这么说的： &gt; A virtual call is a mechanism to get work done given partial information. In particular, "virtual" allows us to call a function knowing only an interfaces and not the exact type of the object. To create an object you need complete information. In particular, you need to know the exact type of what you want to create. Consequently, a "call to a constructor" cannot be virtual.</p>
-<p>析构函数是虚函数，因为要确保执行相应对象的析构函数。如果基类指针指向派生类对象，会调用派生类的析构函数，然后调用基类的析构函数。 <img src="https://img-blog.csdnimg.cn/20200229202936650.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /> ## 纯虚函数 与虚函数必须定义相反，纯虚函数无须定义（要定义必须在类的外部），含有纯虚函数的类是<strong>抽象基类</strong>。 抽象基类定义好接口，继承该类的其他类可以覆盖这个接口。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>= <span class="number">0</span>;  <span class="comment">// 声明纯虚函数</span></span><br></pre></td></tr></table></figure>
-<p>之所以要引入纯虚函数，是因为很多时候基类产生对象是没有意义的。比如动物类可以派生出狗、猪等子类，但动物类生成对象毫无意义。 因此，不能创建抽象基类的对象，派生类必须覆盖(override)以定义自己的<code>f</code>，否则派生类仍然是抽象基类。 ## 重载&amp;覆盖&amp;重写</p>
-<ul>
-<li>重载(overload)：在类内部发生。函数名相同，参数个数、参数类型、参数顺序至少有一种不同。返回值类型可以相同，也可不同；</li>
-<li>覆盖(override)：覆盖基类的虚函数。函数名相同，参数相同，基类函数必须是虚函数；</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">B</span> &#123;</span></span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f1</span><span class="params">(<span class="keyword">int</span>)</span> <span class="keyword">const</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f2</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f3</span><span class="params">()</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">D1</span> :</span>B &#123;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">(<span class="keyword">int</span>)</span> <span class="keyword">const</span> <span class="keyword">override</span></span>;  <span class="comment">// 正确：f1与基类中的f1匹配</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f2</span><span class="params">(<span class="keyword">int</span>)</span> <span class="keyword">override</span></span>;  <span class="comment">// 错误：B没有形如f2(int)的函数</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f3</span><span class="params">()</span> <span class="keyword">override</span></span>;  <span class="comment">// 错误：f3不是虚函数</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f4</span><span class="params">()</span> <span class="keyword">override</span></span>;  <span class="comment">// 错误：B没有名为f4的函数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>重写(overwrite)：派生类的函数屏蔽了同名的基类函数： 派生类函数与基类函数同名，参数不同。不论基类函数是否为虚函数，都会被隐藏； 派生类函数与基类函数同名，参数相同。基类函数不为虚函数，会被隐藏； ## static C++中<code>static</code>关键字用来<strong>声明类的成员</strong>：</p></li>
-<li><p>类的静态成员变量或函数属于类而非对象，只有一份副本；</p></li>
-<li><p>静态成员函数没有<code>this</code>指针，只能访问类的静态数据；</p></li>
-<li><p>静态成员函数不能定义为虚函数；</p></li>
-<li><p>静态成员变量初始化<code>int Base::name = 0</code></p></li>
-</ul>
-<p>如果不是在类中声明成员，还有下面用法：</p>
-<ul>
-<li><p>隐藏作用：多文件编译时，定义的全局变量和函数都是整个工程可见的，只要使用时加上<code>extern</code>关键字即可。如果加上<code>static</code>关键字，那么该变量或函数就变为<strong>仅当前文件</strong>可见，这样我们可以在不同文件中定义同名的变量或函数而不用担心冲突。</p></li>
-<li><p>全局生存期：<code>static</code>变量存储在静态数据区，默认值为0，<strong>只被初始化一次</strong>，即使作为局部变量，生存期也为整个程序，但作用域与普通变量相同，退出函数后即使变量存在，但不能使用。 ## const</p></li>
-<li><p>定义const对象：一旦创建其值不能改变，故const对象必须初始化。</p></li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> bufSize = <span class="number">512</span>;</span><br><span class="line"><span class="keyword">int</span> <span class="keyword">const</span> bufSize = <span class="number">512</span>;  <span class="comment">// the same as the previous one</span></span><br></pre></td></tr></table></figure>
-<p>由于const对象默认只在文件内有效，所以如果要在文件间共享：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// file1.cpp定义并初始化</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">const</span> <span class="keyword">int</span> bufSize = <span class="number">512</span>;</span><br><span class="line"><span class="comment">// file1.h可以仅声明，不初始化</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">const</span> <span class="keyword">int</span> bufSize;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>常量指针（const pointer）：指针本身（存在指针中的地址）不可变。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> num = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span>* <span class="keyword">const</span> p = &amp;num;  <span class="comment">// p将一直指向num</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>指向常量的指针（pointer to const）：指针指向的对象不可变。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> pi = <span class="number">3.14</span>;</span><br><span class="line"><span class="keyword">double</span>* p = &amp;pi;  <span class="comment">// 错误，p是一个普通指针</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span>* p = &amp;pi;  <span class="comment">// 正确</span></span><br><span class="line">*p = <span class="number">4.1</span>;  <span class="comment">// 错误，不能改变*p的值 </span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>修饰成员函数</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> <span class="keyword">const</span></span>;  <span class="comment">// 不能改变数据成员，const对象不能调用非const成员函数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>修饰类对象</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f2</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> A obj;  <span class="comment">// obj为常量对象，任何成员都不能被修改，任何非const成员函数都不能被调用</span></span><br><span class="line">obj.<span class="built_in">f1</span>();  <span class="comment">// 错误</span></span><br><span class="line">obj.<span class="built_in">f2</span>();  <span class="comment">// 正确</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> A* obj  = <span class="keyword">new</span> <span class="built_in">A</span>();</span><br><span class="line">obj-&gt;<span class="built_in">f1</span>();  <span class="comment">// 错误</span></span><br><span class="line">obj-&gt;<span class="built_in">f2</span>();  <span class="comment">// 正确</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>转为非const</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* pc;  <span class="comment">// pc指向内容不可变</span></span><br><span class="line"><span class="keyword">char</span>* p = <span class="keyword">const_cast</span>&lt;<span class="keyword">char</span>*&gt;(pc);  <span class="comment">// 正确，但是通过p写值是未定义行为</span></span><br></pre></td></tr></table></figure>
-<h2 id="类型转换">类型转换</h2>
-<p>类型转换分为隐式转换和显式转换。 显式转换有四种：</p>
-<ul>
-<li><code>static_cast</code> 没有底层const都可以，使用比较普遍。 基类-&gt;派生类：不安全 主要执行非多态转换，代替C中的转换。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span>* p = &amp;d;</span><br><span class="line"><span class="keyword">double</span>* dp = <span class="keyword">static_cast</span>&lt;<span class="keyword">double</span>*&gt;(p);</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>dynamic_cast</code> 运行时类型检查， 将基类指针或引用安全转换为派生类的指针或引用：</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// type是类，且有虚函数</span></span><br><span class="line"><span class="keyword">dynamic_cast</span>&lt;type*&gt;(e);  <span class="comment">//e是指针</span></span><br><span class="line"><span class="keyword">dynamic_cast</span>&lt;type&amp;&gt;(e);  <span class="comment">//e是左值</span></span><br><span class="line"><span class="keyword">dynamic_cast</span>&lt;type&amp;&amp;&gt;(e);  <span class="comment">//e不是左值</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>const_cast</code> 改变底层const。 常量指针转为非常量指针。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* cp;</span><br><span class="line"><span class="keyword">char</span>* q = <span class="keyword">static_cast</span>&lt;<span class="keyword">char</span>*&gt;(cp);  <span class="comment">// wrong, static_cast不能用于底层const</span></span><br><span class="line"><span class="keyword">char</span>* p = <span class="keyword">const_cast</span>&lt;<span class="keyword">char</span>*&gt;(cp);  <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>reinterpret_cast</code> 比较危险，不太用。处理无关类型转换，重新解释对象的比特模型。 ## new/delete/malloc/free <code>new/delete</code>是C++运算符，需要编译器支持，所以不需要指定大小，返回相应对象类型的指针，分配失败会抛出<code>std::bad_alloc</code>异常，<code>new</code>会调用<code>operator new()</code>申请内存(用<code>malloc</code>实现)，调用构造函数初始化成员变量，返回相应指针，<code>delete</code>先调用析构函数，再调用<code>operator delete()</code>函数释放内存(用<code>free</code>实现)； <code>malloc/free</code>是库函数，不由编译器控制，需要显式指出大小，返回<code>void*</code>，需要强制类型转换，分配失败返回<code>NULL</code>指针，无法完成对象的构造和析构。</li>
-</ul>
-<h2 id="智能指针">智能指针</h2>
-<p><code>new</code>完后没有<code>delete</code>，内存泄漏。为了减少程序员的负担，引入智能指针：</p>
-<ul>
-<li><code>shared_ptr</code> 允许多个指针指向同一个对象。通常与<code>make_shared</code>函数结合食用：</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shared_ptr&lt;string&gt; p = make_shared&lt;string&gt;(<span class="number">10</span>, <span class="string">&#x27;9&#x27;</span>);</span><br></pre></td></tr></table></figure>
-<p>实现方式一般是reference counting，在堆上申请资源并返回指针后，在堆上申请一个共享的引用计数器，每来一个指针指向该对象，++计数器。当计数器为0时，会自动释放指向的对象。 2个指针成员，一个指向对象，一个指向计数器 面试有可能被要求手撕一个： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">mySharePtr</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">mySharePtr</span>() :<span class="built_in">refCnt</span>(<span class="literal">nullptr</span>), <span class="built_in">ptr</span>(<span class="literal">nullptr</span>) &#123;&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">mySharePtr</span>(T* res) :<span class="built_in">refCnt</span>(<span class="literal">nullptr</span>), <span class="built_in">ptr</span>(res) &#123;</span><br><span class="line">		<span class="built_in">add</span>();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">mySharePtr</span>(<span class="keyword">const</span> mySharePtr&lt;T&gt;&amp; p) :<span class="built_in">refCnt</span>(p.refCnt), <span class="built_in">ptr</span>(p.ptr) &#123;</span><br><span class="line">		<span class="built_in">add</span>();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">virtual</span> ~<span class="built_in">mySharePtr</span>() &#123;</span><br><span class="line">		<span class="built_in">remove</span>();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// lvalue is assigned, --counter</span></span><br><span class="line">	mySharePtr&lt;T&gt;&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> mySharePtr&lt;T&gt;&amp; that) &#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">this</span> != &amp;that) &#123;</span><br><span class="line">			<span class="built_in">remove</span>();</span><br><span class="line">			<span class="keyword">this</span>-&gt;ptr = that.ptr;</span><br><span class="line">			<span class="keyword">this</span>-&gt;refCnt = that.refCnt;</span><br><span class="line">			<span class="built_in">add</span>();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">bool</span> <span class="keyword">operator</span>==(<span class="keyword">const</span> mySharePtr&lt;T&gt;&amp; other) &#123;</span><br><span class="line">		<span class="keyword">return</span> ptr == other.ptr;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">bool</span> <span class="keyword">operator</span>!=(<span class="keyword">const</span> mySharePtr&lt;T&gt;&amp; other) &#123;</span><br><span class="line">		<span class="keyword">return</span> !<span class="keyword">operator</span>==(other);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	T&amp; <span class="keyword">operator</span>*() <span class="keyword">const</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> *ptr;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	T* <span class="keyword">operator</span>-&gt;() <span class="keyword">const</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> ptr;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">int</span> <span class="title">numRef</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (refCnt) &#123;</span><br><span class="line">			<span class="keyword">return</span> *refCnt;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">	<span class="comment">// if null, create counter = 1, else ++counter</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (refCnt) &#123;</span><br><span class="line">			++(*refCnt);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			refCnt = <span class="keyword">new</span> <span class="built_in"><span class="keyword">int</span></span>(<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// --counter, if counter = 0, free memory</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (refCnt) &#123;</span><br><span class="line">			--(*refCnt);</span><br><span class="line">			<span class="keyword">if</span> (*refCnt == <span class="number">0</span>) &#123;</span><br><span class="line">				<span class="keyword">delete</span> refCnt;</span><br><span class="line">				<span class="keyword">delete</span> ptr;</span><br><span class="line">				refCnt = <span class="literal">nullptr</span>;</span><br><span class="line">				ptr = <span class="literal">nullptr</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">int</span>* refCnt;</span><br><span class="line">	T* ptr;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li><code>unique_ptr</code> 看名字就知道，独占对象。 ##指针和引用 引用只是一个别名，不是一种数据类型，不占存储空间，不能建立数组的引用 引用必须初始化，指针不必 引用初始化后不能改变，指针可以改变指向的对象 不存在指向空值的引用，存在指向空值的指针 ## 成员变量初始化顺序 基类静态变量/全局变量：静态成员变量必须类外初始化 派生类静态变量/全局变量 基类成员变量：按照在类中定义的顺序，而不是初始化列表中的顺序 派生类成员变量 ## TODO 初始化列表好处： 1、const成员变量只能 2、引用只能 3、效率：初始化列表比赋值操作少一次默认构造函数，因为程序要默认构造临时对象（等号右边）后才能赋值</li>
-</ul>
-<p>函数缺省： 某个参数有默认值，缺省参数仍在后边 调用时如果略去一个参数传递，则略去后面所有</p>
-<p>异常处理： 抛出异常，没有被特定的catch语句捕获，函数调用堆栈会被解退（函数终止，销毁局部变量，控制权转到调用它的那个函数）， 并在下一个外层try..catch捕获，最后没有任何catch捕获，调用terminate，abort退出。</p>
-<p>传参时传引用与传指针效果相同 传引用，没有产生实参的副本，直接对实参操作 传指针，被调函数需要给形参分配空间，可读性差，需要传地址做实参，传引用更简单清晰</p>
-<p>预处理、编译、汇编、链接</p>
-<p>操作系统 * 用户告诉操作系统执行hello程序 * 操作系统到硬盘找到该程序 * 由编译程序将用户源程序编译成若干个目标模块 * 由链接程序将目标模块和相应的库函数链接成装入模块 * 操作系统分配内存，由装入程序将装入模块装入内存 * 为执行hello程序创建执行环境（创建新进程） * 操作系统设置CPU上下文环境，并跳到程序开始处 * 程序的第一条指令执行 * 程序执行与printf对应的系统调用 * 操作系统分配设备 * 执行显示驱动程序 * 窗口系统将像素写入存储映像区</p>
-<pre><code>（1）每个节点或者是黑色，或者是红色。</code></pre>
-<p>　　(2)根节点是黑色。</p>
-<p>　　(3)每个叶子节点（NIL）是黑色。 [注意：这里叶子节点，是指为空(NIL或NULL)的叶子节点！]</p>
-<p>　　(4)如果一个节点是红色的，则它的子节点必须是黑色的。</p>
-<p>　　(5)从一个节点到该节点的子孙节点的所有路径上包含相同数目的黑节点。[这里指到叶子节点的路径]</p>
-<p>模板特化、偏特化 内存池</p>
-<p>volatile： 加volatile的关键字不进行编译器优化，保证对特殊地址的稳定访问 不能把他放在cache或寄存器中重复使用 防止优化编译器把变量从内存装入 CPU 寄存器 两个线程有可能一个使用内存中的变量，一个使用寄存器中的变量，这会造成程序的错误执行</p>
-<p>拷贝构造： 创建对象时，是使用同一类中之前创建的对象来初始化新创建的对象 通过使用另一个同类型的对象来初始化新创建的对象。 复制对象把它作为参数传递给函数。 复制对象，并从函数返回这个对象。</p>
-<p>map key类型：必须支持&lt;运算符</p>
-<p>数据库缓存一致： 并发操作导致不一致，本质上修改数据库和删除缓存耦合在一起，使得其他操作有可能读出脏数据 解决方案：解耦，延迟双删：写-&gt;删缓存-&gt;修改数据库-&gt;延时-&gt;再次删缓存 二：内存队列：写修改数据库，将数据id放入队列，消费者线程消费即可</p>
-<p>浏览器： DNS解析（DNS缓存、OS缓存、路由器缓存、递归搜索）、尝试建立TCP连接、发送HTTP请求(get)、服务器处理请求（查询） 返回HTML，浏览器解析渲染、关闭TCP连接</p>
-<p>线性探测、拉链、再哈希、公共溢出区</p>
-<p>UDP对实时性要求高，数据准确性要求不是太高的场合、视频通话、QQ主要UDP为主，TCP为辅 ## Resource <a target="_blank" rel="noopener" href="https://en.cppreference.com/w/">cppreference</a></p>
-
+          <p>C/C++常见问题</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/03/04/C%20&%20C++%20FAQ/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -807,277 +929,10 @@ E_D[(g^{(D)}(x)-y)^2]=E_D[(f(x)+\epsilon-g^{(D)}(x))^2]\\
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/02/22/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%20FAQ/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/02/22/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%20FAQ/" class="post-title-link" itemprop="url">操作系统 FAQ</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-02-22 12:15:00" itemprop="dateCreated datePublished" datetime="2019-02-22T12:15:00+08:00">2019-02-22</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="进程和线程">进程和线程</h2>
-<ol type="1">
-<li>联系: 线程存在于进程内部, 一个进程可以有多个线程, 一个线程只能属于一个进程.</li>
-<li>区别: 进程是运行时程序的封装, 是系统进行资源分配和资源调度的基本单位; 线程是进程的子任务, 是CPU分配和调度的基本单位. 进程创建需要系统分配内存, CPU和文件句柄等资源, 销毁时要进行相应的回收, 因此进程的管理开销大; 线程开销小. 进程间不会互相影响; 一个线程崩溃会导致进程崩溃, 从而影响其他线程. ## 进程调度算法</li>
-<li>先来先服务(FCFS): 按照到达任务队列的顺序调度, 非抢占式, 易于实现, 效率低性能差, 有利于CPU繁忙型作业(长作业)不利于IO繁忙型(短作业).</li>
-<li>短作业优先(SJF): 每次从任务队列选择预计时间最短的作业运行, 非抢占式, 性能最优, 平均周转时间最低, 吞吐量大, 不利于长作业, 会出现饥饿现象, 完全未考虑作业的优先级, 不能用于实时系统.</li>
-<li>最短剩余时间优先: 首先选择预计时间最短的作业运行, 如果新作业服务时间小于当前作业的剩余时间, 抢占CPU.</li>
-<li>高响应比优先: 在后备作业队列中选择响应比最高的, 非抢占式, 需要计算响应比耗费资源. <span class="math inline">\(响应比=1+\frac{等待时间}{服务时间}\)</span></li>
-<li>时间片轮转(RR): 可以响应所有用户的请求, 适于分时系统.</li>
-<li>多级反馈队列: UNIX使用的调度算法. 多个不同优先级的队列按照RR调度, 如果未完成就进入下一优先级, 新来进程可以根据优先级抢占. ## 死锁</li>
-<li>原因: (1) 系统资源不足; (2) 进程推进顺序不当; (3) 资源分配不当.</li>
-<li>必要条件: (1) 互斥访问: 一个资源每次只能被一个进程访问; (2) 占有并请求: 进程因请求资源阻塞时对已占有的资源保持不放; (3) 不可剥夺: 进程已经获取的资源不能被强制剥夺; (4) 循环等待: 多个进程间形成资源的循环等待关系.</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/02/15/Computer%20Science%20Roadmap/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/02/15/Computer%20Science%20Roadmap/" class="post-title-link" itemprop="url">Computer Science Roadmap</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-02-15 14:18:00" itemprop="dateCreated datePublished" datetime="2019-02-15T14:18:00+08:00">2019-02-15</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>有感于国内令人发指的CS教育（尤其某校的计算机基本就是一堆SB在自嗨自娱自乐而已），决定自学为主。 主要资源是四大的比较完整的课程：video+reading+lab - <a target="_blank" rel="noopener" href="https://github.com/prakhar1989/awesome-courses">Awesome CS Courses</a> - <a target="_blank" rel="noopener" href="https://conanhujinming.github.io/comments-for-awesome-courses/">名校公开课程评价网</a> - <a target="_blank" rel="noopener" href="https://teachyourselfcs.com/">Teach Yourself Computer Science</a> - <a target="_blank" rel="noopener" href="https://github.com/huangrt01/CS-notes">RT Huang的自学笔记</a> - <a target="_blank" rel="noopener" href="https://learn-sys.github.io/">LEARNSYS</a> - <a target="_blank" rel="noopener" href="https://github.com/ossu/computer-science">OSSU</a> - <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/308850392/answer/1324509357">如何学习设计模式？</a></p>
-<p>video比较费时间，而且我看视频总是来不及反应，好像不太适合我，所以一般只在看不懂材料时去针对性地看看视频。（当然一些讲得非常好的视频除外）</p>
-<hr />
-<h2 id="basics">Basics</h2>
-<ul>
-<li><strong>Programming Languages</strong>: 精通C，熟悉1~2门(Java/Python/C++/Go)，了解一门(Haskell/Rust/)，掌握debug技巧</li>
-<li><strong>Tools/Frameworks</strong>: 熟悉Linux系统的各项操作，最好看下源码，掌握Git等工具和框架</li>
-<li><strong>Math</strong>: Linear Algebra/Probability/Statistics/Combinatorial Mathematics/Discrete Mathematics/Calculus 现用现学</li>
-<li><strong>Core Courses</strong>: DS/Algorithms/OS/Organization/Network/DB</li>
-</ul>
-<h2 id="coding-interview">Coding Interview</h2>
-<p>这方面<strong>很弱很弱</strong>，要勤奋练习，经常性在blog<strong>分析总结</strong>，<strong>穿透做过的题目及变种</strong>。</p>
-<p>不要抱着可能撞到原题的心态去准备，反复练习提升自己的能力，需要有较多的训练量。</p>
-<p><strong>Python快速过，Java也行，千万不要用C++浪费生命！！！</strong></p>
-<p>复杂度最优，Google Doc/白纸练习，Bug-Free easy 5min medium 10~15min hard 15~20min</p>
-<p>G实习：中文2轮：45min, 自我介绍+warm-up+hard, 1~2道medium题，白板 G校招：4轮（3中+1英），同上</p>
-<ul>
-<li><strong>Data structure</strong>：哈希表、堆、AVL、链表动手实现一遍，B树啥的都能扯扯~</li>
-<li><strong>Algorithms</strong> <a target="_blank" rel="noopener" href="https://leetcode-cn.com/problemset/lcof/">《剑指offer》</a> 67/67 <a target="_blank" rel="noopener" href="https://leetcode-cn.com/problemset/lcci/">Cracking the Coding Interview</a> 40+/109 <a target="_blank" rel="noopener" href="https://leetcode.com/">Leetcode</a> 310+/700+ <a target="_blank" rel="noopener" href="https://www.nowcoder.com/">牛客笔试题</a></li>
-<li><strong>System design</strong></li>
-</ul>
-<h2 id="projectspaper">Projects/Paper</h2>
-<p><strong>选一个前沿的、不太讨厌的方向，研究研究，做点小项目</strong>，具体的方向可以参考<a target="_blank" rel="noopener" href="http://csrankings.org/">CSRankings</a></p>
-<ul>
-<li>实习项目</li>
-<li>学校大作业</li>
-<li>兴趣项目：AutoML-ID, CMU 15-319, CS231n的3个小项目</li>
-<li>开源项目</li>
-</ul>
-<h2 id="others">Others</h2>
-<ul>
-<li>GPA/数学/英语</li>
-<li>比赛奖项</li>
-<li>沟通交流能力</li>
-<li>面试技巧 面经技巧只是锦上添花，最重要的还是及格的实力。nothing replaces hard work. 面经是告诉你这家公司面试的时候喜欢问哪些知识，而不是告诉你他们喜欢问哪些特定的问题。 更是一次需要充满着沟通与交流的谈话，让面试官认为他/她愿意成为你的同事</li>
-</ul>
-<p><strong>关于项目</strong> 背景主要包括场景、问题定义、需求、自己负责的部分扮演的角色等等。 指出项目中的困难点和解决方案</p>
-<p><strong>关于paper</strong>：research的背景</p>
-<p><strong>关于做题</strong> 1. 问清题目：数据范围是多少？这个数组的大小范围是多少？能不能给个样例？如果输入是这个，那输出应该是什么 2. 确认函数签名 3. 确认思路：修改输入数据 4. 确认corner case处理方式 5. 编码过程中不断交流 6. 主动测试：写完后不要急于告诉面试官写完了，手动跑一个样例：在屏幕上写出中间变量的当前取值，然后用鼠标光标告诉面试官现在程序跑到了哪一行代码，当前各个变量的取值是多少等等 7. 主动分析复杂度 8. 讨论算法的trade-off</p>
-<p><strong>关于其它</strong> 先拿一些自己不target的公司练练手 虽然我不太懂，但是可以试着说一下 说出自己的insight:cache不友好 获得监督信息与正反馈 模拟面试</p>
-<h2 id="how-to-learn">How to learn</h2>
-<p>It is very important to take classes around my future work. It doesn't matter you learn it slowly, the most important part is that you <strong>take it seriously</strong> and build a <strong>solid foundation</strong>. 根据大佬们的经验，一门课大概要花150-300小时，每天2小时至少也要2个半月，所以千万千万不要着急，不要急于求成，总想着完成任务，多多反思自己到底学到了什么？真的透彻地理解了吗？又有多少内化到自身的知识体系？ 还有就是最好按照他们的课表时间上课，同时上的课最好不要超过2门（经过血泪实践，我只能1门单线程┭┮﹏┭┮，他们课程内容实在太充实了...，然后自己还有一堆屁事...）</p>
-<p><strong>严格遵守学术规范</strong>，独立完成之后可以参考别人，修正自己。</p>
-<p>Recently I've changed my way to learn new things. Previously I just wanted to understand the new things and tried to memorize all the details of a specific problem, or just translated others' materials into my words, which melted my brain and showed a very low efficiency. The reason why I learn things this way (passively) is mostly due to the Chinese's cramming education. But for me, heuristic teaching (actively) is more appropriate. The specific problem/model/algorithm is important, but the <strong>motivation</strong> is much more important. <strong>Everything has its motivation.</strong> So I decide to write my blogs with the following components:</p>
-<ol type="1">
-<li>Motivation: What problems do we meet? Why propose this one?</li>
-<li>Details: Mathematical derivation or tricky things.</li>
-<li>Example: Use a handy example to illustrate.</li>
-<li>Implementation: Code it out or use it to <strong>solve the problem</strong>.</li>
-<li>Properties: <strong>When</strong> should/can we use the method? When shouldn't/can't? <strong>Why</strong>? What's the benefits and drawbacks if we use it?</li>
-<li>Can we make some improvements on the off-the-shelf method for a specific problem?</li>
-</ol>
-<h2 id="todo-done-list">TODO &amp; DONE LIST</h2>
-<p>Count the courses I've taken so far: 1. Introduction to Computer Science. Harvard University "This is CS 50". It should be the first class of CS rather than Haoqiang Tan's C Programming Language. 2. Linear Algebra. Massachusetts Institute of Technology If you want to learn Linear Algebra, just follow this one and you'll be fine. 3. Mathematics for Computer Science. Massachusetts Institute of Technology Very interesting course but I only took several lectures. SAD~ 4. Data Structures. University of California, Berkeley Strong recommend for Data Structure. You'll pick up Java from the interesting projects. 5. Introduction to Computer Systems. Carnegie Mellon University If you only want to take one system course, then select this one. But I haven't finished the whole lectures and labs. SAD again~ 6. Introduction to Database Systems. Carnegie Mellon University Hard for me. Just finished lab1. I'll come back one day~ 7. Machine Learning. Stanford University It's almost the first course I took after I found the true CS courses. But I forgot a lot. Sorry Andrew~ 8. Positive Psychology. Harvard University When I start to be anxious or depressed I'll go and find the lecture. Tal is an amazing teacher and I'm sure you'll become happier. 9. Convolutional Neural Networks for Visual Recognition. Stanford University High quality, especially its readings.</p>
-<p>CS144 + Go + CS5412 + 6.828 + 6.824 + 6.031 + SICP + 6.033 + CS262</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/01/04/TCP%203-Way%20Handshake/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/01/04/TCP%203-Way%20Handshake/" class="post-title-link" itemprop="url">TCP 3-Way Handshake</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-01-04 05:35:00" itemprop="dateCreated datePublished" datetime="2019-01-04T05:35:00+08:00">2019-01-04</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>TCP是面向连接的协议，其数据传输过程分为建立连接、数据传送、释放连接三个阶段。 ## 0 建立连接 建立连接的过程也就是常说的“三次握手”：</p>
-<ul>
-<li><p>客户端向服务器端发送一个SYN报文（SYN=1表示这是一个连接请求或连接接收报文），并随机选取一个起始序号x；</p></li>
-<li><p>服务器端应答一个SYN报文，同时ACK（确认位）置1【ACK=1时TCP报文段首部中的ack（确认号字段）才有效】，随机选取一个服务器端的起始序号y，并将ack字段设为x+1，表示已经收到客户端发来的SYN报文，期待收到序号为x+1的下一个报文；</p></li>
-<li><p>客户端应答一个ACK报文，将序号设为x+1，并且ack字段设为y+1，表示已经收到服务器端的SYN报文，期待收到序号为y+1的下一个报文。 <em>注：序列号seq也称ISN(Initial Sequence Number)</em> <img src="https://img-blog.csdnimg.cn/20190920214108996.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="图片来自百度" /> 之所以要采用三次握手机制而不是两次或四次，要从握手机制的目的说起： 握手主要是为了确认<strong>双方的发送、接收能力</strong>是否正常，顺带初始化序号seq，为以后的数据传送做好准备，所以： 第一次握手：服务器收到客户端发来的网络包，<strong>服务器就明白</strong>客户端的发送能力、服务器的接收能力正常； 第二次握手：服务器发包，客户端收到后，<strong>客户端就明白</strong>服务器的发送、接收，客户端的发送、接收都是正常的； 二次握手后，客户端倒是全明白了，但是<strong>服务器端无法确认客户端能否正常接收、服务器是否正常发送</strong>，所以两次握手不够； 第三次握手：服务器收到客户端发送的网络包，服务器确认了自己上次的发送正常、客户端接收也正常，所以四次握手是多余的。 ## 1 补充问题</p></li>
-<li><p>序列号(ISN)之所以随机生成，是为了避免被攻击（若固定，则下一次传送的ack就显而易见）；</p></li>
-<li><p>前两次握手不可以携带数据，第三次可以携带。第一次握手服务器端接收能力未知，如果携带数据就可能丢失。第二次客户端接收能力未知，如果携带数据也可能丢失。第三次客户端知道服务器接收正常，并且自己已经处于ESTABLISHED状态；</p></li>
-<li><p>服务器发出SYN报文后，处于SYN-RCVD状态，此时不同的连接请求会被放在<strong>半连接队列</strong>里，三次握手完成后的连接请求被放在<strong>全连接队列</strong>里。</p></li>
-</ul>
-<h2 id="连接释放">2 连接释放</h2>
-<p>连接释放的过程也就是常说的“四次挥手”： P.S. <em>图中以客户端发起释放请求为例</em></p>
-<ol type="1">
-<li>客户端发送释放请求，将FIN（终止位）置1，表示客户端已经发完数据，请求释放；</li>
-<li>服务器发一个ACK报文，确认号ack为u+1，这时从客户端到服务器的连接被释放，处于<strong>半关闭状态</strong>；</li>
-<li>如果服务器也要断开连接，就向客户端发送连接释放报文（FIN=1）；</li>
-<li>客户端发送一个应答报文，序列号seq为u+1，等待一段时间（2MSL）确保服务器收到ACK报文，之后关闭连接。</li>
-</ol>
-<p><img src="https://img-blog.csdnimg.cn/20190920223118842.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="图片源自百度" /> 客户端之所以要等待2MSL时间才关闭，有两个原因：</p>
-<ul>
-<li>一旦服务器没有收到ACK报文，服务器就会重发FIN报文，客户端再次收到FIN报文，就知道之前发送的ACK报文丢失，会重置时间等待计时器为2MSL并重传ACK报文。 如果没有这段等待时间，万一服务器没有正常接收ACK报文，接下来重传的FIN报文段就无法到达客户端，服务器无法正常关闭。</li>
-<li>客户端发完最后一个ACK报文，经过2MSL，本次连接产生的报文都会从网络中消失，避免下一次新连接出现本次旧的连接请求报文段。</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/13/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/15/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/13/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/15/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1145,20 +1000,20 @@ E_D[(g^{(D)}(x)-y)^2]=E_D[(f(x)+\epsilon-g^{(D)}(x))^2]\\
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">166</span>
+          <span class="site-state-item-count">171</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

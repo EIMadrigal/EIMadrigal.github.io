@@ -190,6 +190,174 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/06/30/%E8%BF%9B%E7%A8%8B%E8%BD%AF%E4%B8%AD%E6%96%AD%E9%80%9A%E4%BF%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/06/30/%E8%BF%9B%E7%A8%8B%E8%BD%AF%E4%B8%AD%E6%96%AD%E9%80%9A%E4%BF%A1/" class="post-title-link" itemprop="url">进程软中断通信</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-06-30 09:42:00" itemprop="dateCreated datePublished" datetime="2018-06-30T09:42:00+08:00">2018-06-30</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="描述">描述</h2>
+<p>使用系统调用fork()创建两个子进程，再用系统调用signal()让父进程捕捉键盘上发出的中断信号（即按ctrl+c键），当父进程接收到这两个软中断的某一个后，父进程用系统调用kill()向两个子进程分别发出整数值为16和17软中断信号，子进程获得对应软中断信号，然后分别输出下列信息后终止： Child process 1 is killed by parent !! Child process 2 is killed by parent !! 父进程调用wait()函数等待两个子进程终止后，输入以下信息，结束进程执行： Parent process is killed!!</p>
+<p>流程图： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108194427772-238897206.png" alt="image" /></p>
+<h2 id="实现">实现</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> wait_flag = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">stop1</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">stop2</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>** argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pid_t</span> pid1,pid2;</span><br><span class="line"></span><br><span class="line">    signal(<span class="number">2</span>,stop1);   <span class="comment">//signal 3 is ctrl+\,signal 2 is ctrl+c</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>((pid1 = fork()) == <span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">if</span>(pid1 &gt; <span class="number">0</span>)      <span class="comment">//now is in the parent process</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">while</span>((pid2 = fork()) == <span class="number">-1</span>);   <span class="comment">//creat child process 2</span></span><br><span class="line">        <span class="keyword">if</span>(pid2 &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            sleep(<span class="number">5</span>);       <span class="comment">//sleep函数被信号中断后，就会导致延时失效，直接跳到sleep的下一行</span></span><br><span class="line">            kill(pid1,<span class="number">16</span>);  <span class="comment">//kill process1,send 16</span></span><br><span class="line">            wait(<span class="number">0</span>);</span><br><span class="line">            kill(pid2,<span class="number">17</span>); <span class="comment">//kill process2, send 17</span></span><br><span class="line">            wait(<span class="number">0</span>);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;\nParent process is killed!\n&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            signal(<span class="number">17</span>,stop2);   <span class="comment">//wait for 2 about 17</span></span><br><span class="line">            <span class="keyword">while</span>(wait_flag)</span><br><span class="line">                ;</span><br><span class="line"></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;\nChild process 2 is killed by parent!\n&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        signal(<span class="number">16</span>,stop2);</span><br><span class="line">        <span class="keyword">while</span>(wait_flag)</span><br><span class="line">            ;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\nChild process 1 is killed by parent!\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);   <span class="comment">//execute normally and quit</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">stop1</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\nParent process catches the interruption signal!\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">stop2</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    wait_flag = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\nChild process catches the interruption signal!\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="结果">结果</h2>
+<p>5s内没有按终止键： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108194549740-1526578900.png" alt="image" /></p>
+<p>5s内按下ctrl+c： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108194609530-785223659.png" alt="image" /></p>
+<h2 id="附">附</h2>
+<p>系统调用signal(sig,function)：捕捉中断信号sig后执行function规定的操作。 参数定义：<code>int sig</code>，<code>void* func()</code> sig共有19个值： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108194710456-891175051.png" alt="image" /></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/05/25/Sorting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/05/25/Sorting/" class="post-title-link" itemprop="url">Sorting</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-05-25 12:00:00" itemprop="dateCreated datePublished" datetime="2018-05-25T12:00:00+08:00">2018-05-25</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="bubble-sort">Bubble Sort</h2>
+<p>冒泡排序也许是大部分人CS生涯里学到的第一种排序算法，它的基本思想是：依次比较两个相邻记录的关键字，如果逆序就进行交换，直到没有逆序的记录。</p>
+<p>每一趟排序可以将前<span class="math inline">\(i\)</span>个元素的最大值冒泡到最后，因此共需<span class="math inline">\(n-1\)</span>趟；每一趟都要比较<span class="math inline">\(j\)</span>和<span class="math inline">\(j+1\)</span>的值，因此<span class="math inline">\(j\)</span>取值为<span class="math inline">\([0,i-1]\)</span>。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 迭代</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bubble_sort</span><span class="params">(<span class="keyword">int</span> nums[], <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = n - <span class="number">1</span>; i &gt; <span class="number">0</span>; --i) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; i; ++j) &#123;</span><br><span class="line">			<span class="keyword">if</span> (nums[j] &gt; nums[j + <span class="number">1</span>])</span><br><span class="line">				<span class="built_in">swap</span>(nums[j], nums[j + <span class="number">1</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 递归</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bubble</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l &gt;= r)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = l; k &lt; r; ++k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (nums[k] &gt; nums[k + <span class="number">1</span>])</span><br><span class="line">            <span class="built_in">swap</span>(nums[k], nums[k + <span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">bubble</span>(nums, l, r - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>冒泡排序也是可以稍稍优化的：试想如果序列是<span class="math inline">\([2,1,3,4,5]\)</span>，其实我们只需交换前两个元素，即第一趟有交换，走完第二趟发现没有交换时就可以结束了。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bubble_sort</span><span class="params">(<span class="keyword">int</span> nums[], <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">bool</span> has_swap = <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = n - <span class="number">1</span>; i &gt; <span class="number">0</span> &amp;&amp; has_swap; --i) &#123;</span><br><span class="line">		has_swap = <span class="literal">false</span>;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; i; ++j) &#123;</span><br><span class="line">			<span class="keyword">if</span> (nums[j] &gt; nums[j + <span class="number">1</span>])</span><br><span class="line">				<span class="built_in">swap</span>(nums[j], nums[j + <span class="number">1</span>]);</span><br><span class="line">				has_swap = <span class="literal">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于最后优化的代码，可以看到： 最好的情况就是待排序列已经全部有序，这样要进行<span class="math inline">\(n-1\)</span>次比较，时间复杂度O(n)； 最坏的情况就是待排序列全部逆序，需要进行n(n-1)/2次比较，并且还有等数量级的交换，时间复杂度<span class="math inline">\(O(n^2)\)</span>。</p>
+<h2 id="selection-sort">Selection Sort</h2>
+<p>所谓选择排序，就是持续选择<span class="math inline">\([i+1,n-1]\)</span>中最小的元素并与<span class="math inline">\(i\)</span>交换，因此前面的部分必然全局有序。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">selection_sort</span><span class="params">(<span class="keyword">int</span> nums[], <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">	    <span class="keyword">int</span> min_id = i;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; n; ++j) &#123;</span><br><span class="line">			<span class="keyword">if</span> (nums[j] &lt; nums[min_id]) min_id = j;</span><br><span class="line">		&#125;</span><br><span class="line">        <span class="built_in">swap</span>(nums[i], nums[min_id]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>选择排序需要N次交换以及<span class="math inline">\(\frac{N^2}{2}\)</span>次比较，数据移动次数与数组大小呈线性关系，移动次数是最少的。 时间复杂度<span class="math inline">\(O(n^2)\)</span>。</p>
+<h2 id="insertion-sort">Insertion Sort</h2>
+<p>插入排序其实就是打牌：每次拿到一张牌<span class="math inline">\(i\)</span>，从<span class="math inline">\(i-1\)</span>开始向前扫描寻找第一个使得<span class="math inline">\(cur&gt;nums[j]\)</span>的位置<span class="math inline">\(j\)</span>，找到位置后将<span class="math inline">\([j+1,i-1]\)</span>所有元素向后移一位，接着将拿到的牌放到<span class="math inline">\(j+1\)</span>。不能保证前面的部分全局有序，因为后面拿到的牌可能是最小的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insertion_sort</span><span class="params">(<span class="keyword">int</span> nums[], <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; ++i) &#123;</span><br><span class="line">		<span class="keyword">int</span> cur = nums[i];</span><br><span class="line">		<span class="keyword">int</span> j = i - <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; cur &lt; nums[j]) &#123;</span><br><span class="line">			nums[j + <span class="number">1</span>] = nums[j];</span><br><span class="line">			--j;</span><br><span class="line">		&#125;</span><br><span class="line">		nums[j + <span class="number">1</span>] = cur;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最好情况：元素全部有序，<span class="math inline">\(N-1\)</span>次比较、<span class="math inline">\(0\)</span>次交换；复杂度<span class="math inline">\(O(n)\)</span>。 最坏情况：元素全部逆序，大约<span class="math inline">\(\frac{N^2}{2}\)</span>次比较和<span class="math inline">\(\frac{N^2}{2}\)</span>次交换，复杂度<span class="math inline">\(O(n^2)\)</span>。 平均情况下：大约<span class="math inline">\(\frac{N^2}{4}\)</span>次比较和<span class="math inline">\(\frac{N^2}{4}\)</span>次交换，复杂度<span class="math inline">\(O(n^2)\)</span>。 ## 折半插入排序 直接插入排序前面的子序列是有序的，所以如果是顺序表，那么可以先折半查找出元素的待插入位置，再统一移动该位置之后的所有元素：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">void insertionSortOptimized(int A[], int n)</span><br><span class="line">&#123;</span><br><span class="line">	//将A[i]插入到合适位置</span><br><span class="line">	for (int i = 1; i &lt; n; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		int tmp = A[i];</span><br><span class="line">		int low = 0, high = i - 1;</span><br><span class="line">		while (low &lt;= high)</span><br><span class="line">		&#123;</span><br><span class="line">			int mid = (low + high) &gt;&gt; 1;</span><br><span class="line">			if (A[mid] &gt; tmp)</span><br><span class="line">			&#123;</span><br><span class="line">				high = mid - 1;</span><br><span class="line">			&#125;</span><br><span class="line">			else</span><br><span class="line">			&#123;</span><br><span class="line">				low = mid + 1;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		//统一后移元素</span><br><span class="line">		for (int j = i - 1; j &gt;= low; j--)</span><br><span class="line">		&#123;</span><br><span class="line">			A[j + 1] = A[j];</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		A[low] = tmp;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>性能：折半插入排序将元素比较次数减少为<span class="math inline">\(O(nlogn)\)</span>，但是移动次数依然是<span class="math inline">\(O(n^2)\)</span>，故总的时间复杂度为<span class="math inline">\(O(n^2)\)</span>。</p>
+<h2 id="merge-sort">Merge Sort</h2>
+<p>归并排序是将几个有序表归并为一个新的有序表，初始时可以看作<span class="math inline">\(n\)</span>个有序子表，2路归并排序将其合并为<span class="math inline">\(n/2\)</span>个有序子表：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Merge</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; num, <span class="keyword">int</span> low, <span class="keyword">int</span> mid, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">	<span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">tmp</span><span class="params">(high - low + <span class="number">1</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> i = low; <span class="comment">// 左有序开始位置</span></span><br><span class="line">	<span class="keyword">int</span> j = mid + <span class="number">1</span>; <span class="comment">// 右有序开始位置</span></span><br><span class="line">	<span class="keyword">int</span> k = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;= high) &#123;</span><br><span class="line">		<span class="keyword">if</span> (num[i] &lt; num[j]) &#123;</span><br><span class="line">			tmp[k++] = num[i++];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			tmp[k++] = num[j++];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (i &lt;= mid)</span><br><span class="line">		tmp[k++] = num[i++];</span><br><span class="line">	<span class="keyword">while</span> (j &lt;= high)</span><br><span class="line">		tmp[k++] = num[j++];</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; k; ++i) &#123;</span><br><span class="line">		num[low + i] = tmp[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; num, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (low &gt;= high)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> mid = (low + high) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">	<span class="built_in">mergeSort</span>(num, low, mid);</span><br><span class="line">	<span class="built_in">mergeSort</span>(num, mid + <span class="number">1</span>, high);</span><br><span class="line">	<span class="built_in">Merge</span>(num, low, mid, high);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>性能：需要辅助数组，空间复杂度<span class="math inline">\(O(n)\)</span>； 每一趟归并<span class="math inline">\(O(n)\)</span>，需要<span class="math inline">\(O(logn)\)</span>趟归并，故时间复杂度<span class="math inline">\(O(nlogn)\)</span>。</p>
+<h2 id="heap-sort">Heap Sort</h2>
+<p>堆是一种将数组看作complete binary tree的数据结构，分为大顶堆（parent&gt;=children）和小顶堆（parent&lt;=children），由于父结点和孩子结点这种奇妙的大小关系，堆也被用来做排序了...对于一颗完全二叉树，结点<span class="math inline">\(i\)</span>的父结点为<span class="math inline">\((i-1)//2\)</span>，孩子结点为<span class="math inline">\(2i+1,2i+2\)</span>。</p>
+<p>排序前先要建堆，有2种主要的建堆方法（以大顶堆为例）： 1. Top-down Top-down的方式主要通过<code>HeapInsert</code>的方法，从空heap开始，每次插入并向上调整<code>sift_up</code>一个元素，复杂度<span class="math inline">\(O(nlgn)\)</span>。 2. Bottom-up Bottom-up的方式主要依赖于一种叫做<code>heapify</code>的操作，你也可以叫它嬉皮化。对某个结点a进行<code>heapify</code>非常简单：对比a以及a两个孩子<span class="math inline">\(c_1,c_2\)</span>的值，如果a是最大的，操作结束；否则将a与<span class="math inline">\(max(c_1,c_2)\)</span>交换，递归直到a变为叶子结点或者a是三者中最大值，<code>heapify</code>操作的复杂度为<span class="math inline">\(O(lgn)\)</span>。 可以发现：一次<code>heapify</code>下沉操作<code>sift_down</code>只能保证从a向下交换的路径上的每一棵局部小子树满足堆的性质（即只对原数组的部分位置进行了调整），并不能保证整棵树都满足堆的性质，甚至无法保证向下交换的整条路径满足根结点最大（如<code>[3 2 4 0 1 6 8]</code>对根操作后变为<code>[4 2 8 0 1 6 3]</code>），所以为了建堆，需要从最后一个非叶子结点<span class="math inline">\((n-1-1)//2\)</span>（也即最后一个结点的父结点）开始，对之前的每个结点都进行<code>heapify</code>操作，这样就可以保证整棵树都满足堆的性质。时间复杂度为<span class="math inline">\(O(n)\)</span>，<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/9755721/how-can-building-a-heap-be-on-time-complexity">How can building a heap be O(n) time complexity?</a> 那么<code>heapify</code>建堆能不能从前向后进行呢？答案是不能，还是上面那个例子。从前往后最大元素调不到堆顶，从后往前则已经保证了父结点是最大的，因此最大元素可以一直向上调。</p>
+<p>建好堆后，堆顶元素即为最大值，此时将堆顶（数组的第一个元素）和最后一个元素交换，则最后一个元素有序（最大值），但破坏了大顶堆性质，对堆顶元素进行<code>heapify</code>下沉操作（只需<code>heapify</code>前n-1个元素），保持大根堆即可： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在[start, end]范围内对nums[start]向下调整</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">heapify</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (start &gt;= end) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> left = <span class="number">2</span> * start + <span class="number">1</span>, right = <span class="number">2</span> * start + <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">int</span> max_idx = start;</span><br><span class="line">    <span class="keyword">if</span> (left &lt;= end &amp;&amp; nums[left] &gt; nums[max_idx]) max_idx = left;</span><br><span class="line">    <span class="keyword">if</span> (right &lt;= end &amp;&amp; nums[right] &gt; nums[max_idx]) max_idx = right;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (max_idx != start) &#123;</span><br><span class="line">        <span class="built_in">swap</span>(nums[start], nums[max_idx]);</span><br><span class="line">        <span class="built_in">heapify</span>(nums, max_idx, end);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">heapify_iter</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (start &gt;= end) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> parent = start, child = <span class="number">2</span> * parent + <span class="number">1</span>;  <span class="comment">// parent和child作为双指针迭代</span></span><br><span class="line">    <span class="keyword">while</span> (child &lt;= end) &#123;</span><br><span class="line">        <span class="keyword">if</span> (child + <span class="number">1</span> &lt;= end &amp;&amp; nums[child + <span class="number">1</span>] &gt; nums[child]) ++child;</span><br><span class="line">        <span class="keyword">if</span> (nums[parent] &gt;= nums[child]) <span class="keyword">break</span>;  <span class="comment">// 父亲最大无法继续下沉</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">swap</span>(nums[parent], nums[child]);</span><br><span class="line">            parent = child;</span><br><span class="line">            child = <span class="number">2</span> * parent + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build_heap</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> last_idx = nums.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = (last_idx - <span class="number">1</span>) / <span class="number">2</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">        <span class="built_in">heapify</span>(nums, i, last_idx);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">heap_sort</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">build_heap</span>(nums);</span><br><span class="line">    <span class="keyword">int</span> len = nums.<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = len - <span class="number">1</span>; i &gt; <span class="number">0</span>; --i) &#123;</span><br><span class="line">        <span class="built_in">swap</span>(nums[<span class="number">0</span>], nums[i]);</span><br><span class="line">        <span class="built_in">heapify</span>(nums, <span class="number">0</span>, i - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> Bottom-up方式的堆排序时间复杂度<span class="math inline">\(O(nlogn)\)</span>。 一般求前<span class="math inline">\(K\)</span>大元素都采用堆排序，因为只需要调整<span class="math inline">\(K\)</span>次，故<span class="math inline">\(O(nlogK)\)</span>，而快排要将所有元素排完后才能取出前<span class="math inline">\(K\)</span>个。</p>
+<h2 id="希尔排序">希尔排序</h2>
+<p>基本思想：将待排序表分为若干<span class="math inline">\(A[i], A[i+d], A[i+2d]...\)</span>子表，<span class="math inline">\(d\)</span>称为增量，对这些子表执行直接插入排序，当整个表中的元素“基本有序”时，对整个表来一次直接插入排序。 由于需要快速定位某个子表中的元素，所以只能用于顺序表。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">void shellSort(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">	const int n = nums.size();</span><br><span class="line">	for (int d = n &gt;&gt; 1; d &gt; 0; d &gt;&gt;= 1) // 增量选之前的一半</span><br><span class="line">		for (int i = d; i &lt; n; ++i)  // 将nums[i]插入有序子表</span><br><span class="line">			if (nums[i] &lt; nums[i - d]) &#123;</span><br><span class="line">				int tmp = nums[i];</span><br><span class="line">				int j;</span><br><span class="line">				// 查找插入位置</span><br><span class="line">				for (j = i - d; j &gt;= 0 &amp;&amp; tmp &lt; nums[j]; j -= d)</span><br><span class="line">					nums[j + d] = nums[j];  // 后移</span><br><span class="line">				nums[j + d] = tmp;</span><br><span class="line">			&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>性能：时间复杂度依赖于选取的增量序列，大约是<span class="math inline">\(O(n^{1.3})\)</span>，最坏是<span class="math inline">\(O(n^2)\)</span>。</p>
+<h2 id="quick-sort">Quick Sort</h2>
+<p>分治。 选一个<code>pivot</code>，将比<code>pivot</code>小的元素放在左边，比<code>pivot</code>大的元素放在右边，对左右两个子数组递归调用<code>QuickSort</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 数组共分为3段：</span></span><br><span class="line"><span class="comment"> * (l, smaller_idx]：比pivot小的</span></span><br><span class="line"><span class="comment"> * [smaller_idx + 1, i - 1]：比pivot大的</span></span><br><span class="line"><span class="comment"> * [i, r]：还未访问的</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">partition</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">srand</span>(<span class="built_in">time</span>(<span class="number">0</span>));  <span class="comment">// use system time as seed</span></span><br><span class="line">	<span class="keyword">int</span> pivotIndex = l + <span class="built_in">rand</span>() % (r - l + <span class="number">1</span>);</span><br><span class="line">	<span class="built_in">swap</span>(nums[pivotIndex], nums[l]);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> smaller_idx = l;  <span class="comment">// 当前时刻刚好小于等于pivot的元素索引</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = l + <span class="number">1</span>; i &lt;= r; ++i) &#123;</span><br><span class="line">		<span class="keyword">if</span> (nums[i] &lt;= nums[l]) &#123;  <span class="comment">// 发现比pivot小的</span></span><br><span class="line">			<span class="comment">// 加一后指向第一个比pivot大的</span></span><br><span class="line">			<span class="built_in">swap</span>(nums[++smaller_idx], nums[i]);  <span class="comment">// 将比pivot小的nums[i]换到前面</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">swap</span>(nums[smaller_idx], nums[l]);</span><br><span class="line">	<span class="keyword">return</span> smaller_idx;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">partition</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; num, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> pivot = num[low];</span><br><span class="line">	<span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">		<span class="keyword">while</span> (low &lt; high &amp;&amp; num[high] &gt;= pivot) &#123;</span><br><span class="line">			--high;</span><br><span class="line">		&#125;</span><br><span class="line">		num[low] = num[high];</span><br><span class="line">		<span class="keyword">while</span> (low &lt; high &amp;&amp; num[low] &lt;= pivot) &#123;</span><br><span class="line">			++low;</span><br><span class="line">		&#125;</span><br><span class="line">		num[high] = num[low];</span><br><span class="line">	&#125;</span><br><span class="line">	num[low] = pivot;</span><br><span class="line">	<span class="keyword">return</span> low;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">qSort</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; num, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (low &lt; high) &#123;</span><br><span class="line">		<span class="keyword">int</span> pivot_idx = <span class="built_in">partition</span>(num, low, high);</span><br><span class="line">		<span class="built_in">qSort</span>(num, low, pivot_idx - <span class="number">1</span>);</span><br><span class="line">		<span class="built_in">qSort</span>(num, pivot_idx + <span class="number">1</span>, high);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 非递归，用栈保存要操作的范围的下标</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">qSortNotR</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; num, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</span><br><span class="line">	stack&lt;<span class="keyword">int</span>&gt; s;</span><br><span class="line">	s.<span class="built_in">push</span>(low);</span><br><span class="line">	s.<span class="built_in">push</span>(high);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (!s.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">		<span class="keyword">int</span> r = s.<span class="built_in">top</span>();</span><br><span class="line">		s.<span class="built_in">pop</span>();</span><br><span class="line">		<span class="keyword">int</span> l = s.<span class="built_in">top</span>();</span><br><span class="line">		s.<span class="built_in">pop</span>();</span><br><span class="line">		<span class="keyword">int</span> pivotPos = <span class="built_in">partition</span>(num, l, r);</span><br><span class="line">		<span class="keyword">if</span> (l &lt; pivotPos - <span class="number">1</span>) &#123;</span><br><span class="line">			s.<span class="built_in">push</span>(l);</span><br><span class="line">			s.<span class="built_in">push</span>(pivotPos - <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (pivotPos + <span class="number">1</span> &lt; r) &#123;</span><br><span class="line">			s.<span class="built_in">push</span>(pivotPos + <span class="number">1</span>);</span><br><span class="line">			s.<span class="built_in">push</span>(r);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>划分的两个子问题规模分别为0和n时，时间复杂度最坏为<span class="math inline">\(O(n^2)\)</span>； 两个子问题规模相同时，时间复杂度最好为<span class="math inline">\(O(nlgn)\)</span>，平均性能更接近最好情况。 假设输入数据的所有排列不是等概率的，那么为了避免最坏情况的发生，选择pivot可以<strong>随机</strong>进行，这样被pivot分开的两个子问题规模会接近<span class="math inline">\(n/2\)</span>。</p>
+<p>复杂度的证明既可以用主定理，也可以自己推导，在最优情况下： <span class="math display">\[
+T(n)=2T(n/2)+n \\
+T(n)=2(2T(n/4)+n/2)+n=4T(n/4)+2n \\
+T(n)=4(2T(n/8)+n/4)+2n=8T(n/8)+3n \\
+... \\
+T(n)=nT(1)+nlogn=n+nlogn
+\]</span></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/05/24/Random%20Number%20Generator/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -216,7 +384,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-05-24 14:07:00" itemprop="dateCreated datePublished" datetime="2018-05-24T14:07:00+08:00">2018-05-24</time>
+              <time title="Created: 2018-05-24 22:07:32" itemprop="dateCreated datePublished" datetime="2018-05-24T22:07:32+08:00">2018-05-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -230,11 +407,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><code>rand()</code>函数可以产生[0,RAND_MAX]之间的均匀的<strong>伪随机数</strong>，它定义在头文件<code>stdlib.h</code>中，函数原型： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>C标准库的实现是： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> next = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*rand: return pseudo-number integer on 0...32767*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rand</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    next = next*<span class="number">1103515245</span> + <span class="number">12345</span>;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span>)(next/<span class="number">65536</span>) % <span class="number">32768</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*srand: set seed for rand()*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">srand</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> seed)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    next = seed;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>如果没有初始化“随机数种子”，那么默认初始种子是1，1*1103515245+12345，return得到第一个伪随机数，接着将这个结果作为下次的种子，带入式子得到第二个伪随机数... 之所以定义为<code>unsigned int</code>，是防止数值溢出后不会出现负值。 直接调用<code>rand()</code>，会导致产生的是同一套随机数，所以我们使用<code>srand()</code>来初始化随机数种子。 要注意的是：不同编译器计算随机数的方法不尽相同，所以即使给<code>srand()</code>传递相同的参数，也可能产生不同的随机数序列。 举个栗子： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*产生0-9的随机数*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>** argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    srand(time(<span class="literal">NULL</span>));  <span class="comment">//初始化随机数种子</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">5</span>;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>,rand()%<span class="number">10</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>利用<code>rand()%n</code>产生[0,n)之间的随机数，那么一旦<span class="math inline">\(n&gt;RAND\_MAX\)</span>，这种做法就会失效。 如果你对精度的要求不高，可以采用如下办法： 先用<code>rand()/RAND_MAX</code>，得到[0,1]之间的随机实数，然后扩大n-1倍，四舍五入，就可得到[0,n-1]之间的随机数。 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*产生10个[0,99999]之间的随机数*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>** argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n = <span class="number">100000</span>;</span><br><span class="line">    <span class="keyword">double</span> random_doub;</span><br><span class="line">    <span class="keyword">int</span> random_num;</span><br><span class="line"></span><br><span class="line">    srand(time(<span class="literal">NULL</span>));  <span class="comment">//初始化随机数种子</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">10</span>;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        random_doub = (<span class="keyword">double</span>)rand() / RAND_MAX; <span class="comment">//生成[0,1]之间的随机数</span></span><br><span class="line">        random_num = (<span class="keyword">int</span>)((n - <span class="number">1</span>)*random_doub + <span class="number">0.5</span>); <span class="comment">//生成[0,n-1]之间的随机数</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>,random_num);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108194141397-884629663.png" alt="image" /> &lt;/time.h&gt;&lt;/stdlib.h&gt;&lt;/stdio.h&gt;&lt;/time.h&gt;&lt;/stdlib.h&gt;&lt;/stdio.h&gt;</p>
-
+          <p>随机数生成器</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/05/24/Random%20Number%20Generator/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -279,7 +460,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-05-23 13:58:00" itemprop="dateCreated datePublished" datetime="2018-05-23T13:58:00+08:00">2018-05-23</time>
+              <time title="Created: 2018-05-23 21:58:32" itemprop="dateCreated datePublished" datetime="2018-05-23T21:58:32+08:00">2018-05-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -293,17 +483,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><code>time()</code>函数返回自1970年1月1日0点以来经过的秒数，每秒变化一次? <code>time()</code>函数定义在头文件<code>&lt;time.h&gt;</code>中，原型是： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">time_t</span> <span class="title">time</span><span class="params">(<span class="keyword">time_t</span> *arg)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>如果<code>arg</code>不是空指针，那么函数返回<code>time_t</code>类型的calendar time，并且把结果保存在<code>arg</code>指向的对象； 如果<code>arg == NULL</code>，那么函数只是返回一个值，值不能存储在空指针指向的对象。 之前不明白为什么要设计一个参数<code>arg</code>，直接返回一个值就好了啊？ 有大神说，这是因为： &gt; 很久很久以前，据说<code>time_t</code>是个<code>struct</code>，那时候c语言不支持函数返回<code>struct</code>，所以只能用指针传进去。</p>
-<p>那么<code>time_t</code>到底是什么类型呢？ 看看cppreference.com的定义：</p>
-<blockquote>
-<p>The encoding of calendar time in <code>time_t</code> is unspecified, but most systems conform to POSIX specification and return a value of integral type holding the number of seconds since the Epoch.Implementations in which <code>time_t</code> is a 32-bit signed interger(many historical implementations) fail in the year 2038.</p>
-</blockquote>
-<p>就是说：C标准委员会并没有定义<code>time_t</code>的精度，也没有指定标准的Epoch，所以这取决于你的operating system以及你的compiler。 如果你的系统支持<strong>POSIX标准</strong>(包括很多类Unix系统、Windows系统)，那么<code>time_t</code>是一个<code>signed int 32</code>，最大表示范围是2147483647秒，标准Epoch是1970年1月1日0点，所以最终时间就是2038年1月19日，这就是著名的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Year_2038_problem">2038年问题</a>。</p>
-<p>那么这个函数的实现，GNU C Library是这么写的： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stddef.h&gt;</span>                <span class="comment">/* For NULL.  */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys time.h=&quot;&quot;&gt;</span></span></span><br><span class="line"><span class="comment">/* Return the current time as a `time_t&#x27; and also put it in *T if T is</span></span><br><span class="line"><span class="comment">   not NULL.  Time is represented as seconds from Jan 1 00:00:00 1970.  */</span></span><br><span class="line"><span class="function"><span class="keyword">time_t</span></span></span><br><span class="line"><span class="function"><span class="title">time</span> <span class="params">(<span class="keyword">time_t</span> *t)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> <span class="title">tv</span>;</span></span><br><span class="line">  <span class="keyword">time_t</span> result;</span><br><span class="line">  <span class="keyword">if</span> (__gettimeofday (&amp;tv, (struct timezone *) <span class="literal">NULL</span>))</span><br><span class="line">    result = (<span class="keyword">time_t</span>) <span class="number">-1</span>;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    result = (<span class="keyword">time_t</span>) tv.tv_sec;</span><br><span class="line">  <span class="keyword">if</span> (t != <span class="literal">NULL</span>)</span><br><span class="line">    *t = result;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line">libc_hidden_def (time)</span><br></pre></td></tr></table></figure></p>
-<p>如果返回<code>time_t</code>类型的值，说明调用成功； 如果返回<code>(time_t)(-1)</code>，说明无法取得现在的时间，调用失败。 举个栗子，获得当前时间： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">time_t</span> current = time(<span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">char</span>* <span class="built_in">string</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*把日期和时间转为字符串*/</span></span><br><span class="line">    <span class="built_in">string</span> = ctime(&amp;current);</span><br><span class="line">    <span class="keyword">if</span> (current == (<span class="keyword">time_t</span>)<span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Fail to get the current time!\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;The current time is %s&quot;</span>, <span class="built_in">string</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;(%d seconds since the Epoch)\n&quot;</span>,current);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>运行结果： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108191119700-2067131670.png" alt="image" /> &lt;/stdlib.h&gt;&lt;/time.h&gt;&lt;/stdio.h&gt;</sys>&lt;/time.h&gt;&lt;/stddef.h&gt;&lt;/time.h&gt;</p>
-
+          <p>time()函数</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/05/23/Function-time()/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -348,7 +536,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-05-22 03:56:00" itemprop="dateCreated datePublished" datetime="2018-05-22T03:56:00+08:00">2018-05-22</time>
+              <time title="Created: 2018-05-22 11:56:32" itemprop="dateCreated datePublished" datetime="2018-05-22T11:56:32+08:00">2018-05-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -362,18 +559,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>FTP(File Transfer Protocol)是因特网上的一种文件传送协议。</p>
-<h2 id="基本原理">基本原理</h2>
-<p>FTP协议基于客户/服务器模式，属于应用层，使用TCP可靠的运输服务。 FTP的服务器进程由<strong>1个主进程</strong>和<strong>若干从进程</strong>组成：主进程负责接受新请求，从进程负责处理单个请求。这样，1个FTP服务器就可以同时为多个客户进程服务。</p>
-<h2 id="工作过程">工作过程</h2>
-<p>FTP工作分为主动模式和被动模式。 不论哪种模式，首先，客户从一个随机的端口N(1024-65535)向服务器的命令端口21发起请求，建立起<strong>控制连接</strong>。 - 主动模式 客户随机打开某个端口(1024-65535)，在这个端口等待服务器的数据，所以要通过控制连接告诉服务器自己用哪个端口传送数据，接着服务器收到文件传送命令以及客户端口号，从自己的数据端口20向客户发起数据连接。 FTP传送完一个文件，数据连接就会关闭，而控制连接贯穿整个会话。</p>
-<ul>
-<li>被动模式 如果客户被防火墙限制，不能接受到来的TCP连接，这时候就需要被动模式来传输： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108185312740-1401371750.png" alt="image" /> 首先，客户通过控制连接向服务器发送命令PASV； 接着，服务器向客户发送自己的IP地址和自己打算用来传送数据的端口号； 最后，客户通过刚才接收的IP地址和服务器端口号，用自己任意一个端口(1024-65535)向服务器开的那个端口建立数据连接。 通俗点，就是： 主动模式：建立数据通道，服务器主动去连接客户； <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108185349044-1665399483.png" alt="image" /> 被动模式：建立数据通道，服务器被动地被客户连接。 <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108185409921-1806947979.png" alt="image" /></li>
-</ul>
-<p>再通俗点，就是： 主动模式： 客户：我开了一个端口，你来连我吧； 被动模式： 客户：mmp，被防火墙搞了，收不到你发来的数据连接了； 服务器：哦，没事，我开了个端口，你连我就好了。</p>
-<h2 id="参考">参考</h2>
-<p><a href="www.serv-u.com/kb/1138/Active-and-Passive-FTP-Transfers-Defined">Active and Passive FTP Transfers Defined</a> <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/File_Transfer_Protocol">wiki</a></p>
-
+          <p>FTP协议</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/05/22/FTP%20Protocol/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -418,7 +612,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-05-19 14:13:00" itemprop="dateCreated datePublished" datetime="2018-05-19T14:13:00+08:00">2018-05-19</time>
+              <time title="Created: 2018-05-19 22:13:32" itemprop="dateCreated datePublished" datetime="2018-05-19T22:13:32+08:00">2018-05-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -432,20 +635,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>在刷题测试程序时，为了避免每次都手工输入，我们可以把输入数据保存在文件中；为了避免输出太长，我们将输出也写入文件中，方便与标准答案文件进行比较。 文件使用一般有两种方法：输入输出重定向、fopen。</p>
-<ul>
-<li>重定向 这种方法比较简单，只要在main()函数的开始加上： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">freopen(<span class="string">&quot;input.txt&quot;</span>,<span class="string">&quot;r&quot;</span>,<span class="built_in">stdin</span>);</span><br><span class="line">freopen(<span class="string">&quot;output.txt&quot;</span>,<span class="string">&quot;w&quot;</span>,<span class="built_in">stdout</span>);</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>就可以将标准I/O(键盘输入、屏幕输出)转为读写文件。 万一比赛要求标准I/O，而你还想用文件操作来测试代码时，提交时切记删除重定向语句。 为了避免你忘记这茬，可以如下处理： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NATIVE</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>** argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> NATIVE</span></span><br><span class="line">    freopen(<span class="string">&quot;input.txt&quot;</span>,<span class="string">&quot;r&quot;</span>,<span class="built_in">stdin</span>);</span><br><span class="line">    freopen(<span class="string">&quot;output.txt&quot;</span>,<span class="string">&quot;w&quot;</span>,<span class="built_in">stdout</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="comment">//your code here</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这样子，本机测试时可以使用重定向；如果要求标准I/O，提交时只需删掉<code>#define NATIVE</code>即可。</p>
-<ul>
-<li>fopen 如果比赛要求使用文件读写，但禁止重定向方式，这时可以使用fopen方式： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span>** argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FILE *fin, *fout;</span><br><span class="line">    fin = fopen(<span class="string">&quot;input.txt&quot;</span>.<span class="string">&quot;rb&quot;</span>);</span><br><span class="line">    fout = fopen(<span class="string">&quot;output.txt&quot;</span>,<span class="string">&quot;wb&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//把scanf改为fscanf,把printf改为fprintf</span></span><br><span class="line">    <span class="built_in">fscanf</span>(fin,<span class="string">&quot;%d&quot;</span>,&amp;a);</span><br><span class="line">    <span class="built_in">fprintf</span>(fout,<span class="string">&quot;%d&quot;</span>,a);</span><br><span class="line">    <span class="comment">//your code here</span></span><br><span class="line"></span><br><span class="line">    fclose(fin);</span><br><span class="line">    fclose(fout);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>这时候，如果要求标准I/O，只需要： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fin = <span class="built_in">stdin</span>;</span><br><span class="line">fout = <span class="built_in">stdout</span>;</span><br></pre></td></tr></table></figure></p>
-<p>最后，简单说下<strong>文件比较</strong>(windows下)： 进入cmd，如果两个文件在同一目录： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">fc</span> 1.txt 2.txt</span><br></pre></td></tr></table></figure></p>
-<p>如果两个文件不在同一目录： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">fc</span> <span class="string">&quot;c:\1.txt&quot;</span> <span class="string">&quot;d:\2.txt&quot;</span></span><br></pre></td></tr></table></figure></p>
-<p>可以使用<code>fc /?</code>查看fc命令的一些参数： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108184941074-1492015913.png" alt="image" /> &lt;/stdio.h&gt;&lt;/stdio.h&gt;</p>
-
+          <p>文件操作</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/05/19/File%20Operations/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -464,7 +662,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/05/18/Git/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/05/19/Git/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -478,7 +676,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2018/05/18/Git/" class="post-title-link" itemprop="url">Git</a>
+            <a href="/2018/05/19/Git/" class="post-title-link" itemprop="url">Git</a>
         </h2>
 
         <div class="post-meta">
@@ -490,7 +688,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-05-18 16:14:00" itemprop="dateCreated datePublished" datetime="2018-05-18T16:14:00+08:00">2018-05-18</time>
+              <time title="Created: 2018-05-19 00:14:32" itemprop="dateCreated datePublished" datetime="2018-05-19T00:14:32+08:00">2018-05-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -504,17 +711,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>Git是版本控制系统的一种，用来维护多人协作项目的开发进程。</p>
-<p>首先来看看单人开发的需求，最原始的VCS就在你我身边😂： <img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229105452773-1749378952.png" alt="image" /></p>
-<p>假如在本地保存了多个版本，<code>HEAD</code>总是指向最新的版本： <img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229110354288-1305060165.png" alt="image" /></p>
-<p>如果Version 3出现了严重的bug，可以回退到Version 2继续操作。但是如果Version 3包含了很多我们希望保留的change，就需要将其与Version 2比对，而后将这些changes拷贝到Version 2，一个好的VCS就需要支持<code>diff</code>操作帮程序员们找到两个版本之间的差异。</p>
-<p>除此之外，为了防止本地机器故障，我们希望把本地的所有版本都在云上备份，这样即使你的设备原地爆炸，也不用担心被老板炒鱿鱼。 <img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229111609065-1819873752.png" alt="image" /> 另外，你可以借助云的中转实现多地工作。当然偶尔也会出现一些小问题：假如现在云上和本地的稳定版本都是Version 5，你996下班后还想为公司做贡献，就在家里开始对Version 5一顿操作得到了Version 5L却忘了上传，第二天上班在公司又是对Version 5一通different的操作得到了Version 5D并上传，第二天下班从云上直接拉取Version 5D到本地，价值几个亿的Version 5L就再也找不到了...这里就需要<code>merge</code>操作来合并分支。</p>
-<p>更重要的是，程序员们可以随时随地借助云上的备份进行协作，完成超大项目的撕逼工作。 为了保证出bug有人背锅，还需要记录who/when/what，VCS里叫做<code>annotate/blame</code>。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">git init  # 将该目录用Git管理</span><br><span class="line">git add haha.txt kaka.txt  # 将haha.txt，kaka.txt添加到仓库</span><br><span class="line">git commit -m &quot;upload&quot;  # 将文件提交到仓库，本次提交说明是upload</span><br><span class="line">git remote add origin git@github.com:EIMadrigal/Leetcode.git  # 将本地仓库与远程仓库关联</span><br><span class="line">git push -u origin main  # 将本地库的内容第一次推送到远程仓库</span><br><span class="line">git push origin main  # 以后的推送</span><br><span class="line">git rm -r --cached haha  # 删除文件夹haha</span><br><span class="line">git status  # 查看仓库的状态</span><br><span class="line">git diff  # 查看具体修改的内容</span><br><span class="line">git log  # 查看提交历史纪录</span><br><span class="line">git show  # 提交详情</span><br><span class="line">git checkout -- [file]  # 回退</span><br><span class="line">git reset --hard HEAD^  # HEAD表示当前版本，HEAD^表示上一个版本</span><br><span class="line">git reflog  # 查看命令的历史纪录</span><br></pre></td></tr></table></figure>
-<p><a target="_blank" rel="noopener" href="https://www.v2ex.com/t/786515">Windows怎么设置cmd/git bash走代理</a></p>
-<h2 id="refs">Refs</h2>
-<p><a target="_blank" rel="noopener" href="https://missing.csail.mit.edu/2020/version-control/">Version Control (Git)</a> <a target="_blank" rel="noopener" href="https://web.mit.edu/6.031/www/fa21/classes/05-version-control">Reading 5: Version Control</a></p>
-
+          <p>Git入门</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/05/19/Git/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -559,7 +764,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-05-18 08:03:00" itemprop="dateCreated datePublished" datetime="2018-05-18T08:03:00+08:00">2018-05-18</time>
+              <time title="Created: 2018-05-18 16:03:32" itemprop="dateCreated datePublished" datetime="2018-05-18T16:03:32+08:00">2018-05-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -573,30 +787,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="配置">配置</h2>
-<p>安装原生态的Vim之后，界面是这样的： <img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211114103208063-1995368165.png" alt="image" /> 行号，没有；自动缩进，没有；括号匹配，没有.</p>
-<p>为了我们使用的方便，进行一些基本的配置： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/vim/vimrc</span><br></pre></td></tr></table></figure> 进入配置界面: <img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211114103509711-1162498509.png" alt="image" /></p>
-<p>可以删掉注释或添加新的配置: <img src="https://img2020.cnblogs.com/blog/1260581/202007/1260581-20200703081231240-949289722.png" alt="image" /></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">set number  # 左侧显示行号</span><br><span class="line">set ts=4  # Tab键长度4个空格</span><br><span class="line">set expandtab  # 输入Tab自动转换为空格</span><br><span class="line">set cursorline  # 突出显示当前行</span><br><span class="line">set autoindent  # 自动缩进</span><br><span class="line">set showmatch  # 显示括号匹配</span><br><span class="line">syntax on</span><br></pre></td></tr></table></figure>
-<h2 id="使用">使用</h2>
-<p>Vim有三种模式：输入模式、命令模式和末行命令模式。 输入模式用来输入文字，命令模式用来下达编排文件的操作指令，末行命令模式用来进行文件存档、离开编辑器等操作: <img src="https://img2020.cnblogs.com/blog/1260581/202007/1260581-20200703081319488-2115051699.png" alt="image" /></p>
-<ol type="1">
-<li>进入及离开 末行模式下： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">:w  # 保存当前文件</span><br><span class="line">:x  # 保存文件并退出</span><br><span class="line">:q!  # 放弃此次编辑并强制退出</span><br><span class="line">:wq a.txt  # 保存退出</span><br><span class="line">:syntax on  # 一次性语法高亮</span><br><span class="line">:set number  # 一次性显示行号</span><br></pre></td></tr></table></figure></li>
-<li>基本编辑 命令模式下按v进入visual模式： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">d  # 选中目标文字段，按d(delete)剪切</span><br><span class="line">y  # 选中目标文字段，按y(yank)复制</span><br><span class="line">p  # 移动光标到目标位置，按p(put)粘贴</span><br></pre></td></tr></table></figure></li>
-</ol>
-<p>命令模式: hjkl和方向键类似,w可以按词向后移动,b按词向前移动,ctrl+f/ctrl+b与pageup/down功能一样 88gg直接跳到第88行 10j向下跳10行 10k向上跳10行 /Node高亮所有Node以后 按n后跳 按shift+n前跳 cc/dd/yy,按u取消操作 c2c删掉连续2行 p粘贴,按u取消操作</p>
-<p>编辑模式: ctrl+n自动补全</p>
-<p>插件: vim plug vim awesome</p>
-<h2 id="中文输入">中文输入</h2>
-<p>确保键盘输入系统选中fcitx，搜狗拼音输入法基于fcitx(Free Chinese Input Toy for X)框架，所以要选中fcitx： <img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229103046336-1159122227.png" alt="image" /></p>
-<p>下载并安装搜狗输入法<a target="_blank" rel="noopener" href="https://pinyin.sogou.com/linux/?r=pinyin">安装包</a>，切换到安装包所在的目录，改下安装包的名字，不然太长了不方便，我这里改为<code>ha.deb</code>，之后安装： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i ha.deb</span><br></pre></td></tr></table></figure></p>
-<p>这里可能会提示依赖关系不满足(没提示的话跳过即可)： <img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229103335451-1935103123.png" alt="image" /></p>
-<p>这是由于你的电脑可能没有安装有关fictx的内容，修复依赖关系： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install -f</span><br></pre></td></tr></table></figure></p>
-<p>顺利的话，桌面右上角会出现键盘图标： <img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229103537949-1620971579.png" alt="image" /> 可以看到搜狗输入法已经安装。</p>
-<p>如果看不到搜狗的图标(尤其是第一次安装)，重启系统。 右键键盘图标，选择configure(或者搜fcitx configuration)： <img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229103624730-632103575.png" alt="image" /></p>
-<p>你现在应该没有Sogou Pinyin这一项，点那个+号： <img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229103646985-2704756.png" alt="image" /></p>
-<p>取消Only Show Current Language前的对号，搜索Sogou Pinyin，点击OK。 现在，输入法应该已经安装好了。可以去桌面那个键盘图标看看了~</p>
-
+          <p>VIM入门</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/05/18/Vim%20Introduction/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -641,7 +840,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-05-16 14:11:00" itemprop="dateCreated datePublished" datetime="2018-05-16T14:11:00+08:00">2018-05-16</time>
+              <time title="Created: 2018-05-16 22:11:32" itemprop="dateCreated datePublished" datetime="2018-05-16T22:11:32+08:00">2018-05-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -655,27 +863,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>介绍一下X86、MIPS、ARM三种指令集：</p>
-<h2 id="x86指令集">X86指令集</h2>
-<p>X86指令集是典型的CISC(Complex Instruction Set Computer)指令集。 X86指令集外部看起来是CISC指令集，事实上，它是采用类RISC内核，将部分复杂指令通过micro-op模式进行翻译成简单指令，再处理。 X86指令集的几个特性</p>
-<ul>
-<li>后向兼容 Intel每推出一代新处理器，总会兼容以前处理器的feature。这是由于长期积累的用户习惯和生态环境不容更改，否则没法赚钱了~ 后向兼容导致指令集愈发庞大、愈发复杂，同时功耗也会比较大，不过由于Intel超高的工艺水平，这都不是事。</li>
-<li>变长指令 X86指令集采用变长指令(1-15Bytes)，一般每条指令为2-3Bytes。这样可以提高码字的利用率，但也使得译码以及读取指令时比较复杂，因为不知道一条指令应该读多长。</li>
-<li>多种寻址方式 X86指令集可以采用多种寻址方式，比如立即寻址、寄存器寻址、寄存器相对寻址……</li>
-<li>通用寄存器个数有限 X86-32的系统有8个通用寄存器，之后X86-64系统扩展到了16个。</li>
-<li>指令执行时，最多只能有一个操作数在内存里，另一个操作数必为立即数或者寄存器。</li>
-<li>由于后向兼容以及类RISC内核，导致功耗增加；同时，有很多复杂的指令利用率很低。</li>
-</ul>
-<h2 id="mips指令集">MIPS指令集</h2>
-<p>MIPS指令集是典型的RISC(Reduced Instruction Set Computer)指令集。 精简指令集系统的设计思想就是：把复杂指令集中一些不常用的指令踢出指令集，这些复杂指令由日益强大的软件技术(编译)去实现，这样使得每个指令的流水线分段比较均匀，充分利用了处理器的流水线结构，提高了主频。 MIPS指令集以32个寄存器为中心，只能通过<strong>Load/Store</strong>指令访问内存，其余涉及计算的指令都从寄存器堆中读取数据，并且将计算结果写入寄存器堆中。 另外，MIPS指令的格式比较规整，所有指令长度一致，指令操作码都在固定的位置；寻址方式、对于每条指令的操作都很简单。 那么CISC与RISC的区别是什么呢？ 最大的区别在于：RISC只能通过<strong>Load/Store</strong>指令访问内存，而CISC指令集则没有这个限制。</p>
-<h2 id="arm指令集">ARM指令集</h2>
-<p>ARM指令集属于RISC指令集，每条指令32位。 ARM也有16位的压缩指令集，这是为了避免32位出现的码字浪费，提高运行速度推出的。</p>
-<ul>
-<li>ARM指令由于属于RISC指令集，一般完成的操作比较简单。程序员可以通过多条简单的指令组合实现一个复杂的操作。</li>
-<li>同样的，ARM指令集也是只能通过<strong>Load/Store</strong>指令读取内存中的数据到寄存器，其余的指令只能对寄存器的操作数进行处理。</li>
-<li>大多数指令长度相同，字段位置(尤其是操作码的位置)固定，且具有“条件执行”模式。</li>
-</ul>
-
+          <p>指令集简介</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/05/16/ISA%20Introduction/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -720,71 +916,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-05-06 14:15:00" itemprop="dateCreated datePublished" datetime="2018-05-06T14:15:00+08:00">2018-05-06</time>
+              <time title="Created: 2018-05-06 22:15:32" itemprop="dateCreated datePublished" datetime="2018-05-06T22:15:32+08:00">2018-05-06</time>
             </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>为了在统一框架里分析周期信号与非周期信号，可以给周期信号也建立傅里叶变换。 有两种方法求周期信号的傅里叶变换：</p>
-<ol type="1">
-<li><p>利用傅里叶级数进行构造 对于周期信号<em><span class="math inline">\(x(t)\)</span></em>，其傅里叶级数展开式为： <span class="math display">\[x(t) = \sum_{k = -\infty}^{+\infty}a_ke^{jkw_0t}\]</span> 系数<span class="math inline">\(a_k\)</span>表示为： <img src="https://img-blog.csdn.net/20180510103617263?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述" /> 由于 <img src="https://img-blog.csdn.net/20180510104202240?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述" /> 说明周期性复指数信号的频谱是一个冲激，那么我们推广这个关系，可得： <img src="https://img-blog.csdn.net/20180510104448987?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述" /> 表明：周期信号的傅里叶变换由一系列等间隔的冲激函数线性组合而成，每个冲激分别位于信号各次谐波的频率处，其强度是傅里叶级数系数的<span class="math inline">\(2\pi\)</span>倍。</p></li>
-<li><p>周期延拓 这种方法先将<span class="math inline">\(x(t)\)</span>在一个周期内截断，得信号<span class="math inline">\(x_T(t)\)</span>，求出<span class="math inline">\(x_T(t)\)</span>的傅里叶变换<span class="math inline">\(X_T(w)\)</span>，再对<span class="math inline">\(X_T(w)\)</span>周期延拓得<span class="math inline">\(X(w)\)</span>。 具体来说： 根据<span class="math inline">\(\delta\)</span>函数性质，有： <span class="math display">\[x(t) = x_T(t)*\sum_{k = -\infty}^{+\infty}\delta(t - kT)\]</span> 设周期冲激串<span class="math inline">\(\sum_{k = -\infty}^{+\infty}\delta(t - kT)\)</span>的傅里叶变换为<span class="math inline">\(F(w)\)</span>， 由时域卷积定理： <span class="math display">\[X(w) = X_T(w)F(w)\]</span> 又时域周期为T的周期冲激串的傅里叶变换在频域是一个周期为<span class="math inline">\(\frac{2\pi}{T}\)</span>的周期冲激串，即： <span class="math display">\[F(w) = \frac{2\pi}{T}\sum_{k = -\infty}^{+\infty}\delta(w - \frac{2\pi k}{T})\]</span> 故可得： <span class="math display">\[X(w) = \frac{2\pi}{T}X_T(w)\sum_{k = -\infty}^{+\infty}\delta(w - \frac{2\pi k}{T})\]</span> 也就是： <span class="math display">\[X(w) = w_0\sum_{k = -\infty}^{+\infty}X_T(kw_0)\delta(w - kw_0)\]</span> 我们对比两种方法得到的结果，可知： 周期信号傅里叶级数的系数<span class="math inline">\(a_k = \frac{1}{T}X_T(kw_0)\)</span></p></li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/04/28/ProcessThread%20Synchronization/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/28/ProcessThread%20Synchronization/" class="post-title-link" itemprop="url">ProcessThread Synchronization</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
+                <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-04-28 13:30:00" itemprop="dateCreated datePublished" datetime="2018-04-28T13:30:00+08:00">2018-04-28</time>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
             </span>
 
           
@@ -798,91 +939,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="进程同步">进程同步</h2>
-<p>进程间同步和进程间通信没必要区分过于清楚，一般能通信的机制也能用于同步。进程间通信（IPC）有以下几种： - 信号量（semaphores）：低级通信方式，分为整型和记录型； - 共享内存（shared memory）：高级方式； - 消息队列（message passing）：高级方式； - 管道通信（pipe）：高级方式。 - 套接字（socket）：网络上不同进程通信 - 信号（signal）：</p>
-<p>进程间同步方式有： - 信号量（semaphores）： - 管程（monitors）：</p>
-<p>由于进程之间一般是独立的，所以进程同步机制大多不需要锁。</p>
-<h2 id="线程同步">线程同步</h2>
-<p>线程同步机制有以下几种：</p>
-<ul>
-<li>互斥锁（mutex）：排他性访问共享数据，用来保护临界区。某个线程加锁后，其它要加锁的线程将被阻塞，申请失败进入休眠，直到锁被释放。</li>
-<li>读写锁（ReadWriteLock）：用于读者-写者问题，共有三种状态：不加锁、读模式加锁、写模式加锁。每次只有一个线程可以占用写模式的锁，但可以有多个线程占有读模式锁。</li>
-<li>自旋锁（spinlock）：专为多处理器并发引入，不断循环测试锁的状态，申请线程不会休眠，忙等锁。</li>
-<li>条件变量（condition variables）</li>
-<li>信号量（semaphores）：有更多取值空间，实现更复杂的同步。</li>
-</ul>
-<p>信号量和PV原语的使用可归纳为三种情形： 1. 把信号量视为<strong>加锁标志位</strong>，其目的是为了实现对某个<strong>唯一的共享数据</strong>的<strong>互斥访问</strong>，如各个进程间的某共享变量，数据库中的某个记录。 共享数据的值与信号量本身的值没有直接关系，信号量的作用仅仅是作为加锁标志位。其特征是<strong>信号量初始值为1</strong>，然后在一个进程内部对它进行配对的PV操作。 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">P(mutex);  <span class="comment">// mutex的初始值为1</span></span><br><span class="line">访问该共享数据;</span><br><span class="line">V(mutex);</span><br><span class="line">非临界区</span><br></pre></td></tr></table></figure></p>
-<ol start="2" type="1">
-<li><p>把信号量视为某种类型的<strong>共享资源的剩余个数</strong>，目的是实现对这种类型的共享资源的访问，如各种I/O设备。 信号量的取值具有实际意义，即为<strong>空闲资源的个数</strong>。多个进程可以同时使用这种类型的资源，直到所有空闲资源均已用完。 其特征是信号量的<strong>初始值为<span class="math inline">\(N\geq 1\)</span></strong>，然后<strong>在一个进程内部对它进行配对的PV操作</strong>。 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">P(resource);  <span class="comment">// resource的初始值为N</span></span><br><span class="line">使用该资源;</span><br><span class="line">V(resource);</span><br><span class="line">非临界区</span><br></pre></td></tr></table></figure></p></li>
-<li><p>把信号量作为<strong>进程间同步</strong>的工具，利用它来设定<strong>两个进程在运行时的先后顺序</strong>。比如，它可以是某个共享资源的当前个数，但是由一个进程负责生成该资源，而另一个进程负责消费该资源，由此引发了两个进程间的先后顺序。 其特征是信号量的<strong>初始值为<span class="math inline">\(N\geq 0\)</span></strong>，然后<strong>在一个进程里对其使用V原语，增加资源个数，而在另一个进程里对其使用P原语，减少资源个数，</strong>从而实现两个进程之间的同步关系。 <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108183225108-1461792452.png" alt="image" /></p></li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/04/20/Process%20Synchronization-Example%202/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/20/Process%20Synchronization-Example%202/" class="post-title-link" itemprop="url">Process Synchronization-Example 2</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-04-20 12:59:00" itemprop="dateCreated datePublished" datetime="2018-04-20T12:59:00+08:00">2018-04-20</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="问题描述">问题描述</h2>
-<p>理发店有一位理发师，一把理发椅和N把供等候的顾客坐的椅子。 如果没有顾客，理发师在理发椅上睡觉； 当有一个顾客到来时，他必须先唤醒理发师； 如果顾客来时理发师正在理发，如果有空椅子，坐下等待，否则离开。 用PV操作解决上述问题中的同步和互斥关系。</p>
-<h2 id="分析">分析</h2>
-<p>将顾客看作N个生产者，理发师是1个消费者。 理发师和椅子是临界资源，故顾客间是互斥关系； 理发师和顾客是同步关系。</p>
-<p>信号量设置： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Semaphore barberReady = <span class="number">0</span>  互斥量，只能取<span class="number">0</span>或<span class="number">1</span>  </span><br><span class="line">Semaphore accessSeat = <span class="number">1</span>  互斥量，如果为<span class="number">1</span>，表明椅子数可以增加或减少，相当于给椅子加锁，避免两个顾客同时坐一把椅子</span><br><span class="line">Semaphore num_wait = <span class="number">0</span>   坐在椅子上等待的顾客数</span><br><span class="line"><span class="keyword">int</span> seat_free    空着的椅子数目</span><br></pre></td></tr></table></figure> <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Sleeping_barber_problem">参考wiki</a></p>
-<h2 id="解答">解答</h2>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*顾客进程*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">customer</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(accessSeat);  <span class="comment">//试图坐下</span></span><br><span class="line">        <span class="keyword">if</span>(seat_free &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            seat_free--;  <span class="comment">//坐下</span></span><br><span class="line">            V(num_wait);  <span class="comment">//试图唤醒理发师，</span></span><br><span class="line">            V(accessSeat);  <span class="comment">//不用再锁着椅子</span></span><br><span class="line">            P(baberReady); <span class="comment">//等待理发师ready</span></span><br><span class="line">            理发;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            V(accessSeat);  <span class="comment">//释放加在椅子上的锁</span></span><br><span class="line">            离开;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*理发师进程*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">barber</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(num_wait);   <span class="comment">//尝试获得一位顾客，如果没有，去睡觉</span></span><br><span class="line">        P(accessSeat);   <span class="comment">//尝试获得椅子锁，更改空闲椅子数目</span></span><br><span class="line">        seat_free++;    <span class="comment">//空椅子加1</span></span><br><span class="line">        V(baberReady);    <span class="comment">//理发师准备好了</span></span><br><span class="line">        V(accessSeat);    <span class="comment">//无需继续锁着椅子</span></span><br><span class="line">        理发;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+          <p>周期信号的傅里叶变换</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/05/06/Fourier%20Transform/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -900,7 +965,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/15/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/17/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/15/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/17/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -968,20 +1033,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">166</span>
+          <span class="site-state-item-count">171</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

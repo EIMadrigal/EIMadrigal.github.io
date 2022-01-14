@@ -190,6 +190,230 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/26/Union-Find/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/26/Union-Find/" class="post-title-link" itemprop="url">Union-Find</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-01-26 09:50:00" itemprop="dateCreated datePublished" datetime="2020-01-26T09:50:00+08:00">2020-01-26</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="motivation">Motivation</h2>
+<p>并查集是一种用来维护集合的数据结构，底层通过<code>parent</code>数组实现，每个集合只有唯一的根结点，并将其作为该集合的标志。</p>
+<p>并查集有两个基本操作： 1. 并：合并两集合； 2. 查：查询某元素的父结点。</p>
+<p>初始化所有元素都是一个独立的集合： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> parent[MAXN];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    parent[i] = i;    <span class="comment">// i元素的父结点初始化为自己，也可以初始化为-1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="合并与查找">合并与查找</h2>
+<ul>
+<li>Find 查找某个元素属于哪个集合（如果单独成集就返回自己），返回该集合的代表元素（即parent为-1的那个元素/parent为自身的那个元素）。 查找的同时可以通过<strong>路径压缩</strong>来将均摊复杂度降低为<span class="math inline">\(O(1)\)</span>。查找某个结点时，将其经过的全部结点直接连到父结点，这样下次查询时次数就会减少。</li>
+<li>Union 合并时可以遵循<strong>按秩合并</strong>原则，将秩小的树合并到秩大的树，降低路径压缩时的开销。 将两个不同的集合合并为一个集合，只要将其中一个集合的根结点的<code>parent</code>指向另一个集合的根结点即可。 对于属于同一个集合的两个元素的合并没有意义，所以我们一般只对两个不同的集合进行合并，这样避免同一个集合成环，因此并查集的每个集合都是一棵树。</li>
+</ul>
+<p>并查集可以将均摊复杂度变为<span class="math inline">\(O(1)\)</span>，但如果涉及到删除元素、计算每个集合元素个数等操作时，实现会有些复杂； 好吧！计算每个集合元素个数以及统计有多少个集合并不复杂，计算元素个数可以开一个数组cnt初始全为1，每次merge都更新cnt即可，cnt[i]即为根为i的集合包含的元素个数 统计多少个集合遍历所有元素，遇到不同的根结点就更新ans。</p>
+<p><a target="_blank" rel="noopener" href="https://www.zxpblog.cn/2020/02/17/%E9%AB%98%E7%BA%A7%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E5%AD%97%E5%85%B8%E6%A0%91%E5%92%8C%E5%B9%B6%E6%9F%A5%E9%9B%86%E5%92%8C%E7%BA%BF%E6%AE%B5%E6%A0%91/">最原始的并查集</a>虽然复杂度稍差，但是可以完成的功能比较多。 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/12693959.html">原始并查集实现</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">unionFind</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; parents_;</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; ranks_;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">unionFind</span>(<span class="keyword">int</span> n) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;++i) &#123;</span><br><span class="line">            parents_.<span class="built_in">emplace_back</span>(i);</span><br><span class="line">            ranks_.<span class="built_in">emplace_back</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// get the root of x</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">Find</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// path compression</span></span><br><span class="line">        <span class="keyword">if</span>(x != parents_[x]) &#123;</span><br><span class="line">            parents_[x] = <span class="built_in">Find</span>(parents_[x]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> parents_[x];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// merge set u and v</span></span><br><span class="line">    <span class="comment">// false -&gt; u and v are already in one set</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">Union</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> rootu = <span class="built_in">Find</span>(u);</span><br><span class="line">        <span class="keyword">int</span> rootv = <span class="built_in">Find</span>(v);</span><br><span class="line">        <span class="keyword">if</span>(rootu == rootv)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// merge low rank to high rank</span></span><br><span class="line">        <span class="keyword">if</span>(ranks_[rootu] &lt; ranks_[rootv]) &#123;</span><br><span class="line">            parents_[rootu] = rootv;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(ranks_[rootv] &lt; ranks_[rootu]) &#123;</span><br><span class="line">            parents_[rootv] = rootu;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            parents_[rootu] = rootv;</span><br><span class="line">            ++ranks_[rootv];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>一道例题：<a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1551">亲戚</a> 不做路径压缩可以求<a target="_blank" rel="noopener" href="https://www.nowcoder.com/profile/135924065/codeBookDetail?submissionId=83987857">最小环长</a></p>
+<p>检测无向图是否有环：对于图中每条边（类似kruskal），不断将结点通过并查集合并，如果在加入边(i,j)前，i和j已经同属一个集合，意味着i和j必然有某条其他路径连通，那么这条路径和该边一起必然构成环。 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; g;  <span class="comment">// edge list</span></span><br><span class="line">g.<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(<span class="number">0</span>, <span class="number">1</span>));</span><br><span class="line">g.<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(<span class="number">0</span>, <span class="number">2</span>));</span><br><span class="line">g.<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">has_cycle</span><span class="params">(vector&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&amp; g)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; g.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">		<span class="keyword">int</span> rootx = <span class="built_in">Find</span>(g[i].first);</span><br><span class="line">		<span class="keyword">int</span> rooty = <span class="built_in">Find</span>(g[i].second);</span><br><span class="line">		<span class="keyword">if</span> (rootx == rooty) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">Union</span>(rootx, rooty);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="种类并查集todo">种类并查集（TODO）</h2>
+<p>普通并查集的特点就是只有一个集合，比如上述例题只有亲戚一个集合。如果涉及到多个集合，就需要种类并查集。 假如有n个集合，常用的手法就是开一个n倍大小的并查集。 <a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2024">食物链</a> <a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1892">团伙</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/26/Linked%20List-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/26/Linked%20List-3/" class="post-title-link" itemprop="url">Linked List-3</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-01-26 07:46:00" itemprop="dateCreated datePublished" datetime="2020-01-26T07:46:00+08:00">2020-01-26</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>第一篇<a target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/12130882.html">终结Linked List（一）</a>、<a target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/12130892.html">终结Linked List（二）</a>主要讲了单链表的基础知识，接下来的第二篇主要讲一些比较经典的问题。 ## 一、<code>Count()</code> 给一个单链表和一个整数，返回这个整数在链表中出现了多少次。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">Given a list and an int, return the number of times </span><br><span class="line">that int ocucurs in the list.</span><br><span class="line">*/</span><br><span class="line">int Count(struct node* head,int searchFor)</span><br><span class="line">&#123;</span><br><span class="line">	int cnt = 0;</span><br><span class="line">	struct node* cur = head;</span><br><span class="line"></span><br><span class="line">	while (cur != NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		if (cur-&gt;data == searchFor)</span><br><span class="line">			cnt++;</span><br><span class="line">		cur = cur-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return cnt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也可以用<code>for</code>循环实现。 ## 二、<code>GetNth()</code> 给一个单链表和一个index，返回index位置上的数值，类似<code>array[index]</code>操作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">Given a list and an index, return the data in the nth</span><br><span class="line">node of the list. The nodes are numbered from 0.</span><br><span class="line">Assert fails if the index is invalid (outside 0..length - 1).</span><br><span class="line">*/</span><br><span class="line">int GetNth(struct node* head,int index)</span><br><span class="line">&#123;</span><br><span class="line">	int len = 0;</span><br><span class="line">	struct node* cur = head;</span><br><span class="line"></span><br><span class="line">	while (cur)</span><br><span class="line">	&#123;</span><br><span class="line">		if (len == index)</span><br><span class="line">		&#123;</span><br><span class="line">			return cur-&gt;data;</span><br><span class="line">		&#125;</span><br><span class="line">		cur = cur-&gt;next;</span><br><span class="line">		len++;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	assert(0);  //如果走到这一行，表达式的值为假，断言失败</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="三deletelist">三、<code>DeleteList()</code></h2>
+<p>给一个单链表，删除所有节点，使<code>head</code>为<code>NULL</code>。 删除链表<code>&#123;1,2,3&#125;</code>的示意图： <img src="https://img-blog.csdnimg.cn/201904071952350.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /> <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">void DeleteList(struct node** headRef)</span><br><span class="line">&#123;</span><br><span class="line">	struct node* cur = *headRef;  //deref headRef to get the real head</span><br><span class="line"></span><br><span class="line">	while (*headRef)</span><br><span class="line">	&#123;</span><br><span class="line">		cur = *headRef;</span><br><span class="line">		*headRef = cur-&gt;next;</span><br><span class="line">		free(cur);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> ## 四、<code>Pop()</code> 给一个链表，删掉头节点，返回头节点的数据。 内存示意图： <img src="https://img-blog.csdnimg.cn/20190407230157807.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">The opposite of Push().Takes a non-empty list and </span><br><span class="line">remove the front node, and returns the data which was in that node.</span><br><span class="line">*/</span><br><span class="line">int pop(struct node** headRef)</span><br><span class="line">&#123;</span><br><span class="line">	assert(*headRef != NULL);</span><br><span class="line">	int ans = (*headRef)-&gt;data;  //pull out the data before the node is deleted</span><br><span class="line"></span><br><span class="line">	struct node* cur = *headRef;</span><br><span class="line">	*headRef = (*headRef)-&gt;next;   //unlink the head node for the caller</span><br><span class="line">	free(cur);    //free the head node</span><br><span class="line"></span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="五insertnth">五、<code>InsertNth()</code></h2>
+<p>可以在<code>[0,length]</code>的任意位置插入指定元素。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">A more general version of Push().</span><br><span class="line">Given a list, an index &#x27;n&#x27; in the range 0..length,</span><br><span class="line">and a data element, add a new node to the list so that</span><br><span class="line">it has the given index.</span><br><span class="line">*/</span><br><span class="line">void InsertNth(struct node** headRef,int index,int data)</span><br><span class="line">&#123;</span><br><span class="line">	//position 0 is a special case</span><br><span class="line">	if (index == 0)</span><br><span class="line">	&#123;</span><br><span class="line">		Push(headRef, data);</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		int cnt = 0;</span><br><span class="line">		struct node* cur = *headRef;</span><br><span class="line"></span><br><span class="line">		while (cnt &lt; index - 1)</span><br><span class="line">		&#123;</span><br><span class="line">			assert(cur != NULL);   //if this fails, the index was too big</span><br><span class="line">			cur = cur-&gt;next;</span><br><span class="line">			cnt++;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		assert(cur != NULL);    //tricky:you have to check one last time</span><br><span class="line"></span><br><span class="line">		Push(&amp;(cur-&gt;next), data);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码坑有点多，可以通过<strong>画图</strong>或者<strong>单步跟踪</strong>的方法调试。 <code>InsertNthTest()</code>可以用来测试：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">void InsertNthTest()</span><br><span class="line">&#123;</span><br><span class="line">	struct node* head = NULL;   //start with the empty list</span><br><span class="line">	 </span><br><span class="line">	InsertNth(&amp;head, 0, 13);   //&#123;13&#125;</span><br><span class="line">	InsertNth(&amp;head, 1, 42);    //&#123;13,42&#125;</span><br><span class="line">	InsertNth(&amp;head, 1, 5);     //&#123;13,5,42&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="六sortedinsert">六、<code>SortedInsert()</code></h2>
+<p>给定一个有序链表和一个节点，将该节点插入到合适的位置。 共有三种方法： 1、Uses special case code for the head end <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">void SortedInsert(struct node** headRef,struct node* newNode)</span><br><span class="line">&#123;</span><br><span class="line">	//Special case for the head end</span><br><span class="line">	if (newNode-&gt;data &lt;= (*headRef)-&gt;data || *headRef == NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		newNode-&gt;next = *headRef;</span><br><span class="line">		*headRef = newNode;</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		//Locate the node before the point of insertion</span><br><span class="line">		struct node* cur = *headRef;</span><br><span class="line">		while (cur-&gt;next &amp;&amp; cur-&gt;next-&gt;data &lt; newNode-&gt;data)</span><br><span class="line">		&#123;</span><br><span class="line">			cur = cur-&gt;next;</span><br><span class="line">		&#125;</span><br><span class="line">		newNode-&gt;next = cur-&gt;next;</span><br><span class="line">		cur-&gt;next = newNode;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 2、Dummy node strategy for the head end 用<code>dummy node</code>这种方法一般不需要处理特殊情况。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">void SortedInsert2(struct node** headRef,struct node* newNode) &#123;</span><br><span class="line">	struct node dummy;</span><br><span class="line">	struct node* cur = &amp;dummy</span><br><span class="line">	dummy.next = *headRef;</span><br><span class="line"></span><br><span class="line">	while (cur-&gt;next &amp;&amp; newNode-&gt;data &gt;= cur-&gt;next-&gt;data)</span><br><span class="line">	&#123;</span><br><span class="line">		cur = cur-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line">	newNode-&gt;next = cur-&gt;next;</span><br><span class="line">	cur-&gt;next = newNode;</span><br><span class="line"></span><br><span class="line">	*headRef = dummy.next;  //头指针永远指向dummy.next</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>3、Local references strategy for the head end</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">void SortedInsert3(struct node** headRef,struct node* newNode)</span><br><span class="line">&#123;</span><br><span class="line">	struct node** curRef = headRef;</span><br><span class="line"></span><br><span class="line">	while (*curRef &amp;&amp; (*curRef)-&gt;data &lt;= newNode-&gt;data)</span><br><span class="line">	&#123;</span><br><span class="line">		curRef = &amp;((*curRef)-&gt;next);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	newNode-&gt;next = *curRef;  //Bug:(*curRef)-&gt;next  is incorrect</span><br><span class="line"></span><br><span class="line">	*curRef = newNode;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="链表反转">链表反转</h2>
+<p>206 92 25 链表反转的题目都是套路，如果要反转[l,r)内的部分，需要记录l的前一个结点 让cur = l, prev = r 循环次数等于[l,r)内的结点数，每次循环都是标准操作 tmp = cur.next cur.next = prev prev = cur cur = tmp 最终cur指向r，prev指向l即反转后的第一个结点 头结点主要看你是反转整个链表还是一部分，反转整个链表就没必要了，因为l直接指向头结点 92题可以直接按照上述方法做，但是开始要把r指向正确的位置，相当于多走了一遍，因此开始把prev设置为None，反转结束先通过l前一个结点修正l的指针指向cur，再让l前一个结点指向prev</p>
+<p>25题因为要分组反转，所以需要判断剩余的结点够不够k个，因此r必然需要向后走一遍去判断，因此[l,r)肯定要走2遍。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/26/Minimum%20Spanning%20Tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/26/Minimum%20Spanning%20Tree/" class="post-title-link" itemprop="url">Minimum Spanning Tree</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-01-26 07:34:00" itemprop="dateCreated datePublished" datetime="2020-01-26T07:34:00+08:00">2020-01-26</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="一prim">一、Prim</h2>
+<p>Prim算法的思想是：</p>
+<ol type="1">
+<li>整个顶点集为<span class="math inline">\(V\)</span>，初始选一个起点<span class="math inline">\(s\)</span>，令集合<span class="math inline">\(u=\{s\}, v=\{\}\)</span>；</li>
+<li>在集合<span class="math inline">\(u\)</span>与集合<span class="math inline">\(V-u\)</span>中的点组成的边中，选一条权值最小的边<span class="math inline">\(u_0v_0\)</span>加入MST，并且将<span class="math inline">\(u_0\)</span>加入<span class="math inline">\(u\)</span>；</li>
+<li>重复直到MST有<span class="math inline">\(n-1\)</span>条边或<span class="math inline">\(n\)</span>个顶点为止。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> adjMax[MAXN][MAXN];  <span class="comment">//邻接矩阵</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n;   <span class="comment">//顶点数目</span></span><br><span class="line"><span class="keyword">int</span> pos = <span class="number">0</span>, ans = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">bool</span> visited[MAXN] = &#123;<span class="number">0</span>&#125;, cost[MAXN];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Prim</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		cost[i] = adjMax[<span class="number">0</span>][i];  <span class="comment">//集合u与集合V-u中的i点间距离最小值</span></span><br><span class="line">		visited[i] = <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	visited[<span class="number">0</span>] = <span class="literal">true</span>;   <span class="comment">//已经在MST中</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++)  <span class="comment">//再找n-1个点</span></span><br><span class="line">	&#123;</span><br><span class="line">	    <span class="comment">//找到连接u和V-u的最小边并记录位置</span></span><br><span class="line">		<span class="keyword">int</span> tmp = INT_MAX;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++) </span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (visited[j] == <span class="literal">false</span> &amp;&amp; cost[j] &lt; tmp)</span><br><span class="line">			&#123;</span><br><span class="line">				tmp = cost[j];</span><br><span class="line">				pos = j;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		ans += tmp;</span><br><span class="line">		visited[pos] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//加入某点后，V-u中的点j到u的距离可能变短，故更新cost[j]</span></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (visited[j] == <span class="literal">false</span> &amp;&amp; cost[j] &gt; adjMax[pos][j])</span><br><span class="line">			&#123;</span><br><span class="line">				cost[j] = adjMax[pos][j];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>性能：邻接矩阵表示不依赖于边数，复杂度<span class="math inline">\(O(|V|^2)\)</span>，适合边稠密的图。 ## 二、Kruskal 该算法思想：将所有边的权值递增排序，如果加入某边后不构成回路，则将该边加入MST，直到MST中有<span class="math inline">\(n-1\)</span>条边或<span class="math inline">\(n\)</span>个顶点：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//用结构体存储边的信息</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">edge</span> &#123;</span></span><br><span class="line">	<span class="keyword">int</span> start, des;</span><br><span class="line">	<span class="keyword">int</span> val;</span><br><span class="line">&#125;edge[MAXN];</span><br><span class="line"></span><br><span class="line"><span class="comment">//用并查集判断有没有环</span></span><br><span class="line"><span class="keyword">int</span> UFSets[MAXN];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">&#123;</span><br><span class="line">	UFSets[i] = <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//在S中查找并返回包含x的树的根</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> S[],<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (S[x] &gt;= <span class="number">0</span>)</span><br><span class="line">		x = S[x];</span><br><span class="line">	<span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">kruskal</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> u = <span class="built_in">find</span>(UFSets, edge[i].start);</span><br><span class="line">		<span class="keyword">int</span> v = <span class="built_in">find</span>(UFSets, edge[i].des);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (u == v)  <span class="comment">//edge[i]的两端点有相同的祖先，成环</span></span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">		ans += edge[i].val;</span><br><span class="line">		UFSets[u] = v;  <span class="comment">//合并两个并查集</span></span><br><span class="line">		cnt++;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (cnt == n - <span class="number">1</span>)</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>性能：复杂度<span class="math inline">\(O(ElogE)\)</span>，适合边稀疏、顶点多的图。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/15/Segment%20Tree/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -799,285 +1023,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/01/Pointers%20and%20Memory/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/01/01/Pointers%20and%20Memory/" class="post-title-link" itemprop="url">Pointers and Memory</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-01-01 15:07:00" itemprop="dateCreated datePublished" datetime="2020-01-01T15:07:00+08:00">2020-01-01</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><em>Stanford CS Education Library #102</em> ## Basic Pointers 指针主要有两个用途：使不同的代码段共享信息、方便链表（树）的处理。 指针示意图： <img src="https://img-blog.csdnimg.cn/2019041619200938.png" alt="在这里插入图片描述" /> <code>dereference</code>操作会根据指针的值去找到它的<code>pointee</code>。 <code>NULL</code>是一个特殊的指针值（一般是地址0），表示这个指针不指向任何<code>pointee</code>。 <img src="https://img-blog.csdnimg.cn/20190416193109659.png" alt="在这里插入图片描述" /> 指针的赋值会使得两个指针指向相同的<code>pointee</code>，但<code>pointee</code>本身不会改变： <img src="https://img-blog.csdnimg.cn/20190416192708547.png" alt="在这里插入图片描述" /> 传指针vs传值： <img src="https://img-blog.csdnimg.cn/20190416193445969.png" alt="在这里插入图片描述" /> 定义一个指针后，这个指针是没有被初始化的： <img src="https://img-blog.csdnimg.cn/2019041619372662.png" alt="在这里插入图片描述" /> 这时候如果进行<code>dereference</code>操作会发生Runtime Error. 对于Java、LISP等语言，当定义一个指针时，系统会将其设置为<code>NULL</code>，并且会在<code>dereference</code>操作时检查其值，这也是Java比较慢的原因之一。 <img src="https://img-blog.csdnimg.cn/20190416194404553.png" alt="在这里插入图片描述" /> 一个比较典型的指针错误：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BadPointer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span>* p;  <span class="comment">//allocate the pointer, but not the pointee</span></span><br><span class="line">	*p = <span class="number">42</span>; <span class="comment">//serious RE</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当执行<code>*p</code>时： <img src="https://img-blog.csdnimg.cn/20190416195104100.png" alt="在这里插入图片描述" /></p>
-<h2 id="local-memory">Local Memory</h2>
-<p>函数开始运行时，会为局部变量分配内存，结束运行会回收内存。 看一个错误的例子：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//TAB -- The Ampersand Bug function</span></span><br><span class="line"><span class="function"><span class="keyword">int</span>* <span class="title">TAB</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> temp;</span><br><span class="line">	<span class="keyword">return</span> (&amp;temp);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Victim</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span>* ptr;</span><br><span class="line">	ptr = TAB();</span><br><span class="line">	*ptr = <span class="number">42</span>;    <span class="comment">//The pointee was local to TAB</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>问题在于<code>TAB()</code>返回了一个局部变量的地址，但这个局部变量的空间已经被回收，<code>ptr</code>指针没有<code>pointee</code>。</p>
-<h2 id="reference-parameters">Reference Parameters</h2>
-<p>传值：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">B</span><span class="params">(<span class="keyword">int</span> worth)</span> </span>&#123;</span><br><span class="line">	worth++;</span><br><span class="line">	<span class="comment">// T2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">A</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> netWorth = <span class="number">55</span>;  <span class="comment">//T1</span></span><br><span class="line">	B(netWorth);</span><br><span class="line">	<span class="comment">// T3 -- B() did not change netWorth</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20190416203356234.png" alt="在这里插入图片描述" /> 传指针：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">B</span><span class="params">(<span class="keyword">int</span>* worthRef)</span> </span>&#123;</span><br><span class="line">	(*worthRef)++;</span><br><span class="line">	<span class="comment">// T2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">A</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> netWorth = <span class="number">55</span>;  <span class="comment">//T1</span></span><br><span class="line">	B(&amp;netWorth);</span><br><span class="line">	<span class="comment">// T3</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20190416203939385.png" alt="在这里插入图片描述" /> 传指针在c++中可以通过<strong>传引用</strong>的方式实现： <img src="https://img-blog.csdnimg.cn/20190416205349526.png" alt="在这里插入图片描述" /></p>
-<h2 id="heap-memory">Heap Memory</h2>
-<p>分配示意图： <img src="https://img-blog.csdnimg.cn/20190416205821650.png" alt="在这里插入图片描述" /> 释放示意图： <img src="https://img-blog.csdnimg.cn/20190416210059909.png" alt="在这里插入图片描述" /> 释放后，指针虽然还在，但却不可以在使用。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//size以字节为单位，分配成功返回指针，失败返回NULL</span></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">malloc</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">long</span> size)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//不需要size，因为heap manager之前已经记录过</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span>* heapBlockPointer)</span></span>;</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20190416211219354.png" alt="在这里插入图片描述" /> <img src="https://img-blog.csdnimg.cn/20190416211242340.png" alt="在这里插入图片描述" /> 一个<code>StringCopy()</code>的例子： <img src="https://img-blog.csdnimg.cn/20190416211900707.png" alt="在这里插入图片描述" /> 对于分配的堆内存，只有一个负责释放的，要么是<code>caller</code>，要么是<code>callee</code>： <img src="https://img-blog.csdnimg.cn/20190416212610387.png" alt="在这里插入图片描述" /></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/01/Linked%20List-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/01/01/Linked%20List-2/" class="post-title-link" itemprop="url">Linked List-2</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-01-01 15:03:00" itemprop="dateCreated datePublished" datetime="2020-01-01T15:03:00+08:00">2020-01-01</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="三编码技巧">三、编码技巧</h2>
-<p><strong>1、遍历链表</strong> 先将<code>head</code>指针赋值给一个局部变量<code>current</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//return the number of nodes in a list (while-loop version)</span><br><span class="line">int Length(struct node* head)</span><br><span class="line">&#123;</span><br><span class="line">	int count = 0;</span><br><span class="line">	struct node* current = head;</span><br><span class="line"></span><br><span class="line">	while (current != NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		count++;</span><br><span class="line">		current = current-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当然也可以写为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for (current = head; current != NULL; current = current-&gt;next) &#123;&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>2、通过传递<code>reference pointer</code>改变某个指针</strong> 看个例子：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">//Change the passed in head pointer to be NULL</span><br><span class="line">//Uses a reference pointer to access the caller&#x27;s memory</span><br><span class="line">void ChangeToNull(struct node** headRef)  //takes a pointer to the value of interest</span><br><span class="line">&#123;</span><br><span class="line">	*headRef = NULL;	//use * to access the value of interest</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void ChangeCaller()</span><br><span class="line">&#123;</span><br><span class="line">	struct node* head1;</span><br><span class="line">	struct node* head2;</span><br><span class="line"></span><br><span class="line">	ChangeToNull(&amp;head1);	//use &amp; to compute and pass a pointer to</span><br><span class="line">	ChangeToNull(&amp;head2);	//the value of interest</span><br><span class="line">	//head1 and head2 are NULL at this point</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这块的思想是和（一）中的<code>Push()</code>类似。 内存示意图： <img src="https://img-blog.csdnimg.cn/20190330151133187.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /> <strong>3、通过<code>Push()</code>建立链表（头插法）</strong> 这种方式的优点是速度飞快，简单易行，缺点是得到的链表是逆序的：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">struct node* AddAtHead()</span><br><span class="line">&#123;</span><br><span class="line">	struct node* head = NULL;</span><br><span class="line"></span><br><span class="line">	for (int i = 1; i &lt; 6; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		Push(&amp;head, i);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//head == &#123;5,4,3,2,1&#125;;</span><br><span class="line">	return head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>4、尾插法建立链表</strong> 这种方法需要找到链表最后一个节点，改变其<code>.next</code>域： <img src="https://img-blog.csdnimg.cn/20190330155111506.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
-<ul>
-<li>插入或者删除节点，需要找到该节点的前一个节点的指针，改变其<code>.next</code>域；</li>
-<li>特例：<strong>如果涉及第一个节点的操作，那么一定要改变<code>head</code>指针。</strong></li>
-</ul>
-<p><strong>5、特例+尾插法</strong> 如果要构建一个新的链表，那么头节点就要单独处理：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">struct node* BuildWithSpecialCase()</span><br><span class="line">&#123;</span><br><span class="line">	struct node* head = NULL;</span><br><span class="line">	struct node* tail;</span><br><span class="line">	</span><br><span class="line">	//deal with the head node here, and set the tail pointer</span><br><span class="line">	Push(&amp;head, 1);</span><br><span class="line">	tail = head;</span><br><span class="line"></span><br><span class="line">	//do all the other nodes using &quot;tail&quot;</span><br><span class="line">	for (int i = 2; i &lt; 6; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		Push(&amp;(tail-&gt;next), i);   //add node at tail-&gt;next</span><br><span class="line">		tail = tail-&gt;next;     //advance tail to point to last node</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return head;    //head == &#123;1,2,3,4,5&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>6、临时节点建立</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">struct node* BuildWithDummyNode()</span><br><span class="line">&#123;</span><br><span class="line">	struct node dummy;   //dummy node is temporarily the first node</span><br><span class="line">	struct node* tail = &amp;dummy;   //build the list on dummy.next</span><br><span class="line"></span><br><span class="line">	dummy.next = NULL;</span><br><span class="line"></span><br><span class="line">	for (int i = 1; i &lt; 6; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		Push(&amp;(tail-&gt;next), i);</span><br><span class="line">		tail = tail-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//the real result list is now in dummy.next</span><br><span class="line">	//dummy.next == &#123;1,2,3,4,5&#125;</span><br><span class="line">	return dummy.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>7、本地指针建立</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">struct node* BuildWithLocalRef()</span><br><span class="line">&#123;</span><br><span class="line">	struct node* head = NULL;</span><br><span class="line">	struct node** lastPtrRef = &amp;head;   //start out pointing to the head pointer</span><br><span class="line"></span><br><span class="line">	for (int i = 1; i &lt; 6; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		Push(lastPtrRef, i);  //add node at the last pointer in the list</span><br><span class="line">		//advance to point to the new last pointer</span><br><span class="line">		lastPtrRef = &amp;((*lastPtrRef)-&gt;next);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return head;  //head == &#123;1,2,3,4,5&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这块可能有些抽象： 1）<code>lastPtrRef</code>开始指向<code>head</code>指针，以后指向链表最后一个节点中的<code>.next</code>域； 2）在最后加上一个节点； 3）让<code>lastPtrRef</code>指针向后移动，指向最后一个<strong>节点的<code>.next</code>域</strong>。 <code>(*lastPtrRef)-&gt;next</code>可以理解为<code>*lastPtrRef</code>指针指向的节点的<code>next</code>域。 <img src="https://img-blog.csdnimg.cn/20190403193507385.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /> ## 四、代码示例 <strong>1、AppendNode()</strong> 1) 不使用<code>Push()</code>函数：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">struct node* AppendNode(struct node** headRef, int num)</span><br><span class="line">&#123;</span><br><span class="line">	struct node* current = *headRef;</span><br><span class="line">	struct node* newNode;</span><br><span class="line"></span><br><span class="line">	newNode = (struct node*)malloc(sizeof(struct node));</span><br><span class="line">	newNode-&gt;data = num;</span><br><span class="line">	newNode-&gt;next = NULL;</span><br><span class="line"></span><br><span class="line">	//special case for length 0</span><br><span class="line">	if (current == NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		*headRef = newNode;</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		//Locate the last node</span><br><span class="line">		while (current-&gt;next != NULL)</span><br><span class="line">		&#123;</span><br><span class="line">			current = current-&gt;next;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		current-&gt;next = newNode;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="2" type="1">
-<li>使用<code>Push()</code>函数：</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">struct node* AppendNode(struct node** headRef, int num)</span><br><span class="line">&#123;</span><br><span class="line">	struct node* current = *headRef;</span><br><span class="line"></span><br><span class="line">	//special case for length 0</span><br><span class="line">	if (current == NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		Push(headRef, num);</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		//Locate the last node</span><br><span class="line">		while (current-&gt;next != NULL)</span><br><span class="line">		&#123;</span><br><span class="line">			current = current-&gt;next;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		//Build the node after the last node</span><br><span class="line">		Push(&amp;(current-&gt;next), num);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>2、CopyList</strong> 用一个指针遍历原来的链表，两个指针跟踪新生成的链表（一个<code>head</code>，一个<code>tail</code>）。</p>
-<ol type="1">
-<li>不使用<code>Push()</code>函数： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">struct node* CopyList(struct node* head)</span><br><span class="line">&#123;</span><br><span class="line">	struct node* current = head;   //used to iterate over the original list</span><br><span class="line">	struct node* newList = NULL;   //head of the new list</span><br><span class="line">	struct node* tail = NULL;     //kept pointing to the last node in the new list</span><br><span class="line"></span><br><span class="line">	while (current != NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		if (newList == NULL)    //special case for the first new node</span><br><span class="line">		&#123;</span><br><span class="line">			newList = (struct node*)malloc(sizeof(struct node));</span><br><span class="line">			newList-&gt;data = current-&gt;data;</span><br><span class="line">			newList-&gt;next = NULL;</span><br><span class="line">			tail = newList;</span><br><span class="line">		&#125;</span><br><span class="line">		else</span><br><span class="line">		&#123;</span><br><span class="line">			tail-&gt;next = (struct node*)malloc(sizeof(struct node));</span><br><span class="line">			tail = tail-&gt;next;</span><br><span class="line">			tail-&gt;data = current-&gt;data;</span><br><span class="line">			tail-&gt;next = NULL;</span><br><span class="line">		&#125;</span><br><span class="line">		current = current-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return newList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 内存示意图： <img src="https://img-blog.csdnimg.cn/20190407094454488.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></li>
-<li>使用<code>Push()</code>函数：</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">struct node* CopyList2(struct node* head)</span><br><span class="line">&#123;</span><br><span class="line">	struct node* current = head;   //used to iterate over the original list</span><br><span class="line">	struct node* newList = NULL;   //head of the new list</span><br><span class="line">	struct node* tail = NULL;     //kept pointing to the last node in the new list</span><br><span class="line"></span><br><span class="line">	while (current != NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		if (newList == NULL)    //special case for the first new node</span><br><span class="line">		&#123;</span><br><span class="line">			Push(&amp;newList, current-&gt;data);</span><br><span class="line">			tail = newList;</span><br><span class="line">		&#125;</span><br><span class="line">		else</span><br><span class="line">		&#123;</span><br><span class="line">			Push(&amp;(tail-&gt;next), current-&gt;data);   //add each node at the tail </span><br><span class="line">			tail = tail-&gt;next;       //advance the tail to the new last node;</span><br><span class="line">		&#125;</span><br><span class="line">		current = current-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return newList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="3" type="1">
-<li>使用<code>Dummy Node</code>：</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">struct node* CopyList3(struct node* head)</span><br><span class="line">&#123;</span><br><span class="line">	struct node* current = head;   //used to iterate over the original list</span><br><span class="line">	struct node* tail = NULL;     //kept pointing to the last node in the new list</span><br><span class="line">	struct node dummy;            //build the new list off this dummy node</span><br><span class="line"></span><br><span class="line">	dummy.next = NULL;</span><br><span class="line">	tail = &amp;dummy;      //start the tail pointing at the dummy</span><br><span class="line"></span><br><span class="line">	while (current != NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		Push(&amp;(tail-&gt;next), current-&gt;data);   //add each node at the tail</span><br><span class="line">		tail = tail-&gt;next;                    //advance the tail to the new last node</span><br><span class="line">		current = current-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return dummy.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="4" type="1">
-<li>使用<code>Local References</code>：</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">struct node* CopyList4(struct node* head)</span><br><span class="line">&#123;</span><br><span class="line">	struct node* current = head;   //used to iterate over the original list</span><br><span class="line">	struct node* newList = NULL;   //head of the new list</span><br><span class="line">	struct node** lastPtr;           </span><br><span class="line"></span><br><span class="line">	lastPtr = &amp;newList;      //start off pointing to the head itself</span><br><span class="line"></span><br><span class="line">	while (current != NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		Push(lastPtr, current-&gt;data);   //add each node at the lastPtr</span><br><span class="line">		lastPtr = &amp;((*lastPtr)-&gt;next);    //advance lastPtr</span><br><span class="line">		current = current-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return newList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>核心思想是使用<code>lastPtr</code>指针指向每个节点的<code>.next</code>域这个指针，而不是指向节点本身。</p>
-<ol start="5" type="1">
-<li>使用<code>Recursive</code>：</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">struct node* CopyList5(struct node* head)</span><br><span class="line">&#123;</span><br><span class="line">	struct node* current = head;</span><br><span class="line">	if (head == NULL)</span><br><span class="line">		return NULL;</span><br><span class="line">	else &#123;</span><br><span class="line">		struct node* newList = (struct node*)malloc(sizeof(struct node));  //make one node</span><br><span class="line">		newList-&gt;data = current-&gt;data;</span><br><span class="line"></span><br><span class="line">		newList-&gt;next = CopyList5(current-&gt;next);    //recur for the rest</span><br><span class="line">		return newList;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/01/Linked%20List-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/01/01/Linked%20List-1/" class="post-title-link" itemprop="url">Linked List-1</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-01-01 15:01:00" itemprop="dateCreated datePublished" datetime="2020-01-01T15:01:00+08:00">2020-01-01</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>链表一直是面试的重点问题，恰好最近看到了Stanford的一篇<a target="_blank" rel="noopener" href="http://cslibrary.stanford.edu/">材料</a>，涵盖了链表的基础知识以及派生的各种问题。 第一篇主要是关于链表的基础知识。 ## 一、基本结构 <strong>1、数组回顾</strong> 链表和数组都是用来存储一堆数据的集合，其中单个元素的类型可以有很多种。 通过数组下标可以直接访问数组中的元素，比如：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">void ArrayTest()</span><br><span class="line">&#123;</span><br><span class="line">	int scores[100];</span><br><span class="line"></span><br><span class="line">	//初始化前3个元素</span><br><span class="line">	scores[0] = 1;</span><br><span class="line">	scores[1] = 2;</span><br><span class="line">	scores[2] = 3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>最关键的是：整个数组被分配了一整块内存： <img src="https://img-blog.csdnimg.cn/2019032615150057.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" /> 数组元素之所以能被快速访问，原因在于其地址的计算是通过首地址加上偏移值得到的，只有一次乘法和一次加法运算而已。 数组的缺点在于：</p>
-<ul>
-<li>数组的大小是固定的：数组的规模在编译时就被确定，当然你可以在运行时通过<code>malloc</code>在堆中改变数组的大小，不过很麻烦；</li>
-<li>由于上述原因，所以很多人就会定义一个很大的数组，不过这又会导致两个问题： 1）数组的大部分空间可能被浪费掉； 2）如果程序需要更大的空间，就会崩溃。</li>
-<li>在数组前面插入元素代价很大，需要移动很多元素。 链表也有自己的优缺点，只不过和数组刚好互补：链表会在需要时为每个节点单独分配内存。 <strong>2、指针回顾</strong> 指针存储了变量的地址，如果指针的值是<code>NULL</code>（c/c++中<code>NULL</code>可以表示逻辑<code>false</code>），那么该指针不指向任何变量。 在c/c++中，没有初始化的指针就是野指针，对野指针进行<code>dereference</code>操作可能导致程序崩溃。 两个指针的赋值结果就是都指向相同的内存区域。 <code>malloc()</code>函数用来在堆中申请一块内存，并且返回一个指向该块的指针，如果申请失败，会返回<code>NULL</code>，使用后，需要用<code>free()</code>去释放。这些堆函数原型都在<code>stdlib.h</code>头文件中声明。 <strong>3、链表</strong> 一个包含<code>&#123;1,2,3&#125;</code>三个元素的链表： <img src="https://img-blog.csdnimg.cn/20190326161911717.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /> 空链表的<code>head</code>的值是<code>NULL</code>，<strong>编程时要考虑到这种边界情况</strong>。</li>
-</ul>
-<p>节点的定义：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">struct node &#123;</span><br><span class="line">	int data;</span><br><span class="line">	struct node* next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>指向节点的指针类型是<code>struct node*</code>。 接着看看上图中的链表是怎么建立的？</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">Build the list &#123;1,2,3&#125; in the heap and store</span><br><span class="line">its head pointer in a local stack variable.</span><br><span class="line">Returns the head pointer to the caller.</span><br><span class="line">*/</span><br><span class="line">struct node* BuildOneTwoThree()</span><br><span class="line">&#123;</span><br><span class="line">	//there are three pointers in the stack, but pointer assignment link the list.</span><br><span class="line">	struct node* head = NULL;</span><br><span class="line">	struct node* second = NULL;</span><br><span class="line">	struct node* third = NULL;</span><br><span class="line"></span><br><span class="line">	//allocate 3 nodes</span><br><span class="line">	head = (struct node*)malloc(sizeof(struct node));</span><br><span class="line">	second = (struct node*)malloc(sizeof(struct node));</span><br><span class="line">	third = (struct node*)malloc(sizeof(struct node));</span><br><span class="line"></span><br><span class="line">	head-&gt;data = 1;    //setup first node</span><br><span class="line">	head-&gt;next = second;   //note:pointer assignment rule</span><br><span class="line"></span><br><span class="line">	second-&gt;data = 2;    //setup second node</span><br><span class="line">	second-&gt;next = third;</span><br><span class="line"></span><br><span class="line">	third-&gt;data = 3;    //setup third node</span><br><span class="line">	third-&gt;next = NULL;</span><br><span class="line"></span><br><span class="line">	//at this point, the linked list referenced by &quot;head&quot;</span><br><span class="line">	//matches the list in the drawing.</span><br><span class="line">	return head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如何求链表中的元素个数呢？</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">Given a linked list head pointer, compute </span><br><span class="line">and return the number of nodes in the list.</span><br><span class="line">*/</span><br><span class="line">int Length(struct node* head)</span><br><span class="line">&#123;</span><br><span class="line">	struct node* current = head;</span><br><span class="line">	int count = 0;</span><br><span class="line"></span><br><span class="line">	while (current != NULL)</span><br><span class="line">	&#123;</span><br><span class="line">		count++;</span><br><span class="line">		current = current-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看到，传递进函数的只是头指针，这样调用者和被调用者都有了头指针，但是却共享了整个链表。</p>
-<ul>
-<li><code>current</code>指针占据的空间会被自动释放，但是堆中的链表仍然保留；</li>
-<li><code>while</code>循环已经考虑了空链表的情况；</li>
-<li><code>current</code>最后的值会是<code>NULL</code>。 调用<code>Length()</code>：</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">void LengthTest()</span><br><span class="line">&#123;</span><br><span class="line">	struct node* myList = BuildOneTwoThree();</span><br><span class="line">	int len = Length(myList);    //results in len == 3</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>调用<code>Length()</code>之前： <img src="https://img-blog.csdnimg.cn/20190326172043909.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></li>
-<li>执行<code>Length()</code>过程中： <img src="https://img-blog.csdnimg.cn/20190326172354519.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></li>
-</ul>
-<h2 id="二链表建立">二、链表建立</h2>
-<p>用<code>BuildOneTwoThree()</code>函数来建立链表未免有些古板，下面用头插法建立链表：</p>
-<p>1、分配节点：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">struct node* newNode;</span><br><span class="line">newNode = (struct node*)malloc(sizeof(struct node));</span><br><span class="line">newNode-&gt;data = data_client_wants_stored;</span><br></pre></td></tr></table></figure>
-<p>2、让新节点的<code>next</code>指向当前链表的第一个节点：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">newNode-&gt;next = head;</span><br></pre></td></tr></table></figure>
-<p>3、让<code>head</code>指针指向链表的第一个节点： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">head = newNode;</span><br></pre></td></tr></table></figure> 整理下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">void LinkTest()</span><br><span class="line">&#123;</span><br><span class="line">	struct node* head = buildTwoThree();  //suppose this builds list &#123;2,3&#125;</span><br><span class="line">	struct node* newNode;</span><br><span class="line"></span><br><span class="line">	newNode = (struct node*)malloc(sizeof(struct node));  //allocate</span><br><span class="line">	newNode-&gt;data = 1;</span><br><span class="line">	</span><br><span class="line">	newNode-&gt;next = head;   //link next</span><br><span class="line"></span><br><span class="line">	head = newNode;   //link head</span><br><span class="line"></span><br><span class="line">	//now head points to the list &#123;1,2,3&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如图： <img src="https://img-blog.csdnimg.cn/20190326205401503.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /> <em>先看一个错误的示范：</em> <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">void WrongPush(struct node* head,int data)</span><br><span class="line">&#123;</span><br><span class="line">	struct node* newNode = (struct node*)malloc(sizeof(struct node));</span><br><span class="line"></span><br><span class="line">	newNode-&gt;data = data;</span><br><span class="line">	newNode-&gt;next = head;</span><br><span class="line">	head = newNode;    //NO this line does not work</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void WrongPushTest()</span><br><span class="line">&#123;</span><br><span class="line">	struct node* head = buildTwoThree();  </span><br><span class="line">	</span><br><span class="line">	WrongPush(head, 1);    //try to push 1 on front -- doesn&#x27;t work</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 这个问题就在于C语言的<strong>值传递</strong>，在<code>WrongPush()</code>中对<code>head</code>指针的改变不会影响到<code>WrongPushTest</code>中的我们需要的<code>head</code>指针。 这个问题传统的解决方案是传递当前值的指针给函数而不是传递一份当前值的拷贝，即： 要改变调用者中<code>int</code>的值，就传一个<code>int*</code>给被调用者。在这个例子中，要改变<code>struct node*</code>，就要传递<code>struct node**</code>。也即：<code>head</code>的类型是<code>pointer to a struct node</code>，想要改变这个指针，就需要传一个指向该指针的指针<code>pointer to a pointer to a struct node</code>。 <strong>规则就是：<code>to modify caller memory, pass a pointer to that memory.</code></strong></p>
-<p><em>所以正确的代码如下：</em> <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">Takes a list and a data value.</span><br><span class="line">Creates a new link with the given data and pushes it</span><br><span class="line">onto the front of the list.</span><br><span class="line">The list is not passed in by its head pointer.</span><br><span class="line">Instead the list is passed in as a &quot;reference&quot; pointer</span><br><span class="line">to the head pointer -- this allows us to modify the caller&#x27;s memory.</span><br><span class="line">*/</span><br><span class="line">void Push(struct node** headRef,int data)</span><br><span class="line">&#123;</span><br><span class="line">	struct node* newNode = (struct node*)malloc(sizeof(struct node));</span><br><span class="line"></span><br><span class="line">	newNode-&gt;data = data;</span><br><span class="line">	newNode-&gt;next = *headRef;	//the * to dereferences back to the real head </span><br><span class="line">	*headRef = newNode;    //ditto</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void PushTest()</span><br><span class="line">&#123;</span><br><span class="line">	struct node* head = buildTwoThree();	//suppose this returns the list &#123;2,3&#125;</span><br><span class="line">	</span><br><span class="line">	Push(&amp;head, 1);    //note the &amp;</span><br><span class="line">	Push(&amp;head, 13);</span><br><span class="line"></span><br><span class="line">	//head is now the list &#123;13,1,2,3&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 内存示意图： <img src="https://img-blog.csdnimg.cn/20190330143627528.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /> 如果是C++，那么可以用<strong>引用</strong>完成上述工作。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">Push in C++ -- We just add a &amp; to the right hand side of the head parameter type,</span><br><span class="line">and the compiler makes that parameter work by reference. So this code changes the </span><br><span class="line">caller&#x27;s memory, but no extra uses of * are necessary -- we just access &quot;head&quot; directly,</span><br><span class="line">and the compiler makes that change reference back to the caller.</span><br><span class="line">*/</span><br><span class="line">void Push(struct node*&amp; head,int data)</span><br><span class="line">&#123;</span><br><span class="line">	struct node* newNode = (struct node*)malloc(sizeof(struct node));</span><br><span class="line"></span><br><span class="line">	newNode-&gt;data = data;</span><br><span class="line">	newNode-&gt;next = head;	//No extra use of * necessary on head -- the compiler</span><br><span class="line">	head = newNode;    //just takes care of it behind the scenes.</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void PushTest()</span><br><span class="line">&#123;</span><br><span class="line">	struct node* head = buildTwoThree();	//suppose this returns the list &#123;2,3&#125;</span><br><span class="line">	</span><br><span class="line">	Push(head, 1);    //No extra use &amp; necessary -- the compiler </span><br><span class="line">	Push(head, 13);   //takes care of it here too. Head is being changed by these calls. </span><br><span class="line"></span><br><span class="line">	//head is now the list &#123;13,1,2,3&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/9/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/11/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/9/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/11/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1145,20 +1094,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">166</span>
+          <span class="site-state-item-count">171</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

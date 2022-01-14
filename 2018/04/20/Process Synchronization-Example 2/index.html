@@ -20,16 +20,17 @@
     var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="问题描述 理发店有一位理发师，一把理发椅和N把供等候的顾客坐的椅子。 如果没有顾客，理发师在理发椅上睡觉； 当有一个顾客到来时，他必须先唤醒理发师； 如果顾客来时理发师正在理发，如果有空椅子，坐下等待，否则离开。 用PV操作解决上述问题中的同步和互斥关系。 分析 将顾客看作N个生产者，理发师是1个消费者。 理发师和椅子是临界资源，故顾客间是互斥关系； 理发师和顾客是同步关系。 信号量设置：">
+  <meta name="description" content="理发师睡觉问题">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Process Synchronization-Example 2">
 <meta property="og:url" content="https://eimadrigal.github.io/2018/04/20/Process%20Synchronization-Example%202/index.html">
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
-<meta property="og:description" content="问题描述 理发店有一位理发师，一把理发椅和N把供等候的顾客坐的椅子。 如果没有顾客，理发师在理发椅上睡觉； 当有一个顾客到来时，他必须先唤醒理发师； 如果顾客来时理发师正在理发，如果有空椅子，坐下等待，否则离开。 用PV操作解决上述问题中的同步和互斥关系。 分析 将顾客看作N个生产者，理发师是1个消费者。 理发师和椅子是临界资源，故顾客间是互斥关系； 理发师和顾客是同步关系。 信号量设置：">
+<meta property="og:description" content="理发师睡觉问题">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2018-04-20T04:59:00.000Z">
-<meta property="article:modified_time" content="2022-01-13T16:01:43.704Z">
+<meta property="article:published_time" content="2018-04-20T12:59:32.000Z">
+<meta property="article:modified_time" content="2022-01-12T10:13:04.410Z">
 <meta property="article:author" content="EIMadrigal">
+<meta property="article:tag" content="OS">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2018/04/20/Process%20Synchronization-Example%202/">
@@ -218,7 +219,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-04-20 12:59:00" itemprop="dateCreated datePublished" datetime="2018-04-20T12:59:00+08:00">2018-04-20</time>
+              <time title="Created: 2018-04-20 20:59:32" itemprop="dateCreated datePublished" datetime="2018-04-20T20:59:32+08:00">2018-04-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -229,6 +239,7 @@
               <span class="post-meta-item-text">Views: </span>
               <span id="busuanzi_value_page_pv"></span>
             </span>
+            <div class="post-description">理发师睡觉问题</div>
 
         </div>
       </header>
@@ -291,6 +302,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/OS/" rel="tag"># OS</a>
+          </div>
 
         
 
@@ -302,8 +316,8 @@
       <i class="fa fa-chevron-left"></i> Process Synchronization-Example 1
     </a></div>
       <div class="post-nav-item">
-    <a href="/2018/04/28/ProcessThread%20Synchronization/" rel="next" title="ProcessThread Synchronization">
-      ProcessThread Synchronization <i class="fa fa-chevron-right"></i>
+    <a href="/2018/04/28/Process%20&%20Thread%20Synchronization/" rel="next" title="Process/Thread Synchronization">
+      Process/Thread Synchronization <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -384,20 +398,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">166</span>
+          <span class="site-state-item-count">171</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

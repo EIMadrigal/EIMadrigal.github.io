@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="C&#x2F;C++常见问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C&#x2F;C++ FAQ">
+<meta property="og:url" content="https://eimadrigal.github.io/2019/03/04/C%20&%20C++%20FAQ/index.html">
+<meta property="og:site_name" content="EI Madrigal&#39;s Space">
+<meta property="og:description" content="C&#x2F;C++常见问题">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200229202936650.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2019-03-04T12:37:32.000Z">
+<meta property="article:modified_time" content="2022-01-12T09:53:46.143Z">
+<meta property="article:author" content="EIMadrigal">
+<meta property="article:tag" content="Language">
+<meta property="article:tag" content="Interview">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200229202936650.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="https://eimadrigal.github.io/2019/03/04/C%20&%20C++%20FAQ/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>C/C++ FAQ | EI Madrigal's Space</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EI Madrigal's Space</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/03/04/C%20&%20C++%20FAQ/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C/C++ FAQ
+        </h1>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-03-04 20:37:32" itemprop="dateCreated datePublished" datetime="2019-03-04T20:37:32+08:00">2019-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <div class="post-description">C/C++常见问题</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="指针和引用">指针和引用</h2>
+<ol type="1">
+<li>指针是一个新的变量，存储另一个变量的地址，可以通过指针修改另一个变量；引用是一个别名，对引用的操作就是对变量本身的操作。</li>
+<li>指针可以有多级；引用只有一级。</li>
+<li>指针的大小一般4B；引用的大小一般取决于被引用对象大小。</li>
+<li>指针可以为空；引用不能为空。</li>
+<li>传参选择：返回被调函数局部变量的内存时传指针，使用后及时释放避免内存泄漏；返回局部变量的引用没有意义，会自动销毁。传指针需要单独开辟内存；在对栈空间大小敏感时（如递归）传引用，无需创建临时变量，开销更小。类对象作为参数时传引用是C++传递类对象的标准方式。</li>
+</ol>
+<h2 id="空类">空类</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// sizeof(A) = 1</span></span><br></pre></td></tr></table></figure>
+<p>空类的大小之所以为1，因为标准规定完整对象的大小&gt;0，否则两个不同对象可能拥有相同的地址，故编译器会生成1B占位符。 那么两个对象为什么不能地址相同呢？</p>
+<blockquote>
+<p>There would be no way to distinguish between these two objects when referencing them with pointers.</p>
+</blockquote>
+<p>空类中到底都有什么呢？</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">A</span>();  <span class="comment">// 默认构造函数</span></span><br><span class="line">	<span class="built_in">A</span>(<span class="keyword">const</span> A&amp;);  <span class="comment">// 拷贝构造函数</span></span><br><span class="line">	~<span class="built_in">A</span>();  <span class="comment">// 析构函数</span></span><br><span class="line">	A&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> A&amp;);  <span class="comment">// 赋值运算符</span></span><br><span class="line">	A* <span class="keyword">operator</span>&amp;();  <span class="comment">// 取址运算符（非const）</span></span><br><span class="line">	<span class="keyword">const</span> A* <span class="keyword">operator</span>&amp;() <span class="keyword">const</span>;  <span class="comment">// 取址运算符（const）</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>仅仅声明一个类，不会创建这些函数。只有当定义类的对象时，才会产生。 ## 多态和虚函数 面向对象的语言的特点就是封装、继承和多态。封装和继承都比较好理解，那么多态到底什么意思？ 简单来说：不同对象接收相同的消息产生不同的行为。 C++中的多态分为静态多态(函数和运算符重载)和动态多态(继承和虚函数)。 定义虚函数<code>f</code>，是为了用基类的引用或指针调用派生类的<code>f</code>，最终调用哪个<code>f</code>取决于传入的实参，即在运行时选择函数的版本，也就是所谓的动态绑定。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		cout &lt;&lt; <span class="string">&quot;Base&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span> :</span> <span class="keyword">public</span> Base &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;  <span class="comment">// 覆盖Base::f</span></span><br><span class="line">		cout &lt;&lt; <span class="string">&quot;Derived&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">h</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">int</span> j;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	Base* p = <span class="keyword">new</span> <span class="built_in">Derived</span>();</span><br><span class="line">	p-&gt;<span class="built_in">f</span>();  <span class="comment">// 调用派生类的f()</span></span><br><span class="line">	<span class="keyword">delete</span> p;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>基类指针<code>p</code>调用虚函数<code>f</code>，<code>f</code>作用的可能是基类对象，也可能是派生类对象，这就是多态（同样消息作用于不同类型对象产生不同的行为）的一种方式，即动态多态。 正因为编译器无法确定使用哪个虚函数，所以所有的<strong>虚函数必须定义</strong>，否则编译器会报错。</p>
+<p>构造函数不能是虚函数，因为构造对象时必须明确知道其类型。如果是虚函数，调用时只需要提供接口，编译器无法知道你想构造继承树的哪个类型。 C++他爹Bjarne Stroustrup是这么说的： &gt; A virtual call is a mechanism to get work done given partial information. In particular, "virtual" allows us to call a function knowing only an interfaces and not the exact type of the object. To create an object you need complete information. In particular, you need to know the exact type of what you want to create. Consequently, a "call to a constructor" cannot be virtual.</p>
+<p>析构函数是虚函数，因为要确保执行相应对象的析构函数。如果基类指针指向派生类对象，会调用派生类的析构函数，然后调用基类的析构函数。 <img src="https://img-blog.csdnimg.cn/20200229202936650.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /> ## 纯虚函数 与虚函数必须定义相反，纯虚函数无须定义（要定义必须在类的外部），含有纯虚函数的类是<strong>抽象基类</strong>。 抽象基类定义好接口，继承该类的其他类可以覆盖这个接口。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>= <span class="number">0</span>;  <span class="comment">// 声明纯虚函数</span></span><br></pre></td></tr></table></figure>
+<p>之所以要引入纯虚函数，是因为很多时候基类产生对象是没有意义的。比如动物类可以派生出狗、猪等子类，但动物类生成对象毫无意义。 因此，不能创建抽象基类的对象，派生类必须覆盖(override)以定义自己的<code>f</code>，否则派生类仍然是抽象基类。 ## 重载&amp;覆盖&amp;重写</p>
+<ul>
+<li>重载(overload)：在类内部发生。函数名相同，参数个数、参数类型、参数顺序至少有一种不同。返回值类型可以相同，也可不同；</li>
+<li>覆盖(override)：覆盖基类的虚函数。函数名相同，参数相同，基类函数必须是虚函数；</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">B</span> &#123;</span></span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f1</span><span class="params">(<span class="keyword">int</span>)</span> <span class="keyword">const</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f2</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f3</span><span class="params">()</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">D1</span> :</span>B &#123;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">(<span class="keyword">int</span>)</span> <span class="keyword">const</span> <span class="keyword">override</span></span>;  <span class="comment">// 正确：f1与基类中的f1匹配</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f2</span><span class="params">(<span class="keyword">int</span>)</span> <span class="keyword">override</span></span>;  <span class="comment">// 错误：B没有形如f2(int)的函数</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f3</span><span class="params">()</span> <span class="keyword">override</span></span>;  <span class="comment">// 错误：f3不是虚函数</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f4</span><span class="params">()</span> <span class="keyword">override</span></span>;  <span class="comment">// 错误：B没有名为f4的函数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>重写(overwrite)：派生类的函数屏蔽了同名的基类函数： 派生类函数与基类函数同名，参数不同。不论基类函数是否为虚函数，都会被隐藏； 派生类函数与基类函数同名，参数相同。基类函数不为虚函数，会被隐藏； ## static C++中<code>static</code>关键字用来<strong>声明类的成员</strong>：</p></li>
+<li><p>类的静态成员变量或函数属于类而非对象，只有一份副本；</p></li>
+<li><p>静态成员函数没有<code>this</code>指针，只能访问类的静态数据；</p></li>
+<li><p>静态成员函数不能定义为虚函数；</p></li>
+<li><p>静态成员变量初始化<code>int Base::name = 0</code></p></li>
+</ul>
+<p>如果不是在类中声明成员，还有下面用法：</p>
+<ul>
+<li><p>隐藏作用：多文件编译时，定义的全局变量和函数都是整个工程可见的，只要使用时加上<code>extern</code>关键字即可。如果加上<code>static</code>关键字，那么该变量或函数就变为<strong>仅当前文件</strong>可见，这样我们可以在不同文件中定义同名的变量或函数而不用担心冲突。</p></li>
+<li><p>全局生存期：<code>static</code>变量存储在静态数据区，默认值为0，<strong>只被初始化一次</strong>，即使作为局部变量，生存期也为整个程序，但作用域与普通变量相同，退出函数后即使变量存在，但不能使用。 ## const</p></li>
+<li><p>定义const对象：一旦创建其值不能改变，故const对象必须初始化。</p></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> bufSize = <span class="number">512</span>;</span><br><span class="line"><span class="keyword">int</span> <span class="keyword">const</span> bufSize = <span class="number">512</span>;  <span class="comment">// the same as the previous one</span></span><br></pre></td></tr></table></figure>
+<p>由于const对象默认只在文件内有效，所以如果要在文件间共享：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// file1.cpp定义并初始化</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">const</span> <span class="keyword">int</span> bufSize = <span class="number">512</span>;</span><br><span class="line"><span class="comment">// file1.h可以仅声明，不初始化</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">const</span> <span class="keyword">int</span> bufSize;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>常量指针（const pointer）：指针本身（存在指针中的地址）不可变。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> num = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span>* <span class="keyword">const</span> p = &amp;num;  <span class="comment">// p将一直指向num</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>指向常量的指针（pointer to const）：指针指向的对象不可变。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> pi = <span class="number">3.14</span>;</span><br><span class="line"><span class="keyword">double</span>* p = &amp;pi;  <span class="comment">// 错误，p是一个普通指针</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span>* p = &amp;pi;  <span class="comment">// 正确</span></span><br><span class="line">*p = <span class="number">4.1</span>;  <span class="comment">// 错误，不能改变*p的值 </span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>修饰成员函数</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> <span class="keyword">const</span></span>;  <span class="comment">// 不能改变数据成员，const对象不能调用非const成员函数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>修饰类对象</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">f2</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> A obj;  <span class="comment">// obj为常量对象，任何成员都不能被修改，任何非const成员函数都不能被调用</span></span><br><span class="line">obj.<span class="built_in">f1</span>();  <span class="comment">// 错误</span></span><br><span class="line">obj.<span class="built_in">f2</span>();  <span class="comment">// 正确</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> A* obj  = <span class="keyword">new</span> <span class="built_in">A</span>();</span><br><span class="line">obj-&gt;<span class="built_in">f1</span>();  <span class="comment">// 错误</span></span><br><span class="line">obj-&gt;<span class="built_in">f2</span>();  <span class="comment">// 正确</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>转为非const</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* pc;  <span class="comment">// pc指向内容不可变</span></span><br><span class="line"><span class="keyword">char</span>* p = <span class="keyword">const_cast</span>&lt;<span class="keyword">char</span>*&gt;(pc);  <span class="comment">// 正确，但是通过p写值是未定义行为</span></span><br></pre></td></tr></table></figure>
+<h2 id="类型转换">类型转换</h2>
+<p>类型转换分为隐式转换和显式转换。 显式转换有四种：</p>
+<ul>
+<li><code>static_cast</code> 没有底层const都可以，使用比较普遍。 基类-&gt;派生类：不安全 主要执行非多态转换，代替C中的转换。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span>* p = &amp;d;</span><br><span class="line"><span class="keyword">double</span>* dp = <span class="keyword">static_cast</span>&lt;<span class="keyword">double</span>*&gt;(p);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>dynamic_cast</code> 运行时类型检查， 将基类指针或引用安全转换为派生类的指针或引用：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// type是类，且有虚函数</span></span><br><span class="line"><span class="keyword">dynamic_cast</span>&lt;type*&gt;(e);  <span class="comment">//e是指针</span></span><br><span class="line"><span class="keyword">dynamic_cast</span>&lt;type&amp;&gt;(e);  <span class="comment">//e是左值</span></span><br><span class="line"><span class="keyword">dynamic_cast</span>&lt;type&amp;&amp;&gt;(e);  <span class="comment">//e不是左值</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>const_cast</code> 改变底层const。 常量指针转为非常量指针。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* cp;</span><br><span class="line"><span class="keyword">char</span>* q = <span class="keyword">static_cast</span>&lt;<span class="keyword">char</span>*&gt;(cp);  <span class="comment">// wrong, static_cast不能用于底层const</span></span><br><span class="line"><span class="keyword">char</span>* p = <span class="keyword">const_cast</span>&lt;<span class="keyword">char</span>*&gt;(cp);  <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>reinterpret_cast</code> 比较危险，不太用。处理无关类型转换，重新解释对象的比特模型。 ## new/delete/malloc/free <code>new/delete</code>是C++运算符，需要编译器支持，所以不需要指定大小，返回相应对象类型的指针，分配失败会抛出<code>std::bad_alloc</code>异常，<code>new</code>会调用<code>operator new()</code>申请内存(用<code>malloc</code>实现)，调用构造函数初始化成员变量，返回相应指针，<code>delete</code>先调用析构函数，再调用<code>operator delete()</code>函数释放内存(用<code>free</code>实现)； <code>malloc/free</code>是库函数，不由编译器控制，需要显式指出大小，返回<code>void*</code>，需要强制类型转换，分配失败返回<code>NULL</code>指针，无法完成对象的构造和析构。</li>
+</ul>
+<h2 id="智能指针">智能指针</h2>
+<p><code>new</code>完后没有<code>delete</code>，内存泄漏。为了减少程序员的负担，引入智能指针：</p>
+<ul>
+<li><code>shared_ptr</code> 允许多个指针指向同一个对象。通常与<code>make_shared</code>函数结合食用：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shared_ptr&lt;string&gt; p = make_shared&lt;string&gt;(<span class="number">10</span>, <span class="string">&#x27;9&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p>实现方式一般是reference counting，在堆上申请资源并返回指针后，在堆上申请一个共享的引用计数器，每来一个指针指向该对象，++计数器。当计数器为0时，会自动释放指向的对象。 2个指针成员，一个指向对象，一个指向计数器 面试有可能被要求手撕一个： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">mySharePtr</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">mySharePtr</span>() :<span class="built_in">refCnt</span>(<span class="literal">nullptr</span>), <span class="built_in">ptr</span>(<span class="literal">nullptr</span>) &#123;&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">mySharePtr</span>(T* res) :<span class="built_in">refCnt</span>(<span class="literal">nullptr</span>), <span class="built_in">ptr</span>(res) &#123;</span><br><span class="line">		<span class="built_in">add</span>();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">mySharePtr</span>(<span class="keyword">const</span> mySharePtr&lt;T&gt;&amp; p) :<span class="built_in">refCnt</span>(p.refCnt), <span class="built_in">ptr</span>(p.ptr) &#123;</span><br><span class="line">		<span class="built_in">add</span>();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">virtual</span> ~<span class="built_in">mySharePtr</span>() &#123;</span><br><span class="line">		<span class="built_in">remove</span>();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// lvalue is assigned, --counter</span></span><br><span class="line">	mySharePtr&lt;T&gt;&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> mySharePtr&lt;T&gt;&amp; that) &#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">this</span> != &amp;that) &#123;</span><br><span class="line">			<span class="built_in">remove</span>();</span><br><span class="line">			<span class="keyword">this</span>-&gt;ptr = that.ptr;</span><br><span class="line">			<span class="keyword">this</span>-&gt;refCnt = that.refCnt;</span><br><span class="line">			<span class="built_in">add</span>();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">bool</span> <span class="keyword">operator</span>==(<span class="keyword">const</span> mySharePtr&lt;T&gt;&amp; other) &#123;</span><br><span class="line">		<span class="keyword">return</span> ptr == other.ptr;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">bool</span> <span class="keyword">operator</span>!=(<span class="keyword">const</span> mySharePtr&lt;T&gt;&amp; other) &#123;</span><br><span class="line">		<span class="keyword">return</span> !<span class="keyword">operator</span>==(other);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	T&amp; <span class="keyword">operator</span>*() <span class="keyword">const</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> *ptr;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	T* <span class="keyword">operator</span>-&gt;() <span class="keyword">const</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> ptr;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">int</span> <span class="title">numRef</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (refCnt) &#123;</span><br><span class="line">			<span class="keyword">return</span> *refCnt;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">	<span class="comment">// if null, create counter = 1, else ++counter</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (refCnt) &#123;</span><br><span class="line">			++(*refCnt);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			refCnt = <span class="keyword">new</span> <span class="built_in"><span class="keyword">int</span></span>(<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// --counter, if counter = 0, free memory</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (refCnt) &#123;</span><br><span class="line">			--(*refCnt);</span><br><span class="line">			<span class="keyword">if</span> (*refCnt == <span class="number">0</span>) &#123;</span><br><span class="line">				<span class="keyword">delete</span> refCnt;</span><br><span class="line">				<span class="keyword">delete</span> ptr;</span><br><span class="line">				refCnt = <span class="literal">nullptr</span>;</span><br><span class="line">				ptr = <span class="literal">nullptr</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">int</span>* refCnt;</span><br><span class="line">	T* ptr;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><code>unique_ptr</code> 看名字就知道，独占对象。 ##指针和引用 引用只是一个别名，不是一种数据类型，不占存储空间，不能建立数组的引用 引用必须初始化，指针不必 引用初始化后不能改变，指针可以改变指向的对象 不存在指向空值的引用，存在指向空值的指针 ## 成员变量初始化顺序 基类静态变量/全局变量：静态成员变量必须类外初始化 派生类静态变量/全局变量 基类成员变量：按照在类中定义的顺序，而不是初始化列表中的顺序 派生类成员变量 ## TODO 初始化列表好处： 1、const成员变量只能 2、引用只能 3、效率：初始化列表比赋值操作少一次默认构造函数，因为程序要默认构造临时对象（等号右边）后才能赋值</li>
+</ul>
+<p>函数缺省： 某个参数有默认值，缺省参数仍在后边 调用时如果略去一个参数传递，则略去后面所有</p>
+<p>异常处理： 抛出异常，没有被特定的catch语句捕获，函数调用堆栈会被解退（函数终止，销毁局部变量，控制权转到调用它的那个函数）， 并在下一个外层try..catch捕获，最后没有任何catch捕获，调用terminate，abort退出。</p>
+<p>传参时传引用与传指针效果相同 传引用，没有产生实参的副本，直接对实参操作 传指针，被调函数需要给形参分配空间，可读性差，需要传地址做实参，传引用更简单清晰</p>
+<p>预处理、编译、汇编、链接</p>
+<p>操作系统 * 用户告诉操作系统执行hello程序 * 操作系统到硬盘找到该程序 * 由编译程序将用户源程序编译成若干个目标模块 * 由链接程序将目标模块和相应的库函数链接成装入模块 * 操作系统分配内存，由装入程序将装入模块装入内存 * 为执行hello程序创建执行环境（创建新进程） * 操作系统设置CPU上下文环境，并跳到程序开始处 * 程序的第一条指令执行 * 程序执行与printf对应的系统调用 * 操作系统分配设备 * 执行显示驱动程序 * 窗口系统将像素写入存储映像区</p>
+<pre><code>（1）每个节点或者是黑色，或者是红色。</code></pre>
+<p>　　(2)根节点是黑色。</p>
+<p>　　(3)每个叶子节点（NIL）是黑色。 [注意：这里叶子节点，是指为空(NIL或NULL)的叶子节点！]</p>
+<p>　　(4)如果一个节点是红色的，则它的子节点必须是黑色的。</p>
+<p>　　(5)从一个节点到该节点的子孙节点的所有路径上包含相同数目的黑节点。[这里指到叶子节点的路径]</p>
+<p>模板特化、偏特化 内存池</p>
+<p>volatile： 加volatile的关键字不进行编译器优化，保证对特殊地址的稳定访问 不能把他放在cache或寄存器中重复使用 防止优化编译器把变量从内存装入 CPU 寄存器 两个线程有可能一个使用内存中的变量，一个使用寄存器中的变量，这会造成程序的错误执行</p>
+<p>拷贝构造： 创建对象时，是使用同一类中之前创建的对象来初始化新创建的对象 通过使用另一个同类型的对象来初始化新创建的对象。 复制对象把它作为参数传递给函数。 复制对象，并从函数返回这个对象。</p>
+<p>map key类型：必须支持&lt;运算符</p>
+<p>数据库缓存一致： 并发操作导致不一致，本质上修改数据库和删除缓存耦合在一起，使得其他操作有可能读出脏数据 解决方案：解耦，延迟双删：写-&gt;删缓存-&gt;修改数据库-&gt;延时-&gt;再次删缓存 二：内存队列：写修改数据库，将数据id放入队列，消费者线程消费即可</p>
+<p>浏览器： DNS解析（DNS缓存、OS缓存、路由器缓存、递归搜索）、尝试建立TCP连接、发送HTTP请求(get)、服务器处理请求（查询） 返回HTML，浏览器解析渲染、关闭TCP连接</p>
+<p>线性探测、拉链、再哈希、公共溢出区</p>
+<p>UDP对实时性要求高，数据准确性要求不是太高的场合、视频通话、QQ主要UDP为主，TCP为辅 ## Resource <a target="_blank" rel="noopener" href="https://en.cppreference.com/w/">cppreference</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="EIMadrigal WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="EIMadrigal Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>EIMadrigal
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://eimadrigal.github.io/2019/03/04/C%20&%20C++%20FAQ/" title="C&#x2F;C++ FAQ">https://eimadrigal.github.io/2019/03/04/C & C++ FAQ/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Language/" rel="tag"># Language</a>
+              <a href="/tags/Interview/" rel="tag"># Interview</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/02/28/INTERVIEW%20#0/" rel="prev" title="INTERVIEW">
+      <i class="fa fa-chevron-left"></i> INTERVIEW
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/06/INTERVIEW%20#1/" rel="next" title="INTERVIEW">
+      INTERVIEW <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E5%92%8C%E5%BC%95%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">指针和引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A9%BA%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">空类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.</span> <span class="nav-text">类型转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88"><span class="nav-number">4.</span> <span class="nav-text">智能指针</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="EIMadrigal"
+      src="/images/favicon.png">
+  <p class="site-author-name" itemprop="name">EIMadrigal</p>
+  <div class="site-description" itemprop="description">Hello World</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">171</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/EIMadrigal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:andrew.renj@gmail.com" title="E-Mail → mailto:andrew.renj@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.cnblogs.com/EIMadrigal" title="cnblogs → https:&#x2F;&#x2F;www.cnblogs.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-codiepie fa-fw"></i>cnblogs</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/EIMadrigal" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018-02 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EIMadrigal</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">Total views: <span id="busuanzi_value_site_pv"></span></span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">Total visitors: <span id="busuanzi_value_site_uv"></span></span>
+    <span class="post-meta-divider">|</span>
+
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);
+    var countOffset = 20000;
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset);
+            clearInterval(int);
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>
