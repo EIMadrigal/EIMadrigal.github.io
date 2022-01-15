@@ -40,7 +40,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2020111909030584.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20201119092357832.png">
 <meta property="article:published_time" content="2020-11-28T02:12:00.000Z">
-<meta property="article:modified_time" content="2022-01-15T14:38:17.484Z">
+<meta property="article:modified_time" content="2022-01-15T14:50:33.929Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Projects">
 <meta name="twitter:card" content="summary">
@@ -264,8 +264,8 @@
 
       
         <h2 id="basic-info">Basic Info</h2>
-<p>这是CMU 15-213的Malloc Lab，本来没打算做，被同学安利了一波~ 需要用C实现A Dynamic Storage Allocator，类似于<code>libc</code>中的<code>malloc/free/realloc</code>，整体来看难度较大。</p>
-<p>开始没什么思路，看了下CSAPP动态内存分配那一节。 内存的划分是这样子的： <img src="https://img-blog.csdnimg.cn/2020101116464245.png" alt="在这里插入图片描述" /> 运行时分配的虚拟内存主要是Heap，Allocator将堆视作不同size的块，Allocator有2种：</p>
+<p>这是CMU 15-213的Malloc Lab，本来没打算做，被同学安利了一波~需要用C语言实现一个动态内存分配器（Dynamic Storage Allocator），类似于<code>libc</code>中的<code>malloc/free/realloc</code>，整体来看难度较大。</p>
+<p>开始没什么思路，看了下CSAPP动态内存分配那一节，内存的划分是这样子的： <img src="https://img-blog.csdnimg.cn/2020101116464245.png" alt="在这里插入图片描述" style="zoom:80%;" /> 程序动态申请的内存主要是Heap段，Allocator将堆视作不同size的块，Allocator有2种：</p>
 <ul>
 <li>Explicit Allocators：需要应用程序手动释放申请的内存块，<code>malloc/free</code></li>
 <li>Implicit Allocators：就是garbage collectors</li>
@@ -273,13 +273,18 @@
 <p><code>malloc</code>返回的对齐地址取决于编译环境，32位是8的倍数，64位是16的倍数；<code>malloc</code>不会初始化申请的内存，<code>calloc</code>会初始化内存为0。 堆的增长是通过增加内核的<code>brk</code>指针来增加/减小堆： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">sbrk</span><span class="params">(<span class="keyword">intptr_t</span> incr)</span></span>;  <span class="comment">// success: old brk pointer; error: -1</span></span><br></pre></td></tr></table></figure> 如果<code>free</code>的是一个非法指针，那么结果未定义。</p>
 <p>主要实现在<code>mm.c</code>中，有4个主要函数：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mm_init</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">mm_malloc</span><span class="params">(<span class="keyword">size_t</span> size)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mm_free</span><span class="params">(<span class="keyword">void</span> *ptr)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">mm_realloc</span><span class="params">(<span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> size)</span></span>;</span><br></pre></td></tr></table></figure>
-<p><code>mm_init</code>负责初始化，比如分配初始的堆空间，成功返回0，失败返回-1； <code>mm_malloc</code>负责分配指定大小的空间，但是这个空间必须在已经初始化的堆里，不能与其他空间冲突；返回的指针按照8B对齐，与<code>libc</code>中实现的<code>malloc</code>类似，最后会有一个PK； <code>mm_realloc</code>负责：</p>
+<p><code>mm_init</code>负责初始化，比如分配初始的堆空间，成功返回0，失败返回-1；<code>mm_malloc</code>负责分配指定大小的空间，但是这个空间必须在已经初始化的堆里，不能与其他空间冲突；返回的指针按照8B对齐，与<code>libc</code>中实现的<code>malloc</code>类似，最后会有一个PK； <code>mm_realloc</code>负责：</p>
 <ul>
 <li><code>ptr</code>为<code>NULL</code>，等价于<code>void *mm_malloc(size)</code></li>
 <li>size=0，等价于<code>mm_free(ptr)</code></li>
 <li>如果<code>ptr</code>不为<code>NULL</code>，把<code>ptr</code>所指的内存块增加/减小到<code>size</code>个字节，返回新地址（可能与原来的块相同，也可能不同，取决于实现方式、原块里内碎片的数量以及请求<code>size</code>的大小），保持原块的内容不变（如果申请变大，剩下的空间是未初始化的；如果申请变小，那么只保留<code>size</code>大小的原块内容）</li>
 </ul>
-<p><code>memlib.c</code>为我们的分配器模拟了内存系统，可以调用里面的一些函数： <code>void *mem_sbrk(int incr)</code>: 将堆扩展<code>incr</code>B，参数是正整数，返回新分配的内存首地址； <code>void *mem_heap_lo(void)</code>: 返回堆的首地址； <code>void *mem_heap_hi(void)</code>: 返回堆的最后一个字节的地址； <code>size_t mem_heapsize(void)</code>: 返回当前堆的大小； <code>size_t mem_pagesize(void)</code>: 返回系统页面大小。</p>
+<p><code>memlib.c</code>为我们的分配器模拟了内存系统，可以调用里面的一些函数：</p>
+<p><code>void *mem_sbrk(int incr)</code>: 将堆扩展<code>incr</code>B，参数是正整数，返回新分配的内存首地址；</p>
+<p><code>void *mem_heap_lo(void)</code>: 返回堆的首地址；</p>
+<p><code>void *mem_heap_hi(void)</code>: 返回堆的最后一个字节的地址；</p>
+<p><code>size_t mem_heapsize(void)</code>: 返回当前堆的大小；</p>
+<p><code>size_t mem_pagesize(void)</code>: 返回系统页面大小。</p>
 <h2 id="implementation">Implementation</h2>
 <p>首先明确设计约束条件：</p>
 <ul>
@@ -293,7 +298,8 @@
 <li>最大化吞吐量</li>
 <li>最大化内存利用率</li>
 </ul>
-<p>吞吐量最大化：单位时间处理的请求，分配复杂度<span class="math inline">\(O(n)\)</span>，n是空闲块的数目，释放复杂度<span class="math inline">\(O(1)\)</span>； 内存利用率最大化：用peak utilization衡量，假设有<span class="math inline">\(n\)</span>个请求：<span class="math inline">\(R_0, R_1, ... R_k, ..., R_{n-1}\)</span>，在<span class="math inline">\(R_k\)</span>完成后，将aggregate payload(申请的字节总数)记作<span class="math inline">\(P_k\)</span>，当前的堆的大小记作<span class="math inline">\(H_k\)</span>(单调不减)，单调不减的条件可以通过使<span class="math inline">\(H_k\)</span>为high-water mark来松弛，这样堆就可以上下都增长。那么peak utilization为： <span class="math display">\[U_k=\frac{max_{i\leq k}P_i}{H_k}\]</span> 我们的目标是最大化<span class="math inline">\(U_{n-1}\)</span>。</p>
+<p>吞吐量最大化：单位时间处理的请求，分配复杂度<span class="math inline">\(O(n)\)</span>，n是空闲块的数目，释放复杂度<span class="math inline">\(O(1)\)</span>；</p>
+<p>内存利用率最大化：用peak utilization衡量，假设有<span class="math inline">\(n\)</span>个请求：<span class="math inline">\(R_0, R_1, ... R_k, ..., R_{n-1}\)</span>，在<span class="math inline">\(R_k\)</span>完成后，将aggregate payload(申请的字节总数)记作<span class="math inline">\(P_k\)</span>，当前的堆的大小记作<span class="math inline">\(H_k\)</span>(单调不减)，单调不减的条件可以通过使<span class="math inline">\(H_k\)</span>为high-water mark来松弛，这样堆就可以上下都增长。那么peak utilization为： <span class="math display">\[U_k=\frac{max_{i\leq k}P_i}{H_k}\]</span> 我们的目标是最大化<span class="math inline">\(U_{n-1}\)</span>。</p>
 <p>这两目标是需要trade-off的，吞吐量越大，意味着需要减小操作的时间，往往就不能花费时间去处理碎片；内存利用率越大，意味着要精心处理分配和回收的块，自然需要更多的时间。</p>
 <p>具体来说，有以下几点： <img src="https://img-blog.csdnimg.cn/20201023215211206.png" alt="在这里插入图片描述" /> 这些关键细节的设计非常重要，再BB一次：程序架构、数据结构和接口设计是一门艺术！</p>
 <ul>
