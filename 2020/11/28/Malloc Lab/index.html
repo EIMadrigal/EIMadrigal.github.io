@@ -40,7 +40,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2020111909030584.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20201119092357832.png">
 <meta property="article:published_time" content="2020-11-28T02:12:00.000Z">
-<meta property="article:modified_time" content="2022-01-15T14:33:27.455Z">
+<meta property="article:modified_time" content="2022-01-15T14:38:17.484Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Projects">
 <meta name="twitter:card" content="summary">
@@ -279,7 +279,9 @@
 <li>size=0，等价于<code>mm_free(ptr)</code></li>
 <li>如果<code>ptr</code>不为<code>NULL</code>，把<code>ptr</code>所指的内存块增加/减小到<code>size</code>个字节，返回新地址（可能与原来的块相同，也可能不同，取决于实现方式、原块里内碎片的数量以及请求<code>size</code>的大小），保持原块的内容不变（如果申请变大，剩下的空间是未初始化的；如果申请变小，那么只保留<code>size</code>大小的原块内容）</li>
 </ul>
-<p><code>memlib.c</code>为我们的分配器模拟了内存系统，可以调用里面的一些函数： <code>void *mem_sbrk(int incr)</code>: 将堆扩展<code>incr</code>B，参数是正整数，返回新分配的内存首地址； <code>void *mem_heap_lo(void)</code>: 返回堆的首地址； <code>void *mem_heap_hi(void)</code>: 返回堆的最后一个字节的地址； <code>size_t mem_heapsize(void)</code>: 返回当前堆的大小； <code>size_t mem_pagesize(void)</code>: 返回系统页面大小。 ## Implementation 首先明确设计约束条件：</p>
+<p><code>memlib.c</code>为我们的分配器模拟了内存系统，可以调用里面的一些函数： <code>void *mem_sbrk(int incr)</code>: 将堆扩展<code>incr</code>B，参数是正整数，返回新分配的内存首地址； <code>void *mem_heap_lo(void)</code>: 返回堆的首地址； <code>void *mem_heap_hi(void)</code>: 返回堆的最后一个字节的地址； <code>size_t mem_heapsize(void)</code>: 返回当前堆的大小； <code>size_t mem_pagesize(void)</code>: 返回系统页面大小。</p>
+<h2 id="implementation">Implementation</h2>
+<p>首先明确设计约束条件：</p>
 <ul>
 <li>可以处理任意的请求释放序列</li>
 <li>请求需要被立即响应</li>
@@ -307,7 +309,9 @@
 <p>那么现在整个堆变成了这样： <img src="https://img-blog.csdnimg.cn/20201016204303577.png" alt="在这里插入图片描述" /> 这里的<code>heap_listp</code>指向Prologue block的中间是做了一些小优化，方便直接定位到下一块的数据位置。</p>
 <p>这里的实现非常tricky和subtle，一开始只申请了4words，unused(1)+Prologue(2)+Epilogue(1)，后续的<code>extend_heap</code>申请一个空闲块后，将原来的Epilogue作为空闲块的header，空闲块的最后一个word变为新的Epilogue。</p>
 <p>由于对齐要求（Headers在非对齐位置，Payloads对齐），分配器应该有一个minimum block size，即使只请求了1B，也要分配minimum block size，这里是16B。</p>
-<p>写代码时先实现并测试<code>malloc</code>和<code>free</code>，如果能正确并且高效执行，再去实现<code>realloc</code>。 ## Evaluation 性能主要考虑2方面因素：</p>
+<p>写代码时先实现并测试<code>malloc</code>和<code>free</code>，如果能正确并且高效执行，再去实现<code>realloc</code>。</p>
+<h2 id="evaluation">Evaluation</h2>
+<p>性能主要考虑2方面因素：</p>
 <ul>
 <li>空间利用率<span class="math inline">\(U\)</span>：peak ratio即评测程序申请的总内存（<code>mm_malloc/mm_realloc</code>但是还没有<code>mm_free</code>）与分配器使用的堆容量的比值，需要用好的策略减小碎片，使得该值接近1；</li>
 <li>吞吐量<span class="math inline">\(T\)</span>：每秒完成的操作数量</li>
@@ -458,7 +462,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#basic-info"><span class="nav-number">1.</span> <span class="nav-text">Basic Info</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#basic-info"><span class="nav-number">1.</span> <span class="nav-text">Basic Info</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#implementation"><span class="nav-number">2.</span> <span class="nav-text">Implementation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#evaluation"><span class="nav-number">3.</span> <span class="nav-text">Evaluation</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
