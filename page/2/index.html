@@ -552,69 +552,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/07/26/767%20Reorganize%20String/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/07/26/767%20Reorganize%20String/" class="post-title-link" itemprop="url">767 Reorganize String</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-07-26 07:21:00" itemprop="dateCreated datePublished" datetime="2021-07-26T07:21:00+08:00">2021-07-26</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/reorganize-string/" title="题目链接">题目链接</a> ## 题意 给定字符串，重排其中的字符使得任意两个相邻位置的字母不同。 样例：s="aab"，输出"aba" ## 分析 最开始的想法是贪心+双指针，指针i从前向后遍历，指针j从i+1开始，如果s[i]==s[j]，j不断向后遍历找到第一个与s[i]不同的字母s[k]，将s[k]与s[j]交换。WA在了"baaba"，期待"ababa"，输出""，所以这种贪心策略显然是错的。</p>
-<p>接着就想到需要考虑字符的出现频率，先按频率高低排序再去按照上述贪心，WA在了"aabbcc"，期待"abacbc"，输出""，很显然这种贪心策略本身就是错的。</p>
-<p>接着就想到先安排出现次数最多的，如果当前要安排的与前一个字符相同，就选择出现次数第二多的，这样交替下去，可以写出如下代码： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def reorganizeString(self, s: str) -&gt; str:</span><br><span class="line">        if len(s) == 1:</span><br><span class="line">            return s</span><br><span class="line"></span><br><span class="line">        from collections import Counter</span><br><span class="line">        dic = Counter(s)</span><br><span class="line"></span><br><span class="line">        ans = &quot;&quot;</span><br><span class="line">        prev = &quot;&quot;</span><br><span class="line">        for i in range(0, len(s)):</span><br><span class="line">            cnts = list(dic.items())</span><br><span class="line">            cnts = sorted(cnts, key=lambda x:x[1], reverse=True)</span><br><span class="line">            if prev == cnts[0][0]:</span><br><span class="line">                if len(cnts) &lt;= 1 or cnts[1][1] == 0:</span><br><span class="line">                    return &quot;&quot;</span><br><span class="line">                ans += cnts[1][0]</span><br><span class="line">                dic[cnts[1][0]] -= 1</span><br><span class="line">                prev = cnts[1][0]</span><br><span class="line">            else:</span><br><span class="line">                ans += cnts[0][0]</span><br><span class="line">                dic[cnts[0][0]] -= 1</span><br><span class="line">                prev = cnts[0][0]</span><br><span class="line">        return ans</span><br><span class="line"></span><br></pre></td></tr></table></figure> 时间复杂度<span class="math inline">\(O(n^2lgn)\)</span>，空间<span class="math inline">\(O(n)\)</span>。</p>
-<p>因为涉及到出现次数最多的问题，可以考虑max heap。每次迭代时，从堆里弹出堆顶元素（意味着下次迭代该元素不会考虑）加入res，如果上一次迭代加入res的元素还有剩余，就将其重新加入heap，意味着下次迭代需要考虑该元素。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def reorganizeString(self, s: str) -&gt; str:</span><br><span class="line">        ans, cnt = [], Counter(s)  # decent order</span><br><span class="line">        max_heap = [(-value, key) for key, value in cnt.items()]</span><br><span class="line">        heapq.heapify(max_heap)</span><br><span class="line">        prev_ch, prev_cnt = &#x27;&#x27;, 0</span><br><span class="line">        while max_heap:</span><br><span class="line">            cnt, ch = heapq.heappop(max_heap)</span><br><span class="line">            ans.append(ch)</span><br><span class="line">            if prev_cnt &lt; 0:</span><br><span class="line">                heapq.heappush(max_heap, (prev_cnt, prev_ch))</span><br><span class="line">            cnt += 1</span><br><span class="line">            prev_ch, prev_cnt = ch, cnt</span><br><span class="line">        if len(s) != len(ans):</span><br><span class="line">            return &quot;&quot;</span><br><span class="line">        return &#x27;&#x27;.join(ans)</span><br></pre></td></tr></table></figure> 时间复杂度<span class="math inline">\(O(n)\)</span>，空间<span class="math inline">\(O(n)\)</span>。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/07/21/CS231n%20Assignment/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -802,6 +739,82 @@ L=\sum_i(-s_{y_i}+log\sum_j e^{s_j})\]</span> 根据链式法则+维度相容：
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, val=0, next=None):</span></span><br><span class="line"><span class="comment">#         self.val = val</span></span><br><span class="line"><span class="comment">#         self.next = next</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">removeZeroSumSublists</span>(<span class="params">self, head: ListNode</span>) -&gt; ListNode:</span></span><br><span class="line">        dummy = ListNode(<span class="number">0</span>, head)</span><br><span class="line">        prefix_sum = <span class="number">0</span></span><br><span class="line">        hashtable = &#123;<span class="number">0</span>:dummy&#125;</span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            prefix_sum += head.val</span><br><span class="line">            hashtable[prefix_sum] = head</span><br><span class="line">            head = head.<span class="built_in">next</span></span><br><span class="line">            </span><br><span class="line">        prefix_sum = <span class="number">0</span></span><br><span class="line">        head = dummy</span><br><span class="line">        <span class="keyword">while</span> head:</span><br><span class="line">            prefix_sum += head.val</span><br><span class="line">            head.<span class="built_in">next</span> = hashtable[prefix_sum].<span class="built_in">next</span></span><br><span class="line">            head = head.<span class="built_in">next</span></span><br><span class="line">        <span class="keyword">return</span> dummy.<span class="built_in">next</span></span><br></pre></td></tr></table></figure>
 <p>时间复杂度<span class="math inline">\(O(n)\)</span>，空间复杂度<span class="math inline">\(O(n)\)</span>。</p>
 
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/07/16/LeetCode%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/07/16/LeetCode%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8A/" class="post-title-link" itemprop="url">LeetCode解题报告</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-07-16 15:21:00" itemprop="dateCreated datePublished" datetime="2021-07-16T15:21:00+08:00">2021-07-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>部分题目分析</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/07/16/LeetCode%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8A/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
