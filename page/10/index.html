@@ -190,6 +190,81 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/26/Union-Find/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/26/Union-Find/" class="post-title-link" itemprop="url">Union-Find</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-01-26 09:50:00" itemprop="dateCreated datePublished" datetime="2020-01-26T09:50:00+08:00">2020-01-26</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="motivation">Motivation</h2>
+<p>并查集是一种用来维护集合的数据结构，底层通过<code>parent</code>数组实现，每个集合只有唯一的根结点，并将其作为该集合的标志。</p>
+<p>并查集有两个基本操作： 1. 并：合并两集合； 2. 查：查询某元素的父结点。</p>
+<p>初始化所有元素都是一个独立的集合： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> parent[MAXN];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    parent[i] = i;    <span class="comment">// i元素的父结点初始化为自己，也可以初始化为-1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="合并与查找">合并与查找</h2>
+<ul>
+<li>Find 查找某个元素属于哪个集合（如果单独成集就返回自己），返回该集合的代表元素（即parent为-1的那个元素/parent为自身的那个元素）。 查找的同时可以通过<strong>路径压缩</strong>来将均摊复杂度降低为<span class="math inline">\(O(1)\)</span>。查找某个结点时，将其经过的全部结点直接连到父结点，这样下次查询时次数就会减少。</li>
+<li>Union 合并时可以遵循<strong>按秩合并</strong>原则，将秩小的树合并到秩大的树，降低路径压缩时的开销。 将两个不同的集合合并为一个集合，只要将其中一个集合的根结点的<code>parent</code>指向另一个集合的根结点即可。 对于属于同一个集合的两个元素的合并没有意义，所以我们一般只对两个不同的集合进行合并，这样避免同一个集合成环，因此并查集的每个集合都是一棵树。</li>
+</ul>
+<p>并查集可以将均摊复杂度变为<span class="math inline">\(O(1)\)</span>，但如果涉及到删除元素、计算每个集合元素个数等操作时，实现会有些复杂； 好吧！计算每个集合元素个数以及统计有多少个集合并不复杂，计算元素个数可以开一个数组cnt初始全为1，每次merge都更新cnt即可，cnt[i]即为根为i的集合包含的元素个数 统计多少个集合遍历所有元素，遇到不同的根结点就更新ans。</p>
+<p><a target="_blank" rel="noopener" href="https://www.zxpblog.cn/2020/02/17/%E9%AB%98%E7%BA%A7%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E5%AD%97%E5%85%B8%E6%A0%91%E5%92%8C%E5%B9%B6%E6%9F%A5%E9%9B%86%E5%92%8C%E7%BA%BF%E6%AE%B5%E6%A0%91/">最原始的并查集</a>虽然复杂度稍差，但是可以完成的功能比较多。 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/12693959.html">原始并查集实现</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">unionFind</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; parents_;</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; ranks_;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">unionFind</span>(<span class="keyword">int</span> n) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;++i) &#123;</span><br><span class="line">            parents_.<span class="built_in">emplace_back</span>(i);</span><br><span class="line">            ranks_.<span class="built_in">emplace_back</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// get the root of x</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">Find</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// path compression</span></span><br><span class="line">        <span class="keyword">if</span>(x != parents_[x]) &#123;</span><br><span class="line">            parents_[x] = <span class="built_in">Find</span>(parents_[x]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> parents_[x];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// merge set u and v</span></span><br><span class="line">    <span class="comment">// false -&gt; u and v are already in one set</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">Union</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> rootu = <span class="built_in">Find</span>(u);</span><br><span class="line">        <span class="keyword">int</span> rootv = <span class="built_in">Find</span>(v);</span><br><span class="line">        <span class="keyword">if</span>(rootu == rootv)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// merge low rank to high rank</span></span><br><span class="line">        <span class="keyword">if</span>(ranks_[rootu] &lt; ranks_[rootv]) &#123;</span><br><span class="line">            parents_[rootu] = rootv;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(ranks_[rootv] &lt; ranks_[rootu]) &#123;</span><br><span class="line">            parents_[rootv] = rootu;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            parents_[rootu] = rootv;</span><br><span class="line">            ++ranks_[rootv];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>一道例题：<a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1551">亲戚</a> 不做路径压缩可以求<a target="_blank" rel="noopener" href="https://www.nowcoder.com/profile/135924065/codeBookDetail?submissionId=83987857">最小环长</a></p>
+<p>检测无向图是否有环：对于图中每条边（类似kruskal），不断将结点通过并查集合并，如果在加入边(i,j)前，i和j已经同属一个集合，意味着i和j必然有某条其他路径连通，那么这条路径和该边一起必然构成环。 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; g;  <span class="comment">// edge list</span></span><br><span class="line">g.<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(<span class="number">0</span>, <span class="number">1</span>));</span><br><span class="line">g.<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(<span class="number">0</span>, <span class="number">2</span>));</span><br><span class="line">g.<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">has_cycle</span><span class="params">(vector&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&amp; g)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; g.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> rootx = <span class="built_in">Find</span>(g[i].first);</span><br><span class="line">        <span class="keyword">int</span> rooty = <span class="built_in">Find</span>(g[i].second);</span><br><span class="line">        <span class="keyword">if</span> (rootx == rooty) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">Union</span>(rootx, rooty);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="种类并查集todo">种类并查集（TODO）</h2>
+<p>普通并查集的特点就是只有一个集合，比如上述例题只有亲戚一个集合。如果涉及到多个集合，就需要种类并查集。 假如有n个集合，常用的手法就是开一个n倍大小的并查集。 <a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2024">食物链</a> <a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1892">团伙</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/26/Linked%20List-3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -514,7 +589,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-01-11 07:17:00" itemprop="dateCreated datePublished" datetime="2020-01-11T07:17:00+08:00">2020-01-11</time>
+              <time title="Created: 2020-01-11 15:17:00" itemprop="dateCreated datePublished" datetime="2020-01-11T15:17:00+08:00">2020-01-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -528,39 +612,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="基本型">基本型</h2>
-<p>对于一个<strong>没有重复元素</strong>的<strong>有序</strong>数组，查找某个元素，存在返回index，否则返回-1。 二分查找有4个地方容易混淆： 1. lr初始化，即区间定义。可以是[l,r]，也可以是[l,r) 1. while的循环条件：可以是小于/小于等于 1. lr更新：可以是mid/mid+1/mid-1 1. 返回值：可以是l/r/mid/其他值</p>
-<p>如果区间初始化为左闭右闭，循环条件就应该是小于等于，因为等于时待检查区间还有1个元素，需要继续；并且r的更新应该是mid-1，因为已经确定mid不是target且右边界是闭的。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">        l, r = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> l &lt;= r:</span><br><span class="line">            m = l + (r - l) // <span class="number">2</span></span><br><span class="line">            <span class="keyword">if</span> nums[m] == target:</span><br><span class="line">                <span class="keyword">return</span> m</span><br><span class="line">            <span class="keyword">elif</span> nums[m] &gt; target:</span><br><span class="line">                r = m - <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                l = m + <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
-<p>如果区间定义为左闭右开，此时循环条件小于，等于时表示区间为空；当mid&gt;target时r应该为mid，因为mid不是target且右边界开，即下一次不会考虑mid。这种情况如果没找到最终必然有l==r</p>
-<p>我最常用的板子是左闭右开<code>[l, r)</code>：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// version 1</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">biSearch</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> l = <span class="number">0</span>, r = nums.<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span> + <span class="number">1</span>;  <span class="comment">// avoid dead loop</span></span><br><span class="line">        <span class="keyword">if</span> (target == nums[mid])</span><br><span class="line">            <span class="keyword">return</span> mid;</span><br><span class="line">        <span class="keyword">if</span> (target &gt; nums[mid])</span><br><span class="line">            l = mid;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            r = mid - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;   <span class="comment">// not found</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// version 2</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">biSearch</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> l = <span class="number">0</span>, r = nums.<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (target == nums[mid])</span><br><span class="line">            <span class="keyword">return</span> mid;</span><br><span class="line">        <span class="keyword">if</span> (target &gt; nums[mid])</span><br><span class="line">            l = mid + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            r = mid;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;   <span class="comment">// not found</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>稍微扩展一些的题目有<code>lower_bound()</code>和<code>upper_bound()</code>，都是数组中有<strong>重复元素</strong>： 对于<code>lower_bound()</code>，即查找满足<span class="math inline">\(x&gt;=target\)</span>的最小<span class="math inline">\(x\)</span>的index： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">biSearch</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> l = <span class="number">0</span>, r = nums.<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (target &gt; nums[mid])</span><br><span class="line">            l = mid + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            r = mid;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 可变形为查找最后一个小于<span class="math inline">\(target\)</span>的数：即<span class="math inline">\(l-1\)</span>。 对于<code>upper_bound()</code>，即查找满足<span class="math inline">\(x&gt;target\)</span>的最小<span class="math inline">\(x\)</span>的index： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">biSearch</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> l = <span class="number">0</span>, r = nums.<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (target &gt;= nums[mid])</span><br><span class="line">            l = mid + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            r = mid;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 可变形为查找最后一个小于等于<span class="math inline">\(target\)</span>的数：即<span class="math inline">\(l-1\)</span>。</p>
-<p>Leetcode 704/35/34/69/367</p>
-<h2 id="rotated-sorted-array"><a target="_blank" rel="noopener" href="https://leetcode.com/problems/search-in-rotated-sorted-array/">Rotated Sorted Array</a></h2>
-<p>Find the index of the target if it is in the array, else return -1. All values of the array are <strong>unique</strong>.</p>
-<p>We can find that at least half of the elements are sorted, so we should find out whether it's on the left or the right.</p>
-<p>Let's see an example: [0,1,2,3]{all sorted}, [3,0,1,2]{right}, [2,3,0,1]{left or right}, [1,2,3,0]{left}. Another example: [0,1,2,3,4]{all sorted}, [4,0,1,2,3]{right}, [3,4,0,1,2]{right}, [2,3,4,0,1]{left}, [1,2,3,4,0]{left}. It is important to know that the sorted side is <strong>at least half of the array</strong> (longer). So the mid is in this side.</p>
-<p>We can compare nums[mid] with nums[left] (or nums[right]) to decide which side is sorted. If <code>nums[mid]&gt;nums[left]</code>, then left half is sorted, else right is sorted.</p>
-<p>The second step is to compare the target with nums[mid] to narrow down the range.</p>
-<ul>
-<li>Left half is sorted. If target&gt;nums[mid], it must lie in the right interval. So we can make left pointer forward left = mid + 1. <img src="https://img-blog.csdnimg.cn/20210303220721888.png" alt="在这里插入图片描述" /> If target&lt;nums[mid], there exists 2 situations: <img src="https://img-blog.csdnimg.cn/20210303214903684.png" alt="在这里插入图片描述" /> The first graph means target is less than mid but bigger than or equal to left, we move the right pointer toward left right = mid. The second graph means target is less than left, thus we move the left pointer towards right left = mid + 1.</li>
-</ul>
-<p>Finally if nums[mid]==nums[left], it means that left and mid are pointing to the same element due to the distinct values. In this case right must be mid or mid + 1. Where is the target? It must be on the right side of mid (actually nums[right]) or it do not exist. So we can move the left pointer by 1 to see nums[right] is equal to target or not.</p>
-<ul>
-<li>Right half is sorted. You can analysis this by yourself.</li>
-</ul>
-<p>We can write the following code based on the previous discussion:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">        l, r = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> l &lt;= r:</span><br><span class="line">            m = l + (r - l) // <span class="number">2</span></span><br><span class="line">            <span class="keyword">if</span> target == nums[m]:</span><br><span class="line">                <span class="keyword">return</span> m</span><br><span class="line">            <span class="keyword">if</span> nums[m] &gt; nums[l]: <span class="comment"># left side is sorted</span></span><br><span class="line">                <span class="keyword">if</span> target &gt; nums[m]:</span><br><span class="line">                    l = m + <span class="number">1</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="keyword">if</span> target &gt;= nums[l]:</span><br><span class="line">                        r = m - <span class="number">1</span></span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        l = m + <span class="number">1</span></span><br><span class="line">            <span class="keyword">elif</span> nums[m] &lt; nums[l]: <span class="comment"># right side is sorted</span></span><br><span class="line">                <span class="keyword">if</span> target &lt; nums[m]:</span><br><span class="line">                    r = m - <span class="number">1</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="keyword">if</span> target &lt;= nums[r]:</span><br><span class="line">                        l = m + <span class="number">1</span></span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        r = m - <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                l += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
-<h2 id="rotated-sorted-array-ii"><a target="_blank" rel="noopener" href="https://leetcode.com/problems/search-in-rotated-sorted-array-ii/">Rotated Sorted Array II</a></h2>
-<p>It is the same as the last one except that the array may contains <strong>duplicates</strong>. And you do not need to find the index but return true or false.</p>
-<p>The code is the same except that you should return T or F.</p>
-<p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/">Find Minimum in Rotated Sorted Array</a> shares the same idea:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">findMin</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">        l, r = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">        ans = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">        <span class="keyword">while</span> l &lt;= r:</span><br><span class="line">            m = (l + r) &gt;&gt; <span class="number">1</span></span><br><span class="line">            ans = <span class="built_in">min</span>(ans, nums[m])</span><br><span class="line">            <span class="keyword">if</span> nums[m] &gt; nums[l]:</span><br><span class="line">                ans = <span class="built_in">min</span>(ans, nums[l])</span><br><span class="line">                l = m + <span class="number">1</span></span><br><span class="line">            <span class="keyword">elif</span> nums[m] &lt; nums[l]:</span><br><span class="line">                ans = <span class="built_in">min</span>(ans, nums[m])</span><br><span class="line">                r = m - <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                l += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
-<h2 id="rotated-sorted-array-yyds"><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/search-rotate-array-lcci/">Rotated Sorted Array yyds</a></h2>
-<p>In this case you should return the index of the target in a duplicated array. If you do not know the idea above, this will be a little harder to solve since there are many corner cases.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">search</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>], target: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span></span><br><span class="line">        l, r = <span class="number">0</span>, <span class="built_in">len</span>(nums) - <span class="number">1</span></span><br><span class="line">        ans = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">        <span class="keyword">while</span> l &lt;= r:</span><br><span class="line">            m = l + (r - l) // <span class="number">2</span></span><br><span class="line">            <span class="keyword">if</span> target == nums[m]:</span><br><span class="line">                ans = <span class="built_in">min</span>(ans, m)</span><br><span class="line">                r = m - <span class="number">1</span> <span class="comment"># do not return since there might be smaller index</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">if</span> nums[m] &gt; nums[l]: <span class="comment"># left side is sorted</span></span><br><span class="line">                <span class="keyword">if</span> target &gt; nums[m]:</span><br><span class="line">                    l = m + <span class="number">1</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="keyword">if</span> target &gt;= nums[l]:</span><br><span class="line">                        r = m - <span class="number">1</span></span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        l = m + <span class="number">1</span></span><br><span class="line">            <span class="keyword">elif</span> nums[m] &lt; nums[l]: <span class="comment"># right side is sorted</span></span><br><span class="line">                <span class="keyword">if</span> target &lt; nums[m]:</span><br><span class="line">                    r = m - <span class="number">1</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="keyword">if</span> target &lt; nums[r]:</span><br><span class="line">                        l = m + <span class="number">1</span></span><br><span class="line">                    <span class="keyword">elif</span> target &gt; nums[r]:</span><br><span class="line">                        r = m - <span class="number">1</span></span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        <span class="keyword">if</span> target == nums[l]:</span><br><span class="line">                            ans = <span class="built_in">min</span>(ans, l)</span><br><span class="line">                            <span class="keyword">break</span></span><br><span class="line">                        <span class="keyword">else</span>:</span><br><span class="line">                            l = m + <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                l += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span> <span class="keyword">if</span> ans == <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="keyword">else</span> ans</span><br></pre></td></tr></table></figure>
-
+          <p>二分查找</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/01/11/Binary%20Search/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -948,86 +1008,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/01/Pointers%20and%20Memory/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/01/01/Pointers%20and%20Memory/" class="post-title-link" itemprop="url">Pointers and Memory</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-01-01 15:07:00" itemprop="dateCreated datePublished" datetime="2020-01-01T15:07:00+08:00">2020-01-01</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><em>Stanford CS Education Library #102</em> ## Basic Pointers 指针主要有两个用途：使不同的代码段共享信息、方便链表（树）的处理。 指针示意图： <img src="https://img-blog.csdnimg.cn/2019041619200938.png" alt="在这里插入图片描述" /> <code>dereference</code>操作会根据指针的值去找到它的<code>pointee</code>。 <code>NULL</code>是一个特殊的指针值（一般是地址0），表示这个指针不指向任何<code>pointee</code>。 <img src="https://img-blog.csdnimg.cn/20190416193109659.png" alt="在这里插入图片描述" /> 指针的赋值会使得两个指针指向相同的<code>pointee</code>，但<code>pointee</code>本身不会改变： <img src="https://img-blog.csdnimg.cn/20190416192708547.png" alt="在这里插入图片描述" /> 传指针vs传值： <img src="https://img-blog.csdnimg.cn/20190416193445969.png" alt="在这里插入图片描述" /> 定义一个指针后，这个指针是没有被初始化的： <img src="https://img-blog.csdnimg.cn/2019041619372662.png" alt="在这里插入图片描述" /> 这时候如果进行<code>dereference</code>操作会发生Runtime Error. 对于Java、LISP等语言，当定义一个指针时，系统会将其设置为<code>NULL</code>，并且会在<code>dereference</code>操作时检查其值，这也是Java比较慢的原因之一。 <img src="https://img-blog.csdnimg.cn/20190416194404553.png" alt="在这里插入图片描述" /> 一个比较典型的指针错误：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BadPointer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>* p;  <span class="comment">//allocate the pointer, but not the pointee</span></span><br><span class="line">    *p = <span class="number">42</span>; <span class="comment">//serious RE</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当执行<code>*p</code>时： <img src="https://img-blog.csdnimg.cn/20190416195104100.png" alt="在这里插入图片描述" /></p>
-<h2 id="local-memory">Local Memory</h2>
-<p>函数开始运行时，会为局部变量分配内存，结束运行会回收内存。 看一个错误的例子：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//TAB -- The Ampersand Bug function</span></span><br><span class="line"><span class="function"><span class="keyword">int</span>* <span class="title">TAB</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> temp;</span><br><span class="line">    <span class="keyword">return</span> (&amp;temp);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Victim</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>* ptr;</span><br><span class="line">    ptr = TAB();</span><br><span class="line">    *ptr = <span class="number">42</span>;    <span class="comment">//The pointee was local to TAB</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>问题在于<code>TAB()</code>返回了一个局部变量的地址，但这个局部变量的空间已经被回收，<code>ptr</code>指针没有<code>pointee</code>。</p>
-<h2 id="reference-parameters">Reference Parameters</h2>
-<p>传值：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">B</span><span class="params">(<span class="keyword">int</span> worth)</span> </span>&#123;</span><br><span class="line">    worth++;</span><br><span class="line">    <span class="comment">// T2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">A</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> netWorth = <span class="number">55</span>;  <span class="comment">//T1</span></span><br><span class="line">    B(netWorth);</span><br><span class="line">    <span class="comment">// T3 -- B() did not change netWorth</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20190416203356234.png" alt="在这里插入图片描述" /> 传指针：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">B</span><span class="params">(<span class="keyword">int</span>* worthRef)</span> </span>&#123;</span><br><span class="line">    (*worthRef)++;</span><br><span class="line">    <span class="comment">// T2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">A</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> netWorth = <span class="number">55</span>;  <span class="comment">//T1</span></span><br><span class="line">    B(&amp;netWorth);</span><br><span class="line">    <span class="comment">// T3</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20190416203939385.png" alt="在这里插入图片描述" /> 传指针在c++中可以通过<strong>传引用</strong>的方式实现： <img src="https://img-blog.csdnimg.cn/20190416205349526.png" alt="在这里插入图片描述" /></p>
-<h2 id="heap-memory">Heap Memory</h2>
-<p>分配示意图： <img src="https://img-blog.csdnimg.cn/20190416205821650.png" alt="在这里插入图片描述" /> 释放示意图： <img src="https://img-blog.csdnimg.cn/20190416210059909.png" alt="在这里插入图片描述" /> 释放后，指针虽然还在，但却不可以在使用。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//size以字节为单位，分配成功返回指针，失败返回NULL</span></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">malloc</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">long</span> size)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//不需要size，因为heap manager之前已经记录过</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span>* heapBlockPointer)</span></span>;</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20190416211219354.png" alt="在这里插入图片描述" /> <img src="https://img-blog.csdnimg.cn/20190416211242340.png" alt="在这里插入图片描述" /> 一个<code>StringCopy()</code>的例子： <img src="https://img-blog.csdnimg.cn/20190416211900707.png" alt="在这里插入图片描述" /> 对于分配的堆内存，只有一个负责释放的，要么是<code>caller</code>，要么是<code>callee</code>： <img src="https://img-blog.csdnimg.cn/20190416212610387.png" alt="在这里插入图片描述" /></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/9/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/11/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/9/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="extend next" rel="next" href="/page/11/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1095,7 +1079,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">169</span>
+          <span class="site-state-item-count">171</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

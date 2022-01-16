@@ -28,10 +28,10 @@
 <meta property="og:description" content="部分题目分析">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-07-16T07:21:00.000Z">
-<meta property="article:modified_time" content="2022-01-15T13:19:48.227Z">
+<meta property="article:modified_time" content="2022-01-16T14:17:58.047Z">
 <meta property="article:author" content="EIMadrigal">
-<meta property="article:tag" content="Interview">
 <meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="Interview">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2021/07/16/LeetCode%E8%A7%A3%E9%A2%98%E6%8A%A5%E5%91%8A/">
@@ -269,15 +269,22 @@
 </ul>
 <p>即递归函数<code>dfs(i,j)</code>返回<code>s[i:]</code>与<code>p[j:]</code>是否完全匹配，暴力做法存在着很多重复计算，因此用哈希表存储已经求得的结果提高效率。</p>
 <p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=HAA8mgxlov8">Top-Down Memoization - Leetcode 10</a>讲得比较透彻。</p>
+<h2 id="同时运行n台电脑的最长时间">2141 同时运行N台电脑的最长时间</h2>
+<p>有n台电脑和一个电池数组<code>batteries</code>，第i个电池可以让一台电脑运行<code>batteries[i]</code>分钟，求n台电脑同时运行多久。</p>
+<p>我第一次看到的时候就想到了优先队列，时间最久即每次选n个最大的电池<code>a=[]</code>，然后可以支撑<code>min(a)</code>分钟，直到<code>batteries</code>中正数个数小于n停止。</p>
+<p>但发现连样例都过不了，比如<code>n=2,batteries=[3,3,3]</code>，第一次选2个最大的支撑3min，<code>batteries=[0,0,3]</code>，无法同时继续，但答案是错的。贪心策略不太对，每次选最大的n个是对的，但是不一定要支撑<code>min(a)</code>分钟。</p>
+<p>最后发现二分答案是反着思考的：虽然求的是最长时间，先假设n台电脑可以同时运行t分钟，一台电池最多能供电t分钟，所有电池的可供电时间总和为S = min(sum(batteries), t*len(batteries))，检查这些时间是否能给n台电脑供电S / t &gt;= n</p>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-running-time-of-n-computers/solution/er-fen-da-an-de-checkhan-shu-de-si-kao-f-g8no/">这张图很形象</a> 对于当前枚举的时间P，共有k台电脑。需要看电池能否填满该矩阵，同一行不能有相同颜色。</p>
+<p>对于大于等于P的电池，只能利用P，让其一直供应一台电脑即可，即填充一列，剩余电量只能丢弃，因为该电池不能同时供应2台电脑。对于小于P的，让其供应一台电脑直到电量耗尽，注意这些小于P的电池不可能出现同时供应2台电脑的情况，对于小于P的电池，首先拿一个填充一列，当然填不满，接着拿第二个继续填充，如果该列满了就填下一列，以此类推，由于小于P的电池最多填充P - 1行，因此不会出现相同颜色。（最极端的情况就是：某种颜色的电量为1，只能填1行，第二种颜色最多P-1行，因此下一列不会重复，如果第二种颜色可以填P行，那么下一列才会重复）。</p>
+<p>因此判断P是否合法只需要求所有电池里：如果电量大于等于P，sum += P，否则将剩余所有的电量小于P的电量全部加到sum起来，判断sum是否大于等于P * K。</p>
+<p>二分法一般的题目就是求最大的最小或最小的最大，假设要求的是ans，那么从ans=0开始判断是否满足要求，然后判断ans=1,2,...直到上界。例如本题就是求最小里面的最大，比如0,1,2,...都满足要求，需要在其中挑一个最大的。</p>
 <h2 id="section">767</h2>
-<p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/reorganize-string/" title="题目链接">题目链接</a></p>
-<h2 id="题意">题意</h2>
-<p>给定字符串，重排其中的字符使得任意两个相邻位置的字母不同。 样例：s="aab"，输出"aba" ## 分析 最开始的想法是贪心+双指针，指针i从前向后遍历，指针j从i+1开始，如果s[i]==s[j]，j不断向后遍历找到第一个与s[i]不同的字母s[k]，将s[k]与s[j]交换。WA在了"baaba"，期待"ababa"，输出""，所以这种贪心策略显然是错的。</p>
+<p>给定字符串，重排其中的字符使得任意两个相邻位置的字母不同。 样例：s="aab"，输出"aba" 最开始的想法是贪心+双指针，指针i从前向后遍历，指针j从i+1开始，如果s[i]==s[j]，j不断向后遍历找到第一个与s[i]不同的字母s[k]，将s[k]与s[j]交换。WA在了"baaba"，期待"ababa"，输出""，所以这种贪心策略显然是错的。</p>
 <p>接着就想到需要考虑字符的出现频率，先按频率高低排序再去按照上述贪心，WA在了"aabbcc"，期待"abacbc"，输出""，很显然这种贪心策略本身就是错的。</p>
 <p>接着就想到先安排出现次数最多的，如果当前要安排的与前一个字符相同，就选择出现次数第二多的，这样交替下去，可以写出如下代码： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def reorganizeString(self, s: str) -&gt; str:</span><br><span class="line">        if len(s) == 1:</span><br><span class="line">            return s</span><br><span class="line"></span><br><span class="line">        from collections import Counter</span><br><span class="line">        dic = Counter(s)</span><br><span class="line"></span><br><span class="line">        ans = &quot;&quot;</span><br><span class="line">        prev = &quot;&quot;</span><br><span class="line">        for i in range(0, len(s)):</span><br><span class="line">            cnts = list(dic.items())</span><br><span class="line">            cnts = sorted(cnts, key=lambda x:x[1], reverse=True)</span><br><span class="line">            if prev == cnts[0][0]:</span><br><span class="line">                if len(cnts) &lt;= 1 or cnts[1][1] == 0:</span><br><span class="line">                    return &quot;&quot;</span><br><span class="line">                ans += cnts[1][0]</span><br><span class="line">                dic[cnts[1][0]] -= 1</span><br><span class="line">                prev = cnts[1][0]</span><br><span class="line">            else:</span><br><span class="line">                ans += cnts[0][0]</span><br><span class="line">                dic[cnts[0][0]] -= 1</span><br><span class="line">                prev = cnts[0][0]</span><br><span class="line">        return ans</span><br><span class="line"></span><br></pre></td></tr></table></figure> 时间复杂度<span class="math inline">\(O(n^2lgn)\)</span>，空间<span class="math inline">\(O(n)\)</span>。</p>
 <p>因为涉及到出现次数最多的问题，可以考虑max heap。每次迭代时，从堆里弹出堆顶元素（意味着下次迭代该元素不会考虑）加入res，如果上一次迭代加入res的元素还有剩余，就将其重新加入heap，意味着下次迭代需要考虑该元素。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def reorganizeString(self, s: str) -&gt; str:</span><br><span class="line">        ans, cnt = [], Counter(s)  # decent order</span><br><span class="line">        max_heap = [(-value, key) for key, value in cnt.items()]</span><br><span class="line">        heapq.heapify(max_heap)</span><br><span class="line">        prev_ch, prev_cnt = &#x27;&#x27;, 0</span><br><span class="line">        while max_heap:</span><br><span class="line">            cnt, ch = heapq.heappop(max_heap)</span><br><span class="line">            ans.append(ch)</span><br><span class="line">            if prev_cnt &lt; 0:</span><br><span class="line">                heapq.heappush(max_heap, (prev_cnt, prev_ch))</span><br><span class="line">            cnt += 1</span><br><span class="line">            prev_ch, prev_cnt = ch, cnt</span><br><span class="line">        if len(s) != len(ans):</span><br><span class="line">            return &quot;&quot;</span><br><span class="line">        return &#x27;&#x27;.join(ans)</span><br></pre></td></tr></table></figure> 时间复杂度<span class="math inline">\(O(n)\)</span>，空间<span class="math inline">\(O(n)\)</span>。</p>
 <p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/">题目链接</a></p>
-<h2 id="题意-1">题意</h2>
+<h2 id="题意">题意</h2>
 <p>给定一个单链表，删除和为0的连续结点序列，直到最终链表中没有和为0的连续结点序列。 样例：head = [1,2,3,-3,-2]，输出[1]</p>
 <h2 id="分析">分析</h2>
 <p>由于链表头结点可能会被删除，因此首先创建dummy结点。一个比较直观的想法就是记录前缀和，依次遍历链表，遇到出现过的前缀和也就意味着出现了和为0的序列，就删除两次相同前缀和中间的序列。因此需要一个hashtable记录前缀和出现的位置，手动走一个简单样例吧： dummy设为<code>(0,head)</code>，hashtable初始包含<code>&#123;0:dummy&#125;</code>，避免[1,-1]这种情况。</p>
@@ -359,8 +366,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Interview/" rel="tag"># Interview</a>
               <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+              <a href="/tags/Interview/" rel="tag"># Interview</a>
           </div>
 
         
@@ -439,7 +446,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%8C%B9%E9%85%8D"><span class="nav-number">1.</span> <span class="nav-text">10 正则表达式匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section"><span class="nav-number">2.</span> <span class="nav-text">767</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E6%84%8F"><span class="nav-number">3.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E6%84%8F-1"><span class="nav-number">4.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">分析</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%8C%B9%E9%85%8D"><span class="nav-number">1.</span> <span class="nav-text">10 正则表达式匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%97%B6%E8%BF%90%E8%A1%8Cn%E5%8F%B0%E7%94%B5%E8%84%91%E7%9A%84%E6%9C%80%E9%95%BF%E6%97%B6%E9%97%B4"><span class="nav-number">2.</span> <span class="nav-text">2141 同时运行N台电脑的最长时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section"><span class="nav-number">3.</span> <span class="nav-text">767</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E6%84%8F"><span class="nav-number">4.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">分析</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -455,7 +462,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">169</span>
+          <span class="site-state-item-count">171</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
