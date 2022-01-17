@@ -190,72 +190,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/12/20/Performance%20Measurement/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/20/Performance%20Measurement/" class="post-title-link" itemprop="url">Performance Measurement</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-12-20 11:42:00" itemprop="dateCreated datePublished" datetime="2020-12-20T11:42:00+08:00">2020-12-20</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>程序性能的衡量一般有2种方式：Benchmarking和Profiling。 ## Benchmarking Benchmarking通过绝对运行时间来比较程序的整体性能，例如给定一组同样的输入，比较不同版本的程序在同样硬件环境下的运行时间，或者比较相同版本程序在不同硬件环境下的运行时间。 ## Profiling Profiling通常用来识别程序的耗时瓶颈（通常是一些函数），优化这些瓶颈后再去做Benchmarking评估整体性能。 Unix系统提供了GPROF工具，CSAPP上有一个示例：</p>
-<ul>
-<li>编译：<code>gcc -Og -pg prog.c -o prog</code> <code>-Og</code>表示关闭了很多编译器的优化开关，并且优化了调试信息；<code>-pg</code>表示产生供GPROF剖析用的可执行文件。</li>
-<li>执行：<code>./prog file.txt</code> 会比正常执行要慢一些（慢一倍左右），生成待分析的文件<code>gmon.out</code>。</li>
-<li>分析：<code>gprof prog</code> 结果通常有2部分。 第一部分是不同函数的耗时情况： <img src="https://img-blog.csdnimg.cn/20201012215440170.png#pic_center" alt="在这里插入图片描述" /> 第4列显示了该函数被调用了多少次（不含递归调用），库函数一般不显示在列表中，但是可以通过wrapper function去显示它的执行情况。 第二部分是函数的调用情况，以递归函数<code>find_ele_rec</code>为例： <img src="https://img-blog.csdnimg.cn/20201012220111993.png" alt="在这里插入图片描述" /> 前2行显示了调用该函数的情况：自己递归调用了158555725次，被<code>insert_string</code>调用了965027次，<code>insert_string</code>自己递归调用了965027次；后几行显示了<code>find_ele_rec</code>调用其他函数的情况。</li>
-</ul>
-<p>由于GPROF采用的是interval counting，所以计时可能不太精确，尤其对于运行时间小于1s的程序误差更大。 如何使用Profiling去优化程序，CSAPP上给了一个非常精彩的例子，这里不再赘述。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/12/10/Quarterly%20Review/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1058,6 +992,78 @@ b^{*}=y_{j}-\sum_{i=1}^{N} \alpha_{i}^{*} y_{i}\left(x_{i} \cdot x_{j}\right)\ta
             </div>
           <!--/noindex-->
         
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/09/16/MIT%20Operating%20System%20Engineering#0%20Booting%20a%20PC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/16/MIT%20Operating%20System%20Engineering#0%20Booting%20a%20PC/" class="post-title-link" itemprop="url">MIT Operating System Engineering#0 Booting a PC</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-16 01:25:00" itemprop="dateCreated datePublished" datetime="2020-09-16T01:25:00+08:00">2020-09-16</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><em>最近在学MIT的OS课程，lab绝对业界良心。 XJTU的操作系统课就是写一个系统调用，改下进程软中断通信的代码，代码量不足500。。。 MIT上课用xv6来教学，lab是做一个完整的小型操作系统JOS。</em></p>
+<hr />
+<h2 id="配置环境">配置环境</h2>
+<p>虽然没什么技术含量，但是这真的是令人头疼的事。附：<a target="_blank" rel="noopener" href="https://blog.csdn.net/eye_water/article/details/80638463">图文教程</a> 需要一台x86机器，一般的Linux发行版应该都可以，可以使用<code>unabenlme -a</code>查看，如果显示<code>xxx GNU/Linux</code>就行，MIT的学生可以使用配置好的远程Server。 本来打算白嫖下Harvard的服务器，但是没有<code>root</code>权限，只能可怜巴巴地在Win环境用虚拟机。 平台：Vmware Player15，<a target="_blank" rel="noopener" href="http://old-releases.ubuntu.com/releases/14.04.5/">Ubuntu-14.04.5-desktop-i386.iso</a></p>
+<ul>
+<li>检验编译链 <code>objdump -i</code>：第二行显示elf32-i386； <code>gcc -m32 -print-libgcc-file-name</code>：打印出/usr/lib/gcc/i686-linux-gnu/4.8/libgcc.a</li>
+<li>安装git：<code>sudo apt-get install git</code></li>
+<li>下载qemu 建议不要作死，安装MIT Patch过的版本：<code>git clone https://github.com/mit-pdos/6.828-qemu.git qemu</code></li>
+<li>安装依赖库 官方说要装5个库，但其实libtool-bin好像找不到，不过不影响后续： <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt<span class="literal">-get</span> install libsdl1.<span class="number">2</span><span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libglib2.<span class="number">0</span><span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libz<span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libpixman<span class="literal">-1</span><span class="literal">-dev</span></span><br></pre></td></tr></table></figure></li>
+<li>配置qemu 切到qemu目录，<code>./configure --disable-kvm --disable-werror --target-list="i386-softmmu x86_64-softmmu"</code> <code>[--prefix=PFX]</code>可选参数是选择安装路径，这里就默认在<code>/usr/local</code></li>
+<li>安装qemu：<code>sudo make &amp;&amp; sudo make install</code></li>
+<li>下载实验代码 根目录下新建6.828目录，切到该目录，<code>git clone https://pdos.csail.mit.edu/6.828/2018/jos.git lab</code>，切到<code>lab</code>目录，<code>make</code>就可以了。 ## PC Bootstrap 物理地址空间： <img src="https://img-blog.csdnimg.cn/20200523082913317.png" alt="在这里插入图片描述" /> 以前的PC内存只有1MB，Low Memory是PC唯一能用的RAM。VGA Display是VGA缓冲区和固件，BIOS以前都在ROM中，不过现今都在闪存中，做完系统初始化（PCI总线等重要设备），寻找bootable设备(硬盘)，读取boot loader加载OS，将控制权转OS。后来内存远远超过1MB，可用的也就有Extended Memory，不过为了后向兼容，还是保留了Low Memory，这样可用的RAM就被分为了两部分。如果64位系统，那么内存更大，这样为了兼容，32-bit memory mapped devices还是要保留，就又被割裂了。 ## The Boot Loader 硬盘的第一个分区存放启动程序，包括一个汇编文件<code>boot/boot.S</code>和一个C文件<code>boot/main.c</code>，启动程序将CPU从实模式转为32位保护模式，通过特殊的I/O指令读取内核。 ## The Kernel</li>
+</ul>
+
       
     </div>
 
