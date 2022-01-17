@@ -190,82 +190,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/08/26/Norwegian%20Wood/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/08/26/Norwegian%20Wood/" class="post-title-link" itemprop="url">Norwegian Wood</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-08-26 22:32:32" itemprop="dateCreated datePublished" datetime="2019-08-26T22:32:32+08:00">2019-08-26</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Arts/" itemprop="url" rel="index"><span itemprop="name">Arts</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>挪威的森林-小说的背后故事</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/08/26/Norwegian%20Wood/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/08/19/Blog%20Customization/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -949,6 +873,84 @@ cost((h_{\theta}(x),y))=-ylog(h_{\theta}(x))-(1-y)log(1-h_{\theta}(x))\\=-\frac{
 <p>ML我们并没有也不可能直接考虑所有可能出现的情况，然后用对应的方法解决。此时我们编写的程序其实是在操纵一个学习器，它可以根据模型参数的不同灵活应对输入的情况，并且每组参数都可以很好地处理输入的变化。</p>
 <p>现实生活中有许多不同类型的问题，因此学习器也有很多不同的类型，不同类型的学习器针对不同的问题，当然也可以一对多或者多对一或者多对多。训练就是要根据数据获得一组表现良好的参数，下次给出相似类型的输入，我们的模型（参数固定的学习器）可以获得良好的预测表现。此外，还要有一个衡量当前这组参数表现好坏的措施，这就是objective function，训练时要用algorithm去有策略地调整参数，优化objective/loss function。</p>
 <p>数据的难点在于：数量要够只是基本，数据应该合理反应所有可能的类别，对于特定任务的特征选择也应该慎重，比如简历筛选时如果把历史面试结果作为一个特征，那么就很可能在无意中引入historical injustices。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/06/01/Topological%20Sort/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/06/01/Topological%20Sort/" class="post-title-link" itemprop="url">Topological Sort</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-06-01 04:11:00" itemprop="dateCreated datePublished" datetime="2019-06-01T04:11:00+08:00">2019-06-01</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>拓扑排序将有向无环图的所有顶点排成一个线性序列，使得其中任意两个顶点<span class="math inline">\(u、v\)</span>，若存在有向边<span class="math inline">\(u-&gt;v\)</span>，那么在线性序列中<span class="math inline">\(u\)</span>必然在<span class="math inline">\(v\)</span>之前。</p>
+<p>思想：</p>
+<ol type="1">
+<li>将所有入度为0的顶点入队；</li>
+<li>取队首结点输出，删除所有从该结点出发的边，并将这些边到达的顶点的入度减1，若某顶点入度减为0，将其入队；</li>
+<li>重复2，直到队列为空。若进过队的结点数为<span class="math inline">\(n\)</span>，排序成功，否则<strong>图中有环</strong>。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*复杂度O(V+E)*/</span></span><br><span class="line"><span class="keyword">int</span> vertexNum;</span><br><span class="line">vector&lt;<span class="keyword">int</span>&gt; adjList[MAXV];  <span class="comment">//邻接表 </span></span><br><span class="line"><span class="keyword">int</span> inDegree[MAXV];    <span class="comment">//顶点入度，读入时记录</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">topologicalSort</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">    queue&lt;<span class="keyword">int</span>&gt; q;   <span class="comment">//若有多个入度为0的顶点要选择编号最小的，可使用priority_queue</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//将所有入度为0的顶点入队 </span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; vertexNum;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(inDegree[i] == <span class="number">0</span>)</span><br><span class="line">        q.<span class="built_in">push</span>(i);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span>(!q.<span class="built_in">empty</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> front = q.<span class="built_in">front</span>();</span><br><span class="line">        cout &lt;&lt; front &lt;&lt; endl;  <span class="comment">//输出拓扑序列</span></span><br><span class="line">        q.<span class="built_in">pop</span>();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; adjList[front].<span class="built_in">size</span>();i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> v = adjList[front][i];  <span class="comment">//front的后继结点</span></span><br><span class="line">            inDegree[v]--;</span><br><span class="line">            <span class="keyword">if</span>(indegree[v] == <span class="number">0</span>)</span><br><span class="line">                q.<span class="built_in">push</span>(v); </span><br><span class="line">        &#125;</span><br><span class="line">        adjList[front].<span class="built_in">clear</span>();   <span class="comment">//删掉从该顶点出发的所有边</span></span><br><span class="line">        cnt++;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(cnt == vertexNum)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>``` // dfs version, reverse ans is the topological sequence enum states {UNKNOWN, VISITING, VISITED}; bool hasCycle(vector&lt;vector<int>&gt;&amp; graph, int cur, vector<int>&amp; state, vector<int>&amp; ans) { if (state[cur] == VISITING) return true; if (state[cur] == VISITED) return false;</p>
+<pre><code>state[cur] = VISITING;
+for (auto neighbors : graph[cur]) &#123;
+    if (hasCycle(graph, neighbors, state, ans))
+        return true;
+&#125;
+state[cur] = VISITED;
+ans.push_back(cur);
+
+return false;</code></pre>
+<p>} ```</int></int>&lt;/vector<int></int></int></p>
 
       
     </div>

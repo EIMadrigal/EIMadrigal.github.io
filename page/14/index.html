@@ -190,83 +190,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/04/10/Simple%20Math%20Problems/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/04/10/Simple%20Math%20Problems/" class="post-title-link" itemprop="url">Simple Math Problems</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-04-10 14:32:00" itemprop="dateCreated datePublished" datetime="2019-04-10T14:32:00+08:00">2019-04-10</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="最大公约数-最小公倍数">最大公约数 &amp; 最小公倍数</h2>
-<p>Euclid's Algorithm：若<span class="math inline">\(b\neq0\)</span>，那么<span class="math inline">\(gcd(a,b)=gcd(b,a\%b)\)</span>。 若<span class="math inline">\(a&lt;b\)</span>，定理会先交换a和b。 注意：0和任意正整数a的gcd是a。 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">gcd</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> !b ? a : gcd(b, a % b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 时间复杂度<span class="math inline">\(O(lgb)\)</span>，因为每次递归问题规模都会缩减一半以上。 最小公倍数<span class="math inline">\(lcm=\frac{a*b}{gcd}\)</span>。</p>
-<ul>
-<li>扩展欧几里得算法 可以计算出满足下式的三元组<span class="math inline">\((d,x,y)\)</span>： <span class="math display">\[d = GCD(a, b) = ax + by\]</span> <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Euclid_extend</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span>* x, <span class="keyword">int</span>* y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="number">0</span> == b) &#123;</span><br><span class="line">        *x = <span class="number">1</span>;</span><br><span class="line">        *y = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> r = Euclid_extend(b,a%b,x,y);</span><br><span class="line">        <span class="keyword">int</span> temp = *x;</span><br><span class="line">        *x = *y;</span><br><span class="line">        *y = temp - (*y)*(a/b);</span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> <em>简单证明：</em> <span class="math inline">\(b=0\)</span>是递归基，易得一组解<span class="math inline">\(x=1,y=0\)</span>; <span class="math inline">\(b \neq0\)</span>时： 首先递归求解： <span class="math display">\[d&#39;=gcd(b,a\%b)=bx&#39;+(a\%b)y&#39; \ \ \ \ \  \ \ \ \ \ \ \ \ \ (1)\]</span> 我们知道： <span class="math display">\[d=gcd(a,b)=d&#39;=gcd(b,a\%b)\ \ \ \ \ \ \ \ \ \ \ \ \ (2)\]</span> <span class="math display">\[a\%b=a-b*\biggl\lfloor a/b \biggr\rfloor\ \ \ \ \ \ \ \ \ \ \ (3)\]</span> 将(2)(3)式带入(1)： <span class="math display">\[d=bx&#39;+(a-b\biggl\lfloor a/b \biggr\rfloor)y&#39;=ay&#39;+b(x&#39;-\biggl\lfloor a/b \biggr\rfloor y&#39;)\]</span> 所以，令<span class="math inline">\(x=y&#39;\)</span>、<span class="math inline">\(y=x&#39;-\biggl\lfloor a/b \biggr\rfloor y&#39;\)</span>，就可以满足<span class="math inline">\(d=ax+by\)</span>。</li>
-</ul>
-<h2 id="分数">分数</h2>
-<p>PAT甲1088是比较经典的分数处理问题，求2个分数的和、差、积、商，输出最简形式。 表示、化简、运算、输出，代码阐释得很清楚。 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">gcd</span><span class="params">(ll a,ll b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> !b ? a : <span class="built_in">gcd</span>(b,a % b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Fraction</span> &#123;</span></span><br><span class="line">        ll nume,deno;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">Fraction <span class="title">reduction</span><span class="params">(Fraction a)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(a.deno &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                a.deno = -a.deno;</span><br><span class="line">                a.nume = -a.nume;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(a.nume == <span class="number">0</span>) &#123;</span><br><span class="line">                a.deno = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">               <span class="keyword">int</span> d = <span class="built_in">gcd</span>(<span class="built_in">abs</span>(a.nume),<span class="built_in">abs</span>(a.deno));</span><br><span class="line">               a.nume /= d;</span><br><span class="line">               a.deno /= d;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Fraction <span class="title">add</span><span class="params">(Fraction a,Fraction b)</span> </span>&#123;</span><br><span class="line">        Fraction res;</span><br><span class="line">        res.deno = a.deno * b.deno;</span><br><span class="line">        res.nume = a.deno * b.nume + a.nume * b.deno;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">reduction</span>(res);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Fraction <span class="title">sub</span><span class="params">(Fraction a,Fraction b)</span> </span>&#123;</span><br><span class="line">        Fraction res;</span><br><span class="line">        res.deno = a.deno * b.deno;</span><br><span class="line">        res.nume = a.nume * b.deno - a.deno * b.nume;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">reduction</span>(res);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Fraction <span class="title">times</span><span class="params">(Fraction a,Fraction b)</span> </span>&#123;</span><br><span class="line">        Fraction res;</span><br><span class="line">        res.deno = a.deno * b.deno;</span><br><span class="line">        res.nume = a.nume * b.nume;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">reduction</span>(res);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Fraction <span class="title">divide</span><span class="params">(Fraction a,Fraction b)</span> </span>&#123;</span><br><span class="line">        Fraction res;</span><br><span class="line">        res.deno = a.deno * b.nume;</span><br><span class="line">        res.nume = a.nume * b.deno;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">reduction</span>(res);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">showFrac</span><span class="params">(Fraction a)</span> </span>&#123;</span><br><span class="line">        a = <span class="built_in">reduction</span>(a);</span><br><span class="line">        <span class="keyword">if</span>(a.nume &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;(&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(a.deno == <span class="number">1</span>) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;%lld&quot;</span>,a.nume);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="built_in">abs</span>(a.nume) &gt; <span class="built_in">abs</span>(a.deno)) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;%lld %lld/%lld&quot;</span>,a.nume / a.deno,<span class="built_in">abs</span>(a.nume) % a.deno,a.deno);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;%lld/%lld&quot;</span>,a.nume,a.deno);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(a.nume &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;)&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Fraction a,b;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%lld/%lld%lld/%lld&quot;</span>,&amp;a.nume,&amp;a.deno,&amp;b.nume,&amp;b.deno);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">showFrac</span>(a);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; + &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(b);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; = &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(<span class="built_in">add</span>(a,b));</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">showFrac</span>(a);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; - &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(b);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; = &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(<span class="built_in">sub</span>(a,b));</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">showFrac</span>(a);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; * &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(b);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; = &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(<span class="built_in">times</span>(a,b));</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">showFrac</span>(a);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; / &quot;</span>);</span><br><span class="line">        <span class="built_in">showFrac</span>(b);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot; = &quot;</span>);</span><br><span class="line">        <span class="keyword">if</span>(b.nume == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Inf\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="built_in">showFrac</span>(<span class="built_in">divide</span>(a,b));</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="素数">素数</h2>
-<p>1、判断素数 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isPrime</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">2</span>)  <span class="comment">// 1不是素数，也不是合数</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">int</span> square_root = <span class="built_in">sqrt</span>(n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= square_root; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (n % i == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>2、打素数表</p>
-<p>第一种方法是枚举判断。 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn = <span class="number">10010</span>;</span><br><span class="line"><span class="keyword">int</span> prime[maxn], num = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Prime_table</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; maxn; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">isPrime</span>(i)) &#123;</span><br><span class="line">            prime[num++] = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>第二种是Eratosthenes筛法，复杂度<span class="math inline">\(O(nloglogn)\)</span> <img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211224154934702-698444567.png" alt="image" /></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> isprime[maxn];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">seive</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    std::<span class="built_in">fill</span>(isprime, isprime + n + <span class="number">1</span>, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i * i &lt;= n; ++i)</span><br><span class="line">        <span class="keyword">if</span> (isprime[i])</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i * i; j &lt;= n; j += i)</span><br><span class="line">                isprime[j] = <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>进一步的优化是欧拉筛，复杂度<span class="math inline">\(O(n)\)</span> <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> isprime[maxn];</span><br><span class="line">vector&lt;<span class="keyword">int</span>&gt; primes;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">seive</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    std::<span class="built_in">fill</span>(isprime, isprime + n + <span class="number">1</span>, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (isprime[i])</span><br><span class="line">            primes.<span class="built_in">push_back</span>(i);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> p : primes) &#123;</span><br><span class="line">            <span class="keyword">if</span> (p * i &gt; n)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            isprime[p * i] = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">if</span> (i % p == <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 3、分解质因子 注意：1要特判。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//存储</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">factor</span>&#123;</span></span><br><span class="line">        <span class="keyword">int</span> x,cnt; <span class="comment">//x为质因子,cnt为该质因子个数</span></span><br><span class="line">&#125;fac[<span class="number">20</span>];</span><br></pre></td></tr></table></figure>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> num = <span class="number">0</span>;  <span class="comment">//记录不同因子个数</span></span><br><span class="line"><span class="comment">//枚举小于等于sqrt(n)内的所有质因子,判断哪个是n的因子</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;prime[i] &lt;= <span class="built_in">sqrt</span>(n);i++)</span><br><span class="line">&#123;</span><br><span class="line">        <span class="keyword">if</span>(n % prime[i] == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">                fac[num].x = prime[i];</span><br><span class="line">                fac[num].cnt = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">while</span>(n % prime[i] == <span class="number">0</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                        fac[num].cnt++;</span><br><span class="line">                        n /= primep[i];</span><br><span class="line">                &#125;</span><br><span class="line">                num++;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//如果n仍然大于1,说明n有一个大于sqrt(n)的质因子</span></span><br><span class="line"><span class="keyword">if</span>(n != <span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">        fac[num].x = n;</span><br><span class="line">        fac[num++].cnt = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="reference">Reference</h2>
-<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/100051075">素数筛</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/04/03/Mobile%20Communication/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -927,6 +850,82 @@ E_D[(g^{(D)}(x)-y)^2]=E_D[(f(x)+\epsilon-g^{(D)}(x))^2]\\
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2019/02/28/INTERVIEW%200/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/02/22/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%20FAQ/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/02/22/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%20FAQ/" class="post-title-link" itemprop="url">操作系统 FAQ</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-02-22 20:15:32" itemprop="dateCreated datePublished" datetime="2019-02-22T20:15:32+08:00">2019-02-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>操作系统八股</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/02/22/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%20FAQ/">
                 Read more &raquo;
               </a>
             </div>
