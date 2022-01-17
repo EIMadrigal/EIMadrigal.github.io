@@ -45,13 +45,12 @@
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211225200758037-1347511939.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/65c25a4886e14a8e82e13e76f33bbe99.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104111823209-669239914.png">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104113021977-665516588.png">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104161235764-1555046156.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104180142069-201294829.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104213010425-1104108783.png">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104220146252-1499569230.png">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220105233420579-412125300.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/144151a19fe844cfbdbb2affc9b163d5.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220105234831224-1290189010.png">
+<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104220146252-1499569230.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/fe5c520655374b3e96b84ec9cb360262.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220114094034373-1300829794.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108112730514-116878135.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220111214607248-1624579305.png">
@@ -61,7 +60,7 @@
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108170639108-1941733275.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108170828819-1433823727.png">
 <meta property="article:published_time" content="2021-11-12T12:49:00.000Z">
-<meta property="article:modified_time" content="2022-01-17T04:21:12.426Z">
+<meta property="article:modified_time" content="2022-01-17T15:52:12.855Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="System">
 <meta property="article:tag" content="Network">
@@ -424,7 +423,7 @@
 <p>计时器的启动可以参考课本： <img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211222163312884-1740072168.png" alt="image" /></p>
 <h2 id="lab-4">Lab 4</h2>
 <p>本次实验要实现<code>TCPConnection</code>负责将同一个主机内的<code>TCPSender</code>和<code>TCPReceiver</code>衔接起来，理论上如果<code>TCPSender</code>和<code>TCPReceiver</code>足够鲁棒，那么<code>TCPConnection</code>写起来很快，然而现实太过冰冷...第一次在项目中体会到测试的重要性，也有点理解TDD的好处了，好的测试不仅能够发现问题，还能根据测试样例debug，再次跪谢Stanford~</p>
-<p><code>TCPConnection</code>既充当接收者，也充当发送者，可以理解为实现以后就可以在你自己的主机上使用，接收别人的消息，发送自己的消息。</p>
+<p><code>TCPConnection</code>既充当接收者，也充当发送者，可以理解为实现以后就可以在你自己的主机上使用，接收别人的消息，发送自己的消息。还有syn的处理需要考虑作为接收方和发送方两种情况分别处理。</p>
 <p>通过<code>segment_received</code>收到TCP段后：</p>
 <ul>
 <li>如果RST为真，sender和receiver都要将其字节流设置为出错状态并立即终止连接；</li>
@@ -445,19 +444,16 @@
 <p>四次挥手是这样的： 1. client发完数据后发送FIN通知server自己发完了，但是server不一定收到了，client也不知道server是不是收到了； 2. 因此server发回ACK通知client自己收到了FIN，此时client知道服务器收到了自己的所有数据，但服务器不知道客户端是否收到了ACK； 3. 服务器的数据发完后发送FIN，通知客户端自己发完了； 4. 客户端对FIN做ACK，表示自己收到了所有数据。这个时候客户端知道：服务器收到了自己发的所有数据，自己也收到了服务器的所有数据，客户端没有问题。但是服务器如果没有收到最后一个ACK：它只知道自己接收了客户端的所有数据，但无法确认客户端是否接收了自己的所有数据。因此这个ACK如果没有收到，服务器重发FIN，但如果此时客户端已经关闭连接，最后这个ACK就永远收不到，这也是为什么有time wait。服务器收到ACK后就直接关闭连接。</p>
 <p>从client角度来讲，做到clean shutdown有4个前提： 1. 接收字节流已经被完全组装且该流已经结束（peer不会再有新的输入了），对应<code>ByteStream::input_ended()</code>，即收到Server的FIN，Server确定接收了所有数据。 2. 发送字节流已经被本地应用层终止（即本机不会再发了）且已经完全发送（即字节流为空），对应<code>ByteStream::eof()</code>，即client发送FIN，但是并不代表server收到了FIN 3. 发送字节流已经被peer完全收到，对应client收到的ACK 4. client知道Server收到了ACK，这一点无法保证，因此有time wait。</p>
 <p>总结一下就是：什么时候不需要time wait？如果是第二个发送FIN就不需要，那怎么判断是第二个发的呢，如果已经收到了FIN（对应<code>_receiver.stream_out().input_ended()</code>）并且自己还没发（对应<code>!_sender.stream_in().eof()</code>）就是第二个。什么时候clean shutdown呢？满足前3个前提的前提下，如果不需要time wait或者已经time wait了足够长时间就可以关闭。</p>
-<p>初步写完代码后，就对着测试样例疯狂调bug吧！！</p>
-<p>有时候打断点会瞎跳，据说是编译优化的问题， <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104111823209-669239914.png" alt="image" /> <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104113021977-665516588.png" alt="image" /></p>
-<p>还有syn的处理需要考虑作为接收方和发送方两种情况分别处理</p>
-<p><code>txrx.sh</code>的测试不好过</p>
-<p>调单个测试用例ctest -R test_name <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104161235764-1555046156.png" alt="image" /></p>
-<p>建议按照状态机来写，否则会被细节折磨死。其实不一定非要按照状态机去写，网上有人说不按照状态机写肯定有问题，官方文档也说了，状态不过是一些模块的公有接口而已，不一定非要materialize these states in your code。 <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104180142069-201294829.png" alt="image" /></p>
-<p>神呀！104-160一直过不了，无奈只能通过替换网上的模块找bug <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104213010425-1104108783.png" alt="image" /> 但是lab0-4全部替换仍然是那个bug，不知道哪里有问题。。。严重怀疑由于服务器在美国的原因</p>
-<figure>
-<img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104220146252-1499569230.png" alt="" /><figcaption>image</figcaption>
-</figure>
-<p>折腾vmware，自己配环境，G++注意设好后https://blog.csdn.net/kenkao/article/details/89550641?utm_medium=distribute.pc_relevant.none-task-blog-2<sub>default</sub>baidujs_title~default-4.no_search_link&amp;spm=1001.2101.3001.4242.3&amp;utm_relevant_index=7</p>
-<p>还要修改https://www.cnblogs.com/minglee/p/9016306.html <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220105233420579-412125300.png" alt="image" /> 接着就可以正常make和测试了。 换到VMware没有任何改动一次性通过了所有测试： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220105234831224-1290189010.png" alt="image" /></p>
-<p>有点离谱...第一次遇到系统级别的Bug，卡了三天，全部模块替换为别人的还是挂...</p>
+<p>初步写完代码后，就对着测试样例疯狂调bug吧！！有时候打断点会瞎跳，据说是编译优化的问题： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104111823209-669239914.png" alt="image" /> 默认的Debug模式的编译选项是<code>-Og</code>，会对局部变量等进行优化，因此关掉优化选项，将<code>sponge/etc/cflags.cmake</code>中： <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> (CMAKE_CXX_FLAGS_DEBUG <span class="string">&quot;$&#123;CMAKE_CXX_FLAGS_DEBUG&#125; -ggdb3 -Og&quot;</span>)</span><br></pre></td></tr></table></figure> 改为 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> (CMAKE_CXX_FLAGS_DEBUG <span class="string">&quot;$&#123;CMAKE_CXX_FLAGS_DEBUG&#125; -ggdb3 -g&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<p><code>txrx.sh</code>的测试不好调试，可以用<code>cerr</code>打印一些变量，但不能用<code>cout</code>： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../txrx.sh -isDnd 128K -w 8K -l 0.1</span><br></pre></td></tr></table></figure> 调单个测试用例可以：<code>ctest -R test_name</code></p>
+<p>如果按照状态机来写的话可能好一些，但不一定非要按照状态机写，网上有人说不按照状态机写肯定有问题，官方文档也说了，状态不过是一些模块的公有接口而已，不一定非要materialize these states in your code。 <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104180142069-201294829.png" alt="image" /></p>
+<p>神呀！Test #104-#160一直过不了，卡了三天，用Wireshark抓包，发现一直在重传SYN： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104213010425-1104108783.png" alt="image" /> <img src="https://img-blog.csdnimg.cn/144151a19fe844cfbdbb2affc9b163d5.png" alt="在这里插入图片描述" /></p>
+<p>实在没辙了，无奈只能通过替换网上的模块找bug。但是Lab 0-Lab 4全部替换后仍然是那个bug，不知道哪里有问题。。。严重怀疑由于服务器在美国的原因，结果不是。和大神讨论了下，据说换成VMware就好了。。。开始搭环境。</p>
+<p>编译时如果提示g++版本太低，那就安装8.0以上版本并且进行<a target="_blank" rel="noopener" href="https://blog.csdn.net/kenkao/article/details/89550641?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_title~default-4.no_search_link&amp;spm=1001.2101.3001.4242.3&amp;utm_relevant_index=7">版本切换</a>，如果还是报错<code>The CXX compiler identification is GNU ...</code>，还要修改<a target="_blank" rel="noopener" href="https://www.cnblogs.com/minglee/p/9016306.html">编译选项</a>。</p>
+<p>接着就可以正常make和测试了。换到VMware没有任何改动一次性通过了所有测试： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220105234831224-1290189010.png" alt="image" /></p>
+<p>有点离谱...第一次遇到系统级别的Bug，至今还不知道咋回事...吞吐量结果： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220104220146252-1499569230.png" alt="image" /></p>
+<p>虽说是达到了100Mbit/s的最低要求，但肯定还有提升空间。我没做profiling，参考别人的分析基本就是<code>ByteStream</code>的一些操作造成了瓶颈，换成<code>BufferList</code>后有一些提升： <img src="https://img-blog.csdnimg.cn/fe5c520655374b3e96b84ec9cb360262.png" alt="在这里插入图片描述" /></p>
+<p>接下来的瓶颈应该在流重组器，等以后有时间再说吧😂</p>
 <h2 id="lab-5">Lab 5</h2>
 <p>实现IP/Ethernet网络接口，也叫网络适配器/网卡，用于IP数据报和以太网帧的转换，可以作为主机的TCP/IP协议栈的一部分，也可以作为路由器的一部分。 <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220114094034373-1300829794.png" alt="image" /></p>
 <p>主机与peer之间TCP段的交互主要有以下几种方式： - TCP-in-UDP-in-IP：进程只需提供TCP段和目的地址，剩下的事情均由Linux的<code>UDPSocket</code>完成。内核负责构造UDP/IP/Ethernet header并发给下一跳，并确保每对socket的组合都是唯一的，保证不同进程间的隔离。 - TCP-in-IP：大部分情况下TCP段都是直接作为IP数据报的payload，需要向Linux的TUN接口提供IP数据报，内核负责构造Ethernet header并通过网卡发送，因此进程需要自行构造IP头。 - TCP-in-IP-in-Ethernet：网络接口<code>eth0/eth1/wlan0</code>负责网络层和链路层的转换，Linux提供了更低级的TAP接口负责交换以太网帧。</p>
