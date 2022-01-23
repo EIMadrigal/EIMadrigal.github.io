@@ -260,6 +260,181 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/18/%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/01/18/%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">贝叶斯学习</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-01-18 13:09:32" itemprop="dateCreated datePublished" datetime="2020-01-18T13:09:32+08:00">2020-01-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="简介">简介</h2>
+<p>贝叶斯概率理论是由Thomas Bayes在1764年提出，采用一种概率的方式进行推理。贝叶斯学习有2个假设： - 观察到的样本实例并非确定性事件，而是随机的，服从某种概率分布； - 通过对观测数据样本和相关的概率特性进行推理学习能够得到最优的决策或分类。</p>
+<p>贝叶斯学习为衡量多个假设的置信度提供了定量的方法，其依赖于贝叶斯决策理论（Bayesian Decision Theory）。贝叶斯决策理论是一种统计学上的方法，用来定量化地描述使用概率做出的不同决策以及这些决策付出的代价之间的权衡。首先假设一些概率值是已知的，然后根据这些已知概率推理一些未知情况下的概率值，最终利用这些推理的概率值进行决策。</p>
+<p>以分类问题为例，假设有2种鱼分别是鲑鱼和鲈鱼，将w定义为观测到的鱼的类型，令<span class="math inline">\(w=w_1\)</span>代表鲈鱼，<span class="math inline">\(w=w_2\)</span>代表鲑鱼，定义<span class="math inline">\(P(w_1)\)</span>表示下一条鱼是鲈鱼的先验概率，<span class="math inline">\(P(w_2)\)</span>表示下一条鱼是鲑鱼的先验概率。先验概率反映了人们根据经验和背景知识对事物的判断，即在看到下一条鱼之前对于<span class="math inline">\(P(w_1)\)</span>和<span class="math inline">\(P(w_2)\)</span>的判断。如果没有经验上的偏好，就可以设置为均匀先验<span class="math inline">\(P(w_1)=P(w_2)\)</span>；如果有诸如海域因素、时间等背景，便可以为<span class="math inline">\(P(w_1)\)</span>和<span class="math inline">\(P(w_2)\)</span>设置不同的先验概率。另外假设只有这2种鱼，即<span class="math inline">\(P(w_1)+P(w_2)=1\)</span>。在仅有先验概率的情况下，选择先验概率大的作为最终决策，这种情况下决策错误的概率为<span class="math inline">\(min\{P(w_1),P(w_2)\}\)</span>。</p>
+<p>贝叶斯决策理论是很多重要的学习算法的基础，例如朴素贝叶斯分类器、贝叶斯信念网络以及EM算法等。另外，贝叶斯决策理论为许多非贝叶斯的学习算法提供了很好的数学和框架性理论基础，对某些学习任务而言，贝叶斯学习是最实用的方法之一。</p>
+<p>贝叶斯学习有以下特点： - 每个观测到的训练样本都可以很小程度上增大或减小某个假设正确的概率； - 先验知识可以和观测数据结合起来决定某个假设的最终概率，可以计算显式的假设概率； - 新实例的预测可以结合多个假设输出概率的加权值； - 通常需要一些背景知识或先前经验来确定先验概率，选出贝叶斯最优分类器计算代价比较大。</p>
+<h2 id="贝叶斯定理">贝叶斯定理</h2>
+<p>贝叶斯定理是贝叶斯学习的基石，给定训练数据集D，在假设空间H中寻找最优的假设h，最优假设可以定义为给定数据集D以及H中不同假设的先验概率条件下的最可能的假设。 利用贝叶斯定理，在已知假设的先验概率、观测数据以及给定假设下观测到特定数据的概率就可以计算出最有可能的假设。</p>
+<p>给定数据集D以及假设空间H，定义如下记号： - 先验概率P(h)：没有训练数据前假设h的初始概率，反映了根据人们的相关认知背景，假设h成为正确假设的概率，如果没有先验知识，可以将每一个候选假设的先验概率设置为相同的。 - 先验概率P(D)：训练数据D的先验概率，即不知道哪个假设成立的前提下观测到D的概率。 - 观测数据的条件概率P(D|h)：在假设h成立的条件下观测到数据集D的概率。 - 后验概率P(h|D)：给定观测到的训练数据集D时假设h成立的概率，反映了观测到的训练数据是D时h成立的置信度。</p>
+<p>利用贝叶斯定理可以计算给定训练数据集D下任一假设的后验概率： <span class="math display">\[P(h|D)=\frac{P(D|h)P(h)}{P(D)}\]</span></p>
+<p>贝叶斯推理得到的结果很大程度上依赖于先验概率，并且不是完全接受或拒绝假设h，而是给出假设为真的可能性。因此可以计算每个假设的概率，输出其中概率最大的，称为最大后验概率准则（Maximum A Posteriori）。</p>
+<p><span class="math display">\[
+h_{MAP}=\underset{h\in H}{\operatorname{\argmax}}\ P(h|D) \\
+=\underset{h\in H}{\operatorname{\argmax}}\ \frac{P(D|h)P(h)}{P(D)} \\
+=\underset{h\in H}{\operatorname{\argmax}}\ P(D|h)P(h)
+\]</span></p>
+<p>如果假设空间中每个假设的先验概率都是相同的，即<span class="math inline">\(P(h_i)=P(h_j),\forall h_i\in H \wedge \forall h_j\in H\)</span>，那么只需要考虑给定假设h下数据D的似然P(D|h)，这样最大后验概率准则就变为了最大似然估计（Maximum Likelihood）： <span class="math display">\[
+h_{ML}=\underset{h\in H}{\operatorname{\argmax}}\ P(D|h)
+\]</span></p>
+<h2 id="最小描述长度原则">最小描述长度原则</h2>
+<p>根据奥卡姆剃刀原则，其它条件相同时选择最简单的假设，最简单的假设可以定义为描述长度最小的假设，即给定假设空间H和数据集D，应该寻找一个假设或者假设组合使得D被最大程度地压缩。定义<span class="math inline">\(L_{C}(x)\)</span>表示在编码机制C下编码x需要的最少的比特数为编码机制C下的x的描述长度。 <span class="math display">\[
+h_{MDL}=\underset{h\in H}{\operatorname{\argmin}}\ L_{C_1}(h)+L_{C_2}(D|h)
+\]</span></p>
+<p><span class="math inline">\(L_{C_1}(h)\)</span>是假设的描述长度即比特数，反映了模型的复杂程度；<span class="math inline">\(L_{C_2}(D|h)\)</span>是当采用假设h编码后数据的描述长度，反映了错误的数目。通常会发现：一个非常复杂的假设（<span class="math inline">\(L_{C_1}(h)\)</span>大）会有一个比较好的拟合（<span class="math inline">\(L_{C_2}(D|h)\)</span>小），反之一个非常简单的假设（<span class="math inline">\(L_{C_1}(h)\)</span>小）会有比较差的拟合（<span class="math inline">\(L_{C_2}(D|h)\)</span>大）。因此希望寻找一个假设：既不会过于复杂同时还可以对数据有比较好的拟合。</p>
+<p>如果对MAP的公式进行变形： <span class="math display">\[
+h_{MAP}=\underset{h\in H}{\operatorname{\argmax}}\ P(D|h)P(h) \\
+=\underset{h\in H}{\operatorname{\argmax}}\ log_2P(D|h)+log_2P(h) \\
+=\underset{h\in H}{\operatorname{\argmin}}\ -log_2P(h)-log_2P(D|h) \\
+\]</span></p>
+<p>可以看到：第一项<span class="math inline">\(-log_2P(h)\)</span>对应了最优编码机制<span class="math inline">\(C_1\)</span>下h的描述长度<span class="math inline">\(L_{C_1}(h)\)</span>，第二项<span class="math inline">\(-log_2P(D|h)\)</span>对应了最优编码机制<span class="math inline">\(C_2\)</span>下数据的描述长度<span class="math inline">\(L_{C_2}(D|h)\)</span>。两者的优化目标是一致的。</p>
+<h2 id="贝叶斯最优分类器">贝叶斯最优分类器</h2>
+<p>通过MAP准则可以求出在给定训练数据下的最有可能的假设，那么如何求出给定训练集下一个新实例的最优预测呢？可以对新实例使用MAP准则，求得最大的假设然后进行分类。</p>
+<p>但是最优的结果应该是结合所有假设的预测结果对新实例进行分类，结合的方法是通过后验概率加权： <span class="math display">\[
+\underset{v_j\in V}{\operatorname{\argmax}}\ \sum_{h_i\in H}P(v_j|h_i)P(h_i|D)
+\]</span></p>
+<p>V表示所有可能的预测结果，<span class="math inline">\(v_j\)</span>是其中一种预测分类。<span class="math inline">\(P(v_j|h_i)\)</span>表示假设<span class="math inline">\(h_i\)</span>将新实例预测为<span class="math inline">\(v_j\)</span>的概率大小，<span class="math inline">\(P(h_i|D)\)</span>表示假设<span class="math inline">\(h_i\)</span>的后验概率。</p>
+<p>例如假设空间<span class="math inline">\(H=\{h_1,h_2,h_3\}\)</span>，可能的预测结果<span class="math inline">\(V=\{+,-\}\)</span>，对于一个新实例假设有： <span class="math display">\[
+P(h_1|D)=0.4, P(-|h_1)=0, P(+|h_1)=1 \\
+P(h_2|D)=0.3, P(-|h_2)=1, P(+|h_2)=0 \\
+P(h_3|D)=0.3, P(-|h_3)=1, P(+|h_3)=0 \\
+\]</span></p>
+<p>那么有： <span class="math display">\[
+\sum_{h_i\in H}P(+|h_i)P(h_i|D)=0.4 \\
+\sum_{h_i\in H}P(-|h_i)P(h_i|D)=0.6 \\
+\]</span> 因此最终选择将新实例分类为-。</p>
+<p>可以看到：贝叶斯最优分类器最大化了新实例被正确分类的概率，在使用相同假设空间和先验知识的条件下，没有其他方法比贝叶斯最优分类器的平均效果好，最终的预测结果可能对应一个不包含于<span class="math inline">\(H\)</span>的假设。</p>
+<p>虽然效果很好，但是贝叶斯最优分类器计算代价非常大： - 需要遍历假设空间中的所有假设； - 当假设空间非常大时这种方式是不可行的。</p>
+<p>因此可以通过吉布斯算法（Gibbs）解决。吉布斯算法根据假设的后验概率分布随机选取一个假设对新实例进行分类。可以证明：在特定条件下，该方法的期望误差最多是贝叶斯最优分类器的两倍。还可以通过采样多个假设并求其预测结果的平均值来提高吉布斯算法的性能，例如可以使用马尔科夫蒙特卡洛采样（MCMC）。</p>
+<h2 id="bagging分类器">Bagging分类器</h2>
+<p>虽然可以使用吉布斯算法来降低计算代价，但是从后验概率分布P(h|D)采样是比较困难的： - P(h|D)的计算本身就比较困难 - 对于不是基于概率的分类器例如SVM等P(h|D)是无法计算的 - 当假设空间很大时P(h|D)计算结果会很小</p>
+<p>为了解决上述问题，引入Bagging的思想，通过对训练样本的采样实现对后验分布P(h|D)的采样。假设给定的数据集D包含m个样本，自助采样法（Bootstrap sampling）步骤如下： - 从D中有放回地采样m个样本构成数据集<span class="math inline">\(D^i\)</span> - D中大约有37%的样本不会被采样到</p>
+<p>Bagging算法步骤如下： - 创建k个自助采样的数据集<span class="math inline">\(D^1,D^2,...,D^k\)</span> - 在每个数据集<span class="math inline">\(D^i\)</span>独立训练分类器<span class="math inline">\(h_i\)</span> - 通过相等权重的投票法来对新实例进行分类：</p>
+<p><span class="math display">\[
+c^*(x)=\underset{c}{\operatorname{\argmax}}\ \sum_{i=1}^{k}P(c|h_i,x)
+\]</span> 由于自助采样法几乎和直接从后验概率分布P(h|D)采样相同，因此Bagging产生的分类器也近似于贝叶斯最优分类器。通常Bagging产生的分类器效果要优于单独的分类器，因为其有效地降低了模型的方差。</p>
+<h2 id="朴素贝叶斯分类器">朴素贝叶斯分类器</h2>
+<p>假设训练集D中的每条实例x均可以被n个属性的组合<span class="math inline">\(&lt;a_1,a_2,...,a_n&gt;\)</span>描述，并且<span class="math inline">\(v(x)\in V\)</span>是一个有限的集合。那么贝叶斯方法对于新实例的分类是选择一个最有可能的目标值： <span class="math display">\[
+v_{MAP}=\underset{v_j\in V}{\operatorname{\argmax}}\ P(v_j|a_1,a_2,...,a_n)
+\]</span></p>
+<p>通过贝叶斯定理进行变形： <span class="math display">\[
+v_{MAP}=\underset{v_j\in V}{\operatorname{\argmax}}\ \frac{P(a_1,a_2,...,a_n|v_j)P(v_j)}{P(a_1,a_2,...,a_n)}
+\]</span></p>
+<p>那么要如何计算<span class="math inline">\(P(v_j)\)</span>和<span class="math inline">\(P(a_1,a_2,...,a_n|v_j)\)</span>呢？ - <span class="math inline">\(P(v_j)\)</span>可以通过每个目标值<span class="math inline">\(v_j\)</span>在训练数据中出现的频率来估算 - 在训练数据集很小的情况下，<span class="math inline">\(P(a_1,a_2,...,a_n|v_j)\)</span>的估算是不可能的，不同的<span class="math inline">\(P(a_1,a_2,...,a_n|v_j)\)</span>的数目等于所有可能的目标值的数量与所有可能的样本数目的乘积。</p>
+<p>为了解决上述问题，提出了朴素贝叶斯假设，即在给定目标值下样本属性之间是条件独立的： <span class="math display">\[
+P(a_1,a_2,...,a_n|v_j)=\prod_{i}P(a_i|v_j)
+\]</span></p>
+<p>因此朴素贝叶斯分类器即为： <span class="math display">\[
+v_{NB}=\underset{v_j\in V}{\operatorname{\argmax}}\ P(v_j)\prod_{i}P(a_i|v_j)
+\]</span></p>
+<p>其中，<span class="math inline">\(v_{NB}\)</span>是朴素贝叶斯分类器的预测输出，<span class="math inline">\(P(a_i|v_j)\)</span>是训练数据中目标值<span class="math inline">\(v_j\)</span>时属性<span class="math inline">\(a_i\)</span>的频率。不同的<span class="math inline">\(P(a_i|v_j)\)</span>的数目等于不同的目标值数量与属性数量的乘积，该数值远小于不同的<span class="math inline">\(P(a_1,a_2,...,a_n|v_j)\)</span>的数目。</p>
+<p>下面举一个朴素贝叶斯分类器的例子，假设训练数据如下： <img src="https://img-blog.csdnimg.cn/286e8b45687d4d259b1ef6ba87433c2f.png" alt="在这里插入图片描述" /></p>
+<p>需要对于一个新实例{Outlook=sunny, Temperature=cool, Humidity=high, Wind=strong}进行分类，所有可能的目标值是{yes, no}。因此分类器为： <span class="math display">\[
+v_{NB}=\underset{v_j\in \{yes,no\}}{\operatorname{\argmax}}\ P(v_j)\prod_{i}P(a_i|v_j)
+\]</span></p>
+<p>从训练数据可知，<span class="math inline">\(P(v_j)\)</span>即不同目标值的概率为： <span class="math display">\[
+P(yes)=9/14=0.64, P(no)=5/14=0.36
+\]</span></p>
+<p>条件概率<span class="math inline">\(P(a_i|v_j)\)</span>为： <span class="math display">\[
+P(Wind=strong|yes)=3/9=0.33 \\
+P(Wind=strong|no)=3/5=0.60 \\
+...
+\]</span></p>
+<p>因此可以计算： <span class="math display">\[
+P(yes)P(sunny|yes)P(cool|yes)P(high|yes)P(strong|yes)=0.0053 \\
+P(no)P(sunny|no)P(cool|no)P(high|no)P(strong|no)=0.0206 \\
+\]</span></p>
+<p>故最终的预测结果为no。</p>
+<h2 id="贝叶斯信念网络">贝叶斯信念网络</h2>
+<p>贝叶斯最优分类器应用起来代价太大，朴素贝叶斯分类器虽然使用条件独立假设降低了代价，但是很多情况下条件独立假设都难以满足。因此，贝叶斯信念网络做了一个折衷，允许对属性集合的子集应用条件独立假设。</p>
+<p>贝叶斯信念网络是一种概率图模型，通过有向无环图（DAG）来表示一系列变量及它们的条件依赖关系和变量集合的联合概率分布。通常用结点表示变量，可以是观测变量、隐藏变量、未知参数和假设等等；用边表示结点间的依赖关系；条件概率表的每个元素对应图中唯一的结点，存储该结点对于其所有直接前驱结点的联合条件概率。</p>
+<p>贝叶斯信念网络一条非常重要的性质是：每个结点在其直接前驱结点的值给定后，该结点条件独立于其所有非直接前驱结点。条件独立的定义是：在给定Z的条件下X的概率分布与Y的取值无关，即： <span class="math display">\[
+\forall x_i,y_j,z_k\ P(X=x_i|Y=y_j,Z=z_k)=P(X=x_i|Z=z_k)
+\]</span></p>
+<p>条件独立的定义可以扩展到多个变量的情形：即在给定变量<span class="math inline">\(Z_1,...,Z_n\)</span>的条件下，变量集合<span class="math inline">\(X_1,...,X_l\)</span>的概率分布与变量集合<span class="math inline">\(Y_1,...,Y_m\)</span>的取值无关： <span class="math display">\[
+P(X_1,...,X_l|Y_1,...,Y_m,Z_1,...,Z_n)=P(X_1,...,X_l|Z_1,...,Z_n)
+\]</span></p>
+<p>朴素贝叶斯分类器即使用了条件独立假设使得<span class="math inline">\(P(X,Y|Z)=P(X|Y,Z)P(Y|Z)=P(X|Z)P(Y|Z)\)</span>。</p>
+<p>贝叶斯网络也可以看作是表示变量之间因果性的因果图，可以进行原因推理或结果预测。例如，假设草坪是湿的记作变量W，那么有多大概率是因为下雨（记作变量R）造成的？那么可以利用贝叶斯网络进行原因推理： <span class="math display">\[
+P(R|W)=\frac{P(W|R)P(R)}{P(W)}=\frac{P(W|R)P(R)}{P(W|R)P(R)+P(W|\sim R)P(\sim R)}
+\]</span></p>
+<p>同样可以进行结果的预测，假设洒水器打开记作事件S，那么有多大概率草坪是湿的是因为S导致的？即洒水器和下雨都可能导致草坪是湿的： <span class="math display">\[
+P(W|S)=P(W|R,S)P(R|S)+P(W|\sim R,S)P(\sim R|S) \\
+=P(W|R,S)P(R)+P(W|\sim R,S)P(\sim R)
+\]</span></p>
+<p>随着贝叶斯网络的结点与边的增加，可以进行更加复杂的因果推断。</p>
+<h2 id="总结">总结</h2>
+<p>贝叶斯学习为基于先验知识的概率学习方法提供了理论基础，在先验知识的基础上，根据观测数据修正先验知识，计算出每个假设的后验概率进而进行预测。可以选择出在给定观测数据下的最有可能的假设即MAP假设，贝叶斯最优分类器通过后验概率的加权结合了所有可能假设的预测结果去得到新实例的最有可能的预测结果。朴素贝叶斯分类器通过条件独立假设增强了其实用性，在很多实际应用中表现很好。贝叶斯信念网络提供了一种条件独立的变量之间更强大的表示方法，使得其可以有更加广泛的应用场景。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/15/Segment%20Tree/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -940,110 +1115,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/01/Linked%20List-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/01/01/Linked%20List-2/" class="post-title-link" itemprop="url">Linked List-2</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-01-01 15:03:00" itemprop="dateCreated datePublished" datetime="2020-01-01T15:03:00+08:00">2020-01-01</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="三编码技巧">三、编码技巧</h2>
-<p><strong>1、遍历链表</strong> 先将<code>head</code>指针赋值给一个局部变量<code>current</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//return the number of nodes in a list (while-loop version)</span><br><span class="line">int Length(struct node* head)</span><br><span class="line">&#123;</span><br><span class="line">    int count = 0;</span><br><span class="line">    struct node* current = head;</span><br><span class="line"></span><br><span class="line">    while (current != NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        count++;</span><br><span class="line">        current = current-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当然也可以写为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for (current = head; current != NULL; current = current-&gt;next) &#123;&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>2、通过传递<code>reference pointer</code>改变某个指针</strong> 看个例子：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">//Change the passed in head pointer to be NULL</span><br><span class="line">//Uses a reference pointer to access the caller&#x27;s memory</span><br><span class="line">void ChangeToNull(struct node** headRef)  //takes a pointer to the value of interest</span><br><span class="line">&#123;</span><br><span class="line">    *headRef = NULL;	//use * to access the value of interest</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void ChangeCaller()</span><br><span class="line">&#123;</span><br><span class="line">    struct node* head1;</span><br><span class="line">    struct node* head2;</span><br><span class="line"></span><br><span class="line">    ChangeToNull(&amp;head1);	//use &amp; to compute and pass a pointer to</span><br><span class="line">    ChangeToNull(&amp;head2);	//the value of interest</span><br><span class="line">    //head1 and head2 are NULL at this point</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这块的思想是和（一）中的<code>Push()</code>类似。 内存示意图： <img src="https://img-blog.csdnimg.cn/20190330151133187.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /> <strong>3、通过<code>Push()</code>建立链表（头插法）</strong> 这种方式的优点是速度飞快，简单易行，缺点是得到的链表是逆序的：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">struct node* AddAtHead()</span><br><span class="line">&#123;</span><br><span class="line">    struct node* head = NULL;</span><br><span class="line"></span><br><span class="line">    for (int i = 1; i &lt; 6; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        Push(&amp;head, i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //head == &#123;5,4,3,2,1&#125;;</span><br><span class="line">    return head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>4、尾插法建立链表</strong> 这种方法需要找到链表最后一个节点，改变其<code>.next</code>域： <img src="https://img-blog.csdnimg.cn/20190330155111506.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
-<ul>
-<li>插入或者删除节点，需要找到该节点的前一个节点的指针，改变其<code>.next</code>域；</li>
-<li>特例：<strong>如果涉及第一个节点的操作，那么一定要改变<code>head</code>指针。</strong></li>
-</ul>
-<p><strong>5、特例+尾插法</strong> 如果要构建一个新的链表，那么头节点就要单独处理：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">struct node* BuildWithSpecialCase()</span><br><span class="line">&#123;</span><br><span class="line">    struct node* head = NULL;</span><br><span class="line">    struct node* tail;</span><br><span class="line">    </span><br><span class="line">    //deal with the head node here, and set the tail pointer</span><br><span class="line">    Push(&amp;head, 1);</span><br><span class="line">    tail = head;</span><br><span class="line"></span><br><span class="line">    //do all the other nodes using &quot;tail&quot;</span><br><span class="line">    for (int i = 2; i &lt; 6; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        Push(&amp;(tail-&gt;next), i);   //add node at tail-&gt;next</span><br><span class="line">        tail = tail-&gt;next;     //advance tail to point to last node</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return head;    //head == &#123;1,2,3,4,5&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>6、临时节点建立</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">struct node* BuildWithDummyNode()</span><br><span class="line">&#123;</span><br><span class="line">    struct node dummy;   //dummy node is temporarily the first node</span><br><span class="line">    struct node* tail = &amp;dummy;   //build the list on dummy.next</span><br><span class="line"></span><br><span class="line">    dummy.next = NULL;</span><br><span class="line"></span><br><span class="line">    for (int i = 1; i &lt; 6; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        Push(&amp;(tail-&gt;next), i);</span><br><span class="line">        tail = tail-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //the real result list is now in dummy.next</span><br><span class="line">    //dummy.next == &#123;1,2,3,4,5&#125;</span><br><span class="line">    return dummy.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>7、本地指针建立</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">struct node* BuildWithLocalRef()</span><br><span class="line">&#123;</span><br><span class="line">    struct node* head = NULL;</span><br><span class="line">    struct node** lastPtrRef = &amp;head;   //start out pointing to the head pointer</span><br><span class="line"></span><br><span class="line">    for (int i = 1; i &lt; 6; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        Push(lastPtrRef, i);  //add node at the last pointer in the list</span><br><span class="line">        //advance to point to the new last pointer</span><br><span class="line">        lastPtrRef = &amp;((*lastPtrRef)-&gt;next);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return head;  //head == &#123;1,2,3,4,5&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这块可能有些抽象： 1）<code>lastPtrRef</code>开始指向<code>head</code>指针，以后指向链表最后一个节点中的<code>.next</code>域； 2）在最后加上一个节点； 3）让<code>lastPtrRef</code>指针向后移动，指向最后一个<strong>节点的<code>.next</code>域</strong>。 <code>(*lastPtrRef)-&gt;next</code>可以理解为<code>*lastPtrRef</code>指针指向的节点的<code>next</code>域。 <img src="https://img-blog.csdnimg.cn/20190403193507385.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /> ## 四、代码示例 <strong>1、AppendNode()</strong> 1) 不使用<code>Push()</code>函数：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">struct node* AppendNode(struct node** headRef, int num)</span><br><span class="line">&#123;</span><br><span class="line">    struct node* current = *headRef;</span><br><span class="line">    struct node* newNode;</span><br><span class="line"></span><br><span class="line">    newNode = (struct node*)malloc(sizeof(struct node));</span><br><span class="line">    newNode-&gt;data = num;</span><br><span class="line">    newNode-&gt;next = NULL;</span><br><span class="line"></span><br><span class="line">    //special case for length 0</span><br><span class="line">    if (current == NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        *headRef = newNode;</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        //Locate the last node</span><br><span class="line">        while (current-&gt;next != NULL)</span><br><span class="line">        &#123;</span><br><span class="line">            current = current-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        current-&gt;next = newNode;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="2" type="1">
-<li>使用<code>Push()</code>函数：</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">struct node* AppendNode(struct node** headRef, int num)</span><br><span class="line">&#123;</span><br><span class="line">    struct node* current = *headRef;</span><br><span class="line"></span><br><span class="line">    //special case for length 0</span><br><span class="line">    if (current == NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        Push(headRef, num);</span><br><span class="line">    &#125;</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        //Locate the last node</span><br><span class="line">        while (current-&gt;next != NULL)</span><br><span class="line">        &#123;</span><br><span class="line">            current = current-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //Build the node after the last node</span><br><span class="line">        Push(&amp;(current-&gt;next), num);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>2、CopyList</strong> 用一个指针遍历原来的链表，两个指针跟踪新生成的链表（一个<code>head</code>，一个<code>tail</code>）。</p>
-<ol type="1">
-<li>不使用<code>Push()</code>函数： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">struct node* CopyList(struct node* head)</span><br><span class="line">&#123;</span><br><span class="line">    struct node* current = head;   //used to iterate over the original list</span><br><span class="line">    struct node* newList = NULL;   //head of the new list</span><br><span class="line">    struct node* tail = NULL;     //kept pointing to the last node in the new list</span><br><span class="line"></span><br><span class="line">    while (current != NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        if (newList == NULL)    //special case for the first new node</span><br><span class="line">        &#123;</span><br><span class="line">            newList = (struct node*)malloc(sizeof(struct node));</span><br><span class="line">            newList-&gt;data = current-&gt;data;</span><br><span class="line">            newList-&gt;next = NULL;</span><br><span class="line">            tail = newList;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            tail-&gt;next = (struct node*)malloc(sizeof(struct node));</span><br><span class="line">            tail = tail-&gt;next;</span><br><span class="line">            tail-&gt;data = current-&gt;data;</span><br><span class="line">            tail-&gt;next = NULL;</span><br><span class="line">        &#125;</span><br><span class="line">        current = current-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return newList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 内存示意图： <img src="https://img-blog.csdnimg.cn/20190407094454488.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></li>
-<li>使用<code>Push()</code>函数：</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">struct node* CopyList2(struct node* head)</span><br><span class="line">&#123;</span><br><span class="line">    struct node* current = head;   //used to iterate over the original list</span><br><span class="line">    struct node* newList = NULL;   //head of the new list</span><br><span class="line">    struct node* tail = NULL;     //kept pointing to the last node in the new list</span><br><span class="line"></span><br><span class="line">    while (current != NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        if (newList == NULL)    //special case for the first new node</span><br><span class="line">        &#123;</span><br><span class="line">            Push(&amp;newList, current-&gt;data);</span><br><span class="line">            tail = newList;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            Push(&amp;(tail-&gt;next), current-&gt;data);   //add each node at the tail </span><br><span class="line">            tail = tail-&gt;next;       //advance the tail to the new last node;</span><br><span class="line">        &#125;</span><br><span class="line">        current = current-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return newList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="3" type="1">
-<li>使用<code>Dummy Node</code>：</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">struct node* CopyList3(struct node* head)</span><br><span class="line">&#123;</span><br><span class="line">    struct node* current = head;   //used to iterate over the original list</span><br><span class="line">    struct node* tail = NULL;     //kept pointing to the last node in the new list</span><br><span class="line">    struct node dummy;            //build the new list off this dummy node</span><br><span class="line"></span><br><span class="line">    dummy.next = NULL;</span><br><span class="line">    tail = &amp;dummy;      //start the tail pointing at the dummy</span><br><span class="line"></span><br><span class="line">    while (current != NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        Push(&amp;(tail-&gt;next), current-&gt;data);   //add each node at the tail</span><br><span class="line">        tail = tail-&gt;next;                    //advance the tail to the new last node</span><br><span class="line">        current = current-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return dummy.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="4" type="1">
-<li>使用<code>Local References</code>：</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">struct node* CopyList4(struct node* head)</span><br><span class="line">&#123;</span><br><span class="line">    struct node* current = head;   //used to iterate over the original list</span><br><span class="line">    struct node* newList = NULL;   //head of the new list</span><br><span class="line">    struct node** lastPtr;           </span><br><span class="line"></span><br><span class="line">    lastPtr = &amp;newList;      //start off pointing to the head itself</span><br><span class="line"></span><br><span class="line">    while (current != NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        Push(lastPtr, current-&gt;data);   //add each node at the lastPtr</span><br><span class="line">        lastPtr = &amp;((*lastPtr)-&gt;next);    //advance lastPtr</span><br><span class="line">        current = current-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return newList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>核心思想是使用<code>lastPtr</code>指针指向每个节点的<code>.next</code>域这个指针，而不是指向节点本身。</p>
-<ol start="5" type="1">
-<li>使用<code>Recursive</code>：</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">struct node* CopyList5(struct node* head)</span><br><span class="line">&#123;</span><br><span class="line">    struct node* current = head;</span><br><span class="line">    if (head == NULL)</span><br><span class="line">        return NULL;</span><br><span class="line">    else &#123;</span><br><span class="line">        struct node* newList = (struct node*)malloc(sizeof(struct node));  //make one node</span><br><span class="line">        newList-&gt;data = current-&gt;data;</span><br><span class="line"></span><br><span class="line">        newList-&gt;next = CopyList5(current-&gt;next);    //recur for the rest</span><br><span class="line">        return newList;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1128,7 +1199,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">23</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
