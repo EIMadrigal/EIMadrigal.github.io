@@ -41,7 +41,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200819221846500.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200730162654329.png">
 <meta property="article:published_time" content="2020-09-04T14:26:00.000Z">
-<meta property="article:modified_time" content="2022-01-27T03:52:25.284Z">
+<meta property="article:modified_time" content="2022-01-27T12:24:23.756Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Network">
 <meta property="article:tag" content="Projects">
@@ -289,9 +289,12 @@
 <p>Host：服务器主机名，如果浏览器自带，直接转发；否则使用请求行里解析出的hostname。<br />
 User-Agent：用户的操作系统/浏览器等信息。<br />
 Connection：第一次请求/响应完成后，当前连接是否keep alive。<br />
-Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Host: www.cnblogs.com</span><br><span class="line">User-Agent: Mozilla/<span class="number">5.0</span> (X11; Linux x86_64; rv:<span class="number">10.0</span><span class="number">.3</span>) Gecko/<span class="number">20120305</span> Firefox/<span class="number">10.0</span><span class="number">.3</span></span><br><span class="line">Connection: close</span><br><span class="line">Proxy-Connection: close</span><br></pre></td></tr></table></figure> - 端口<br />
+Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Host: www.cnblogs.com</span><br><span class="line">User-Agent: Mozilla/<span class="number">5.0</span> (X11; Linux x86_64; rv:<span class="number">10.0</span><span class="number">.3</span>) Gecko/<span class="number">20120305</span> Firefox/<span class="number">10.0</span><span class="number">.3</span></span><br><span class="line">Connection: close</span><br><span class="line">Proxy-Connection: close</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>端口<br />
 请求端口：URL中的可选字段，如果用户输入时指定，代理应该连接指定端口，否则使用默认端口80。<br />
-监听端口：代理应该在该端口监听用户的连接请求，由命令行参数给出。可以是1024~65536之间的未被其他进程占用的任意值。</p>
+监听端口：代理应该在该端口监听用户的连接请求，由命令行参数给出。可以是1024~65536之间的未被其他进程占用的任意值。</li>
+</ul>
 <h2 id="implementation">Implementation</h2>
 <ul>
 <li>Sequential Web Proxy<br />
@@ -346,20 +349,46 @@ Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="g
 <li>找到可用块，缓存满足大小条件的Object</li>
 <li>更新时间戳</li>
 </ul>
-<p>最大的缓存对象是100KB，一共的空间1MB，平均可以缓存10个Object，这样会浪费24KB空间。所以采用分级的方法： 100KB * 5块 = 500KB 50KB * 6块 = 300KB 20KB * 5块 = 100KB 10KB * 10块 = 100KB 1KB * 24块 = 24KB 接着来构思下存储结构，<strong>设计数据结构</strong>和<strong>类（函数）接口</strong>是我认为做一个工程最难的部分，当然还有最后的效率优化问题： 一个cache line最基本的构成需要存储URI和OBJ，因为下次用户请求时代理需要知道请求的是哪个网站的什么内容（通过URI确定），进而如果查找到，将内容OBJ直接返回给用户。同时还需要一个时间戳以及用于同步的读写锁： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> *uri;</span><br><span class="line">    <span class="keyword">char</span> *obj;</span><br><span class="line">    <span class="keyword">int</span> objSize;</span><br><span class="line">    <span class="keyword">int64_t</span> time;</span><br><span class="line">    <span class="keyword">pthread_rwlock_t</span> rwlock; </span><br><span class="line">&#125; cache_line;</span><br></pre></td></tr></table></figure> 一共有5种类型的cache，每种类型有一个number，还有一个指向该种cache第一块的指针p，p指向该种的第一小块，p+1指向该种的第二小块，以此类推： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> numOfLine;</span><br><span class="line">    cache_line *cachep;</span><br><span class="line">&#125; cache_type;</span><br></pre></td></tr></table></figure> 数据结构设计完后，需要设计函数接口，cache的操作有初始化、查找、写入（替换）和释放： 初始化需要为cache block分配空间，将每一块的时间戳置0，表示该块没有存储内容； 查找时需要遍历所有的type，再在该type中遍历所有的block，如果时间戳不为0，比对浏览器需要访问的URI与当前块的URI是否相等，相等则表示cache hit，直接写回给相应的fd；更新时间戳时，粒度越细越好，这里用<code>gettimeofday</code>精确到微秒级别；读取时如果能申请到写锁，就更新时间，否则就不更新； 写入时需要先计算object大小，寻找空闲的cache block，没有需要替换，满足要求后存入cache，并且将结果返给浏览器。这里要注意寻找空闲块时要<strong>从小往大</strong>，否则很可能一个很小的object占用了一块很大的block，造成严重浪费，类似于操作系统内存管理动态分配中的最佳适应算法。 那么这种分级的方式的缺点是：每种类型的cache块<strong>大小固定</strong>，很可能50KB的块只存了10KB内容，造成浪费，类似于固定分区分配。 关于替换，我们采取<strong>局部置换</strong>策略：即需要换入的object大小如果是30KB，我们只用50KB这种类型去存储，如果50KB的块用完了，就需要换出一块50KB，即使此时100KB的块有空闲，也仍然完成置换过程。</p>
+<p>最大的缓存对象是100KB，一共的空间1MB，平均可以缓存10个Object，这样会浪费24KB空间。所以采用分级的方法：<br />
+100KB * 5块 = 500KB<br />
+50KB * 6块 = 300KB<br />
+20KB * 5块 = 100KB<br />
+10KB * 10块 = 100KB<br />
+1KB * 24块 = 24KB<br />
+接着来构思下存储结构，<strong>设计数据结构</strong>和<strong>类（函数）接口</strong>是我认为做一个工程最难的部分，当然还有最后的效率优化问题：<br />
+一个cache line最基本的构成需要存储URI和OBJ，因为下次用户请求时代理需要知道请求的是哪个网站的什么内容（通过URI确定），进而如果查找到，将内容OBJ直接返回给用户。同时还需要一个时间戳以及用于同步的读写锁： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> *uri;</span><br><span class="line">    <span class="keyword">char</span> *obj;</span><br><span class="line">    <span class="keyword">int</span> objSize;</span><br><span class="line">    <span class="keyword">int64_t</span> time;</span><br><span class="line">    <span class="keyword">pthread_rwlock_t</span> rwlock; </span><br><span class="line">&#125; cache_line;</span><br></pre></td></tr></table></figure> 一共有5种类型的cache，每种类型有一个number，还有一个指向该种cache第一块的指针p，p指向该种的第一小块，p+1指向该种的第二小块，以此类推： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> numOfLine;</span><br><span class="line">    cache_line *cachep;</span><br><span class="line">&#125; cache_type;</span><br></pre></td></tr></table></figure> 数据结构设计完后，需要设计函数接口，cache的操作有初始化、查找、写入（替换）和释放：<br />
+初始化需要为cache block分配空间，将每一块的时间戳置0，表示该块没有存储内容；<br />
+查找时需要遍历所有的type，再在该type中遍历所有的block，如果时间戳不为0，比对浏览器需要访问的URI与当前块的URI是否相等，相等则表示cache hit，直接写回给相应的fd；更新时间戳时，粒度越细越好，这里用<code>gettimeofday</code>精确到微秒级别；读取时如果能申请到写锁，就更新时间，否则就不更新；<br />
+写入时需要先计算object大小，寻找空闲的cache block，没有需要替换，满足要求后存入cache，并且将结果返给浏览器。这里要注意寻找空闲块时要<strong>从小往大</strong>，否则很可能一个很小的object占用了一块很大的block，造成严重浪费，类似于操作系统内存管理动态分配中的最佳适应算法。<br />
+那么这种分级的方式的缺点是：每种类型的cache块<strong>大小固定</strong>，很可能50KB的块只存了10KB内容，造成浪费，类似于固定分区分配。<br />
+关于替换，我们采取<strong>局部置换</strong>策略：即需要换入的object大小如果是30KB，我们只用50KB这种类型去存储，如果50KB的块用完了，就需要换出一块50KB，即使此时100KB的块有空闲，也仍然完成置换过程。</p>
 <p>写完cache后，需要修改<code>Makefile</code>，在<code>proxy.c</code>中增加cache的部分。运行完以后，可以用<code>make clean</code>清除目录下多余的垃圾文件，比如<code>.o</code>文件等。</p>
 <h2 id="test">Test</h2>
 <p>测试的方式一共有3种：</p>
 <ul>
 <li>自动化测试 利用课程提供的脚本<code>driver.sh</code>自动进行，执行之前，需要安装一些工具： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install net-tools</span><br></pre></td></tr></table></figure> 做完所有内容后，先用<code>driver.sh</code>进行测试，发现cache部分没分。。。得，开始debug吧！我觉得GDB好难用啊，所以都是通过<code>printf</code>de的。</li>
 </ul>
-<p>用curl先通过proxy发个请求，然后看看proxy有没有缓存服务器返回的内容。 最后发现在<code>write_cache</code>时需要用到URI，但是之前解析时候把URI改了，一定注意URI最好不要改，设置为<code>const</code>比较保险。</p>
-<p>完了以后，cache满分了，basic又错了一个，fetch可执行对象文件tiny时： <img src="https://img-blog.csdnimg.cn/20200819212506210.png" alt="在这里插入图片描述" /> 一开始怀疑是tiny太大了，某个数组爆掉了。看了下tiny有36000+B，缓存空间足够，但是可能写入时候有些bug。tiny是二进制文件，可能比较特殊？很奇怪的是：明明<code>objSize</code>是36000+，但是<code>strlen(obj)</code>只有100，怀疑文件中可能有<code>\0</code>，提前终止了<code>strlen</code>的计数。</p>
+<p>用curl先通过proxy发个请求，然后看看proxy有没有缓存服务器返回的内容。<br />
+最后发现在<code>write_cache</code>时需要用到URI，但是之前解析时候把URI改了，一定注意URI最好不要改，设置为<code>const</code>比较保险。</p>
+<p>完了以后，cache满分了，basic又错了一个，fetch可执行对象文件tiny时： <img src="https://img-blog.csdnimg.cn/20200819212506210.png" alt="在这里插入图片描述" /><br />
+一开始怀疑是tiny太大了，某个数组爆掉了。看了下tiny有36000+B，缓存空间足够，但是可能写入时候有些bug。tiny是二进制文件，可能比较特殊？很奇怪的是：明明<code>objSize</code>是36000+，但是<code>strlen(obj)</code>只有100，怀疑文件中可能有<code>\0</code>，提前终止了<code>strlen</code>的计数。</p>
 <p>解决方案是<code>write_cache</code>参数不仅要有<code>uri</code>和<code>obj</code>，还要有<code>obj</code>的长度<code>len</code>，否则直接用<code>strlen</code>获取长度可能就挂了。后来修改以后就满分了，一定要注意，如果用<code>char*</code>传参，一定要附带参数<code>len</code>，因为不一定读取的是字符串，还有可能是二进制文件，<code>\0</code>也就是<code>0</code>很容易出现，用<code>strlen</code>大概率会爆掉。</p>
-<p>最终测试结果如下： <img src="https://img-blog.csdnimg.cn/20200819221810760.png" alt="在这里插入图片描述" /> <img src="https://img-blog.csdnimg.cn/20200819221846500.png" alt="在这里插入图片描述" /> - 利用<code>curl</code>工具 <code>curl</code>可以用来生成HTTP请求：假设Sever在端口15213监听，代理在端口15214监听，那么可以通过下面命令经由代理发送请求： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v --proxy http:<span class="comment">//localhost:15214 http://localhost:15213/home.html</span></span><br></pre></td></tr></table></figure> 我们用该工具测试下Sequential Web Proxy： 首先启动Tiny Web Server和Proxy： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./tiny 15213</span><br><span class="line">./proxy 15214</span><br></pre></td></tr></table></figure> 然后执行<code>curl</code>命令： <img src="https://img-blog.csdnimg.cn/20200730162654329.png" alt="在这里插入图片描述" /> 说明基本功能是OK的！！ - 实际浏览器测试 满分之后，万里长征走了一半吧，因为要在实际浏览器测试，不断增强程序的<strong>鲁棒性</strong>。 测试之前，先禁用浏览器自带的cache，清空之前的缓存。 测下内存泄漏：</p>
+<p>最终测试结果如下： <img src="https://img-blog.csdnimg.cn/20200819221810760.png" alt="在这里插入图片描述" /> <img src="https://img-blog.csdnimg.cn/20200819221846500.png" alt="在这里插入图片描述" /> - 利用<code>curl</code>工具<br />
+<code>curl</code>可以用来生成HTTP请求：假设Sever在端口15213监听，代理在端口15214监听，那么可以通过下面命令经由代理发送请求： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v --proxy http:<span class="comment">//localhost:15214 http://localhost:15213/home.html</span></span><br></pre></td></tr></table></figure> 我们用该工具测试下Sequential Web Proxy：<br />
+首先启动Tiny Web Server和Proxy： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./tiny 15213</span><br><span class="line">./proxy 15214</span><br></pre></td></tr></table></figure> 然后执行<code>curl</code>命令： <img src="https://img-blog.csdnimg.cn/20200730162654329.png" alt="在这里插入图片描述" /><br />
+说明基本功能是OK的！！ - 实际浏览器测试<br />
+满分之后，万里长征走了一半吧，因为要在实际浏览器测试，不断增强程序的<strong>鲁棒性</strong>。 测试之前，先禁用浏览器自带的cache，清空之前的缓存。 测下内存泄漏：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">valgrind --leak-check=full --show-leak-kinds=all ./proxy 8080</span><br></pre></td></tr></table></figure>
 <h2 id="codereference">Code&amp;Reference</h2>
-<p><a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/15-213/tree/master/Web%20Proxy">code here</a> <a target="_blank" rel="noopener" href="http://csapp.cs.cmu.edu/3e/labs.html">reference here</a> ## TODO 接下来的工作可拓展的还有很多，包括但不限于： - 增加对HTTPS的支持（看起来并不简单） - Cache这里还有很多可优化的地方（分配策略、置换策略...） - 目前只支持GET方式，还可以拓展到POST方式</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/15-213/tree/master/Web%20Proxy">code here</a><br />
+<a target="_blank" rel="noopener" href="http://csapp.cs.cmu.edu/3e/labs.html">reference here</a></p>
+<h2 id="todo">TODO</h2>
+<p>接下来的工作可拓展的还有很多，包括但不限于：</p>
+<ul>
+<li>增加对HTTPS的支持（看起来并不简单）</li>
+<li>Cache这里还有很多可优化的地方（分配策略、置换策略...）</li>
+<li>目前只支持GET方式，还可以拓展到POST方式</li>
+</ul>
 
     </div>
 
@@ -486,7 +515,7 @@ Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="g
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#intro"><span class="nav-number">1.</span> <span class="nav-text">Intro</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#background-knowledge"><span class="nav-number">2.</span> <span class="nav-text">Background Knowledge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#implementation"><span class="nav-number">3.</span> <span class="nav-text">Implementation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#test"><span class="nav-number">4.</span> <span class="nav-text">Test</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#codereference"><span class="nav-number">5.</span> <span class="nav-text">Code&amp;Reference</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#intro"><span class="nav-number">1.</span> <span class="nav-text">Intro</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#background-knowledge"><span class="nav-number">2.</span> <span class="nav-text">Background Knowledge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#implementation"><span class="nav-number">3.</span> <span class="nav-text">Implementation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#test"><span class="nav-number">4.</span> <span class="nav-text">Test</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#codereference"><span class="nav-number">5.</span> <span class="nav-text">Code&amp;Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#todo"><span class="nav-number">6.</span> <span class="nav-text">TODO</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
