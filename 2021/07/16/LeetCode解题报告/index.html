@@ -28,7 +28,7 @@
 <meta property="og:description" content="部分题目分析">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-07-16T07:21:00.000Z">
-<meta property="article:modified_time" content="2022-01-16T14:17:58.047Z">
+<meta property="article:modified_time" content="2022-01-27T14:11:59.979Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="Interview">
@@ -251,7 +251,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="正则表达式匹配">10 正则表达式匹配</h2>
+        <h2 id="寻找两个正序数组的中位数">4 寻找两个正序数组的中位数</h2>
+<p>最直观的做法就是合并2个有序数组，根据奇偶返回中位数，</p>
+<h2 id="正则表达式匹配">10 正则表达式匹配</h2>
 <p>判断字符串<code>s</code>是否匹配正则表达式<code>p</code>，<code>p</code>仅包含<code>.</code>和<code>*</code>。<code>.</code>匹配任意单个字符，<code>*</code>匹配0或多个前一个字符。题目保证不会出现连续的<code>*</code>。</p>
 <p>可以发现此题的难点在于<code>*</code>，<code>a*</code>可以表示<code>"", a, aa, aaa</code>，<code>.*</code>可以表示<code>"", ., .., ...</code>。第一次看到这个题不一定能想到DP，甚至暴力做法也不知道从哪入手。我认为核心在于先不要考虑<code>*</code>到底需要匹配几次，而是考虑<code>*</code>到底是否需要匹配，即匹配0次/匹配1次的问题，多次匹配不过是将匹配1次重复而已。</p>
 <p>例如<code>s=aa,p=a*</code>，从匹配0次/匹配1次的角度出发，暴搜的过程可以表示为一棵二叉树，左孩子表示匹配1次，右孩子表示匹配0次，开始时指针位置<code>(0,0)</code>，此时我们发现<code>s[i] == p[j] &amp;&amp; p[j + 1] == *</code>，意味着可以选择匹配0次或1次a：如果0次，意味着放弃目前遇到的这个<code>*</code>，那么只能<code>i不变, j = j + 2</code>，j越界匹配结束返回False；如果1次，意味着<code>s[i]</code>匹配成功，那么可以继续使用目前的这个<code>*</code>匹配<code>s[i + 1], j不变</code>。直到将<code>s</code>的所有字符匹配完毕，时间复杂度<span class="math inline">\(O(2^n)\)</span>。</p>
@@ -446,7 +448,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%8C%B9%E9%85%8D"><span class="nav-number">1.</span> <span class="nav-text">10 正则表达式匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%97%B6%E8%BF%90%E8%A1%8Cn%E5%8F%B0%E7%94%B5%E8%84%91%E7%9A%84%E6%9C%80%E9%95%BF%E6%97%B6%E9%97%B4"><span class="nav-number">2.</span> <span class="nav-text">2141 同时运行N台电脑的最长时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section"><span class="nav-number">3.</span> <span class="nav-text">767</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E6%84%8F"><span class="nav-number">4.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">分析</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">4 寻找两个正序数组的中位数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%8C%B9%E9%85%8D"><span class="nav-number">2.</span> <span class="nav-text">10 正则表达式匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%97%B6%E8%BF%90%E8%A1%8Cn%E5%8F%B0%E7%94%B5%E8%84%91%E7%9A%84%E6%9C%80%E9%95%BF%E6%97%B6%E9%97%B4"><span class="nav-number">3.</span> <span class="nav-text">2141 同时运行N台电脑的最长时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section"><span class="nav-number">4.</span> <span class="nav-text">767</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E6%84%8F"><span class="nav-number">5.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">6.</span> <span class="nav-text">分析</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
