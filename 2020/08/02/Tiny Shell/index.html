@@ -20,17 +20,18 @@
     var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Intro 本项目要实现一个简易版Shell，支持以下Features： - 命令提示符tsh&gt; - 若用户输入的命令第一个单词是内置命令，在当前进程tsh(Tiny Shell)执行命令： 12345jobs   列出运行&#x2F;挂起的后台jobbg &lt;job&gt;   通过发送SIGCONT信号重启进程，将后台挂起的job设为在后台运行，&lt;job&gt;可以是PID或%JIDf">
+  <meta name="description" content="A Simple Shell">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Tiny Shell">
 <meta property="og:url" content="https://eimadrigal.github.io/2020/08/02/Tiny%20Shell/index.html">
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
-<meta property="og:description" content="Intro 本项目要实现一个简易版Shell，支持以下Features： - 命令提示符tsh&gt; - 若用户输入的命令第一个单词是内置命令，在当前进程tsh(Tiny Shell)执行命令： 12345jobs   列出运行&#x2F;挂起的后台jobbg &lt;job&gt;   通过发送SIGCONT信号重启进程，将后台挂起的job设为在后台运行，&lt;job&gt;可以是PID或%JIDf">
+<meta property="og:description" content="A Simple Shell">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200719145450179.png">
-<meta property="article:published_time" content="2020-08-02T00:30:00.000Z">
-<meta property="article:modified_time" content="2022-01-13T16:01:43.613Z">
+<meta property="article:published_time" content="2020-08-02T08:30:00.000Z">
+<meta property="article:modified_time" content="2022-01-28T02:16:06.211Z">
 <meta property="article:author" content="EIMadrigal">
+<meta property="article:tag" content="Projects">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200719145450179.png">
 
@@ -220,7 +221,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-08-02 08:30:00" itemprop="dateCreated datePublished" datetime="2020-08-02T08:30:00+08:00">2020-08-02</time>
+              <time title="Created: 2020-08-02 16:30:00" itemprop="dateCreated datePublished" datetime="2020-08-02T16:30:00+08:00">2020-08-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -231,6 +241,7 @@
               <span class="post-meta-item-text">Views: </span>
               <span id="busuanzi_value_page_pv"></span>
             </span>
+            <div class="post-description">A Simple Shell</div>
 
         </div>
       </header>
@@ -242,7 +253,70 @@
 
       
         <h2 id="intro">Intro</h2>
-<p>本项目要实现一个简易版Shell，支持以下Features： - 命令提示符<code>tsh&gt;</code> - 若用户输入的命令第一个单词是内置命令，在当前进程tsh(Tiny Shell)执行命令： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">jobs</span>   列出运行/挂起的后台job</span><br><span class="line"><span class="built_in">bg</span> &lt;job&gt;   通过发送SIGCONT信号重启进程，将后台挂起的job设为在后台运行，&lt;job&gt;可以是PID或%JID</span><br><span class="line"><span class="built_in">fg</span> &lt;job&gt;   通过发送SIGCONT信号重启进程，将后台运行/挂起的job设为在前台运行，&lt;job&gt;可以是PID或%JID</span><br><span class="line"><span class="built_in">kill</span> &lt;job&gt;   结束&lt;job&gt;</span><br><span class="line">quit   退出tsh</span><br></pre></td></tr></table></figure> - 若用户输入的命令第一个单词是可执行文件路径，后续单词是命令行参数，tsh会fork一个子进程，在子进程运行 - 支持job control（前后台切换），改变进程状态（running/stopped/terminated） - 支持管道<code>|</code>和I/O重定向<code>&lt;</code> <code>&gt;</code>(TODO) ## Background Knowledge - Shell shell是一个交互式的命令行解释器，可以执行用户输入的指令，显示计算结果。 用户输入既可以是内置命令，也可以是可执行文件路径。用户既可以在前台运行，也可以在后台运行。后台job可以在命令最后加一个<code>&amp;</code>，否则视为前台。比如<code>/bin/ls -l -d &amp;</code>表示在后台执行<code>ls</code>程序。前台job只能有1个，后台job则可以有多个。 - Signals 信号机制的作用就是允许进程/内核打断其他进程运行，是进行进程间通信的一种方式。 Linux的常用信号有： <img src="https://img-blog.csdnimg.cn/20200719145450179.png" alt="在这里插入图片描述" /> ## Implementation - useful functions <code>int fork(void)</code>：父进程创建一个子进程，在子进程中返回0，父进程中返回子进程的PID。 <code>int kill(pid_t pid, int sig)</code>：进程向其它进程（包括自己）发送信号，成功返回0，错误返回-1。可以通过改变参数<code>pid</code>调整发送目标：<code>pid&gt;0</code>，给该进程发信号；<code>pid==0</code>，给包括自己在内的当前进程组发信号；<code>pid&lt;0</code>，给pgid=|pid|的进程组的每个进程发信号。 <code>int execve(char *filename, char *argv[], char *envp[])</code>：在当前进程的上下文环境中装载并运行新的程序，成功不返回，失败返回-1。<code>filename</code>可以是可执行目标文件或脚本文件，会覆盖原进程的data/code/stack，会保留原进程的PID/open files/signal context。 <code>pid_t waitpid(pid_t pid, int *status, int options)</code>：指定进程终止父进程会进行回收，否则等待。内核会将子进程的退出状态传给父进程，之后清除子进程。<code>options=WNOHANG | WUNTRACED</code>时，如果wait set中没有终止/暂停的子进程，立即返回0；否则返回任意一个子进程的PID。 <code>int sigprocmask(int how, const sigset_t *set, sigset_t *oldset)</code>：<code>how=SIG_BLOCK</code>将<code>set</code>中的信号加入阻塞向量；<code>how=SIG_UNBLOCK</code>将<code>set</code>中的信号从阻塞向量中移除；<code>how=SIG_SETMASK</code>将阻塞向量设置为<code>set</code>。如果<code>oldset!=NULL</code>之前的阻塞向量就存储在<code>oldset</code>中。 <code>handler_t *signal(int signum, handler_t *handler)</code>：改变信号的默认行为。 - step by step -- 整体结构：除了测试文件和Makefile外，全部实现都在<code>tsh.c</code>中，<code>main</code>函数有一个死循环，不停调用<code>eval()</code>实现命令的解析、执行。 -- <code>eval(char* cmdline)</code> 接收到用户输入后，第一件事就是解析。解析是通过<code>int parseline(const char* cmdline, char** argv)</code>完成，将<code>cmdline</code>解析到<code>argv</code>中，如果用户要求后台运行就返回1，否则返回0。 解析后，我们需要通过<code>int builtin_cmd(char** argv)</code>判断是否为内置命令。如果是内置命令，就在<code>builtin_cmd</code>里立刻执行；否则需要创建子进程执行，这里需要区分前后台进程：如果是前台，需要等待terminate才能返回并接受新的输入；如果是后台，则可以立即接收新输入。 - key point 1 父进程在<code>fork</code>子进程之前，要用<code>sigprocmask</code>阻塞<code>SIGCHLD</code>信号。否则由于父子进程执行顺序不确定，可能导致： 子进程首先执行完毕，内核向父进程发送<code>SIGCHLD</code>信号； 从内核态切换到用户态时，检测到<code>SIGCHLD</code>信号并且执行<code>sigchld_handler</code>，删除该job； 父进程执行<code>addjob</code>操作，显然删除和添加顺序反了。 如果我们正确阻塞了<code>SIGCHLD</code>信号，还是按照上面的顺序： 子进程首先执行完毕，内核向父进程发送<code>SIGCHLD</code>信号； 从内核态切换到用户态时，由于父进程阻塞了<code>SIGCHLD</code>信号，所以不会执行<code>sigchld_handler</code>； 父进程添加该job，解除<code>SIGCHLD</code>信号的阻塞，下一次context switch时删除job。 - key point 2 用户从键盘输入ctrl-c时，内核给shell发<code>SIGINT</code>信号（默认终止shell进程），在<code>main</code>里面安装handler，在<code>sigint_handler</code>中处理：终止所有的前台进程及其子进程； 用户从键盘输入ctrl-z时，内核给shell发<code>SIGTSTP</code>信号（默认暂停当前进程直到收到<code>SIGCONT</code>），在<code>main</code>里面安装handler，在<code>sigtstp_handler</code>中处理：暂停所有的前台进程及其子进程。 - key point 3 默认情况下，<code>fork</code>出来的子进程和他爹属于同一个进程组。当我们在机器上运行Tiny Shell时，程序运行在前台进程组中，这时如果Tiny Shell创建一些子进程，这些子进程也会同属于这个前台进程组，用户输入ctrl-c会终止所有前台进程，包括Tiny Shell，这显然不是我们想要的。 解决方案是：<code>fork</code>之后，子进程调用<code>setpgid(0,0)</code>将其放到一个新的进程组里，这个组的group id和PID相同。这样就可以确保前台进程组里只有Tiny Shell一个进程，用户输入ctrl-c时，就可以在<code>sigint_handler</code>中调用<code>kill()</code>终止特定的前台job。 - key point 4 当子进程终止或者暂停，内核会给父进程发送<code>SIGCHLD</code>信号，我们在<code>sigchld_handler</code>中根据子进程的状态做相应的处理： <code>WIFEXITED(status)</code>：子进程通过<code>exit</code>或<code>return</code>正常终止； <code>WIFSIGNALED(status)</code>：子进程通过信号终止； <code>WIFSTOPPED(status)</code>：子进程暂停； <code>WTERMSIG(status)</code>：当<code>WIFSIGNALED()</code>为真，返回造成子进程终止的信号ID； <code>WSTOPSIG(status)</code>：当<code>WIFSTOPPED()</code>为真，返回造成子进程暂停的信号ID。 - key point 5 对于前台进程，需要一直等待其执行完毕，然后回收，可以在<code>waitfg()</code>中调用<code>sigsuspend</code>完成；但对于后台进程，由于不用等待其完成，所以为了避免其成为zombie，需要在其执行完毕或者暂停时通知父进程，这个机制就是signal，具体的就是我们的<code>sigchld_handler</code>做的事情。 ## Test 一方面通过提供的脚本测试，共有16个脚本测试文件，测试通过<code>make test01</code>~<code>make test16</code>进行； 另一方面通过实际执行去测试各项功能。 ## Code&amp;Reference <a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/15-213/tree/master/Tiny%20Shell">code here</a> <a target="_blank" rel="noopener" href="http://csapp.cs.cmu.edu/3e/labs.html">reference here</a> ## TODO 管道、重定向、https://github.com/mit-pdos/xv6-riscv/blob/riscv//user/sh.c#L1</p>
+<p>本项目要实现一个简易版Shell，支持以下Features：</p>
+<ul>
+<li>命令提示符<code>tsh&gt;</code></li>
+<li>若用户输入的命令第一个单词是内置命令，在当前进程tsh(Tiny Shell)执行命令： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">jobs</span>   列出运行/挂起的后台job</span><br><span class="line"><span class="built_in">bg</span> &lt;job&gt;   通过发送SIGCONT信号重启进程，将后台挂起的job设为在后台运行，&lt;job&gt;可以是PID或%JID</span><br><span class="line"><span class="built_in">fg</span> &lt;job&gt;   通过发送SIGCONT信号重启进程，将后台运行/挂起的job设为在前台运行，&lt;job&gt;可以是PID或%JID</span><br><span class="line"><span class="built_in">kill</span> &lt;job&gt;   结束&lt;job&gt;</span><br><span class="line">quit   退出tsh</span><br></pre></td></tr></table></figure></li>
+<li>若用户输入的命令第一个单词是可执行文件路径，后续单词是命令行参数，tsh会fork一个子进程，在子进程运行</li>
+<li>支持job control（前后台切换），改变进程状态（running/stopped/terminated）</li>
+<li>支持管道<code>|</code>和I/O重定向<code>&lt;</code> <code>&gt;</code>(TODO)</li>
+</ul>
+<h2 id="background-knowledge">Background Knowledge</h2>
+<ul>
+<li>Shell<br />
+shell是一个交互式的命令行解释器，可以执行用户输入的指令，显示计算结果。<br />
+用户输入既可以是内置命令，也可以是可执行文件路径。用户既可以在前台运行，也可以在后台运行。后台job可以在命令最后加一个<code>&amp;</code>，否则视为前台。比如<code>/bin/ls -l -d &amp;</code>表示在后台执行<code>ls</code>程序。前台job只能有1个，后台job则可以有多个。</li>
+<li>Signals<br />
+信号机制的作用就是允许进程/内核打断其他进程运行，是进行进程间通信的一种方式。<br />
+Linux的常用信号有： <img src="https://img-blog.csdnimg.cn/20200719145450179.png" alt="在这里插入图片描述" /></li>
+</ul>
+<h2 id="implementation">Implementation</h2>
+<ul>
+<li>useful functions<br />
+<code>int fork(void)</code>：父进程创建一个子进程，在子进程中返回0，父进程中返回子进程的PID。<br />
+<code>int kill(pid_t pid, int sig)</code>：进程向其它进程（包括自己）发送信号，成功返回0，错误返回-1。可以通过改变参数<code>pid</code>调整发送目标：<code>pid&gt;0</code>，给该进程发信号；<code>pid==0</code>，给包括自己在内的当前进程组发信号；<code>pid&lt;0</code>，给pgid=|pid|的进程组的每个进程发信号。<br />
+<code>int execve(char *filename, char *argv[], char *envp[])</code>：在当前进程的上下文环境中装载并运行新的程序，成功不返回，失败返回-1。<code>filename</code>可以是可执行目标文件或脚本文件，会覆盖原进程的data/code/stack，会保留原进程的PID/open files/signal context。<br />
+<code>pid_t waitpid(pid_t pid, int *status, int options)</code>：指定进程终止父进程会进行回收，否则等待。内核会将子进程的退出状态传给父进程，之后清除子进程。<code>options=WNOHANG | WUNTRACED</code>时，如果wait set中没有终止/暂停的子进程，立即返回0；否则返回任意一个子进程的PID。<br />
+<code>int sigprocmask(int how, const sigset_t *set, sigset_t *oldset)</code>：<code>how=SIG_BLOCK</code>将<code>set</code>中的信号加入阻塞向量；<code>how=SIG_UNBLOCK</code>将<code>set</code>中的信号从阻塞向量中移除；<code>how=SIG_SETMASK</code>将阻塞向量设置为<code>set</code>。如果<code>oldset!=NULL</code>之前的阻塞向量就存储在<code>oldset</code>中。<br />
+<code>handler_t *signal(int signum, handler_t *handler)</code>：改变信号的默认行为。</li>
+<li>step by step<br />
+-- 整体结构：除了测试文件和Makefile外，全部实现都在<code>tsh.c</code>中，<code>main</code>函数有一个死循环，不停调用<code>eval()</code>实现命令的解析、执行。<br />
+-- <code>eval(char* cmdline)</code><br />
+接收到用户输入后，第一件事就是解析。解析是通过<code>int parseline(const char* cmdline, char** argv)</code>完成，将<code>cmdline</code>解析到<code>argv</code>中，如果用户要求后台运行就返回1，否则返回0。<br />
+解析后，我们需要通过<code>int builtin_cmd(char** argv)</code>判断是否为内置命令。如果是内置命令，就在<code>builtin_cmd</code>里立刻执行；否则需要创建子进程执行，这里需要区分前后台进程：如果是前台，需要等待terminate才能返回并接受新的输入；如果是后台，则可以立即接收新输入。</li>
+<li>key point 1<br />
+父进程在<code>fork</code>子进程之前，要用<code>sigprocmask</code>阻塞<code>SIGCHLD</code>信号。否则由于父子进程执行顺序不确定，可能导致：<br />
+子进程首先执行完毕，内核向父进程发送<code>SIGCHLD</code>信号；<br />
+从内核态切换到用户态时，检测到<code>SIGCHLD</code>信号并且执行<code>sigchld_handler</code>，删除该job；<br />
+父进程执行<code>addjob</code>操作，显然删除和添加顺序反了。<br />
+如果我们正确阻塞了<code>SIGCHLD</code>信号，还是按照上面的顺序：<br />
+子进程首先执行完毕，内核向父进程发送<code>SIGCHLD</code>信号；<br />
+从内核态切换到用户态时，由于父进程阻塞了<code>SIGCHLD</code>信号，所以不会执行<code>sigchld_handler</code>；<br />
+父进程添加该job，解除<code>SIGCHLD</code>信号的阻塞，下一次context switch时删除job。</li>
+<li>key point 2<br />
+用户从键盘输入ctrl-c时，内核给shell发<code>SIGINT</code>信号（默认终止shell进程），在<code>main</code>里面安装handler，在<code>sigint_handler</code>中处理：终止所有的前台进程及其子进程；<br />
+用户从键盘输入ctrl-z时，内核给shell发<code>SIGTSTP</code>信号（默认暂停当前进程直到收到<code>SIGCONT</code>），在<code>main</code>里面安装handler，在<code>sigtstp_handler</code>中处理：暂停所有的前台进程及其子进程。</li>
+<li>key point 3<br />
+默认情况下，<code>fork</code>出来的子进程和他爹属于同一个进程组。当我们在机器上运行Tiny Shell时，程序运行在前台进程组中，这时如果Tiny Shell创建一些子进程，这些子进程也会同属于这个前台进程组，用户输入ctrl-c会终止所有前台进程，包括Tiny Shell，这显然不是我们想要的。<br />
+解决方案是：<code>fork</code>之后，子进程调用<code>setpgid(0,0)</code>将其放到一个新的进程组里，这个组的group id和PID相同。这样就可以确保前台进程组里只有Tiny Shell一个进程，用户输入ctrl-c时，就可以在<code>sigint_handler</code>中调用<code>kill()</code>终止特定的前台job。</li>
+<li>key point 4<br />
+当子进程终止或者暂停，内核会给父进程发送<code>SIGCHLD</code>信号，我们在<code>sigchld_handler</code>中根据子进程的状态做相应的处理：<br />
+<code>WIFEXITED(status)</code>：子进程通过<code>exit</code>或<code>return</code>正常终止；<br />
+<code>WIFSIGNALED(status)</code>：子进程通过信号终止；<br />
+<code>WIFSTOPPED(status)</code>：子进程暂停；<br />
+<code>WTERMSIG(status)</code>：当<code>WIFSIGNALED()</code>为真，返回造成子进程终止的信号ID；<br />
+<code>WSTOPSIG(status)</code>：当<code>WIFSTOPPED()</code>为真，返回造成子进程暂停的信号ID。</li>
+<li>key point 5<br />
+对于前台进程，需要一直等待其执行完毕，然后回收，可以在<code>waitfg()</code>中调用<code>sigsuspend</code>完成；但对于后台进程，由于不用等待其完成，所以为了避免其成为zombie，需要在其执行完毕或者暂停时通知父进程，这个机制就是signal，具体的就是我们的<code>sigchld_handler</code>做的事情。</li>
+</ul>
+<h2 id="test">Test</h2>
+<p>一方面通过提供的脚本测试，共有16个脚本测试文件，测试通过<code>make test01</code>~<code>make test16</code>进行；<br />
+另一方面通过实际执行去测试各项功能。</p>
+<h2 id="codereference">Code&amp;Reference</h2>
+<p><a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/15-213/tree/master/Tiny%20Shell">code here</a><br />
+<a target="_blank" rel="noopener" href="http://csapp.cs.cmu.edu/3e/labs.html">reference here</a></p>
+<h2 id="todo">TODO</h2>
+<p>管道、重定向、https://github.com/mit-pdos/xv6-riscv/blob/riscv//user/sh.c#L1</p>
 
     </div>
 
@@ -288,6 +362,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Projects/" rel="tag"># Projects</a>
+          </div>
 
         
 
@@ -365,7 +442,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#intro"><span class="nav-number">1.</span> <span class="nav-text">Intro</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#intro"><span class="nav-number">1.</span> <span class="nav-text">Intro</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#background-knowledge"><span class="nav-number">2.</span> <span class="nav-text">Background Knowledge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#implementation"><span class="nav-number">3.</span> <span class="nav-text">Implementation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#test"><span class="nav-number">4.</span> <span class="nav-text">Test</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#codereference"><span class="nav-number">5.</span> <span class="nav-text">Code&amp;Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#todo"><span class="nav-number">6.</span> <span class="nav-text">TODO</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
