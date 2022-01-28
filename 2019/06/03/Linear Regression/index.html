@@ -28,7 +28,7 @@
 <meta property="og:description" content="线性回归">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-06-03T14:54:00.000Z">
-<meta property="article:modified_time" content="2022-01-28T02:09:16.433Z">
+<meta property="article:modified_time" content="2022-01-28T02:23:45.524Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Machine Learning">
 <meta name="twitter:card" content="summary">
@@ -263,7 +263,8 @@
 <p>值得一提的是：梯度下降算法存在“锯齿”效应，因此为了加速收敛，通常要进行归一化处理使得不同特征的尺度相近。</p>
 <h2 id="normal-equation">Normal Equation</h2>
 <p>除了用迭代的方式求解<span class="math inline">\(J(\theta)\)</span>的最小值，还可以用数学工具直接求得闭式解。</p>
-<p>为了简洁地表示后续求导，使得人生不要太过凌乱，我们首先研究下<span class="math inline">\(J(\theta)\)</span>的向量表示： 假设训练集<span class="math inline">\(X\)</span>和对应的标签<span class="math inline">\(y\)</span>分别为： <span class="math display">\[X=\left[
+<p>为了简洁地表示后续求导，使得人生不要太过凌乱，我们首先研究下<span class="math inline">\(J(\theta)\)</span>的向量表示：<br />
+假设训练集<span class="math inline">\(X\)</span>和对应的标签<span class="math inline">\(y\)</span>分别为： <span class="math display">\[X=\left[
 \begin{matrix}
  (x^{(1)})^T \\
  (x^{(2)})^T \\
