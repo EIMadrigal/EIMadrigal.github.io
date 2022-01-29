@@ -672,11 +672,11 @@
 <p>在32位平台下，由于p存的是地址，故p的值是32位。 不论p指向什么类型的数据，指针变量p本身都是整型。</p>
 <p>c中没有<code>string</code>类型，所以一般用字符数组表示字符串。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">char str[15] = &quot;Hello World&quot;;</span><br></pre></td></tr></table></figure>
-<p>c规定数组名表示数组在内存中的首地址，就是<code>str = &amp;str[0]</code>，我们一般输出字符串时<code>printf("%s",str);</code>，首地址就可以输出整个字符串。</p>
+<p>c规定数组名表示数组在内存中的首地址，就是<code>str = &amp;str[0]</code>，我们一般输出字符串时<code>printf(&quot;%s&quot;,str);</code>，首地址就可以输出整个字符串。</p>
 <p>在c中可以这么干：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">char *s;</span><br><span class="line">s = &quot;Hello&quot;;</span><br></pre></td></tr></table></figure>
 <p>一个字符串赋值给一个指针变量？？</p>
-<p>事实上，c的编译器会给字符串常量分配内存，假设<code>"Hello"</code>的地址是<code>0x0000000000404000 0x0000000000404001 0x0000000000404002 0x0000000000404003 0x0000000000404004 0x0000000000404005</code>，（我是64位环境） 其实是<code>s = "Hello" = 0x0000000000404000</code>，c编译器把这个串看作首地址。</p>
+<p>事实上，c的编译器会给字符串常量分配内存，假设<code>&quot;Hello&quot;</code>的地址是<code>0x0000000000404000 0x0000000000404001 0x0000000000404002 0x0000000000404003 0x0000000000404004 0x0000000000404005</code>，（我是64位环境） 其实是<code>s = &quot;Hello&quot; = 0x0000000000404000</code>，c编译器把这个串看作首地址。</p>
 <p>做个测试：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">printf(&quot;%s\n&quot;,s);</span><br><span class="line">printf(&quot;%s\n&quot;,0x0000000000404000);</span><br><span class="line">这两行的效果是一样的。</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">char str[10];</span><br><span class="line">char* s;</span><br></pre></td></tr></table></figure>
@@ -694,11 +694,11 @@
 <p><img src="https://img-blog.csdnimg.cn/2019021915473671.png" alt="在这里插入图片描述" /> 数组中3个元素保存了3个地址，也就是3个字符串的首地址。</p>
 <p>对于<code>char** s</code>： 二级指针变量s保存一级指针<code>char*</code>的地址，我们可以：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s = a;</span><br></pre></td></tr></table></figure>
-<p>数组名<code>a=&amp;a[0]=62FE30</code>，而这个地址中（即a[0]）保存的是<code>404000</code>这个地址，也就是字符串<code>"me"</code>的首地址，即：</p>
+<p>数组名<code>a=&amp;a[0]=62FE30</code>，而这个地址中（即a[0]）保存的是<code>404000</code>这个地址，也就是字符串<code>&quot;me&quot;</code>的首地址，即：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*s = 404000 = &quot;me&quot;;</span><br></pre></td></tr></table></figure>
-<p>易错点1： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">char** s = &quot;Hello&quot;;</span><br></pre></td></tr></table></figure> 这是错的，因为s是<code>char**</code> ，而"Hello"是<code>char*</code>。 虽然都是地址，但是"Hello"表示的地址中内容是H，char型； s存的地址中的内容（<code>*s</code>）是<code>char*</code>型，指针类型。</p>
-<p>易错点2： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">char** s;</span><br><span class="line">*s = &quot;Hello&quot;;</span><br></pre></td></tr></table></figure> 这样编译不会错，但是运行时<code>printf("%s",*s);</code>就会崩溃。</p>
-<p>假设<code>s=0x1000</code>，在<code>0x1000</code>内存单元中存的是"Hello"的地址<code>0x2000</code>，即<code>*s = 0x2000</code>，这样执行时先找到<code>0x1000</code>，然后是<code>0x2000</code>，没有问题。</p>
+<p>易错点1： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">char** s = &quot;Hello&quot;;</span><br></pre></td></tr></table></figure> 这是错的，因为s是<code>char**</code> ，而&quot;Hello&quot;是<code>char*</code>。 虽然都是地址，但是&quot;Hello&quot;表示的地址中内容是H，char型； s存的地址中的内容（<code>*s</code>）是<code>char*</code>型，指针类型。</p>
+<p>易错点2： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">char** s;</span><br><span class="line">*s = &quot;Hello&quot;;</span><br></pre></td></tr></table></figure> 这样编译不会错，但是运行时<code>printf(&quot;%s&quot;,*s);</code>就会崩溃。</p>
+<p>假设<code>s=0x1000</code>，在<code>0x1000</code>内存单元中存的是&quot;Hello&quot;的地址<code>0x2000</code>，即<code>*s = 0x2000</code>，这样执行时先找到<code>0x1000</code>，然后是<code>0x2000</code>，没有问题。</p>
 <p>但<code>char** s;</code>，s存的是一个随机的地址，也就是野指针，<code>*s</code>就可能会崩溃。</p>
 <p>所以要先分配一个地址：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">char** s;</span><br><span class="line">s = (char**) malloc(sizeof(char**));</span><br><span class="line">*s = &quot;Hello&quot;;</span><br></pre></td></tr></table></figure>

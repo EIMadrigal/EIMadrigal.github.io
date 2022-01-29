@@ -268,7 +268,7 @@
 </ul>
 <ol type="1">
 <li>头文件声明。其中<code>module.h</code>和<code>init.h</code>是必不可少的。<code>Module.h</code>包含加载模块时需要的函数和符号定义；<code>init.h</code>包含模块初始化和清理函数的定义。如果在加载时允许用户传递参数，模块中还应包含<code>moduleparam.h</code>头文件。</li>
-<li>模块许可声明。从内核2.4.10版本开始，模块必须通过<code>MODULE_LICENSE</code>宏声明此模块的许可证，否则在加载模块时会显示"kernel tainted(内核被污染)"的警告信息。从<code>linux/module.h</code>文件中可以看到，被内核接受的许可证有GPL、GPL v2、GPL and additional rights、Dual BSD/GPL、Dual MPL/GPL、Dual MIT/GPL和Proprietaty。</li>
+<li>模块许可声明。从内核2.4.10版本开始，模块必须通过<code>MODULE_LICENSE</code>宏声明此模块的许可证，否则在加载模块时会显示&quot;kernel tainted(内核被污染)&quot;的警告信息。从<code>linux/module.h</code>文件中可以看到，被内核接受的许可证有GPL、GPL v2、GPL and additional rights、Dual BSD/GPL、Dual MPL/GPL、Dual MIT/GPL和Proprietaty。</li>
 <li>初始化和清理函数声明。 内核模块必须调用宏<code>module_init</code>和<code>module_exit</code>去注册初始化和清理函数。初始化和清理函数必须在宏<code>module_init</code>和<code>module_exit</code>使用前定义，否则会出现编译错误。这两个函数配对使用，例如当初始化函数申请了一个资源，那么清理函数就应该释放这个资源，使得模块不留下任何副作用。除了模块初始化函数和清理函数，还可以根据需要设计编写其它函数。</li>
 </ol>
 <ul>

@@ -265,11 +265,11 @@
 <p><img src="https://img-blog.csdnimg.cn/20200704153731705.png" alt="在这里插入图片描述" /> 从递归树可以看到：Permutation和Subsets都是关于<em>选择</em>的问题，树的深度代表选择的次数，每层的宽度代表每次决定时的选项。这种都是Exhaustive Recursion，所以复杂度很高。</p>
 <h2 id="backtracking">Backtracking</h2>
 <figure>
-<img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211129144559235-1738742177.png" alt="" /><figcaption>image</figcaption>
+<img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211129144559235-1738742177.png" alt="image" /><figcaption>image</figcaption>
 </figure>
 <p>主要可以解决<strong>组合问题</strong>、<strong>排列问题</strong>、<strong>子集问题</strong>、<strong>字符串切割问题</strong>、<strong>棋盘问题</strong>，这些问题都可以抽象为<strong>多叉树的搜索问题</strong></p>
 <figure>
-<img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211129090136628-461210128.png" alt="" /><figcaption>image</figcaption>
+<img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211129090136628-461210128.png" alt="image" /><figcaption>image</figcaption>
 </figure>
 <p>回溯用来搜索选择性问题（a series of choices）的所有/部分解，每做一次选择，就递归一次，如果约束条件不满足，需要<strong>回退到上一层递归的参数状态</strong>。 通过约束条件的剪枝可以避免对整个搜索空间的穷举，从而提高效率。</p>
 <p>三个关键点：</p>

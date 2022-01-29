@@ -28,7 +28,7 @@
 <meta property="og:description" content="操作系统八股">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-02-22T12:15:32.000Z">
-<meta property="article:modified_time" content="2022-01-12T09:50:38.100Z">
+<meta property="article:modified_time" content="2022-01-29T02:51:35.458Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Interview">
 <meta property="article:tag" content="OS">
@@ -254,13 +254,19 @@
         <h2 id="进程和线程">进程和线程</h2>
 <ol type="1">
 <li>联系: 线程存在于进程内部, 一个进程可以有多个线程, 一个线程只能属于一个进程.</li>
-<li>区别: 进程是运行时程序的封装, 是系统进行资源分配和资源调度的基本单位; 线程是进程的子任务, 是CPU分配和调度的基本单位. 进程创建需要系统分配内存, CPU和文件句柄等资源, 销毁时要进行相应的回收, 因此进程的管理开销大; 线程开销小. 进程间不会互相影响; 一个线程崩溃会导致进程崩溃, 从而影响其他线程. ## 进程调度算法</li>
+<li>区别: 进程是运行时程序的封装, 是系统进行资源分配和资源调度的基本单位; 线程是进程的子任务, 是CPU分配和调度的基本单位. 进程创建需要系统分配内存, CPU和文件句柄等资源, 销毁时要进行相应的回收, 因此进程的管理开销大; 线程开销小. 进程间不会互相影响; 一个线程崩溃会导致进程崩溃, 从而影响其他线程.</li>
+</ol>
+<h2 id="进程调度算法">进程调度算法</h2>
+<ol type="1">
 <li>先来先服务(FCFS): 按照到达任务队列的顺序调度, 非抢占式, 易于实现, 效率低性能差, 有利于CPU繁忙型作业(长作业)不利于IO繁忙型(短作业).</li>
 <li>短作业优先(SJF): 每次从任务队列选择预计时间最短的作业运行, 非抢占式, 性能最优, 平均周转时间最低, 吞吐量大, 不利于长作业, 会出现饥饿现象, 完全未考虑作业的优先级, 不能用于实时系统.</li>
 <li>最短剩余时间优先: 首先选择预计时间最短的作业运行, 如果新作业服务时间小于当前作业的剩余时间, 抢占CPU.</li>
 <li>高响应比优先: 在后备作业队列中选择响应比最高的, 非抢占式, 需要计算响应比耗费资源. <span class="math inline">\(响应比=1+\frac{等待时间}{服务时间}\)</span></li>
 <li>时间片轮转(RR): 可以响应所有用户的请求, 适于分时系统.</li>
-<li>多级反馈队列: UNIX使用的调度算法. 多个不同优先级的队列按照RR调度, 如果未完成就进入下一优先级, 新来进程可以根据优先级抢占. ## 死锁</li>
+<li>多级反馈队列: UNIX使用的调度算法. 多个不同优先级的队列按照RR调度, 如果未完成就进入下一优先级, 新来进程可以根据优先级抢占.</li>
+</ol>
+<h2 id="死锁">死锁</h2>
+<ol type="1">
 <li>原因: (1) 系统资源不足; (2) 进程推进顺序不当; (3) 资源分配不当.</li>
 <li>必要条件: (1) 互斥访问: 一个资源每次只能被一个进程访问; (2) 占有并请求: 进程因请求资源阻塞时对已占有的资源保持不放; (3) 不可剥夺: 进程已经获取的资源不能被强制剥夺; (4) 循环等待: 多个进程间形成资源的循环等待关系.</li>
 </ol>
@@ -390,7 +396,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">进程和线程</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">进程和线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">进程调度算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%BB%E9%94%81"><span class="nav-number">3.</span> <span class="nav-text">死锁</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
