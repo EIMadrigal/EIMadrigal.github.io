@@ -444,7 +444,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-05-07 05:54:00" itemprop="dateCreated datePublished" datetime="2021-05-07T05:54:00+08:00">2021-05-07</time>
+              <time title="Created: 2021-05-07 13:54:00" itemprop="dateCreated datePublished" datetime="2021-05-07T13:54:00+08:00">2021-05-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -458,29 +467,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="motivation">Motivation</h2>
-<p>The Imbalanced Datasets are very common in our life such as illegal users or illness check. The machine learning model always performs bad on these datasets if there are no specific dealings, especially the prediction accuracy of minority class. For example, if the data is highly imbalanced such as 9995(negative):5(positive), then if your model just let every instance to be negative and you can get an acc of 99.95% but the result is meaningless. Another example is that misclassifying the minority is very severe. Assume that you misclassify the patient as normal. Oh my god!</p>
-<p>So researchers proposed two kinds of methods for this problem:</p>
-<ul>
-<li>Cost Sensitive Learning When <strong>training</strong> your model, it will give different classes different weights in the <strong>loss function</strong> thus let the model focus more on the minority class. In sklearn, there are <code>class_weight</code> and <code>sample_weight</code> for you. For <code>class_weight</code>, you can specify the weights for different classes such as <code>&#123;0:0.1,1:0.9&#125;</code> or you can set it to <code>balanced</code> then weights will be computed by <span class="math inline">\(\frac{\#samples}{\#classes\ *\ np.bincount(y)}\)</span>. For <code>fit(sample_weight=)</code>, you give <strong>every instance</strong> different weights. When computing the loss for the instance, it will be <code>class_weight</code> * <code>sample_weight</code> * <code>loss</code>.</li>
-<li>Sampling Sampling means that we will change the original dataset rather than giving them different weights.</li>
-</ul>
-<h2 id="sampling-methods">Sampling Methods</h2>
-<p>Over-sampling means to increment the minority class.</p>
-<ul>
-<li>Random Over Sampling To sample from minority class with replacement to let the number of each class is 1:1. Overfitting on minority class.</li>
-<li>Synthetic Minority Oversampling Technique (SMOTE) <span class="math display">\[
-x_{new}=x_i+\lambda(x_{zi}-x_i)
-\]</span> First you find the <code>k_neighbors</code> of <span class="math inline">\(x_i\)</span> in the minority class, then just select one <span class="math inline">\(x_{zi}\)</span> randomly and produce the new one. There are some variants such as borderline SMOTE, SVM SMOTE and KMeans SMOTE.</li>
-<li>Adaptive Synthetic (ADASYN) The difference between SMOTE and ADASYN is that SMOTE will generate new samples for random minority data until 1:1. But ADASYN will automatically decide the number of new points generated for each <span class="math inline">\(x_i\)</span>. There will be more points generated if there are more majority data around <span class="math inline">\(x_i\)</span>.</li>
-</ul>
-<p>Under-sampling means to decrease the majority class.</p>
-<ul>
-<li>RUS Data waste.</li>
-<li></li>
-</ul>
-<h2 id="example">Example</h2>
-
+          <p>不平衡数据集处理</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/05/07/Dealing%20with%20Imbalanced%20Datasets/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
