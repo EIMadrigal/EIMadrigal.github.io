@@ -20,16 +20,17 @@
     var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="行列式本质上是要通过一个数字反应矩阵的某些信息，目前看来不是很重要，快速过一遍。 ## 性质 引入是通过3个基本性质：  \(det(I)&#x3D;1\) 交换两行，行列式的值变号：置换矩阵\(det(P)&#x3D;\begin{cases} 1&amp; \text{交换偶数次}\\ -1&amp; \text{交换奇数次}\\ \end{cases}\) \(\left|\begin{array}{c">
+  <meta name="description" content="MIT 18.06">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MIT Linear Algebra#4 Determinants">
 <meta property="og:url" content="https://eimadrigal.github.io/2020/05/29/MIT%20Linear%20Algebra#4%20Determinants/index.html">
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
-<meta property="og:description" content="行列式本质上是要通过一个数字反应矩阵的某些信息，目前看来不是很重要，快速过一遍。 ## 性质 引入是通过3个基本性质：  \(det(I)&#x3D;1\) 交换两行，行列式的值变号：置换矩阵\(det(P)&#x3D;\begin{cases} 1&amp; \text{交换偶数次}\\ -1&amp; \text{交换奇数次}\\ \end{cases}\) \(\left|\begin{array}{c">
+<meta property="og:description" content="MIT 18.06">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-05-28T18:59:00.000Z">
-<meta property="article:modified_time" content="2022-01-13T16:01:43.622Z">
+<meta property="article:published_time" content="2020-05-29T02:59:00.000Z">
+<meta property="article:modified_time" content="2022-01-30T15:31:38.230Z">
 <meta property="article:author" content="EIMadrigal">
+<meta property="article:tag" content="Linear Algebra">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2020/05/29/MIT%20Linear%20Algebra#4%20Determinants/">
@@ -218,7 +219,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-05-29 02:59:00" itemprop="dateCreated datePublished" datetime="2020-05-29T02:59:00+08:00">2020-05-29</time>
+              <time title="Created: 2020-05-29 10:59:00" itemprop="dateCreated datePublished" datetime="2020-05-29T10:59:00+08:00">2020-05-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
             </span>
 
           
@@ -229,6 +239,7 @@
               <span class="post-meta-item-text">Views: </span>
               <span id="busuanzi_value_page_pv"></span>
             </span>
+            <div class="post-description">MIT 18.06</div>
 
         </div>
       </header>
@@ -247,7 +258,8 @@
 </ol>
 <p>由3个基本性质可以推出若干：</p>
 <ol type="1">
-<li>若两行相等，则<span class="math inline">\(det(A)=0\)</span> 交换相等的2行，矩阵不变，行列式的值不变，根据性质2：<span class="math inline">\(det(A)=-det(A)\)</span>，得证。</li>
+<li>若两行相等，则<span class="math inline">\(det(A)=0\)</span><br />
+交换相等的2行，矩阵不变，行列式的值不变，根据性质2：<span class="math inline">\(det(A)=-det(A)\)</span>，得证。</li>
 <li>初等行变换不改变行列式的值 <span class="math display">\[
 \left|\begin{array}{cccc}
 a &amp; b\\ 
@@ -264,10 +276,17 @@ c &amp; d\\
 \end{array}\right|
 \]</span></li>
 <li>有一行全为0，行列式为0</li>
-<li><strong>上三角矩阵的行列式等于主对角线元素之积</strong>：<span class="math inline">\(det(U)=d_1d_2...d_n\)</span> 对于任意矩阵，通过初等行变换可以得到<span class="math inline">\(U\)</span>，接着向上消元并提出对角线的因子，可以得到<span class="math inline">\(I\)</span>。 这也是Matlab求行列式的方法。</li>
-<li><span class="math inline">\(det(A)=0\Leftrightarrow A是奇异矩阵(消元后有全0行)\)</span> <span class="math inline">\(det(A)\neq0\Leftrightarrow A可逆\Rightarrow U\Rightarrow d_1d_2...d_n\neq0\)</span></li>
+<li><strong>上三角矩阵的行列式等于主对角线元素之积</strong>：<span class="math inline">\(det(U)=d_1d_2...d_n\)</span><br />
+对于任意矩阵，通过初等行变换可以得到<span class="math inline">\(U\)</span>，接着向上消元并提出对角线的因子，可以得到<span class="math inline">\(I\)</span>。<br />
+这也是Matlab求行列式的方法。</li>
+<li><span class="math inline">\(det(A)=0\Leftrightarrow A是奇异矩阵(消元后有全0行)\)</span><br />
+<span class="math inline">\(det(A)\neq0\Leftrightarrow A可逆\Rightarrow U\Rightarrow d_1d_2...d_n\neq0\)</span></li>
 <li><span class="math inline">\(det(AB)=det(A)*det(B) \Rightarrow det(A^{-1})=\frac{1}{det(A)}\)</span></li>
-<li><span class="math inline">\(det(A^T)=det(A)\)</span>，可以通过LU分解去证，这也意味着对行成立的性质对列也成立。 ## 计算方法 上一节中介绍了消元化上三角求行列式的方法，本节介绍2种不常用的方法，所有计算都可以通过上一节的3个基本性质获得： 对于二阶，拆解后有2个非零项： <span class="math display">\[
+<li><span class="math inline">\(det(A^T)=det(A)\)</span>，可以通过LU分解去证，这也意味着对行成立的性质对列也成立。</li>
+</ol>
+<h2 id="计算方法">计算方法</h2>
+<p>上一节中介绍了消元化上三角求行列式的方法，本节介绍2种不常用的方法，所有计算都可以通过上一节的3个基本性质获得：<br />
+对于二阶，拆解后有2个非零项： <span class="math display">\[
 \left|\begin{array}{cccc}
 a &amp; b\\ 
 c &amp; d\\
@@ -320,20 +339,23 @@ a_{11} &amp;  &amp; \\
  &amp;a_{22}  &amp; \\ 
  a_{31}&amp;  &amp;\\ 
 \end{array}\right|
-\]</span> 接着可以通过交换行得到对角阵并求得结果。 如果我们观察每一项：从第一行到最后一行，<strong>列下标</strong>是<span class="math inline">\((1,2,3)\)</span>的某个全排列，因此可以知道展开以后非零项一共有<span class="math inline">\(n!\)</span>项(第一行有<span class="math inline">\(n\)</span>种选择，第二行有<span class="math inline">\(n-1\)</span>种选择...)，于是可以得到第二种计算行列式的方法： <span class="math display">\[
+\]</span> 接着可以通过交换行得到对角阵并求得结果。<br />
+如果我们观察每一项：从第一行到最后一行，<strong>列下标</strong>是<span class="math inline">\((1,2,3)\)</span>的某个全排列，因此可以知道展开以后非零项一共有<span class="math inline">\(n!\)</span>项(第一行有<span class="math inline">\(n\)</span>种选择，第二行有<span class="math inline">\(n-1\)</span>种选择...)，于是可以得到第二种计算行列式的方法： <span class="math display">\[
 det(A)=\Sigma_{n!项}\pm a_{1x}a_{1y}...a_{1w},(x,y,...w)是(1,n)的某个全排列
-\]</span> 正负号取决于交换了几次得到<span class="math inline">\((1,2,3...)\)</span>这种朴素的排列。 举例来看： <span class="math display">\[
+\]</span> 正负号取决于交换了几次得到<span class="math inline">\((1,2,3...)\)</span>这种朴素的排列。<br />
+举例来看： <span class="math display">\[
 \left|\begin{array}{cccc} 
 0 &amp; 0 &amp; 1 &amp; 1\\ 
 0 &amp; 1 &amp; 1 &amp; 0\\ 
 1 &amp; 1 &amp; 0 &amp; 0\\ 
 1 &amp; 0 &amp; 0 &amp; 1\\ 
 \end{array}\right|
-\]</span> 可以先取<span class="math inline">\((1,3)\)</span>位置，接着只能取<span class="math inline">\((2,2)\)</span>，接着<span class="math inline">\((3,1)\)</span>，最后<span class="math inline">\((4,4)\)</span>，所以列的排列是<span class="math inline">\((3,2,1,4)\)</span>，交换一次可得<span class="math inline">\((1,2,3,4)\)</span>，故有一非零项-1； 还可以先取<span class="math inline">\((1,4)\)</span>，接着<span class="math inline">\((2,3)\)</span>，<span class="math inline">\((3,2)\)</span>，最后<span class="math inline">\((4,1)\)</span>，列的排列是<span class="math inline">\((4,3,2,1)\)</span>，交换2次可得<span class="math inline">\((1,2,3,4)\)</span>，故有一非零项1，除此以外，没有别的选择，所以行列式的值是0。</li>
-</ol>
+\]</span> 可以先取<span class="math inline">\((1,3)\)</span>位置，接着只能取<span class="math inline">\((2,2)\)</span>，接着<span class="math inline">\((3,1)\)</span>，最后<span class="math inline">\((4,4)\)</span>，所以列的排列是<span class="math inline">\((3,2,1,4)\)</span>，交换一次可得<span class="math inline">\((1,2,3,4)\)</span>，故有一非零项-1；<br />
+还可以先取<span class="math inline">\((1,4)\)</span>，接着<span class="math inline">\((2,3)\)</span>，<span class="math inline">\((3,2)\)</span>，最后<span class="math inline">\((4,1)\)</span>，列的排列是<span class="math inline">\((4,3,2,1)\)</span>，交换2次可得<span class="math inline">\((1,2,3,4)\)</span>，故有一非零项1，除此以外，没有别的选择，所以行列式的值是0。</p>
 <p>如果我们对上述拆解三阶行列式的结果提取公因子： <span class="math display">\[
 det(A)=a_{11}(a_{22}a_{33}-a_{23}a_{32})+a_{12}(-a_{21}a_{33}+a_{23}a_{31})+a_{13}(a_{21}a_{32}-a_{22}a_{31})
-\]</span> 我们穷举了第一行的3种可能的选择<span class="math inline">\(a_{11},a_{12},a_{13}\)</span>，对于每种选择，当前行与当前列都不能再用，括号中的式子叫做<strong>代数余子式</strong><span class="math inline">\(C_{ij}\)</span>：去掉<span class="math inline">\(a_{ij}\)</span>所在行列的<span class="math inline">\(n-1\)</span>阶行列式，并且正负号取决于<span class="math inline">\(i+j\)</span>的奇(-)偶(+)。 这样我们得到了求行列式的第三种方法： <span class="math display">\[
+\]</span> 我们穷举了第一行的3种可能的选择<span class="math inline">\(a_{11},a_{12},a_{13}\)</span>，对于每种选择，当前行与当前列都不能再用，括号中的式子叫做<strong>代数余子式</strong><span class="math inline">\(C_{ij}\)</span>：去掉<span class="math inline">\(a_{ij}\)</span>所在行列的<span class="math inline">\(n-1\)</span>阶行列式，并且正负号取决于<span class="math inline">\(i+j\)</span>的奇(-)偶(+)。<br />
+这样我们得到了求行列式的第三种方法： <span class="math display">\[
 det(A)=a_{11}C_{11}+a_{12}C_{12}+...+a_{1n}C_{1n}
 \]</span> 举例来看，对于三对角行列式： <span class="math display">\[
 \left|\begin{array}{cccc} 
@@ -342,9 +364,13 @@ det(A)=a_{11}C_{11}+a_{12}C_{12}+...+a_{1n}C_{1n}
 0 &amp; 1 &amp; 1 &amp; 1\\ 
 0 &amp; 0 &amp; 1 &amp; 1\\ 
 \end{array}\right|
-\]</span> 容易知：<span class="math inline">\(det(A_1)=1,det(A_2)=\left|\begin{array}{cccc} 1 &amp; 1\\ 1 &amp; 1\\ \end{array}\right|=0,det(A_3)=\left|\begin{array}{cccc} 1 &amp; 1 &amp; 0\\ 1 &amp; 1 &amp; 1\\ 0 &amp; 1 &amp; 1\\ \end{array}\right|=-1\)</span>。 对于四阶，我们<strong>按第一列展开</strong>：<span class="math inline">\(det(A_4)=1*det(A_3)-1*det(A_2)=-1\)</span>，此式可以推广：<span class="math inline">\(det(A_n)=det(A_{n-1})-det(A_{n-2})\)</span>，可以发现上述三对角行列式是以6为周期的。 ## 应用</p>
+\]</span> 容易知：<span class="math inline">\(det(A_1)=1,det(A_2)=\left|\begin{array}{cccc} 1 &amp; 1\\ 1 &amp; 1\\ \end{array}\right|=0,det(A_3)=\left|\begin{array}{cccc} 1 &amp; 1 &amp; 0\\ 1 &amp; 1 &amp; 1\\ 0 &amp; 1 &amp; 1\\ \end{array}\right|=-1\)</span>。<br />
+对于四阶，我们<strong>按第一列展开</strong>：<span class="math inline">\(det(A_4)=1*det(A_3)-1*det(A_2)=-1\)</span>，此式可以推广：<span class="math inline">\(det(A_n)=det(A_{n-1})-det(A_{n-2})\)</span>，可以发现上述三对角行列式是以6为周期的。</p>
+<h2 id="应用">应用</h2>
 <ul>
-<li>求逆矩阵 记得当年矩阵求逆教了一种伴随矩阵的方法：<span class="math inline">\(A^{-1}=\frac{1}{det(A)}C^T\)</span>，不知为何物？ 只要证明<span class="math inline">\(AC^T=det(A)I\)</span>即可： <span class="math display">\[
+<li>求逆矩阵<br />
+记得当年矩阵求逆教了一种伴随矩阵的方法：<span class="math inline">\(A^{-1}=\frac{1}{det(A)}C^T\)</span>，不知为何物？<br />
+只要证明<span class="math inline">\(AC^T=det(A)I\)</span>即可： <span class="math display">\[
 \left[\begin{array}{cccc} 
 a_{11} &amp; ... &amp; a_{1n}\\ 
 ... &amp;  &amp; ...\\ 
@@ -358,9 +384,14 @@ det(A) &amp; ... &amp;0\\
 ... &amp;  &amp; ...\\ 
 0 &amp; ... &amp; det(A)\\ 
 \end{array}\right]
-\]</span> 对于主对角线上的元素：<span class="math inline">\(a_{11}C_{11}+...+a_{1n}C_{1n}=det(A)\)</span>； 对于其它元素：<span class="math inline">\(a_{11}C_{n1}+...+a_{1n}C_{nn}=\left|\begin{array}{cccc} a_{11} &amp; ... &amp; a_{1n}\\ ... &amp; &amp; ...\\ a_{11} &amp; ... &amp; a_{1n}\\ \end{array}\right|=0\)</span>。</li>
-<li>求解<span class="math inline">\(Ax=b\)</span> 求解：<span class="math inline">\(x=A^{-1}b=\frac{1}{det(A)}C^Tb\)</span>，那么考虑<span class="math inline">\(x_1=\frac{1}{det(A)}(b_1c_{11}+..+b_nc_{n1})\)</span>，<span class="math inline">\(b_1c_{11}+..+b_nc_{n1}\)</span>其实是将矩阵<span class="math inline">\(A\)</span>的第一列换为<span class="math inline">\(b\)</span>，按照第一列展开求行列式的值即可，同理可以求得其它<span class="math inline">\(x_i\)</span>，这种差到没人用的方法竟然被国内教材奉为圭臬。</li>
-<li>求体积 <span class="math inline">\(det(A)\)</span>的绝对值可以定义为一个平行六面体的体积，正负表示左手系还是右手系。 将三阶矩阵<span class="math inline">\(A\)</span>的每行(列)当作平行六面体的一条边，如果<span class="math inline">\(A=I\)</span>，我们得到一个标准的单位立方体；如果<span class="math inline">\(A=Q\)</span>，我们得到一个旋转过的单位立方体，体积仍然为1，可以通过<span class="math inline">\(Q^TQ=I\)</span>验证。 如果是二维情况，那么<span class="math inline">\(det(A)\)</span>的绝对值就是平行四边形的面积： <span class="math display">\[
+\]</span> 对于主对角线上的元素：<span class="math inline">\(a_{11}C_{11}+...+a_{1n}C_{1n}=det(A)\)</span>；<br />
+对于其它元素：<span class="math inline">\(a_{11}C_{n1}+...+a_{1n}C_{nn}=\left|\begin{array}{cccc} a_{11} &amp; ... &amp; a_{1n}\\ ... &amp; &amp; ...\\ a_{11} &amp; ... &amp; a_{1n}\\ \end{array}\right|=0\)</span>。</li>
+<li>求解<span class="math inline">\(Ax=b\)</span><br />
+求解：<span class="math inline">\(x=A^{-1}b=\frac{1}{det(A)}C^Tb\)</span>，那么考虑<span class="math inline">\(x_1=\frac{1}{det(A)}(b_1c_{11}+..+b_nc_{n1})\)</span>，<span class="math inline">\(b_1c_{11}+..+b_nc_{n1}\)</span>其实是将矩阵<span class="math inline">\(A\)</span>的第一列换为<span class="math inline">\(b\)</span>，按照第一列展开求行列式的值即可，同理可以求得其它<span class="math inline">\(x_i\)</span>，这种差到没人用的方法竟然被国内教材奉为圭臬。</li>
+<li>求体积<br />
+<span class="math inline">\(det(A)\)</span>的绝对值可以定义为一个平行六面体的体积，正负表示左手系还是右手系。<br />
+将三阶矩阵<span class="math inline">\(A\)</span>的每行(列)当作平行六面体的一条边，如果<span class="math inline">\(A=I\)</span>，我们得到一个标准的单位立方体；如果<span class="math inline">\(A=Q\)</span>，我们得到一个旋转过的单位立方体，体积仍然为1，可以通过<span class="math inline">\(Q^TQ=I\)</span>验证。<br />
+如果是二维情况，那么<span class="math inline">\(det(A)\)</span>的绝对值就是平行四边形的面积： <span class="math display">\[
 S=\left|\begin{array}{cccc}
 a &amp; b\\ 
 c &amp; d\\
@@ -371,8 +402,11 @@ x_1 &amp; y_1 &amp; 1\\
 x_2 &amp; y_2 &amp; 1\\ 
 x_3 &amp; y_3 &amp; 1\\ 
 \end{array}\right|
-\]</span> 可以通过平移到原点去证明。 ## 作业 A Hadamard matrix H is a matrix with entries ±1 and orthogonal columns. What is the determinant of H as a function of n? (Hadamard matrices are conjectured to exist for every n that is a multiple of 4, but nobody knows if there is such a matrix even for n=668). 由于<span class="math inline">\(H\)</span>各列正交，故<span class="math inline">\(H^TH=cI\)</span>；又<span class="math inline">\(H\)</span>的元素只有±1，故<span class="math inline">\(c=n\)</span>。所以<span class="math inline">\(det(H)^2=n^n,det(H) = \pm\sqrt{n^n}\)</span>，即<span class="math inline">\(n\)</span>阶Hadamard矩阵的行列式既可以为正，也可以为负。</li>
+\]</span> 可以通过平移到原点去证明。</li>
 </ul>
+<h2 id="作业">作业</h2>
+<p>A Hadamard matrix H is a matrix with entries ±1 and orthogonal columns. What is the determinant of H as a function of n? (Hadamard matrices are conjectured to exist for every n that is a multiple of 4, but nobody knows if there is such a matrix even for n=668).<br />
+由于<span class="math inline">\(H\)</span>各列正交，故<span class="math inline">\(H^TH=cI\)</span>；又<span class="math inline">\(H\)</span>的元素只有±1，故<span class="math inline">\(c=n\)</span>。所以<span class="math inline">\(det(H)^2=n^n,det(H) = \pm\sqrt{n^n}\)</span>，即<span class="math inline">\(n\)</span>阶Hadamard矩阵的行列式既可以为正，也可以为负。</p>
 
     </div>
 
@@ -418,6 +452,9 @@ x_3 &amp; y_3 &amp; 1\\
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linear-Algebra/" rel="tag"># Linear Algebra</a>
+          </div>
 
         
 
@@ -495,6 +532,7 @@ x_3 &amp; y_3 &amp; 1\\
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">计算方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A"><span class="nav-number">3.</span> <span class="nav-text">作业</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -523,7 +561,7 @@ x_3 &amp; y_3 &amp; 1\\
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

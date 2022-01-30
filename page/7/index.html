@@ -216,7 +216,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-06-15 08:17:00" itemprop="dateCreated datePublished" datetime="2020-06-15T08:17:00+08:00">2020-06-15</time>
+              <time title="Created: 2020-06-15 16:17:00" itemprop="dateCreated datePublished" datetime="2020-06-15T16:17:00+08:00">2020-06-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -230,28 +239,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="introduction">Introduction</h2>
-<p>这是CS 61B的HW2，具体实现<a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/CS61B/tree/master/hw2">在这里</a>。这个项目是要模拟一个渗滤系统，最终目标是要通过蒙特卡洛方法计算出渗滤系统的阈值，主要会考察对并查集的使用而非实现。 渗滤有很多应用，比较重要的就是复合导电材料：刚开始是绝缘体，将金属作为导电材料逐渐掺入，填充到某临界值后，金属会形成一条导电网格组成的路径，完成从绝缘体到半导体、导体的转变，该临界值就是所谓的<strong>渗滤阈值</strong>。 模型是一个<span class="math inline">\(N*N\)</span>的网格图，每个格子有打开和关闭两种状态。如果一个格子是打开的，并且可以通过相邻的某些打开的格子连接到第一行的打开格子，那么该格子的状态就是full。如果最后一行有格子是full，那么系统就会发生渗滤。对于前面的例子，如果金属材料能形成一条从上到下的导电路径，那么就发生渗滤： <img src="https://img-blog.csdnimg.cn/2020061309400433.png" /> 我们感兴趣的是：如果<span class="math inline">\(N\)</span>足够大，每个格子独立，并且打开的概率是<span class="math inline">\(p\)</span>，那么会存在一个阈值<span class="math inline">\(p^*\)</span>，当<span class="math inline">\(p&lt;p^*\)</span>时，系统几乎不可能发生渗滤；当<span class="math inline">\(p&gt;p^*\)</span>时，系统几乎一定发生渗滤： <img src="https://img-blog.csdnimg.cn/20200613094728545.png" alt="在这里插入图片描述" /><img src="https://img-blog.csdnimg.cn/20200613094740884.png" alt="在这里插入图片描述" /> 我们的任务就是估算这个<span class="math inline">\(p^*\)</span>。 ## 渗滤系统建模 模型并不复杂，写一个类<code>Percolation.java</code>专门模拟该系统：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Percolation</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Percolation</span><span class="params">(<span class="keyword">int</span> N)</span>  <span class="comment">// create N-by-N grid, with all sites initially blocked</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> col)</span>  <span class="comment">// open the site (row, col) if it is not open already</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isOpen</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> col)</span>  <span class="comment">// is the site (row, col) open?</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isFull</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> col)</span>  <span class="comment">// is the site (row, col) full?</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numberOfOpenSites</span><span class="params">()</span>  <span class="comment">// number of open sites</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">percolates</span><span class="params">()</span>  <span class="comment">// does the system percolate?</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>难点在于要满足规定的时间复杂度：除了构造函数是<span class="math inline">\(O(N^2)\)</span>，其余方法都必须是<span class="math inline">\(O(1)\)</span>。 如果采用常规方法判断是否渗滤，那么至少也要遍历最后一行看看有没有full的格子，这样时间<span class="math inline">\(O(N)\)</span>无法满足要求。 问题就在于第一行和最后一行的格子数太多，减慢了我们的判断效率。那么如果我们在最上面和最下面设置两个虚拟节点，事情就会变得OK： <img src="https://img-blog.csdnimg.cn/20200613110636913.png" alt="在这里插入图片描述" /> virtualTop负责连接第一行所有打开的结点，virtualBottom负责连接最后一行所有打开的结点，这样我们就把<span class="math inline">\(N\)</span>个点浓缩成了一个点：</p>
-<ul>
-<li>判断某点是否full时，只需要判断该点是否和virtualTop连接；</li>
-<li>判断是否渗滤时，只要判断virtualTop和virtualBottom是否连接。</li>
-</ul>
-<p>这种解决方案看似很完美，但是有一个问题Backwash： <img src="https://img-blog.csdnimg.cn/20200613111558820.png" alt="在这里插入图片描述" /> 如果已经有一条从上到下的路，那么水流可以通过virtualBottom回流到最后一行已经打开的格子，而这些格子本不应该full。 这个问题的解决有点tricky，开始我是想通过周围格子的状态来判断是否full，即只有周围四个格子之一是full，当前格子才是full。但是如果要在<code>isFull()</code>里递归调用去判断周围格子，那么一定会爆栈；所以要判断周围格子只能通过是否和virtualTop连接，但是只要这个打开的格子在最后一行，就一定要和virtualBottom连接，如此一来只要有其他通路，那么该格子必然还是backwash，进而就会导致其它和该格子相连的也backwash。 举例来说：假如右边3个蓝色格子从上至下编号123，先打开3号，3号周围四个格子都没有和virtualTop连接，因此我们认为3号没有full，这没问题；但是接着打开2号，2号下面的格子（3号在最后一行且打开，必然和virtualBottom连接，即也和virtualTop连接）是和virtualTop连接的，因此我们判断2号是full，这显然错误。</p>
-<p>没法用逻辑优化的时候，就应该转向用空间去优化。我们可以在开一个并查集，这个集合最多只包含virtualTop和地图中的所有格子，而将virtualBottom排除在外。判断full时，只要当前格子在新并查集中与virtualTop连接，那么必然full。</p>
-<h2 id="monte-carlo-simulation">Monte Carlo Simulation</h2>
-<p>为了估算阈值，需要做<span class="math inline">\(T\)</span>次独立重复实验：</p>
-<ul>
-<li>所有格子都设置为关闭；</li>
-<li>随机选取一个关闭的格子，打开它，重复直至系统渗滤。 那么这次试验的<span class="math inline">\(p^*\)</span>就是打开格子数/总数。</li>
-</ul>
-<p>取<span class="math inline">\(T\)</span>次实验的平均值，可以得到更加精确的阈值；标准差<span class="math inline">\(\sigma\)</span>展示了结果的波动程度： <span class="math display">\[
-\mu = \frac{x_1 + x_2 + … + x_T}{T},\sigma^2 = \frac{(x_1 - \mu)^2 + (x_2 - \mu)^2 + … + (x_T - \mu)^2}{T-1}
-\]</span> 当<span class="math inline">\(T\)</span>足够大，<span class="math inline">\([\mu - \frac{1.96\sigma}{\sqrt{T}}, \mu + \frac{1.96\sigma}{\sqrt{T}}]\)</span>提供了95%的置信度。</p>
-<p>这部分的实现很简单：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PercolationStats</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">PercolationStats</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> T, PercolationFactory pf)</span>  <span class="comment">// perform T independent experiments on an N-by-N grid</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">double</span> <span class="title">mean</span><span class="params">()</span>  <span class="comment">// sample mean of percolation threshold</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">double</span> <span class="title">stddev</span><span class="params">()</span>  <span class="comment">// sample standard deviation of percolation threshold</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">double</span> <span class="title">confidenceLow</span><span class="params">()</span>  <span class="comment">// low endpoint of 95% confidence interval</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">double</span> <span class="title">confidenceHigh</span><span class="params">()</span>  <span class="comment">// high endpoint of 95% confidence interval</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
-
+          <p>简易渗滤系统</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/06/15/Percolation/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -372,7 +368,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-06-02 13:29:00" itemprop="dateCreated datePublished" datetime="2020-06-02T13:29:00+08:00">2020-06-02</time>
+              <time title="Created: 2020-06-02 21:29:00" itemprop="dateCreated datePublished" datetime="2020-06-02T21:29:00+08:00">2020-06-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
             </span>
 
           
@@ -386,101 +391,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="图和网络">图和网络</h2>
-<p>图是一些工程问题的抽象，比如电路网络： <img src="https://img-blog.csdnimg.cn/20200525210820863.png" alt="在这里插入图片描述" /> 我们可以用<span class="math inline">\(A_{54}\)</span>表示图中的信息，每行代表一条边，每列代表一个结点，1表示电流流入，-1表示流出： <span class="math display">\[
-A=\begin{bmatrix}
-   -1 &amp; 1 &amp; 0 &amp; 0 \\
-   0 &amp; -1 &amp; 1 &amp; 0 \\
-   -1 &amp; 0 &amp; 1 &amp; 0 \\
-   -1 &amp; 0 &amp; 0 &amp; 1 \\
-   0 &amp; 0 &amp; -1 &amp; 1 \\
-  \end{bmatrix}
-\]</span> <span class="math inline">\(edge3=edge1+edge2\)</span>，前三行线性相关，在图中表现为形成环路。 我们比较关注<span class="math inline">\(A\)</span>的零空间，也即如何组合各列以得到零列<span class="math inline">\(Ax=0\)</span>，即： <span class="math display">\[
-Ax=\begin{bmatrix}
-   x_2-x_1\\
-   x_3-x_2\\
-   x_3-x_1\\
-   x_4-x_1\\
-   x_4-x_3\\
-  \end{bmatrix}=\begin{bmatrix}
-   0\\
- 0\\
-  0\\
-  0\\
-   0\\
-  \end{bmatrix}
-\]</span> 根据前面的学习，<span class="math inline">\(dim(N(A))=n-r(A)=4-3=1\)</span>，并且可以求出零空间：<span class="math inline">\(x=c\begin{bmatrix}  1\\  1\\  1\\  1\\  \end{bmatrix}\)</span>，如果<span class="math inline">\(x_i\)</span>表示<strong>结点<span class="math inline">\(i\)</span>的电势</strong>，那么从结果可以看出来四个点等电势，一旦确定某个点的电势(接地为0)，即可确定其余各点。</p>
-<p>再研究一下<span class="math inline">\(A\)</span>的左零空间，即<span class="math inline">\(A^Ty=0\)</span>，<span class="math inline">\(dim(N(A^T))=m-r(A)=5-3=2\)</span>，不妨看看转置后的鬼样子： <span class="math display">\[
-\begin{bmatrix}
-   -1 &amp; 0 &amp; -1 &amp; -1 &amp; 0 \\
-  1 &amp; -1 &amp; 0 &amp; 0 &amp; 0 \\
-  0 &amp; 1 &amp; 1 &amp; 0 &amp; -1 \\
-  0 &amp; 0 &amp; 0 &amp; 1 &amp; 1 \\
-  \end{bmatrix}\begin{bmatrix}
-   y_1\\
-   y_2\\
-  y_3\\
- y_4\\
- y_5\\
-  \end{bmatrix}=\begin{bmatrix}
-   0 \\
- 0 \\
- 0 \\
-  0 \\
-  \end{bmatrix}
-\]</span> 变为简化行阶梯<span class="math inline">\(R\)</span>就会发现：pivot col是第一列、第二列和第四列，对应到图中的三条边，可以看到是没有环路的，实际上是一棵<strong>最小生成树</strong>。如果用<span class="math inline">\(y_i\)</span>表示<strong>边<span class="math inline">\(i\)</span>的电流值</strong>，不妨写出这个方程组： <span class="math display">\[
-\begin{cases}
--y_1-y_3-y_4=0&amp; \text{结点1流出之和为0}\\
-y_1-y_2=0&amp; \text{结点2流入流出相等}\\
-y_2+y_3-y_5=0&amp; \text{...}\\
-y_4+y_5=0&amp; \text{...}
-\end{cases}\]</span> 类似地，可以求出这个左零空间的一组基： <span class="math display">\[
-\begin{bmatrix}
-   1\\
- 1\\
-  -1\\
-  0\\
-   0\\
-  \end{bmatrix}、\begin{bmatrix}
-   0\\
- 0\\
-  1\\
-  -1\\
-   1\\
-  \end{bmatrix}
-\]</span> 这组基对应到图中也是很明确的：第一个向量对应回路1(边1/2/3)的电流，第二个向量对应回路2(边3/4/5)的电流，当然也可以选择大的回路作为基的一个组成。 由此也可以看出：<span class="math inline">\(dim(N(A^T))=m-r=\#loops=\#edges-(\#nodes-1)\)</span>，这也就是著名的欧拉公式：<span class="math inline">\(\#nodes-\#edges+\#loops=1\)</span>。</p>
-<p>回顾整个过程：</p>
-<ul>
-<li>通过电势求得电势差：<span class="math inline">\(Ax=e\)</span>；</li>
-<li>通过欧姆定律<span class="math inline">\(y=Ce\)</span>可以求得结点间的电流值<span class="math inline">\(y_i\)</span>；</li>
-<li>通过<span class="math inline">\(A^Ty=0\)</span>验证了Kirchhoff's current law。 如果有外接电流源，那么整个过程可以描述为<span class="math inline">\(A^TCAx=f\)</span>。 ## 马尔可夫矩阵 马尔可夫模型最初是研究人口迁徙的模型，马尔可夫矩阵有2个特点：</li>
-<li><span class="math inline">\(a_{ij}&gt;0\)</span></li>
-<li>每一列和为1</li>
-</ul>
-<p>我们要研究随着时间变化，人口最终的分布情况，即稳态。 根据一阶差分<span class="math inline">\(u_k=A^ku_0=c_1\lambda_1^kx_1+c_2\lambda_2^kx_2+...\)</span>，<strong>马尔可夫矩阵有一个特征值为1</strong>，其余的绝对值都小于1，那么最终的稳态就是<span class="math inline">\(c_1x_1\)</span>。 举例来看： <span class="math display">\[
-\begin{bmatrix}
-   u_{cal}\\
-   u_{mass}\\
-  \end{bmatrix}_{t=k+1}=\begin{bmatrix}
-   0.9 &amp; 0.2\\
-  0.1 &amp; 0.8\\
-  \end{bmatrix}\begin{bmatrix}
-   u_{cal}\\
-   u_{mass}\\
-  \end{bmatrix}_{t=k},u_0=\begin{bmatrix}
-   0\\
-   1000\\
-  \end{bmatrix}
-\]</span> 矩阵表示加州的人有0.9留在加州，0.1迁徙到麻省。求得<span class="math inline">\(A\)</span>的特征值和特征向量，再用<span class="math inline">\(u_0\)</span>求得系数<span class="math inline">\(c\)</span>，就可以得到<span class="math inline">\(u_k\)</span>。 ## 傅里叶级数 我们知道，向量空间内任意向量都可以表示为一组标准正交基的线性组合： <span class="math display">\[
-v=x_1q_1+x_2q_2+...+x_nq_n=Qx,x=Q^{-1}v=Q^Tv
-\]</span> 那么对于任意的函数<span class="math inline">\(f(x)\)</span>，也可以表示为一组正交基的线性组合： <span class="math display">\[
-f(x)=a_0*1+a_1cosx+b_1sinx+a_2cos(2x)+b_2sin(2x)+...
-\]</span> 这组基<span class="math inline">\(1,cosx,sinx,cos(2x),sin(2x),...\)</span>是正交的，即： <span class="math display">\[
-f^Tg=\int_0^{2\pi} f(x)g(x) dx=0
-\]</span> 要求得级数得系数，比如<span class="math inline">\(a_1\)</span>，只要等式两边同乘<span class="math inline">\(cosx\)</span>并积分即可： <span class="math display">\[
-\int_0^{2\pi} f(x)cosx dx=\int_0^{2\pi} a_1cos^2(x) dx
-\]</span> ## 复矩阵 复向量<span class="math inline">\(Z=\begin{bmatrix}  z_1\\  ...\\  z_n\\  \end{bmatrix}\)</span>的模<span class="math inline">\(||Z||^2=\bar Z^TZ=||z_1||^2+...+||z_n||^2\)</span>，内积也变为共轭转置<span class="math inline">\(\bar y^Tx\)</span>。 复数意义下的对称是<span class="math inline">\(\bar A^T=A\)</span>，也叫Hermitian矩阵； 复数意义下的正交是<span class="math inline">\(\bar q_i^Tq_j=\begin{cases} 0,i\neq j\\ 1,i=j\\ \end{cases}\)</span>，这样组成的正交阵<span class="math inline">\(\bar Q^TQ=I\)</span>，<span class="math inline">\(Q\)</span>也叫unitary矩阵。</p>
-
+          <p>MIT 18.06</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/06/02/MIT%20Linear%20Algebra#7%20Applications/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -525,7 +444,16 @@ f^Tg=\int_0^{2\pi} f(x)g(x) dx=0
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-06-01 10:43:00" itemprop="dateCreated datePublished" datetime="2020-06-01T10:43:00+08:00">2020-06-01</time>
+              <time title="Created: 2020-06-01 18:43:00" itemprop="dateCreated datePublished" datetime="2020-06-01T18:43:00+08:00">2020-06-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
             </span>
 
           
@@ -539,52 +467,15 @@ f^Tg=\int_0^{2\pi} f(x)g(x) dx=0
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="线性变换">线性变换</h2>
-<p>顾名思义，所谓线性变换即某种变换满足线性性质： <span class="math display">\[
-\begin{cases}
-T(v+w)=T(v)+T(w)&amp; \text{}\\
-T(cv)=cT(v)&amp; \text{}\\
-\end{cases}
-\]</span> 投影变换、旋转变换满足线性，这种映射可以通过左乘矩阵完成。 如果要知道对整个空间的线性变换，只需要知道对基的变换结果即可，因为任意向量都可表示为基的线性组合：<span class="math inline">\(v=c_1v_1+c_2v_2+...+c_nv_n\)</span>，<span class="math inline">\((c_1,c_2,...,c_n)\)</span>是该向量在这组基下的<strong>坐标</strong>，那么<span class="math inline">\(T(v)=c_1T(v_1)+...+c_nT(v_n)\)</span>。</p>
-<p>线性变换可以用矩阵表示，不同基下对应的矩阵是不同的，如果要求该矩阵： 假设输入基是<span class="math inline">\(v_1,...v_n\)</span>，输出空间的基是<span class="math inline">\(w_1,...w_m\)</span>，<strong><span class="math inline">\(A\)</span>的第一列就是<span class="math inline">\(T(v_1)\)</span>在<span class="math inline">\(w\)</span>下的坐标</strong>，因为输入<span class="math inline">\(v_1\)</span>，其在<span class="math inline">\(v\)</span>下的坐标就是<span class="math inline">\(\begin{bmatrix}  1\\  0\\  ...\\  0  \end{bmatrix}\)</span>，<span class="math inline">\(A\)</span>乘以该坐标就是取<span class="math inline">\(A\)</span>的第一列，同理可得其他列。 容易验证<span class="math inline">\(T=\frac{d}{dx}\)</span>也是线性变换，输入基如果选择<span class="math inline">\(1,x,x^2\)</span>，输入是<span class="math inline">\(c_1+c_2x+c_3x^2\)</span>，那么输出是<span class="math inline">\(c_2+2c_3x\)</span>，输出基是<span class="math inline">\(1,x\)</span>，那么用矩阵表示就是： <span class="math display">\[
-A\begin{bmatrix}
-   c_1\\
-   c_2\\
-   c_3\\
-  \end{bmatrix}=\begin{bmatrix}
-   c_2\\
-   2c_3\\
-  \end{bmatrix}
-\]</span> 当然可以用上面的方法求矩阵，这里比较简单<span class="math inline">\(A=\begin{bmatrix}  0 &amp; 1 &amp; 0\\  0 &amp; 0 &amp; 2\\  \end{bmatrix}\)</span>。 ## 基变换 选择合适的基，可以对图像进行压缩： 对于原始信号<span class="math inline">\(x\)</span>，可以通过基变换得到另一组基下的坐标<span class="math inline">\(c\)</span>，这一步是无损的，这些系数里可能含有大量的0，通过去掉这些项可以压缩大小，这一步是有损的，即<span class="math inline">\(\hat x=\Sigma \hat c_iv_i\)</span>。 目前比较好的有Fourier基和小波基，都是将原始图片分割为若干小块处理。 8<em>8Fourier基： <span class="math display">\[
-\begin{bmatrix}
-   1 &amp; 1 &amp;... &amp; 1 \\
-   1 &amp; w&amp;... &amp; w^{n-1} \\
-   ... &amp; ... &amp; ...\\
-    1 &amp; w^{n-1}&amp;... &amp; w^{(n-1)^2} \\
-  \end{bmatrix}
-\]</span> 8</em>8小波基： <span class="math display">\[
-W=\begin{bmatrix}
-   1 &amp; 1 &amp;1 &amp; 0 &amp; 1&amp;0&amp;0&amp;0\\
-   1 &amp; 1 &amp;1 &amp; 0  &amp; -1&amp;0&amp;0&amp;0\\
-   1 &amp; 1 &amp;-1 &amp; 0 &amp;0&amp;1&amp;0&amp;0\\
-  1 &amp; 1 &amp;-1 &amp; 0 &amp;0&amp;-1&amp;0&amp;0\\
-  1 &amp; -1 &amp;0&amp; 1 &amp;0&amp;0&amp;1&amp;0\\
-  1 &amp; -1 &amp;0 &amp; 1 &amp;0&amp;0&amp;-1&amp;0\\
-  1 &amp; -1 &amp;0 &amp; 1 &amp;0&amp;0&amp;0&amp;1\\
-  1 &amp; -1 &amp;0 &amp; 1 &amp;0&amp;0&amp;0&amp;-1\\
-  \end{bmatrix}
-\]</span> 标准基下的像素值在基变换后： <span class="math display">\[
-p=\begin{bmatrix}
-   p_1\\
-   ...\\
-   p_8\\
-  \end{bmatrix}=W\begin{bmatrix}
-   c_1\\
-   ...\\
-   c_8\\
-  \end{bmatrix}=Wc
-\]</span> 所以在新的基下的坐标是<span class="math inline">\(c=W^{-1}p\)</span>。 就性能而言：我们需要<span class="math inline">\(W^{-1}\)</span>可以快速求得，这一点<span class="math inline">\(W^{-1}=W^T\)</span>；另外还要求只需要少量基向量就可以逼近原始信号。 ## 左右逆/伪逆 对于满秩的情况<span class="math inline">\(r=m=n\)</span>，左逆和右逆都存在，即<span class="math inline">\(AA^{-1}=I=A^{-1}A\)</span>； 对于列满秩<span class="math inline">\(r=n&lt;m\)</span>，比如<span class="math inline">\(\begin{bmatrix}  1 &amp; 2\\  1 &amp; 3\\  2 &amp; 4\\  \end{bmatrix}\)</span>，<span class="math inline">\(A_{left}^{-1}=(A^TA)^{-1}A^T\)</span>； 对于行满秩<span class="math inline">\(r=m&lt;n\)</span>，<span class="math inline">\(A_{right}^{-1}=A^T(AA^T)^{-1}\)</span>； 对于不满秩的情况<span class="math inline">\(r&lt;m,r&lt;n\)</span>，这样<strong>不论<span class="math inline">\(A^TA\)</span>还是<span class="math inline">\(AA^T\)</span>都是奇异的</strong>，所以不可能有左逆或者右逆。这种情况在统计学上多次出现，就提出了伪逆的概念，记作<span class="math inline">\(A^+\)</span>。 找伪逆可以通过SVD，<span class="math inline">\(A=U\Sigma V^T\)</span>，这里我们的特征值是不完整的，即<span class="math inline">\(\Sigma_{mn}=\begin{bmatrix}  \sigma_1 &amp; ... &amp; 0&amp;0 \\  ... &amp; ... &amp; ...&amp;0\\  0 &amp; ... &amp; \sigma_r &amp;0\\  ...\\  0 &amp; ... &amp; 0&amp;0 \\  \end{bmatrix}\)</span>，那么<span class="math inline">\(\Sigma_{nm}^+=\begin{bmatrix}  1/\sigma_1 &amp; ... &amp; 0&amp;0 \\  ... &amp; ... &amp; ...&amp;0\\  0 &amp; ... &amp; 1/\sigma_r &amp;0\\  ...\\  0 &amp; ... &amp; 0&amp;0 \\  \end{bmatrix}\)</span>，这样<span class="math inline">\(A^+=V\Sigma^+U^T\)</span>。 ## 作业</p>
-
+          <p>MIT 18.06</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/06/01/MIT%20Linear%20Algebra#6%20Linear%20Transformations/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -629,7 +520,16 @@ p=\begin{bmatrix}
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-05-31 12:07:00" itemprop="dateCreated datePublished" datetime="2020-05-31T12:07:00+08:00">2020-05-31</time>
+              <time title="Created: 2020-05-31 20:07:00" itemprop="dateCreated datePublished" datetime="2020-05-31T20:07:00+08:00">2020-05-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
             </span>
 
           
@@ -643,122 +543,15 @@ p=\begin{bmatrix}
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="特征值特征向量">特征值/特征向量</h2>
-<p>矩阵作用于列向量<span class="math inline">\(x\)</span>得到列向量<span class="math inline">\(Ax\)</span>，矩阵的作用相当于函数，对于大部分列向量<span class="math inline">\(Ax\)</span>，其方向是不同于<span class="math inline">\(x\)</span>的，我们感兴趣的是其中<strong>平行于</strong><span class="math inline">\(x\)</span>的：<span class="math inline">\(Ax=\lambda x,x\neq0\)</span>。即：向量<span class="math inline">\(x\)</span>在矩阵<span class="math inline">\(A\)</span>的作用下，方向不变，只进行比例系数为<span class="math inline">\(\lambda\)</span>的伸缩。 特征向量所在直线上的向量都是特征向量，并且包含了所有特征向量，组成了特征空间。如果我们不断左乘矩阵<span class="math inline">\(A\)</span>，得到的列向量会越来越贴合最大特征值对应的特征空间（只对实数而言）。 对于二阶投影矩阵<span class="math inline">\(P\)</span>而言：如果<span class="math inline">\(x\)</span>已经在列空间的平面上，那么<span class="math inline">\(Px=x,\lambda=1\)</span>；如果<span class="math inline">\(x\)</span>垂直于列空间的平面，则<span class="math inline">\(Px=0,\lambda=0\)</span>，除此之外， 没有任何<span class="math inline">\(x\)</span>可以在投影后与原<span class="math inline">\(x\)</span>平行。 若<span class="math inline">\(A\)</span>是奇异阵，那么<span class="math inline">\(Ax=0\)</span>必有非零解，所以<span class="math inline">\(\lambda=0\)</span>必是一个特征值。 特征值还有两条简单的性质： <span class="math display">\[\Sigma_{i=1}^{n}\lambda_i=trace(A),\lambda_1...\lambda_n=det(A)\]</span> 有了理解后，求解<span class="math inline">\(\lambda,x\)</span>也很自然： <span class="math display">\[(A-\lambda I)x=0有非零解，A-\lambda I必奇异\]</span> <span class="math display">\[特征方程det(A-\lambda I)=0\]</span> 解出<span class="math inline">\(\lambda\)</span>，进而求出<span class="math inline">\((A-\lambda I)x=0\)</span>的零空间即可。 举个交换阵的例子：<span class="math inline">\(A=\begin{bmatrix}  0 &amp; 1 \\  1 &amp; 0\\  \end{bmatrix}\)</span>，从物理意义上，交换<span class="math inline">\(x_1=\begin{bmatrix}  1\\  1\\  \end{bmatrix}\)</span>的两行仍然与原向量平行，此时<span class="math inline">\(\lambda=1\)</span>；类似地，交换<span class="math inline">\(x_2=\begin{bmatrix}  1\\  -1\\  \end{bmatrix}\)</span>的两行仍然与原向量平行，只是变成了相反向量，此时<span class="math inline">\(\lambda=-1\)</span>。 如果再看<span class="math inline">\(A+3I=\begin{bmatrix}  3 &amp; 1 \\  1 &amp; 3\\  \end{bmatrix}\)</span>，特征值变为了<span class="math inline">\(\lambda+3=2,4\)</span>，特征向量没有改变。 接着可以看看特征值不为实数的例子：对于<strong>反对称</strong>矩阵<span class="math inline">\(\begin{bmatrix}  0 &amp; -1 \\  1 &amp; 0\\  \end{bmatrix}\)</span>，<span class="math inline">\(\lambda=i,-i\)</span>，从几何上看：该矩阵的作用是将向量旋转90度，旋转之后的向量不可能与之前的平行，所以也就没有实数特征值。 ## 对角化 这一节的前提是<span class="math inline">\(A\)</span><strong>有<span class="math inline">\(n\)</span>个线性无关的特征向量</strong>，这样后面由<strong>特征向量组成的矩阵</strong><span class="math inline">\(S\)</span>才可逆。 对于满足前提的矩阵： <span class="math display">\[AS=A\begin{bmatrix}
-x_1&amp;...&amp; x_n \\
-\end{bmatrix}=\begin{bmatrix}
-\lambda_1x_1&amp;...&amp; \lambda_nx_n \\
-\end{bmatrix}=\begin{bmatrix}
-x_1&amp;...&amp; x_n \\
-\end{bmatrix}\begin{bmatrix}
-   \lambda_1 &amp; ... &amp; 0 \\
-   ... &amp; ... &amp; ...\\
-    0 &amp; ... &amp; \lambda_n \\
-  \end{bmatrix}=S\Lambda\]</span> 这样<span class="math inline">\(S^{-1}AS=\Lambda\)</span>。 如果<span class="math inline">\(A\)</span>的所有特征值互异，必可对角化；如果有重复特征值，那么<strong>不一定</strong>有<span class="math inline">\(n\)</span>个线性无关的特征向量，也不一定可以对角化。</p>
-<p><span class="math inline">\(A\)</span>可以被分解为<span class="math inline">\(A=S\Lambda S^{-1}\)</span>。由此不难得到<span class="math inline">\(A\)</span>的幂：<span class="math inline">\(A^K=S\Lambda^K S^{-1}\)</span>，特征值加倍，但特征向量不变。 当<span class="math inline">\(K\rightarrow+\infin\)</span>，如果所有<span class="math inline">\(|\lambda_i|&lt;1\)</span>，那么<span class="math inline">\(A^K\rightarrow0\)</span>。 <span class="math inline">\(A\)</span>的幂有一个应用：一阶差分方程<span class="math inline">\(u_{k+1}=Au_k\)</span>，通过递推不难发现<span class="math inline">\(u_k=A^ku_0\)</span>，如果直接用<span class="math inline">\(A^K=S\Lambda^K S^{-1}\)</span>求解，求逆开销是不可忽视的，所以我们换一种方式： 我们知道，线性无关的特征向量可以作为基表示其它向量： <span class="math display">\[u_0=c_1x_1+...+c_nx_n=Sc,Au_0=S\Lambda S^{-1}u_0=S\Lambda S^{-1}Sc=S\Lambda c\]</span> <span class="math display">\[A^ku_o=c_1\lambda_1^{k}x_1+...+c_n\lambda_n^{k}x_n=S\Lambda^{k}c\]</span> 很清楚地看到：<span class="math inline">\(u_k\)</span>的增长速度由<span class="math inline">\(\Lambda\)</span>决定，并且越大的特征值起的作用越大。 因此求解差分方程需要三步：</p>
-<ol type="1">
-<li>求解矩阵<span class="math inline">\(A\)</span>的特征值和特征向量；</li>
-<li>将<span class="math inline">\(u_0\)</span>在特征向量上展开，求出向量<span class="math inline">\(c\)</span>；</li>
-<li>按照<span class="math inline">\(u_k=S\Lambda^{k}c\)</span>计算即可。</li>
-</ol>
-<p>这里非常经典的例子就是<a target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/11478906.html">斐波那契数列</a>。 ## 微分方程 我们知道：对于常系数线性微分方程<span class="math inline">\(\frac{dy}{dt}=\lambda y\)</span>，其解为<span class="math inline">\(y(t)=Ce^{\lambda t}\)</span>。现在要研究的是未知函数是向量的情况：<span class="math inline">\(\frac{du}{dt}=Au\)</span>，不难验证<span class="math inline">\(u(t)=e^{\lambda t}x\)</span>是特解，并且微分方程组满足线性性质。 举例来看： <span class="math display">\[
-\begin{cases}
-\frac{du_1}{dt}=-u_1+2u_2&amp; \text{}\\
-\frac{du_2}{dt}=u_1-2u_2&amp; \text{}\\
-\end{cases},u(0)=\begin{bmatrix}
-   1\\
-   0\\
-  \end{bmatrix}
-\]</span> <span class="math inline">\(A=\begin{bmatrix}  -1 &amp; 2 \\  1 &amp; -2\\  \end{bmatrix}\)</span>，求解出<span class="math inline">\(\lambda=0,-3\)</span>，从特征值可以看出：<span class="math inline">\(\lambda=-3\)</span>的项会随着<span class="math inline">\(t\)</span>的增加而消失，<span class="math inline">\(\lambda=0\)</span>的项最终会是稳态。 特征向量<span class="math inline">\(x_1=\begin{bmatrix}  2\\  1\\  \end{bmatrix},x_2=\begin{bmatrix}  1\\  -1\\  \end{bmatrix}\)</span>，这样可以写出通解： <span class="math display">\[
-u(t)=c_1e^{\lambda_1 t}x_1+c_2e^{\lambda_2 t}x_2=\frac{1}{3}\begin{bmatrix}
-   2\\
-   1\\
-  \end{bmatrix}+\frac{1}{3}e^{-3t}\begin{bmatrix}
-   1\\
-   -1\\
-  \end{bmatrix}
-\]</span> 当<span class="math inline">\(t\rightarrow+\infin\)</span>，<span class="math inline">\(\frac{1}{3}\begin{bmatrix}  2\\  1\\  \end{bmatrix}\)</span>这一项将是稳态。 因此从特征值的角度，<span class="math inline">\(||e^{(-3+6i)t}||=e^{-3t}\)</span>，<span class="math inline">\(||e^{6it}||=1\)</span>，在单位圆上运动，所以最终的状态取决于特征值的实部：</p>
-<ul>
-<li><span class="math inline">\(Re(\lambda)&lt;0,e^{\lambda t}\rightarrow0,u(t)\rightarrow0\)</span></li>
-<li>某个特征值为0，其余实部小于0，最终收敛于常量</li>
-<li><span class="math inline">\(Re(\lambda)&gt;0\)</span>，无法收敛</li>
-</ul>
-<p>回头去看上述的微分方程，<span class="math inline">\(u_1\)</span>和<span class="math inline">\(u_2\)</span>耦合在一起，下面我们尝试用特征向量<strong>解耦</strong>： 令<span class="math inline">\(u=Sv\)</span>，则微分方程变为<span class="math inline">\(S\frac{dv}{dt}=ASv,\frac{dv}{dt}=S^{-1}ASv=\Lambda v\)</span>，那么： <span class="math display">\[
-\begin{cases}
-\frac{dv_1}{dt}=\lambda_1v_1&amp; \text{}\\
-\frac{dv_2}{dt}=\lambda_2v_2&amp; \text{}\\
-...
-\end{cases}
-\]</span> 换种思路，如果直接求解<span class="math inline">\(\frac{dv}{dt}=\Lambda v\)</span>，那么类似于标量的答案<span class="math inline">\(v(t)=v(0)e^{\Lambda t},u(t)=Sv(t)=Se^{\Lambda t}S^{-1}u(0)=e^{At}u(0)\)</span>，这里就得到了一个新的概念：<strong>矩阵指数</strong><span class="math inline">\(e^{At}\)</span>。 如果你还记得高数里的泰勒展开： <span class="math display">\[
-\frac{1}{1-x}=\sum\limits_{n=0}^{\infin}x^n,e^x=\sum\limits_{n=0}^{\infin}\frac{x^n}{n!}
-\]</span> 那么矩阵指数同样可以展开： <span class="math display">\[
-(I-At)^{-1}=I+At+(At)^2+...,e^{At}=I+At+\frac{1}{2}(At)^2+...+\frac{(At)^n}{n!}+...
-\]</span> <span class="math inline">\(e^{At}\)</span>一定是收敛的，因为阶乘的增长速度远远大于其它运算，接着将它写成矩阵形式： <span class="math display">\[
-e^{At}=I+S\Lambda S^{-1}t+\frac{1}{2}S\Lambda^2S^{-1}t^2+...=Se^{\Lambda t}S^{-1}
-\]</span> <span class="math inline">\(e^{\Lambda t}\)</span>也是一个矩阵指数，可以写作<span class="math inline">\(\begin{bmatrix}  e^{\lambda_1t} &amp; ... &amp; 0 \\  ... &amp; ... &amp; ...\\  0 &amp; ... &amp; e^{\lambda_nt} \\  \end{bmatrix}\)</span>，这里也可以有相似的收敛性：</p>
-<ul>
-<li>对于矩阵指数<span class="math inline">\(e^{\Lambda t}\)</span>，若<span class="math inline">\(Re(\lambda)&lt;0\)</span>，则收敛；</li>
-<li>对于矩阵幂<span class="math inline">\(A^K=S\Lambda^K S^{-1}\)</span>，若<span class="math inline">\(||\lambda||&lt;1\)</span>，则收敛。</li>
-</ul>
-<p>微分方程也可以像上一节一样，将二阶<span class="math inline">\(y&#39;&#39;+by&#39;+ky=0\)</span>转为一阶，构造： <span class="math display">\[
-\begin{cases}
-y&#39;&#39;+by&#39;+ky=0&amp; \text{}\\
-y&#39;=y&#39;&amp; \text{}\\
-\end{cases}
-\]</span> 令<span class="math inline">\(u=\begin{bmatrix}  y&#39;\\  y\\  \end{bmatrix}\)</span>，则<span class="math inline">\(u&#39;=\begin{bmatrix}  y&#39;&#39;\\  y&#39;\\  \end{bmatrix}=\begin{bmatrix}  -b &amp; -k \\  1 &amp; 0\\  \end{bmatrix}\begin{bmatrix}  y&#39;\\  y\\  \end{bmatrix}=Au\)</span>。 ## 实对称阵/正定阵 <strong>实对称矩阵的特征值必为实数，特征向量正交</strong>。证明略。对于复矩阵，只有<span class="math inline">\(A=\bar A^T(共轭转置)\)</span>，性质才成立。 上一节我们知道：如果<span class="math inline">\(A\)</span>有<span class="math inline">\(n\)</span>个线性无关的特征向量，那么可以被分解成<span class="math inline">\(A=S\Lambda S^{-1}\)</span>。对于正交阵而言<span class="math inline">\(Q^T=Q^{-1}\)</span>，故<span class="math inline">\(A=Q\Lambda Q^{-1}=Q\Lambda Q^{T}\)</span>，如果进一步计算： <span class="math display">\[
-A=\begin{bmatrix}
-q_1&amp;...&amp; q_n \\
-\end{bmatrix}\begin{bmatrix}
-   \lambda_1 &amp; ... &amp; 0 \\
-   ... &amp; ... &amp; ...\\
-    0 &amp; ... &amp; \lambda_n \\
-  \end{bmatrix}\begin{bmatrix}
-   q_1^T\\
-   ...\\
-   q_n^T\\
-  \end{bmatrix}=\lambda_1q_1q_1^T+...+\lambda_nq_nq_n^T
-\]</span> <span class="math inline">\(q_iq_i^T\)</span>是投影矩阵，实对称矩阵可以由投影矩阵线性组合而来，这些投影矩阵我个人感觉非常像矩阵的基，也就是说实对称阵可以完全由其特征值和特征向量确定。</p>
-<p>接着我们来看正定阵，<strong>正定阵的前提是对称阵</strong>，有3个充要条件：</p>
-<ul>
-<li><span class="math inline">\(\lambda_i&gt;0\)</span></li>
-<li><span class="math inline">\(pivot_i&gt;0\)</span></li>
-<li>所有子行列式为正</li>
-</ul>
-<p>实际上，<span class="math inline">\(\#正主元=\#正特征值\)</span>，并且<span class="math inline">\(\Pi pivot=\Pi\lambda_i=det(A)\)</span>。 利用正定阵可以研究二次型的最小值： <span class="math display">\[f(x,y)=x^TAx=ax^2+2bxy+cy^2\]</span> 如果<span class="math inline">\(A\)</span>正定，那么<span class="math inline">\(除(0,0)外,f(x,y)&gt;0\)</span>。 取<span class="math inline">\(A=\begin{bmatrix}  2 &amp; 6 \\  6 &amp; 20\\  \end{bmatrix}\)</span>，那么<span class="math inline">\(f(x,y)=2x^2+12xy+20y^2\)</span>，配方<span class="math inline">\(f(x,y)=2(x+3y)^2+2y^2&gt;0\)</span>，注意各项的系数：两个平方项前的系数是<span class="math inline">\(A\)</span>的两个<strong>主元</strong>，括号中的3是矩阵消元时所用的<strong>乘数</strong>。如果把<span class="math inline">\(A\)</span>做LU分解会看得更清楚：<span class="math inline">\(A=LU=\begin{bmatrix}  1 &amp; 0 \\  3 &amp; 1\\  \end{bmatrix}\begin{bmatrix}  2 &amp; 6 \\  0 &amp; 2\\  \end{bmatrix}\)</span>。 从几何上看，<span class="math inline">\(f(x,y)\)</span>就像是一个<strong>碗</strong>的形状，在<span class="math inline">\((0,0)\)</span>处取极小值0，<span class="math inline">\(f(x,y)=1\)</span>则是椭圆截面。 对于三阶的情况：<span class="math inline">\(A=\begin{bmatrix}  2 &amp; -1 &amp; 0 \\  -1 &amp; 2 &amp; -1 \\  0 &amp; -1 &amp; 2 \\  \end{bmatrix}\)</span>，可以求得<span class="math inline">\(\lambda=2-\sqrt2,2,2+\sqrt2\)</span>，那么此时 <span class="math display">\[
-f=x^TAx&gt;0
-\]</span> 这在几何上已经上升到四维，必然有3个轴，并且轴的方向由相应的特征向量决定，轴的长度由特征值决定，<span class="math inline">\(f=1\)</span>是一个椭球。</p>
-<p>最后，如果<span class="math inline">\(A_{mn}\)</span>的各列线性无关，那么<span class="math inline">\(A^TA\)</span>必然正定，证明可以从<span class="math inline">\(x^TAx&gt;0\)</span>入手。 ## 相似阵 前面我们见过<span class="math inline">\(S^{-1}AS=\Lambda\)</span>，那么<span class="math inline">\(A\sim\Lambda\)</span>。比较正式的说法是：存在可逆阵M，使得<span class="math inline">\(B=M^{-1}AM\)</span>，则称<span class="math inline">\(A\sim B\)</span>。相似阵可以看作一个家族，这个家族的共同点就是<strong>特征值相同</strong>。 之前我们知道：如果<span class="math inline">\(A\)</span>有<span class="math inline">\(n\)</span>个不同的特征值，那么必可相似对角化。如果有重复的特征值，未必可以对角化： 现在考虑<span class="math inline">\(\lambda_1=\lambda_2=4\)</span>的情况，满足条件的矩阵有很多，比如<span class="math inline">\(A=\begin{bmatrix}  4 &amp; 0 \\  0 &amp; 4\\  \end{bmatrix}\)</span>，但如果我们去找<span class="math inline">\(A\)</span>的相似阵，我们尝试用<span class="math inline">\(M^{-1}AM=A\)</span>，无论任何<span class="math inline">\(M\)</span>，最终的结果都是<span class="math inline">\(A\)</span>自己，不会增加任何新的矩阵，矩阵<span class="math inline">\(A\)</span>单独组成了一个家族。 如果去看其余满足条件的矩阵，比如<span class="math inline">\(B=\begin{bmatrix}  4 &amp; 1 \\  0 &amp; 4\\  \end{bmatrix},C=\begin{bmatrix}  4 &amp; 0 \\  17 &amp; 4\\  \end{bmatrix}...\)</span>，这些只有1个特征向量的矩阵虽然不能对角化，但是我们可以找一个<strong>最接近对角阵</strong>的，也就是<span class="math inline">\(B\)</span>，称为Jordan Form。 对于<span class="math inline">\(\begin{bmatrix}  0 &amp; 1 &amp; 0 &amp; 0 \\  0 &amp; 0 &amp; 1 &amp; 0 \\  0 &amp; 0 &amp; 0 &amp; 0 \\  0 &amp; 0 &amp; 0 &amp; 0 \\  \end{bmatrix}和\begin{bmatrix}  0 &amp; 1 &amp; 0 &amp; 0 \\  0 &amp; 0 &amp; 0 &amp; 0 \\  0 &amp; 0 &amp; 0 &amp; 1 \\  0 &amp; 0 &amp; 0 &amp; 0 \\  \end{bmatrix}\)</span>，尽管特征值全为0，但并不相似。只有2个线性无关的特征向量，所以就有2个Jordan Block，每个Jordan Block长这样： <span class="math display">\[
-J_i=\begin{bmatrix}
-   \lambda_i &amp; 1 &amp;...&amp; 0 \\
-  0 &amp; \lambda_i  &amp; 1 &amp; ...\\
-  ...&amp;...&amp;...&amp;...\\
-  0 &amp; 0 &amp; \lambda_i  &amp; 1 \\
-   0 &amp; 0 &amp; 0 &amp; \lambda_i  \\
-  \end{bmatrix}
-\]</span> 每个块只能有1个特征向量，这样做的意义在于任意的矩阵<span class="math inline">\(A\)</span>，即使不能相似对角化，但是都有<span class="math inline">\(A\sim J=\begin{bmatrix}  J_1 &amp; ... &amp; 0 \\  ... &amp; ... &amp; ...\\  0 &amp; ... &amp; J_d \\  \end{bmatrix}\)</span>。 ## SVD分解 假设我们在行空间有一组标准正交基<span class="math inline">\(v_1,v_2,...,v_r\)</span>，左乘矩阵<span class="math inline">\(A\)</span>进入列空间，将结果表示为列空间中的一组标准正交基<span class="math inline">\(u_1,u_2,...,u_r\)</span>： <span class="math display">\[
-AV=A\begin{bmatrix}
-v_1&amp;...&amp; v_r \\
-\end{bmatrix}=\begin{bmatrix}
-u_1&amp;...&amp; u_r \\
-\end{bmatrix}\begin{bmatrix}
-   \sigma_1 &amp; ... &amp; 0 \\
-   ... &amp; ... &amp; ...\\
-    0 &amp; ... &amp; \sigma_r \\
-  \end{bmatrix}=U\Sigma
-\]</span> 故<span class="math inline">\(A\)</span>可以分解为<span class="math inline">\(A=U\Sigma V^T\)</span>。 如果<span class="math inline">\(A=\begin{bmatrix}  4 &amp; 4 \\  -3 &amp; 3\\  \end{bmatrix}\)</span>，试着分解下，关键问题就是如何求得等式右边的3个矩阵。 先来搞定<span class="math inline">\(V\)</span>，最好能去掉<span class="math inline">\(U\)</span>，我们的技巧是用<span class="math inline">\(A^TA\)</span>： <span class="math display">\[
-A^TA=V\Sigma^TU^TU\Sigma V^T=V\begin{bmatrix}
-   \sigma_1^2 &amp; ... &amp; 0 \\
-   ... &amp; ... &amp; ...\\
-    0 &amp; ... &amp; \sigma_r^2 \\
-  \end{bmatrix}V^T
-\]</span> 由于<span class="math inline">\(A^TA\)</span>实对称，所以我们得到了<span class="math inline">\(Q\Lambda Q^{T}\)</span>的形式，接下来只要搞定<span class="math inline">\(A^TA\)</span>的特征值和特征向量即可得到<span class="math inline">\(V\)</span>和<span class="math inline">\(\Sigma\)</span>； 同样地，为了求<span class="math inline">\(U\)</span>，最好先搞掉<span class="math inline">\(V\)</span>： <span class="math display">\[
-AA^T=U\Sigma V^TV\Sigma^TU^T=U\begin{bmatrix}
-   \sigma_1^2 &amp; ... &amp; 0 \\
-   ... &amp; ... &amp; ...\\
-    0 &amp; ... &amp; \sigma_r^2 \\
-  \end{bmatrix}U^T
-\]</span> 只要求得<span class="math inline">\(AA^T\)</span>的特征值和特征向量即可得<span class="math inline">\(U\)</span>。 ## 作业 Suppose we have the rank-r svd of a rank 1 matrix <span class="math inline">\(A = U\Sigma V^T\)</span>. Describe the nullspace of <span class="math inline">\(A\)</span> in terms of possibly <span class="math inline">\(U\)</span>, <span class="math inline">\(Σ\)</span>, and <span class="math inline">\(V\)</span>. Answer: The nullspace of <span class="math inline">\(A\)</span> is the same as the nullspace of <span class="math inline">\(V^T\)</span>. Since <span class="math inline">\(A\)</span> is rank 1, <span class="math inline">\(V\)</span> is a vector. So the nullspace of <span class="math inline">\(V^T\)</span> is a hyperplane given by <span class="math inline">\(V^Tx=0\)</span>, i.e., the space of all the vectors that are perpendicular to <span class="math inline">\(V\)</span>.</p>
-
+          <p>MIT 18.06</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/05/31/MIT%20Linear%20Algebra#5%20Eigenvalues%20and%20Eigenvectors/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -803,7 +596,16 @@ AA^T=U\Sigma V^TV\Sigma^TU^T=U\begin{bmatrix}
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-05-29 02:59:00" itemprop="dateCreated datePublished" datetime="2020-05-29T02:59:00+08:00">2020-05-29</time>
+              <time title="Created: 2020-05-29 10:59:00" itemprop="dateCreated datePublished" datetime="2020-05-29T10:59:00+08:00">2020-05-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
             </span>
 
           
@@ -817,141 +619,15 @@ AA^T=U\Sigma V^TV\Sigma^TU^T=U\begin{bmatrix}
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>行列式本质上是要通过一个数字反应矩阵的某些信息，目前看来不是很重要，快速过一遍。 ## 性质 引入是通过3个基本性质：</p>
-<ol type="1">
-<li><span class="math inline">\(det(I)=1\)</span></li>
-<li>交换两行，行列式的值变号：置换矩阵<span class="math inline">\(det(P)=\begin{cases} 1&amp; \text{交换偶数次}\\ -1&amp; \text{交换奇数次}\\ \end{cases}\)</span></li>
-<li><span class="math inline">\(\left|\begin{array}{cccc} ta &amp; tb\\ c &amp; d\\ \end{array}\right|=t\left|\begin{array}{cccc} a &amp; b\\ c &amp; d\\ \end{array}\right|,\left|\begin{array}{cccc} a+a&#39; &amp; b+b&#39;\\ c &amp; d\\ \end{array}\right|=\left|\begin{array}{cccc} a &amp; b\\ c &amp; d\\ \end{array}\right|+\left|\begin{array}{cccc} a&#39; &amp; b&#39;\\ c &amp; d\\ \end{array}\right|\)</span></li>
-</ol>
-<p>由3个基本性质可以推出若干：</p>
-<ol type="1">
-<li>若两行相等，则<span class="math inline">\(det(A)=0\)</span> 交换相等的2行，矩阵不变，行列式的值不变，根据性质2：<span class="math inline">\(det(A)=-det(A)\)</span>，得证。</li>
-<li>初等行变换不改变行列式的值 <span class="math display">\[
-\left|\begin{array}{cccc}
-a &amp; b\\ 
-c-la &amp; d-lb\\
-\end{array}\right|=\left|\begin{array}{cccc}
-a &amp; b\\ 
-c &amp; d\\
-\end{array}\right|+\left|\begin{array}{cccc}
-a &amp; b\\ 
--la &amp; -lb\\
-\end{array}\right|=\left|\begin{array}{cccc}
-a &amp; b\\ 
-c &amp; d\\
-\end{array}\right|
-\]</span></li>
-<li>有一行全为0，行列式为0</li>
-<li><strong>上三角矩阵的行列式等于主对角线元素之积</strong>：<span class="math inline">\(det(U)=d_1d_2...d_n\)</span> 对于任意矩阵，通过初等行变换可以得到<span class="math inline">\(U\)</span>，接着向上消元并提出对角线的因子，可以得到<span class="math inline">\(I\)</span>。 这也是Matlab求行列式的方法。</li>
-<li><span class="math inline">\(det(A)=0\Leftrightarrow A是奇异矩阵(消元后有全0行)\)</span> <span class="math inline">\(det(A)\neq0\Leftrightarrow A可逆\Rightarrow U\Rightarrow d_1d_2...d_n\neq0\)</span></li>
-<li><span class="math inline">\(det(AB)=det(A)*det(B) \Rightarrow det(A^{-1})=\frac{1}{det(A)}\)</span></li>
-<li><span class="math inline">\(det(A^T)=det(A)\)</span>，可以通过LU分解去证，这也意味着对行成立的性质对列也成立。 ## 计算方法 上一节中介绍了消元化上三角求行列式的方法，本节介绍2种不常用的方法，所有计算都可以通过上一节的3个基本性质获得： 对于二阶，拆解后有2个非零项： <span class="math display">\[
-\left|\begin{array}{cccc}
-a &amp; b\\ 
-c &amp; d\\
-\end{array}\right|=\left|\begin{array}{cccc}
-a &amp; 0\\ 
-c &amp; d\\
-\end{array}\right|+\left|\begin{array}{cccc}
-0 &amp; b\\ 
-c &amp; d\\
-\end{array}\right|=\left|\begin{array}{cccc}
-a &amp; 0\\ 
-c &amp; 0\\
-\end{array}\right|+\left|\begin{array}{cccc}
-a &amp; 0\\ 
-0 &amp; d\\
-\end{array}\right|+\left|\begin{array}{cccc}
-0 &amp; b\\ 
-0 &amp; d\\
-\end{array}\right|+\left|\begin{array}{cccc}
-0 &amp; b\\ 
-c &amp; 0\\
-\end{array}\right|=ad-bc
-\]</span> 对于三阶，拆解后有6个非零项： <span class="math display">\[
-\left|\begin{array}{cccc} 
-a_{11} &amp; a_{12} &amp; a_{13}\\ 
-a_{21} &amp; a_{22} &amp; a_{23}\\ 
-a_{31} &amp; a_{32} &amp; a_{33}\\ 
-\end{array}\right|=\left|\begin{array}{cccc} 
-a_{11} &amp;  &amp; \\ 
- &amp; a_{22} &amp; \\ 
- &amp;  &amp; a_{33}\\ 
-\end{array}\right|+\left|\begin{array}{cccc} 
-a_{11} &amp;  &amp; \\ 
- &amp;  &amp; a_{23}\\ 
- &amp;  a_{32}&amp; \\ 
-\end{array}\right|+\left|\begin{array}{cccc} 
- &amp;a_{12}  &amp; \\ 
- a_{21}&amp;  &amp; \\ 
- &amp;  &amp;a_{33}\\ 
-\end{array}\right|+\left|\begin{array}{cccc} 
- &amp;a_{12}  &amp; \\ 
- &amp;  &amp;a_{23} \\ 
- a_{31}&amp;  &amp;\\ 
-\end{array}\right|+\left|\begin{array}{cccc} 
- &amp;  &amp;a_{13} \\ 
- a_{21}&amp;  &amp; \\ 
- &amp;a_{32}  &amp;\\ 
-\end{array}\right|+\left|\begin{array}{cccc} 
- &amp;  &amp;a_{13} \\ 
- &amp;a_{22}  &amp; \\ 
- a_{31}&amp;  &amp;\\ 
-\end{array}\right|
-\]</span> 接着可以通过交换行得到对角阵并求得结果。 如果我们观察每一项：从第一行到最后一行，<strong>列下标</strong>是<span class="math inline">\((1,2,3)\)</span>的某个全排列，因此可以知道展开以后非零项一共有<span class="math inline">\(n!\)</span>项(第一行有<span class="math inline">\(n\)</span>种选择，第二行有<span class="math inline">\(n-1\)</span>种选择...)，于是可以得到第二种计算行列式的方法： <span class="math display">\[
-det(A)=\Sigma_{n!项}\pm a_{1x}a_{1y}...a_{1w},(x,y,...w)是(1,n)的某个全排列
-\]</span> 正负号取决于交换了几次得到<span class="math inline">\((1,2,3...)\)</span>这种朴素的排列。 举例来看： <span class="math display">\[
-\left|\begin{array}{cccc} 
-0 &amp; 0 &amp; 1 &amp; 1\\ 
-0 &amp; 1 &amp; 1 &amp; 0\\ 
-1 &amp; 1 &amp; 0 &amp; 0\\ 
-1 &amp; 0 &amp; 0 &amp; 1\\ 
-\end{array}\right|
-\]</span> 可以先取<span class="math inline">\((1,3)\)</span>位置，接着只能取<span class="math inline">\((2,2)\)</span>，接着<span class="math inline">\((3,1)\)</span>，最后<span class="math inline">\((4,4)\)</span>，所以列的排列是<span class="math inline">\((3,2,1,4)\)</span>，交换一次可得<span class="math inline">\((1,2,3,4)\)</span>，故有一非零项-1； 还可以先取<span class="math inline">\((1,4)\)</span>，接着<span class="math inline">\((2,3)\)</span>，<span class="math inline">\((3,2)\)</span>，最后<span class="math inline">\((4,1)\)</span>，列的排列是<span class="math inline">\((4,3,2,1)\)</span>，交换2次可得<span class="math inline">\((1,2,3,4)\)</span>，故有一非零项1，除此以外，没有别的选择，所以行列式的值是0。</li>
-</ol>
-<p>如果我们对上述拆解三阶行列式的结果提取公因子： <span class="math display">\[
-det(A)=a_{11}(a_{22}a_{33}-a_{23}a_{32})+a_{12}(-a_{21}a_{33}+a_{23}a_{31})+a_{13}(a_{21}a_{32}-a_{22}a_{31})
-\]</span> 我们穷举了第一行的3种可能的选择<span class="math inline">\(a_{11},a_{12},a_{13}\)</span>，对于每种选择，当前行与当前列都不能再用，括号中的式子叫做<strong>代数余子式</strong><span class="math inline">\(C_{ij}\)</span>：去掉<span class="math inline">\(a_{ij}\)</span>所在行列的<span class="math inline">\(n-1\)</span>阶行列式，并且正负号取决于<span class="math inline">\(i+j\)</span>的奇(-)偶(+)。 这样我们得到了求行列式的第三种方法： <span class="math display">\[
-det(A)=a_{11}C_{11}+a_{12}C_{12}+...+a_{1n}C_{1n}
-\]</span> 举例来看，对于三对角行列式： <span class="math display">\[
-\left|\begin{array}{cccc} 
-1 &amp; 1 &amp; 0 &amp; 0\\ 
-1 &amp; 1 &amp; 1 &amp; 0\\ 
-0 &amp; 1 &amp; 1 &amp; 1\\ 
-0 &amp; 0 &amp; 1 &amp; 1\\ 
-\end{array}\right|
-\]</span> 容易知：<span class="math inline">\(det(A_1)=1,det(A_2)=\left|\begin{array}{cccc} 1 &amp; 1\\ 1 &amp; 1\\ \end{array}\right|=0,det(A_3)=\left|\begin{array}{cccc} 1 &amp; 1 &amp; 0\\ 1 &amp; 1 &amp; 1\\ 0 &amp; 1 &amp; 1\\ \end{array}\right|=-1\)</span>。 对于四阶，我们<strong>按第一列展开</strong>：<span class="math inline">\(det(A_4)=1*det(A_3)-1*det(A_2)=-1\)</span>，此式可以推广：<span class="math inline">\(det(A_n)=det(A_{n-1})-det(A_{n-2})\)</span>，可以发现上述三对角行列式是以6为周期的。 ## 应用</p>
-<ul>
-<li>求逆矩阵 记得当年矩阵求逆教了一种伴随矩阵的方法：<span class="math inline">\(A^{-1}=\frac{1}{det(A)}C^T\)</span>，不知为何物？ 只要证明<span class="math inline">\(AC^T=det(A)I\)</span>即可： <span class="math display">\[
-\left[\begin{array}{cccc} 
-a_{11} &amp; ... &amp; a_{1n}\\ 
-... &amp;  &amp; ...\\ 
-a_{n1} &amp; ... &amp; a_{nn}\\ 
-\end{array}\right]\left[\begin{array}{cccc} 
-C_{11} &amp; ... &amp; C_{n1}\\ 
-... &amp;  &amp; ...\\ 
-C_{1n} &amp; ... &amp; C_{nn}\\ 
-\end{array}\right]=\left[\begin{array}{cccc} 
-det(A) &amp; ... &amp;0\\ 
-... &amp;  &amp; ...\\ 
-0 &amp; ... &amp; det(A)\\ 
-\end{array}\right]
-\]</span> 对于主对角线上的元素：<span class="math inline">\(a_{11}C_{11}+...+a_{1n}C_{1n}=det(A)\)</span>； 对于其它元素：<span class="math inline">\(a_{11}C_{n1}+...+a_{1n}C_{nn}=\left|\begin{array}{cccc} a_{11} &amp; ... &amp; a_{1n}\\ ... &amp; &amp; ...\\ a_{11} &amp; ... &amp; a_{1n}\\ \end{array}\right|=0\)</span>。</li>
-<li>求解<span class="math inline">\(Ax=b\)</span> 求解：<span class="math inline">\(x=A^{-1}b=\frac{1}{det(A)}C^Tb\)</span>，那么考虑<span class="math inline">\(x_1=\frac{1}{det(A)}(b_1c_{11}+..+b_nc_{n1})\)</span>，<span class="math inline">\(b_1c_{11}+..+b_nc_{n1}\)</span>其实是将矩阵<span class="math inline">\(A\)</span>的第一列换为<span class="math inline">\(b\)</span>，按照第一列展开求行列式的值即可，同理可以求得其它<span class="math inline">\(x_i\)</span>，这种差到没人用的方法竟然被国内教材奉为圭臬。</li>
-<li>求体积 <span class="math inline">\(det(A)\)</span>的绝对值可以定义为一个平行六面体的体积，正负表示左手系还是右手系。 将三阶矩阵<span class="math inline">\(A\)</span>的每行(列)当作平行六面体的一条边，如果<span class="math inline">\(A=I\)</span>，我们得到一个标准的单位立方体；如果<span class="math inline">\(A=Q\)</span>，我们得到一个旋转过的单位立方体，体积仍然为1，可以通过<span class="math inline">\(Q^TQ=I\)</span>验证。 如果是二维情况，那么<span class="math inline">\(det(A)\)</span>的绝对值就是平行四边形的面积： <span class="math display">\[
-S=\left|\begin{array}{cccc}
-a &amp; b\\ 
-c &amp; d\\
-\end{array}\right|=ad-bc
-\]</span> 那么三角形的面积就是<span class="math inline">\(\frac{1}{2}S\)</span>，推广到向量的起始位置不在<span class="math inline">\((0,0)\)</span>的情况： <span class="math display">\[
-S_{三角形}=\frac{1}{2}\left|\begin{array}{cccc}
-x_1 &amp; y_1 &amp; 1\\ 
-x_2 &amp; y_2 &amp; 1\\ 
-x_3 &amp; y_3 &amp; 1\\ 
-\end{array}\right|
-\]</span> 可以通过平移到原点去证明。 ## 作业 A Hadamard matrix H is a matrix with entries ±1 and orthogonal columns. What is the determinant of H as a function of n? (Hadamard matrices are conjectured to exist for every n that is a multiple of 4, but nobody knows if there is such a matrix even for n=668). 由于<span class="math inline">\(H\)</span>各列正交，故<span class="math inline">\(H^TH=cI\)</span>；又<span class="math inline">\(H\)</span>的元素只有±1，故<span class="math inline">\(c=n\)</span>。所以<span class="math inline">\(det(H)^2=n^n,det(H) = \pm\sqrt{n^n}\)</span>，即<span class="math inline">\(n\)</span>阶Hadamard矩阵的行列式既可以为正，也可以为负。</li>
-</ul>
-
+          <p>MIT 18.06</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/05/29/MIT%20Linear%20Algebra#4%20Determinants/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -996,7 +672,16 @@ x_3 &amp; y_3 &amp; 1\\
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-05-27 07:10:00" itemprop="dateCreated datePublished" datetime="2020-05-27T07:10:00+08:00">2020-05-27</time>
+              <time title="Created: 2020-05-27 15:10:00" itemprop="dateCreated datePublished" datetime="2020-05-27T15:10:00+08:00">2020-05-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
             </span>
 
           
@@ -1010,111 +695,15 @@ x_3 &amp; y_3 &amp; 1\\
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="正交向量">正交向量</h2>
-<p>初中时候我们学过勾股定理，现在用<strong>向量</strong>的形式表示： <span class="math display">\[
-|x|^2+|y|^2=|x+y|^2
-\]</span> 模长的平方也可以表示为<span class="math inline">\(x^Tx\)</span>，做一些计算，就有两个向量正交的判断条件<span class="math inline">\(x^Ty=0\)</span>。</p>
-<p>向量正交有些简单，让我们上升到子空间正交。一个比较直观的<strong>错误</strong>的例子就是地板和墙壁的关系，两者并<strong>不正交</strong>，因为子空间正交要求子空间<span class="math inline">\(S\)</span>中的每个向量都和子空间<span class="math inline">\(T\)</span>中每个向量正交。根据定义，任意两个子空间若相交于某非0向量，那么两者必然不正交。 将正交的概念应用于前面学过的四个基本子空间： 对于零空间<span class="math inline">\(Ax=0\)</span>，我们有<span class="math inline">\(\begin{bmatrix}  row1\\  ...\\  rowm  \end{bmatrix}x=\begin{bmatrix}  0\\  ...\\  0  \end{bmatrix}\)</span>，<span class="math inline">\(x\)</span>和每一行都是正交的，那么<span class="math inline">\(x\)</span>和各行的线性组合也正交，由此可见<strong>零空间和行空间是正交的</strong>。 我们还知道：在<span class="math inline">\(R^n\)</span>中，需要<span class="math inline">\(n\)</span>个基向量张成整个空间，<span class="math inline">\(dim(C(A^T))=r,dim(N(A))=n-r\)</span>，这两个正交的子空间将<span class="math inline">\(R^n\)</span>一分为二，有个专门的术语<strong>正交补</strong>就描述了这种关系，意即零空间包含了所有垂直于行空间的向量。 类似地，可以证明<span class="math inline">\(C(A)\)</span>和<span class="math inline">\(N(A^T)\)</span>也是正交补的关系，将<span class="math inline">\(R^m\)</span>一分为二。 最后，我们为下一节留一个引子：考虑<span class="math inline">\(Ax=b\)</span>，当方程个数<span class="math inline">\(m\)</span>大于未知数个数<span class="math inline">\(n\)</span>，方程组很可能无解，那么怎么找到一个最为近似的解呢？听起来可能有些难理解，举个例子来看： <span class="math display">\[
-\begin{bmatrix}
-   1 &amp; 1\\
-   1 &amp; 2\\
-   1 &amp; 5\\
-  \end{bmatrix}\begin{bmatrix}
-   x_1\\
-   x_2\\
-  \end{bmatrix}=\begin{bmatrix}
-   b_1\\
-   b_2\\
-     b_3\\
-  \end{bmatrix}
-  \]</span> <span class="math inline">\(A\)</span>的列空间是<span class="math inline">\(R^3\)</span>中的一个平面，但是向量<span class="math inline">\(b\)</span>极有可能不在列空间中，此时方程组无解。但是我们想找到<span class="math inline">\(b\)</span>在列空间的<strong>投影</strong>，进而求出最为近似的解。 做法是在<span class="math inline">\(Ax=b\)</span>两边同乘<span class="math inline">\(A^T\)</span>，求解<span class="math inline">\(A^TA\hat x=A^Tb\)</span>，<span class="math inline">\(\hat x\)</span>即是要求的近似解。这里牵涉到一个非常重要的矩阵<span class="math inline">\(A^TA\)</span>，它是对称阵，并且<span class="math inline">\(N(A^TA)=N(A),r(A^TA)=r(A)\)</span>，如果<span class="math inline">\(A\)</span>的各列线性无关，那么<span class="math inline">\(A^TA\)</span>就是可逆的。这样做的原因后面会逐渐揭晓。 ## 子空间投影 这一节非常重要。上一节的最后我们说到：在<span class="math inline">\(Ax=b\)</span>无解的情况下，我们要将<span class="math inline">\(b\)</span>微调成最靠近<span class="math inline">\(C(A)\)</span>的某个向量<span class="math inline">\(p\)</span>，从而求解<span class="math inline">\(A\hat x=p\)</span>，<span class="math inline">\(p\)</span>就是<span class="math inline">\(b\)</span>在列空间的<strong>投影</strong>。</p>
-<p>我们首先看看<span class="math inline">\(R^2\)</span>的情况： <img src="https://img-blog.csdnimg.cn/20200526204930131.png" alt="平面上有向量a,b，" /> 从图中可以看到：<span class="math inline">\(e=b-p=b-xa\)</span>，再由正交关系：<span class="math inline">\(a^Te=a^T(b-xa)=0\)</span>，可以计算出乘数<span class="math inline">\(x=\frac{a^Tb}{a^Ta}\)</span>，进而可以将投影<span class="math inline">\(p\)</span>表示为<span class="math inline">\(p=xa=\frac{aa^T}{a^Ta}b=Pb\)</span>，这里的<span class="math inline">\(P=\frac{aa^T}{a^Ta}\)</span>即投影矩阵。 <span class="math inline">\(r(P)=1\)</span>，<span class="math inline">\(P\)</span>的列空间即为过<span class="math inline">\(a\)</span>的直线。此外，投影矩阵还有两条性质：<span class="math inline">\(P^T=P,P^2=P\)</span>，从几何上解释即投影2次和投影1次效果完全一样。</p>
-<p>接着看看<span class="math inline">\(R^3\)</span>的情况： 两个<strong>线性无关</strong>的列向量<span class="math inline">\(a_1,a_2\)</span>生成的列空间是一个平面，令<span class="math inline">\(A=\begin{bmatrix}  a_1 &amp; a_2\\  \end{bmatrix}\)</span>。类似地，<span class="math inline">\(p\)</span>是向量<span class="math inline">\(b\)</span>在平面上的投影，<span class="math inline">\(e=b-p\)</span>垂直于平面。<strong>因为<span class="math inline">\(p\)</span>在<span class="math inline">\(A\)</span>的列空间中</strong>，所以可以表示为<span class="math inline">\(p=A\hat x=\hat x_1a_1+\hat x_2a_2\)</span>，我们就是要找到<span class="math inline">\(\hat x\)</span>。</p>
-<p>根据<span class="math inline">\(e\)</span>和平面的垂直关系，可以得到： <span class="math display">\[
-\begin{cases}
-a_1^T(b-A\hat x)=0&amp; \text{}\\
-a_2^T(b-A\hat x)=0&amp; \text{}
-\end{cases}\]</span> 写出矩阵形式： <span class="math display">\[
-\begin{bmatrix}
-   a_1^T\\
-   a_2^T\\
-  \end{bmatrix}\begin{bmatrix}
-  b-A\hat x \\
-  \end{bmatrix}=\begin{bmatrix}
-   0\\
-   0\\
-  \end{bmatrix}
-  \]</span> 即<span class="math inline">\(A^T(b-A\hat x)=0\)</span>，<strong>这里<span class="math inline">\(b-A\hat x=e\)</span>在<span class="math inline">\(N(A^T)\)</span>中</strong>，故<span class="math inline">\(e\)</span>垂直于<span class="math inline">\(C(A)\)</span>。 接着化简，我们<strong>得到了上一节中同乘<span class="math inline">\(A^T\)</span>的原因</strong>：<span class="math inline">\(A^TA\hat x=A^Tb\)</span>，继续：<span class="math inline">\(\hat x=(A^TA)^{-1}A^Tb\)</span>。这里注意不能继续化简，因为<span class="math inline">\(A\)</span>不是方阵，<span class="math inline">\(A^{-1}\)</span>不存在。 得到组合系数<span class="math inline">\(\hat x\)</span>后，就可以写出投影<span class="math inline">\(p=A\hat x=A(A^TA)^{-1}A^Tb\)</span>，同样地，投影矩阵<span class="math inline">\(P=A(A^TA)^{-1}A^T\)</span>，可以验证，<span class="math inline">\(P^T=P,P^2=P\)</span>仍然成立。</p>
-<p>最后我们考虑极端一些的情况：</p>
-<ul>
-<li>若<span class="math inline">\(b\)</span>在<span class="math inline">\(A\)</span>的列空间中，投影后仍然是<span class="math inline">\(b\)</span>自己：<span class="math inline">\(b=Ax-&gt;Pb=PAx=Ax=b\)</span>；</li>
-<li>若<span class="math inline">\(b\)</span>垂直于<span class="math inline">\(A\)</span>的列空间，投影后是<span class="math inline">\(0\)</span>：<span class="math inline">\(b\)</span>在<span class="math inline">\(N(A^T)\)</span>中，<span class="math inline">\(A^Tb=0-&gt;Pb=0\)</span>。</li>
-</ul>
-<p>换句话说，<span class="math inline">\(b\)</span>被分解为<span class="math inline">\(p\)</span>和<span class="math inline">\(e\)</span>，<span class="math inline">\(p\)</span>在<span class="math inline">\(C(A)\)</span>中，<span class="math inline">\(e\)</span>在<span class="math inline">\(N(A^T)\)</span>中，并且<span class="math inline">\(b=p+e=Pb+(I-P)b\)</span>。 ## 最小二乘法 这是投影的一个应用，主要用来拟合直线，举例来看： <img src="https://img-blog.csdnimg.cn/20200526221325518.png" alt="在这里插入图片描述" /> 有三个点，需要找到一条最佳拟合直线，方程组形式： <span class="math display">\[
-\begin{cases}
-C+D=1&amp; \text{}\\
-C+2D=2&amp; \text{}\\
-C+3D=2&amp; \text{}\\
-\end{cases}\]</span> 矩阵形式： <span class="math display">\[
-Ax=\begin{bmatrix}
-   1 &amp; 1\\
-   1 &amp; 2\\
-   1 &amp; 3\\
-  \end{bmatrix}\begin{bmatrix}
-   C\\
-  D\\
-  \end{bmatrix}=\begin{bmatrix}
-   1\\
-   2\\
-     2\\
-  \end{bmatrix}=b
-  \]</span> 显然是无解的，要找到最优拟合系数<span class="math inline">\(CD\)</span>，就要用到投影： 清除outlier(离群值)后，定义每个点的误差：<span class="math inline">\(|e|^2=|Ax-b|^2\)</span>，那么优化目标变为最小化：<span class="math inline">\(e_1^2+e_2^2+e_3^2=(C+D-1)^2+(C+2D-2)^2+(C+3D-2)^2\)</span>，如何找到<span class="math inline">\(\hat x=\begin{bmatrix}  C\\  D\\  \end{bmatrix}\)</span>? 求偏导当然是一种方法，从线性代数的角度，回顾下上节中<span class="math inline">\(A^TA\hat x=A^Tb\)</span>，我们已经证明，<strong>这样解得的<span class="math inline">\(\hat x\)</span>可以微调<span class="math inline">\(b\)</span>使其最靠近<span class="math inline">\(C(A)\)</span></strong>，也就是我们要的最优估计。 所以我们有： <span class="math display">\[
-A^TA\hat x=\begin{bmatrix}
-   3 &amp; 6\\
-   6 &amp; 14\\
-  \end{bmatrix}\begin{bmatrix}
-   C\\
-  D\\
-  \end{bmatrix}=\begin{bmatrix}
-   5\\
-   11\\
-  \end{bmatrix}=A^Tb
-  \]</span> 这样就得到了所谓的Normal Equation： <span class="math display">\[
-\begin{cases}
-3C+6D=5&amp; \text{}\\
-6C+14D=11&amp; \text{}\\
-\end{cases}\]</span> 解得<span class="math inline">\(C=\frac{2}{3},D=\frac{1}{2}\)</span>，我们的最佳拟合直线即为<span class="math inline">\(b=\frac{2}{3}+\frac{1}{2}t\)</span>。</p>
-<p>最后要注意的一点：<span class="math inline">\(\hat x\)</span>可解的前提是<span class="math inline">\(A^TA\)</span>可逆，只要<span class="math inline">\(A\)</span>的各列线性无关，这点即可满足。 不妨做一些证明： 要证明<span class="math inline">\(A^TA\)</span>可逆即证明<span class="math inline">\(A^TAx=0\)</span>只有零解； <span class="math inline">\(x^TA^TAx=0,(Ax)^TAx=0,Ax=0\)</span>，<span class="math inline">\(A\)</span>的各列线性无关意即<span class="math inline">\(Ax=0\)</span>只有零解，得证。 ## 正交化 我们都知道，对于<strong>标准正交向量</strong>，有： <span class="math display">\[
-q_i^Tq_j=\begin{cases}
-0&amp; \text{$i\neq j$}\\
-1&amp; \text{$i=j$}\\
-\end{cases}
-\]</span> 正交矩阵写作<span class="math inline">\(Q=\begin{bmatrix}  q_1 &amp; q_2 ... &amp; q_n\\  \end{bmatrix}\)</span>，很容易验证： <span class="math display">\[
-Q^TQ=\begin{bmatrix}
-   q_1^T\\
-   ...\\
-     q_n^T\\
-  \end{bmatrix}\begin{bmatrix}
-   q_1 &amp; ... &amp; q_n\\
-  \end{bmatrix}=I
-\]</span> 如果<span class="math inline">\(Q\)</span>是方阵，那么<span class="math inline">\(Q^T=Q^{-1}\)</span>。正交矩阵的例子有很多：以前学习过的置换矩阵、<span class="math inline">\(\begin{bmatrix}  cos\theta &amp; -sin\theta\\  sin\theta &amp; cos\theta\\  \end{bmatrix}\)</span>，还有一种叫做Adhemar的系列矩阵也是正交阵：<span class="math inline">\(\frac{1}{\sqrt{2}}\begin{bmatrix}  1 &amp; 1\\  1 &amp; -1\\  \end{bmatrix}\)</span>、<span class="math inline">\(\frac{1}{2}\begin{bmatrix}  1 &amp; 1 &amp; 1 &amp; 1\\  1 &amp; -1 &amp; 1 &amp; -1\\  1 &amp; 1 &amp; -1 &amp; -1\\  1 &amp; -1 &amp; -1 &amp; 1\\  \end{bmatrix}\)</span>... 有了这些了解后，就可以解答为什么需要正交矩阵： 还记得上一节中的投影矩阵<span class="math inline">\(P\)</span>吗？将矩阵<span class="math inline">\(A\)</span>变为正交阵<span class="math inline">\(Q\)</span>后，这时再把<span class="math inline">\(b\)</span>投影到<span class="math inline">\(C(Q)\)</span>中，投影矩阵就变为了<span class="math inline">\(P=Q(Q^TQ)^{-1}Q^T=QQ^T\)</span>，如果<span class="math inline">\(Q\)</span>是方阵，那么<span class="math inline">\(P=QQ^T=I\)</span>，这也非常好解释：<span class="math inline">\(Q\)</span>是方阵必然可逆，<span class="math inline">\(C(Q)\)</span>就是整个空间，<span class="math inline">\(P=I\)</span>相当于没有进行投影。 还有我们在求最优估计时用到的<span class="math inline">\(A^TA\hat x=A^Tb\)</span>变为了<span class="math inline">\(Q^TQ\hat x=Q^Tb\)</span>，即<span class="math inline">\(\hat x=Q^Tb\)</span>，求解<span class="math inline">\(\hat x_i\)</span>就简化为了<span class="math inline">\(\hat x_i=q_i^Tb\)</span>。</p>
-<p>所以接下来的问题就是如何将各列线性无关的<span class="math inline">\(A\)</span>变为正交阵<span class="math inline">\(Q\)</span>，这项工作就是Gram-Schmidt正交化，先从两个向量的情况开始： <img src="https://img-blog.csdnimg.cn/20200527120631653.png" alt="在这里插入图片描述" /> 工作分2步进行：</p>
-<ul>
-<li>由线性无关的2个向量<span class="math inline">\(a,b\)</span>得到2个正交的向量<span class="math inline">\(A,B\)</span>： 这一步主要是改变方向，<span class="math inline">\(A=a\)</span>即可，<span class="math inline">\(B=e=b-p=b-\frac{A^Tb}{A^TA}A\)</span>。</li>
-<li>将<span class="math inline">\(A,B\)</span>变为标准正交向量<span class="math inline">\(q_1,q_2\)</span>： 这一步主要是改变长度，<span class="math inline">\(q_1=\frac{A}{|A|},q_2=\frac{B}{|B|}\)</span>。</li>
-</ul>
-<p>如果是3个线性无关的向量，必然生成整个三维空间，<span class="math inline">\(A,B\)</span>不会变，<span class="math inline">\(C\)</span>其实是垂直于<span class="math inline">\(AB\)</span>子空间的那个<span class="math inline">\(e\)</span>，即减去在<span class="math inline">\(A,B\)</span>两个方向的投影(可以用三支笔模拟)，故<span class="math inline">\(C=c-\frac{A^Tc}{A^TA}A-\frac{B^Tc}{B^TB}B\)</span>。 观察上述工作，可以发现：我们所有的工作都是在<strong>同一个列空间</strong>中进行，只是开始的线性无关的基计算量太大，我们想要一组更加简化计算的互相垂直且长度为1的基。 正因为是在一个空间中进行，所以必然存在<span class="math inline">\(q\)</span>的线性组合可以得到<span class="math inline">\(a\)</span>，即<span class="math inline">\(A=QR\)</span>，并且<span class="math inline">\(a_1\)</span>只与<span class="math inline">\(q_1\)</span>有关、<span class="math inline">\(a_2\)</span>只与<span class="math inline">\(q_1,q_2\)</span>有关、<span class="math inline">\(a_3\)</span>只与<span class="math inline">\(q_1,q_2,q_3\)</span>有关，故<span class="math inline">\(R\)</span>必为<strong>上三角矩阵</strong>，也即： <span class="math display">\[
-\begin{bmatrix}
-   a_1 &amp; a_2 &amp; a_3\\
-  \end{bmatrix}=\begin{bmatrix}
-   q_1 &amp; q_2 &amp; q_3\\
-  \end{bmatrix}\begin{bmatrix}
-   q_1^Ta_1 &amp; q_1^Ta_2 &amp; q_1^Ta_3\\
-   0 &amp; q_2^Ta_2 &amp; q_2^Ta_3\\
-   0 &amp; 0 &amp; q_3^Ta_3\\
-  \end{bmatrix}
-\]</span> 这里<span class="math inline">\(R=Q^TA\)</span>。 ## 作业 Suppose a square <span class="math inline">\(A\)</span> has an LU factorization <span class="math inline">\(A=LU\)</span> where <span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span> are invertible. If <span class="math inline">\(A=QR\)</span>, what is <span class="math inline">\(r_{11}\)</span> in terms of possibly elements of <span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span>? 在QR分解中，<span class="math inline">\(r_{11}=q_1^Ta_1=\frac{a_1}{||a_1||}a_1=||a_1||\)</span>，即<span class="math inline">\(A\)</span>第一列的模；第一列即<span class="math inline">\(L\)</span>各列的线性组合，系数是<span class="math inline">\(U\)</span>的第一列(只有<span class="math inline">\(U_{11}\)</span>一个元素)，所以<span class="math inline">\(r_{11}=U_{11} \sqrt{\sum_i L_{i1}^2}\)</span>。</p>
-
+          <p>MIT 18.06</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/05/27/MIT%20Linear%20Algebra#3%20Orthogonality/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1159,7 +748,16 @@ Q^TQ=\begin{bmatrix}
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-05-25 12:16:00" itemprop="dateCreated datePublished" datetime="2020-05-25T12:16:00+08:00">2020-05-25</time>
+              <time title="Created: 2020-05-25 20:16:00" itemprop="dateCreated datePublished" datetime="2020-05-25T20:16:00+08:00">2020-05-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
             </span>
 
           
@@ -1173,227 +771,15 @@ Q^TQ=\begin{bmatrix}
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="向量空间">向量空间</h2>
-<p>向量空间对于该空间内任意向量的线性组合(数乘/加法)都是封闭的，并且必然包含零向量(数乘0)。 <span class="math inline">\(R^2\)</span>本身就是一个向量空间，它的子空间有下面几种：</p>
-<ul>
-<li>过原点直线；</li>
-<li>零向量。</li>
-</ul>
-<p><span class="math inline">\(R^3\)</span>本身也是一个向量空间，它的子空间：</p>
-<ul>
-<li>过(0,0,0)的平面；</li>
-<li>过(0,0,0)的直线；</li>
-<li>零向量。</li>
-</ul>
-<p>从矩阵构造的角度来看，假设<span class="math inline">\(A=\begin{bmatrix}  1 &amp; 3\\  2 &amp; 3\\  4 &amp; 1  \end{bmatrix}\)</span>，<span class="math inline">\(A\)</span>的每一列属于<span class="math inline">\(R^3\)</span>，<span class="math inline">\(A\)</span>的col1和col2的所有线性组合构成了一个向量空间，称作<strong>列空间</strong>，记作<span class="math inline">\(C(A)\)</span>。 从列空间的角度重新来看<span class="math inline">\(Ax=b\)</span>： <span class="math display">\[
-A=\begin{bmatrix}
-   1 &amp; 1 &amp; 2\\
-   2 &amp; 1 &amp; 3\\
-   3 &amp; 1 &amp; 4\\
-   4 &amp; 1 &amp; 5
-  \end{bmatrix}
-\]</span> <span class="math inline">\(A\)</span>的所有列向量的线性组合构成了<span class="math inline">\(R^4\)</span>的一个子空间，<span class="math inline">\(Ax\)</span>恰是<span class="math inline">\(A\)</span>的所有列向量的线性组合，即列空间<span class="math inline">\(C(A)\)</span>，故只有<span class="math inline">\(b\)</span>在<span class="math inline">\(C(A)\)</span>中时方程组才有解。 3列无论怎样线性组合，都无法充满整个4维空间，同时注意到<span class="math inline">\(col1+col2=col3\)</span>，即使去掉第三列，仍然可以生成原来的列空间，<span class="math inline">\(col3\)</span>与<span class="math inline">\(col1\)</span>和<span class="math inline">\(col2\)</span>是<strong>线性相关</strong>的，所以实际上矩阵<span class="math inline">\(A\)</span>的列空间只是<span class="math inline">\(R^4\)</span>中的2维子空间。</p>
-<p>再来看看<span class="math inline">\(Ax=0\)</span>，所有解<span class="math inline">\(x\)</span>构成了<span class="math inline">\(A\)</span>的<strong>零空间</strong>，记作<span class="math inline">\(N(A)\)</span>。 <span class="math display">\[
-Ax=\begin{bmatrix}
-   1 &amp; 1 &amp; 2\\
-   2 &amp; 1 &amp; 3\\
-   3 &amp; 1 &amp; 4\\
-   4 &amp; 1 &amp; 5
-  \end{bmatrix}\begin{bmatrix}
-  x_1\\
-  x_2\\
-  x_3
-  \end{bmatrix}=\begin{bmatrix}
-  0\\
-  0\\
-  0\\
-  0
-  \end{bmatrix}
-\]</span> 虽然<span class="math inline">\(A\)</span>的每一列都属于<span class="math inline">\(R^4\)</span>，但是零空间研究的是<span class="math inline">\(x\)</span>，<span class="math inline">\(x\)</span>属于<span class="math inline">\(R^3\)</span>。 傻子都看得出来<span class="math inline">\((0,0,0)\)</span>是一组解，此前我们知道<span class="math inline">\(col1+col2=col3\)</span>，所以<span class="math inline">\(c(1,1,-1)\)</span>也是一组解，所有解其实就是<span class="math inline">\(R^3\)</span>中的一个子空间，一条直线而已，也就是<span class="math inline">\(A\)</span>的零空间<span class="math inline">\(N(A)\)</span>。 如果<span class="math inline">\(Ax=b\)</span>中<span class="math inline">\(b\neq0\)</span>，那么<span class="math inline">\(x\)</span>是不能构成子空间的，因为其中没有零向量。</p>
-<p>由此我们可以得到构造子空间的两种方法：</p>
-<ul>
-<li>矩阵各列的所有线性组合；</li>
-<li>方程组满足特定条件，让<span class="math inline">\(x\)</span>生成子空间。</li>
-</ul>
-<h2 id="求解零空间">求解零空间</h2>
-<p>在上一节中我们知道，求解<span class="math inline">\(A\)</span>的零空间其实就是求解<span class="math inline">\(Ax=0\)</span>，还是要用到高斯消元。 <span class="math display">\[
-A=\begin{bmatrix}
-   1 &amp; 2 &amp; 2 &amp; 2\\
-   2 &amp; 4 &amp; 6 &amp; 8\\
-   3 &amp; 6 &amp; 8 &amp; 10
-  \end{bmatrix}-&gt;\begin{bmatrix}
-   1 &amp; 2 &amp; 2 &amp; 2\\
-   0 &amp; 0 &amp; 2 &amp; 4\\
-   0 &amp; 0 &amp; 0 &amp; 0
-  \end{bmatrix}=U
-\]</span> 很显然，主元(每一行中第一个非零元素)是<span class="math inline">\(U(0,0)=1\)</span>和<span class="math inline">\(U(2,3)=2\)</span>，pivot col是第一列和第三列，第二列和第四列是free col，也可知<span class="math inline">\(rank(A)=\#pivots=2\)</span>，<span class="math inline">\(\#自由变量=n-rank(A)\)</span>，于是写出化简后的方程组： <span class="math display">\[
-\begin{cases}
-x_1+2x_2+2x_3+2x_4=0&amp; \text{}\\
-2x_3+4x_4=0&amp; \text{}
-\end{cases}\]</span> 对自由变量<span class="math inline">\(x_2\)</span>和<span class="math inline">\(x_4\)</span>，一般取<span class="math inline">\((0,1)\)</span>和<span class="math inline">\((1,0)\)</span>，所以特解(<strong>零空间的一组基</strong>)为： <span class="math display">\[
-\begin{bmatrix}
-  -2\\
-  1\\
-  0\\
-  0
-  \end{bmatrix}、\begin{bmatrix}
-  2\\
-  0\\
-  -2\\
-  1
-  \end{bmatrix}\]</span> 两个特解的线性组合即是整个零空间，也即是<span class="math inline">\(Ax=0\)</span>的全部解： <span class="math display">\[
-x=c\begin{bmatrix}
-  -2\\
-  1\\
-  0\\
-  0
-  \end{bmatrix}+d\begin{bmatrix}
-  2\\
-  0\\
-  -2\\
-  1
-  \end{bmatrix}\]</span> 其实矩阵<span class="math inline">\(U\)</span>还可以变得更加简单，可以化为简化行阶梯<span class="math inline">\(R=\begin{bmatrix}  1 &amp; 2 &amp; 0 &amp; -2\\  0 &amp; 0 &amp; 1 &amp; 2\\  0 &amp; 0 &amp; 0 &amp; 0  \end{bmatrix}\)</span>，即主元全部为1。 仔细观察矩阵<span class="math inline">\(R\)</span>，如果将pivot col全部移到左边，将free col移到右边，我们可以得到<span class="math inline">\(R\)</span>的一般形式：<span class="math inline">\(R=\begin{bmatrix}  I &amp; F\\  0 &amp; 0\\  \end{bmatrix}\)</span>，由此得出<span class="math inline">\(x\)</span>的一般形式：<span class="math inline">\(x=\begin{bmatrix}  -F\\  I\\  \end{bmatrix}\)</span>。 ## 求解Ax=b 上一节中我们求解了<span class="math inline">\(Ax=0\)</span>，接着看看更加复杂的情况： <span class="math display">\[
-[A\ b]=\begin{bmatrix}
-   1 &amp; 2 &amp; 2 &amp; 2 &amp; b_1\\
-   2 &amp; 4 &amp; 6 &amp; 8 &amp; b_2\\
-   3 &amp; 6 &amp; 8 &amp; 10 &amp; b_3
-  \end{bmatrix}-&gt;\begin{bmatrix}
-   1 &amp; 2 &amp; 2 &amp; 2 &amp; b_1\\
-   0 &amp; 0 &amp; 2 &amp; 4 &amp; b_2-2b_1\\
-   0 &amp; 0 &amp; 0 &amp; 0 &amp; b_3-b_2-b_1
-  \end{bmatrix}
-\]</span> 我们知道，当<span class="math inline">\(b\)</span>属于<span class="math inline">\(C(A)\)</span>时方程组有解，不妨设<span class="math inline">\(b=(1,5,6)\)</span>，那么化简的矩阵为<span class="math inline">\(\begin{bmatrix}  1 &amp; 2 &amp; 2 &amp; 2 &amp; 1\\  0 &amp; 0 &amp; 2 &amp; 4 &amp; 3\\  0 &amp; 0 &amp; 0 &amp; 0 &amp; 0  \end{bmatrix}\)</span>，求解过程有3步：</p>
-<ul>
-<li>特解：一般令自由变量取0，即<span class="math inline">\(x_2=x_4=0\)</span>，求主变量： <span class="math display">\[
-\begin{cases}
-x_1+2x_3=1&amp; \text{}\\
-2x_3=3&amp; \text{}
-\end{cases}\]</span> 所以特解<span class="math inline">\(x_p=\begin{bmatrix}  -2\\  0\\  1.5\\  0  \end{bmatrix}\)</span></li>
-<li>求零空间，即<span class="math inline">\(Ax=0\)</span>的解<span class="math inline">\(x_{null}\)</span>；</li>
-<li>所有解<span class="math inline">\(x=x_p+x_{null}\)</span>。 因为<span class="math inline">\(Ax_p=b, Ax_{null}=0\)</span>，故<span class="math inline">\(A(x_p+x_{null})=b\)</span>。</li>
-</ul>
-<p>对于矩阵<span class="math inline">\(A_{mn}\)</span>，我们知道<span class="math inline">\(r(A)=\#pivots\)</span>，所以<span class="math inline">\(r\leq m\)</span>，<span class="math inline">\(r\leq n\)</span>。 先看看<strong>列满秩</strong>的情况：每列都有主元，<span class="math inline">\(r=n&lt;m\)</span>，没有自由变量，零空间只有零向量： 举例来看： <span class="math display">\[
-\begin{bmatrix}
-   1 &amp; 3\\
-   2 &amp; 1\\
-   6 &amp; 1\\
-   5 &amp; 1
-  \end{bmatrix}-&gt;\begin{bmatrix}
-   1 &amp; 0\\
-   0 &amp; 1\\
-   0 &amp; 0\\
-   0 &amp; 0
-  \end{bmatrix}=\begin{bmatrix}
-   I\\
-   0\\
-  \end{bmatrix}
-\]</span> 如果特解恰好存在，有1个解，否则无解。 接着看看<strong>行满秩</strong>的情况：每行都有主元，<span class="math inline">\(r=m&lt;n\)</span>，<strong>自由变量有<span class="math inline">\(n-r=n-m\)</span>个</strong>，零空间有<span class="math inline">\(n-m\)</span>个基，<span class="math inline">\(Ax=b\)</span>有无穷多解： 举例来看： <span class="math display">\[
-\begin{bmatrix}
-   1 &amp; 2 &amp; 6 &amp; 5\\
-   3 &amp; 1 &amp; 1 &amp; 1
-  \end{bmatrix}-&gt;\begin{bmatrix}
-   1 &amp; 0 &amp; a &amp; b\\
-   0 &amp; 1 &amp; c &amp; d
-  \end{bmatrix}=\begin{bmatrix}
-   I &amp; F\\
-  \end{bmatrix}
-\]</span> 还有<strong>满秩</strong>的情况：<span class="math inline">\(r=m=n\)</span>，没有自由变量，零空间只有零向量，必有唯一的特解： 举例来看： <span class="math display">\[
-\begin{bmatrix}
-   1 &amp; 2\\
-   3 &amp; 1\\
-  \end{bmatrix}-&gt;\begin{bmatrix}
-   1 &amp; 0\\
-   0 &amp; 1\\
-  \end{bmatrix}=I
-\]</span> 最后一种情况就是<strong>不满秩</strong>：<span class="math inline">\(r&lt;m\)</span>，<span class="math inline">\(r&lt;n\)</span>，<span class="math inline">\(R=\begin{bmatrix}  I &amp; F\\  0 &amp; 0\\  \end{bmatrix}\)</span>，如果特解存在，就有无穷多解；否则无解。 ## 线性相关/基/维数 我们知道，对于矩阵<span class="math inline">\(A_{mn}(m&lt;n)\)</span>，因为有<span class="math inline">\(n-r\geq n-m\)</span>个自由变量，将这些自由变量赋一些非零值，即可解得主元，所以<span class="math inline">\(Ax=0\)</span>必有非零解。 对于一组向量<span class="math inline">\(x_1, x_2..., x_n\)</span>，除了系数全0以外，没有其他的线性组合可以得到零向量，那么这组向量<strong>线性无关</strong>，即<span class="math inline">\(c_1x_1+c_2x_2+...+c_nx_n\neq0(c_i不全为0)\)</span>。 举例来看：二维空间中的三个向量必然线性相关： <span class="math display">\[
-A=\begin{bmatrix}
-   2 &amp; 1 &amp; 3\\
-   1 &amp; 2 &amp; -1\\
-  \end{bmatrix}
-\]</span> 因为<span class="math inline">\(n-r&gt;0\)</span>，故必然有自由变量，所以<span class="math inline">\(Ax=0\)</span>必有非零解，即线性相关。 <strong>基</strong>也是一组向量<span class="math inline">\(v_1, v_2..., v_d\)</span>，不过要满足2个条件：</p>
-<ul>
-<li>线性无关；</li>
-<li>可以生成整个空间。</li>
-</ul>
-<p><strong>空间维度</strong>即可以生成该空间的<strong>基向量的个数</strong>，前面我们知道：<span class="math inline">\(r(A)=\#pivot\ cols\)</span>，所以<span class="math inline">\(dim(C(A))=r(A)\)</span>，因为只需要pivot col就能生成整个列空间，并且列空间属于<span class="math inline">\(R^m\)</span>，因为每个基向量都有<span class="math inline">\(m\)</span>个元素。 对于零空间来说，特解的个数就是自由变量的个数，也就是基向量的个数，即<span class="math inline">\(dim(N(A))=\#自由变量=n-r(A)\)</span>，并且零空间属于<span class="math inline">\(R^n\)</span>，因为每个解向量都有<span class="math inline">\(n\)</span>个元素。 ## 四个基本子空间 前面我们学习了列空间和零空间，很自然地，就会有行空间和<span class="math inline">\(A^T\)</span>的零空间： 行空间，顾名思义，即是矩阵行向量的所有线性组合生成的向量空间，其实就是<span class="math inline">\(C(A^T)\)</span>，<span class="math inline">\(dim(C(A^T))=r(A)\)</span>，属于<span class="math inline">\(R^n\)</span>； <span class="math inline">\(A^T\)</span>的零空间，即<span class="math inline">\(A^Tx=0\)</span>的所有解向量生成的向量空间，即<span class="math inline">\(N(A^T)\)</span>，<span class="math inline">\(dim(N(A^T))=m-r(A)\)</span>，属于<span class="math inline">\(R^m\)</span>。 回忆消元的过程，我们不停地进行初等行变换，这个过程中，行空间没有改变，列空间改变，最终的行空间就是<span class="math inline">\(R\)</span>矩阵的前<span class="math inline">\(r(A)\)</span>行生成的向量空间。 对于<span class="math inline">\(N(A^T)\)</span>，即<span class="math inline">\(A^Ty=0\)</span>，转置即有<span class="math inline">\(y^TA=0\)</span>，所以<span class="math inline">\(N(A^T)\)</span>又叫<strong>左零空间</strong>。 学习消元时我们知道，左乘一系列的初等阵可以将<span class="math inline">\(A\)</span>化为<span class="math inline">\(R\)</span>： <span class="math display">\[
-E\begin{bmatrix}
-   A_{mn} &amp; I_{mm}\\
-  \end{bmatrix}-&gt;\begin{bmatrix}
-   R_{mn} &amp; E_{mm}\\
-  \end{bmatrix}
-\]</span> 矩阵<span class="math inline">\(E\)</span>记录了我们的变换过程，举例来看： <span class="math display">\[
-EA=\begin{bmatrix}
-   -1 &amp; 2 &amp; 0\\
-   1 &amp; -1 &amp; 0\\
-   -1 &amp; 0 &amp; 1
-  \end{bmatrix}\begin{bmatrix}
-   1 &amp; 2 &amp; 3 &amp; 1\\
-   1 &amp; 1 &amp; 2 &amp; 1\\
-   1 &amp; 2 &amp; 3 &amp; 1
-  \end{bmatrix}-&gt;\begin{bmatrix}
-   1 &amp; 0 &amp; 1 &amp; 1\\
-   0 &amp; 1 &amp; 1 &amp; 1\\
-   0 &amp;  0&amp; 0 &amp; 0
-  \end{bmatrix}=R
-\]</span> <span class="math inline">\(dim(N(A^T))=m-r(A)=3-2=1\)</span>，左零空间中唯一一个基向量即<span class="math inline">\(E\)</span>的最后一行，因为<span class="math inline">\(\begin{bmatrix}  -1 &amp; 0 &amp; 1  \end{bmatrix}A=0\)</span>。 ## 矩阵空间 前面我们研究了若干向量生成的空间，上升一个高度，若干矩阵也可以构成一种特殊的向量空间，即矩阵空间。 所有的三阶矩阵构成矩阵空间<span class="math inline">\(M\)</span>，也就是<span class="math inline">\(R^{3*3}\)</span>。 <span class="math inline">\(M\)</span>的子空间有上三角矩阵<span class="math inline">\(U\)</span>和对称矩阵<span class="math inline">\(S\)</span>(可以用封闭性验证)。明确了空间后，就要研究该空间的维数和基向量。 <span class="math inline">\(dim(M)=9\)</span>，因为需要9个矩阵构成一组基，而且我们可以写出一组基： <span class="math display">\[
-\begin{bmatrix}
-   1 &amp; 0 &amp; 0\\
-   0 &amp; 0 &amp; 0\\
-   0 &amp; 0 &amp; 0
-  \end{bmatrix}、\begin{bmatrix}
-   0 &amp; 1 &amp; 0\\
-   0 &amp; 0 &amp; 0\\
-   0 &amp; 0 &amp; 0
-  \end{bmatrix}、\begin{bmatrix}
-   0 &amp; 0 &amp; 1\\
-   0 &amp; 0 &amp; 0\\
-   0 &amp; 0 &amp; 0
-  \end{bmatrix}
-  ...\begin{bmatrix}
-   0 &amp; 0 &amp; 0\\
-   0 &amp; 0 &amp; 0\\
-   0 &amp; 0 &amp; 1
-  \end{bmatrix}
-\]</span> <span class="math inline">\(dim(S)=6\)</span>，因为需要对角线的3个元素和对角线下面(上面)3个元素； <span class="math inline">\(dim(U)=6\)</span>，因为需要对角线的3个元素和对角线上面3个元素。 再来看看<span class="math inline">\(S\bigcap U\)</span>，既是上三角矩阵又是对称矩阵，其实就是对角阵，<span class="math inline">\(dim(S\bigcap U)=3\)</span>； 那么<span class="math inline">\(S\bigcup U\)</span>呢？属于上三角或者对称，很显然这无法构成子空间； 那么<span class="math inline">\(S+U\)</span>呢？对应元素求和，实际上这就是<span class="math inline">\(M\)</span>。 由此我们得到一个性质： <span class="math display">\[
-dim(S)+dim(U)=dim(S\bigcap U)+dim(S+U)
-\]</span> 对于向量空间和基，不应局限于线性代数中，例如熟悉的微分方程： <span class="math display">\[
-\frac{d^2y}{dx^2}+y=0
-\]</span> 它的所有解<span class="math inline">\(y=c_1cosx+c_2sinx\)</span>也构成零空间，那么<span class="math inline">\(cosx\)</span>和<span class="math inline">\(sinx\)</span>就是一组基，并且解空间的维数是2。</p>
-<p>最后看一种很有趣的矩阵，秩为1的矩阵： 对于这种矩阵，有<span class="math inline">\(dim(C(A))=dim(C(A^T))=r=1\)</span>，不妨举个例子： <span class="math display">\[
-A=\begin{bmatrix}
-   1 &amp; 4 &amp; 5\\
-   2 &amp; 8 &amp; 10
-  \end{bmatrix}=\begin{bmatrix}
-   1\\
-   2\\
-  \end{bmatrix}\begin{bmatrix}
-   1 &amp; 4 &amp; 5\\
-  \end{bmatrix}=uv^T
-\]</span> 用一个例子作为结尾： 在<span class="math inline">\(R^4\)</span>中，<span class="math inline">\(v=\begin{bmatrix}  v_1\\  v_2\\  v_3\\  v_4  \end{bmatrix}\)</span>，<span class="math inline">\(s\)</span>是满足<span class="math inline">\(v_1+v_2+v_3+v_4=0\)</span>的所有<span class="math inline">\(v\)</span>，那么<span class="math inline">\(s\)</span>显然是子空间，并且可以写成矩阵形式<span class="math inline">\(Av=\begin{bmatrix}  1 &amp; 1 &amp; 1 &amp; 1\\  \end{bmatrix}v=0\)</span>，接着看看<span class="math inline">\(A\)</span>的四个基本子空间：</p>
-<ul>
-<li>零空间：<span class="math inline">\(dim(N(A))=n-r=4-1=3\)</span>，给每个自由变量赋值后，得到一组特解(基)： <span class="math display">\[
-\begin{bmatrix}
--1\\
-1\\
-0\\
-0
-  \end{bmatrix}、\begin{bmatrix}
--1\\
-0\\
-1\\
-0
-  \end{bmatrix}、\begin{bmatrix}
--1\\
-0\\
-0\\
-1
-  \end{bmatrix}
-\]</span></li>
-<li>列空间：<span class="math inline">\(dim(C(A))=r=1\)</span>，基可以取任意一列；</li>
-<li>行空间：<span class="math inline">\(dim(C(A^T))=r=1\)</span>，基向量即第一行；</li>
-<li>左零空间：<span class="math inline">\(dim(N(A^T))=m-r=0\)</span>，基向量只有零向量。 ## 作业 Under what possible conditions is the matrix <span class="math inline">\(A=uv^T+wz^T\)</span> not of rank 2? 对于<span class="math inline">\(uv^T=\begin{bmatrix} a\\ b\\ c\\  \end{bmatrix}\begin{bmatrix} v_1&amp;v_2&amp;v_3\\  \end{bmatrix}\)</span>，结果就是<span class="math inline">\(u\)</span>的线性组合<span class="math inline">\(\begin{bmatrix} v_1u&amp;v_2u&amp;v_3u\\  \end{bmatrix}\)</span>，所以<span class="math inline">\(C(uv^T)\subset C(u)=xu,x\in R\)</span>；同样地，<span class="math inline">\(C(wz^T)\subset C(w)=yw,y\in R\)</span>，如果<span class="math inline">\(u\)</span>和<span class="math inline">\(w\)</span>共线，那么<span class="math inline">\(C(A)=xu\)</span>，即<span class="math inline">\(r(A)\leq1\)</span>； 从行向量组合的角度：<span class="math inline">\(uv^T=\begin{bmatrix} av^T\\ bv^T\\ cv^T\\  \end{bmatrix}\)</span>，故<span class="math inline">\(uv^T\)</span>的行空间<span class="math inline">\(\subset v^T\)</span>的行空间<span class="math inline">\(=xv^T\)</span>，<span class="math inline">\(wz^T\)</span>的行空间<span class="math inline">\(\subset z^T\)</span>的行空间<span class="math inline">\(=yz^T\)</span>，所以如果<span class="math inline">\(v\)</span>和<span class="math inline">\(z\)</span>共线，那么行空间就可以合并，即<span class="math inline">\(r(A)\leq1\)</span>。</li>
-</ul>
-
+          <p>MIT 18.06</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/05/25/MIT%20Linear%20Algebra#2%20Vector%20Spaces%20and%20Subspaces/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1438,7 +824,16 @@ A=\begin{bmatrix}
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-05-23 10:10:00" itemprop="dateCreated datePublished" datetime="2020-05-23T10:10:00+08:00">2020-05-23</time>
+              <time title="Created: 2020-05-23 18:10:00" itemprop="dateCreated datePublished" datetime="2020-05-23T18:10:00+08:00">2020-05-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
             </span>
 
           
@@ -1452,220 +847,15 @@ A=\begin{bmatrix}
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="矩阵消元">矩阵消元</h2>
-<p>求解三元一次方程组<span class="math inline">\(Ax=b\)</span>的方法就是<strong>消元</strong>： <span class="math display">\[
-\begin{cases}
-x+2y+z=2&amp; \text{E1}\\
-3x+8y+z=12&amp; \text{E2}\\
-4y+z=2&amp; \text{E3}
-\end{cases}\]</span> 用<span class="math inline">\(E2-3*E1\)</span>，再用<span class="math inline">\(E3-2*E2\)</span>，增广矩阵的变化： <span class="math display">\[
-\begin{bmatrix}
-   A &amp; b\\
-  \end{bmatrix}=\begin{bmatrix}
-   1 &amp; 2 &amp; 1 &amp; 2\\
-   3 &amp; 8 &amp; 1 &amp; 12\\
-   0 &amp; 4 &amp; 1 &amp; 2
-  \end{bmatrix}-&gt;\begin{bmatrix}
-   1 &amp; 2 &amp; 1 &amp; 2\\
-   0 &amp; 2 &amp; -2 &amp; 6\\
-   0 &amp; 4 &amp; 1 &amp; 2
-  \end{bmatrix}-&gt;\begin{bmatrix}
-   1 &amp; 2 &amp; 1 &amp; 2\\
-   0 &amp; 2 &amp; -2 &amp; 6\\
-   0 &amp; 0 &amp; 5 &amp; -10
-  \end{bmatrix}=\begin{bmatrix}
-   U &amp; c \\
-  \end{bmatrix}\]</span> 注意到变换过程中<span class="math inline">\(A\)</span>的pivots(主对角线元素)均不为0。 接着可以得到消元后的方程组： <span class="math display">\[
-\begin{cases}
-x+2y+z=2&amp; \text{}\\
-2y-2z=6&amp; \text{}\\
-5z=-10&amp; \text{}
-\end{cases}\]</span> 从最后一个方程解起，并不断<strong>回代</strong>，就可以求得<span class="math inline">\((x,y,z)\)</span>的值。</p>
-<p>如果回顾刚才的变换过程，并且用矩阵形式去表示： 第一步：将<span class="math inline">\((2,1)\)</span>位置的值变0，即<span class="math inline">\(E2-3*E1\)</span>： <span class="math display">\[
-E_{21}A=\begin{bmatrix}
-   1 &amp; 0 &amp; 0\\
-   -3 &amp; 1 &amp; 0\\
-   0 &amp; 0 &amp; 1
-  \end{bmatrix}\begin{bmatrix}
-   1 &amp; 2 &amp; 1\\
-   3 &amp; 8 &amp; 1\\
-   0 &amp; 4 &amp; 1
-  \end{bmatrix}=\begin{bmatrix}
-   1 &amp; 2 &amp; 1\\
-   0 &amp; 2 &amp; -2\\
-   0 &amp; 4 &amp; 1
-  \end{bmatrix}
-  \]</span> 其实这个过程就是对单位阵做相同的行变换得到<span class="math inline">\(E_{21}\)</span>，<span class="math inline">\(E_{21}\)</span>的第一行乘以<span class="math inline">\(A\)</span>本质上就是<span class="math inline">\(A\)</span>的各行的线性组合：<span class="math inline">\(1*row1+0*row2+0*row3=[1\ 2\ 1]\)</span>；同样的，<span class="math inline">\(E_{21}\)</span>的第二行乘以<span class="math inline">\(A\)</span>本质上还是<span class="math inline">\(A\)</span>的各行的线性组合：<span class="math inline">\(-3*row1+1*row2+0*row3=[0\ 2\ -2]\)</span>... 第二步：将<span class="math inline">\((3,2)\)</span>位置的值变0，即<span class="math inline">\(E3-2*E2\)</span>： <span class="math display">\[
-E_{32}(E_{21}A)=\begin{bmatrix}
-   1 &amp; 0 &amp; 0\\
-   0 &amp; 1 &amp; 0\\
-   0 &amp; -2 &amp; 1 
-  \end{bmatrix}\begin{bmatrix}
-   1 &amp; 2 &amp; 1\\
-   0 &amp; 2 &amp; -2\\
-   0 &amp; 4 &amp; 1
-  \end{bmatrix}=\begin{bmatrix}
-   1 &amp; 2 &amp; 1\\
-   0 &amp; 2 &amp; -2\\
-   0 &amp; 0 &amp; 5
-  \end{bmatrix}
-  \]</span> 这个过程就是对单位阵做相同的行变换得到<span class="math inline">\(E_{32}\)</span>，<span class="math inline">\(E_{32}\)</span>的第三行乘以<span class="math inline">\((E_{21}A)\)</span>本质上就是<span class="math inline">\((E_{21}A)\)</span>的各行的线性组合：<span class="math inline">\(0*row1+(-2*row2)+1*row3=[0\ 0\ 5]\)</span>； 所以整个变换过程用矩阵形式表示： <span class="math display">\[E_{32}(E_{21}A)=U-&gt;(E_{32}E_{21})A=U(矩阵乘法结合律成立，交换律不成立)\]</span> 非常重要的结论就是<strong>左行右列</strong>： <span class="math display">\[
-\begin{bmatrix}
-   1 &amp; 2 &amp; 7\\
-  \end{bmatrix}\begin{bmatrix}
-  row1\\
-  row2\\
-  row3
-  \end{bmatrix}=1*row1+2*row2+7*row3(矩阵左乘向量即行向量的线性组合)
-  \]</span> <span class="math display">\[
-\begin{bmatrix}
-   col1 &amp; col2 &amp; col3\\
-  \end{bmatrix}\begin{bmatrix}
-  3\\
-  4\\
-  5
-  \end{bmatrix}=3*col1+4*col2+5*col3(矩阵右乘向量即列向量的线性组合)
-  \]</span> <strong>线性组合</strong>的思想也是矩阵乘法的核心，再举一例： <span class="math display">\[
-\begin{bmatrix}
-   0 &amp; 1\\
-   1 &amp; 0\\
-  \end{bmatrix}\begin{bmatrix}
-   a &amp; b\\
-   c &amp; d\\
-  \end{bmatrix}=\begin{bmatrix}
-   c &amp; d\\
-   a &amp; b\\
-  \end{bmatrix}
-  \]</span> 结果的第一行即：<span class="math inline">\(0*[a\ b]+1*[c\ d]\)</span>，第二行即：<span class="math inline">\(1*[a\ b]+0*[c\ d]\)</span>，交换行。 类似的，交换列(<strong>列向量的线性组合</strong>)： <span class="math display">\[
-\begin{bmatrix}
-   a &amp; b\\
-   c &amp; d\\
-  \end{bmatrix}\begin{bmatrix}
-   0 &amp; 1\\
-   1 &amp; 0\\
-  \end{bmatrix}=\begin{bmatrix}
-   b &amp; a\\
-   d &amp; c\\
-  \end{bmatrix}
-  \]</span> ## 乘法和逆矩阵 回顾上一节的内容，对于<span class="math inline">\(AB=C\)</span>： <span class="math inline">\(C\)</span>的第<span class="math inline">\(i\)</span>列是<span class="math inline">\(A\)</span>的列向量的线性组合，组合系数即是<span class="math inline">\(B\)</span>对应的列<span class="math inline">\(col_i\)</span>，即：<span class="math inline">\(A*col_i\)</span>； <span class="math inline">\(C\)</span>的第<span class="math inline">\(i\)</span>行是<span class="math inline">\(B\)</span>的行向量的线性组合，组合系数即是<span class="math inline">\(A\)</span>对应的行<span class="math inline">\(row_i\)</span>，即：<span class="math inline">\(row_i*B\)</span>。 从这点出发，对于任意的矩阵乘法，都可以有： <span class="math display">\[AB=\Sigma(col_A*row_B)\]</span> 举例来看： <span class="math display">\[
-\begin{bmatrix}
-   2 &amp; 7\\
-   3 &amp; 8\\
-   4 &amp; 9
-  \end{bmatrix}\begin{bmatrix}
-   1 &amp; 6\\
-   0 &amp; 0\\
-  \end{bmatrix}=\begin{bmatrix}
-   2\\
-   3\\
-   4
-  \end{bmatrix}\begin{bmatrix}
-   1 &amp; 6
-  \end{bmatrix}+\begin{bmatrix}
-   7\\
-   8\\
-   9
-  \end{bmatrix}\begin{bmatrix}
-   0 &amp; 0
-  \end{bmatrix}
-  \]</span> 再来看看<span class="math inline">\(A=\begin{bmatrix}  1 &amp; 3\\  2 &amp; 6\\  \end{bmatrix}\)</span>，能否找到一个<strong>非零向量</strong><span class="math inline">\(x\)</span>，使得<span class="math inline">\(Ax=0\)</span>呢？ 答案是肯定的，因为<span class="math inline">\(A\)</span>是不可逆的。 解决不可逆这种特殊情况之前，先搞定足够好(可逆)的矩阵： <span class="math display">\[
-AA^{-1}=\begin{bmatrix}
-   1 &amp; 3\\
-   2 &amp; 7\\
-  \end{bmatrix}\begin{bmatrix}
-   a &amp; c\\
-   b &amp; d\\
-  \end{bmatrix}=\begin{bmatrix}
-   1 &amp; 0\\
-   0 &amp; 1\\
-  \end{bmatrix}=I
-  \]</span> 要求出<span class="math inline">\(A^{-1}\)</span>，从列向量线性组合的角度： <span class="math display">\[
-\begin{bmatrix}
-   1 &amp; 3\\
-   2 &amp; 7\\
-  \end{bmatrix}\begin{bmatrix}
-   a\\
-   b\\
-  \end{bmatrix}=\begin{bmatrix}
-   1\\
-   0\\
-  \end{bmatrix}，\begin{bmatrix}
-   1 &amp; 3\\
-   2 &amp; 7\\
-  \end{bmatrix}\begin{bmatrix}
-   c\\
-   d\\
-  \end{bmatrix}=\begin{bmatrix}
-   0\\
-   1\\
-  \end{bmatrix}
-  \]</span> 此时又回到了消元法解方程组，不过这里我们可以偷个懒，用Gauss-Jordan一次解出2个方程组： <span class="math display">\[
-\begin{bmatrix}
-   A &amp; I\\
-  \end{bmatrix}=\begin{bmatrix}
-   1 &amp; 3 &amp; 1 &amp; 0\\
-   2 &amp; 7 &amp; 0 &amp; 1\\
-  \end{bmatrix}-&gt;\begin{bmatrix}
-   1 &amp; 0 &amp; 7 &amp; -3\\
-   0 &amp; 1 &amp; -2 &amp; 1\\
-  \end{bmatrix}=\begin{bmatrix}
-   I &amp; A^{-1}\\
-  \end{bmatrix}
-  \]</span> 再次回顾上一节的内容：消元过程中所作的变换都可以通过<strong>左乘初等阵</strong>实现，将变换过程中所有初等阵的乘积记作<span class="math inline">\(E\)</span>，我们得到了一个激动人心的求解逆矩阵的方法： <span class="math display">\[
-E\begin{bmatrix}
-   A &amp; I\\
-  \end{bmatrix}=\begin{bmatrix}
-   I &amp; A^{-1}\\
-  \end{bmatrix}
-  \]</span> 因为经过变换，<span class="math inline">\(EA=I\)</span>，所以<span class="math inline">\(E=A^{-1}\)</span>，比国内的伴随矩阵不知道好到哪里去了。 ## A的LU分解 在了解为什么进行LU分解之前，我们先来看看高斯消元的时间复杂度： 回想整个过程，如果矩阵<span class="math inline">\(A\)</span>有<span class="math inline">\(n\)</span>个元素，不难发现耗费的时间<span class="math inline">\(n^2+(n-1)^2+...+1^2\approx \frac{n^3}{3}\)</span>，即<span class="math inline">\(O(n^3)\)</span>；对于右侧的列向量<span class="math inline">\(b(有m个元素)\)</span>，耗费<span class="math inline">\(O(m^2)\)</span>。 在很多时候，求解<span class="math inline">\(Ax=b\)</span>时矩阵<span class="math inline">\(A\)</span>是不变的，只有<span class="math inline">\(b\)</span>在变化，如果每次都用消元法去解，每次的复杂度都会是<span class="math inline">\(O(n^3)\)</span>，那么如果采用LU分解<span class="math inline">\(A=LU\)</span>，只要预先准备好<strong>下三角矩阵</strong><span class="math inline">\(L\)</span>和<strong>上三角矩阵</strong><span class="math inline">\(U\)</span>，这一步复杂度<span class="math inline">\(O(n^3)\)</span>，以后求解时：<span class="math inline">\(Ax=LUx=b\)</span>，只要求解：</p>
-<ul>
-<li><span class="math inline">\(Ly=b\)</span>，得到<span class="math inline">\(y\)</span>，<span class="math inline">\(O(n^2)\)</span>；</li>
-<li><span class="math inline">\(Ux=y\)</span>，得到<span class="math inline">\(x\)</span>，<span class="math inline">\(O(n^2)\)</span>。 以后每次求解只需要<span class="math inline">\(O(n^2)\)</span>，大大提高了效率。</li>
-</ul>
-<p>明白了原因后，我们看看具体的过程： 我们知道，消元过程中矩阵<span class="math inline">\(A\)</span>可以通过左乘矩阵<span class="math inline">\(E\)</span>变为上三角矩阵<span class="math inline">\(U\)</span>，即<span class="math inline">\(EA=U\)</span>，那么<span class="math inline">\(A=E^{-1}U=LU\)</span>。 举例来看： 如果<span class="math inline">\(E_{32}E_{21}A=U\)</span>，那么<span class="math inline">\(A=E_{21}^{-1}E_{32}^{-1}U=LU\)</span>，假设<span class="math inline">\(E_{32}=\begin{bmatrix}  1 &amp; 0 &amp; 0\\  0 &amp; 1 &amp; 0\\  0 &amp; -5 &amp; 1  \end{bmatrix}\)</span>，<span class="math inline">\(E_{21}=\begin{bmatrix}  1 &amp; 0 &amp; 0\\  -2 &amp; 1 &amp; 0\\  0 &amp; 0 &amp; 1  \end{bmatrix}\)</span>，那么求<span class="math inline">\(L\)</span>即是求<span class="math inline">\(E_{21}^{-1}和E_{32}^{-1}\)</span>，当然可以通过上一节中的拼单位阵来求解，但是对于初等阵，可以不用这么麻烦，以<span class="math inline">\(E_{21}^{-1}\)</span>为例： 这个变换是<span class="math inline">\(row2-2*row1\)</span>，那么<strong>逆矩阵就是要undo这个操作</strong>，即<span class="math inline">\(row2+2*row1\)</span>，所以<span class="math inline">\(E_{21}^{-1}=\begin{bmatrix}  1 &amp; 0 &amp; 0\\  2 &amp; 1 &amp; 0\\  0 &amp; 0 &amp; 1  \end{bmatrix}\)</span>，同理可得<span class="math inline">\(E_{32}^{-1}=\begin{bmatrix}  1 &amp; 0 &amp; 0\\  0 &amp; 1 &amp; 0\\  0 &amp; 5 &amp; 1  \end{bmatrix}\)</span>，按照<strong>列线性组合</strong>的思想，<span class="math inline">\(L=E_{21}^{-1}E_{32}^{-1}=\begin{bmatrix}  1 &amp; 0 &amp; 0\\  2 &amp; 1 &amp; 0\\  0 &amp; 5 &amp; 1  \end{bmatrix}\)</span>。 ## 置换 前面的消元过程中，当主元为0时，可能需要<strong>交换行</strong>来使消元继续下去，交换行的操作可以通过左乘置换矩阵实现，即<span class="math inline">\(PA=LU\)</span>，前提是<span class="math inline">\(A\)</span>可逆，否则再怎么交换，都会有零行。 3阶矩阵的置换可以有<span class="math inline">\(3!=6\)</span>种： <span class="math display">\[
-\begin{bmatrix}
-   1 &amp; 0 &amp; 0\\
-   0 &amp; 1 &amp; 0\\
-   0 &amp; 0 &amp; 1
-  \end{bmatrix}、\begin{bmatrix}
-   0 &amp; 1 &amp; 0\\
-   1 &amp; 0 &amp; 0\\
-   0 &amp; 0 &amp; 1
-  \end{bmatrix}、\begin{bmatrix}
-   0 &amp; 0 &amp; 1\\
-   0 &amp; 1 &amp; 0\\
-   1 &amp; 0 &amp; 0
-  \end{bmatrix}、\begin{bmatrix}
-   1 &amp; 0 &amp; 0\\
-   0 &amp; 0 &amp; 1\\
-   0 &amp; 1 &amp; 0
-  \end{bmatrix}、\begin{bmatrix}
-   0 &amp; 1 &amp; 0\\
-   0 &amp; 0 &amp; 1\\
-   1 &amp; 0 &amp; 0
-  \end{bmatrix}、\begin{bmatrix}
-   0 &amp; 0 &amp; 1\\
-   1 &amp; 0 &amp; 0\\
-   0 &amp; 1 &amp; 0
-  \end{bmatrix}
-\]</span> 置换矩阵一个重要性质是：<span class="math inline">\(P^T=P^{-1}\)</span>。 ## 作业 Suppose <span class="math inline">\(A = \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}\)</span> is factored into a 2x2 rotation <span class="math inline">\(Q=\begin{pmatrix} \cos \theta &amp; -\sin \theta \\ \sin \theta &amp;\cos \theta \end{pmatrix}\)</span> times a 2x2 lower triangular matrix <span class="math inline">\(L=\begin{pmatrix} x &amp; 0\\ y &amp; z \end{pmatrix}\)</span>. Write <span class="math inline">\(x,y,z\)</span> and <span class="math inline">\(θ\)</span> in terms of <span class="math inline">\(a,b,c\)</span> and <span class="math inline">\(d\)</span>. 这道题不难，但容易漏解： 容易得到：<span class="math inline">\(\begin{pmatrix} x\cos{\theta}-y\sin{\theta} &amp; -z\sin{\theta} \\ x\sin{\theta}+y\cos{\theta} &amp; z\cos{\theta} \end{pmatrix} = \begin{pmatrix} a &amp; b\\ c &amp; d \end{pmatrix}\)</span>，故<span class="math inline">\(b^2+d^2 = z^2\)</span>。对于旋转矩阵，<span class="math inline">\(0\leq\theta\leq2\pi\)</span>。</p>
-<ul>
-<li><span class="math inline">\(z = \sqrt{b^2+d^2}\)</span>：<span class="math inline">\(\cos{\theta} = \frac{d}{\sqrt{b^2+d^2}},\sin{\theta} = -\frac{b}{\sqrt{b^2+d^2}}\)</span> 因为<span class="math inline">\(L=Q^{-1}A\)</span>： <span class="math display">\[
-\begin{pmatrix} \cos{\theta} &amp; \sin{\theta} \\ -\sin{\theta} &amp; \cos{\theta}\end{pmatrix}\begin{pmatrix} a &amp; b\\c &amp; d\end{pmatrix} = \begin{pmatrix}a\cos{\theta}+c\sin{\theta} &amp; b\cos{\theta}+d\sin{\theta} \\ -a\sin{\theta}+c\cos{\theta} &amp; -b\sin{\theta}+d\cos{\theta} \end{pmatrix} = \begin{pmatrix} x &amp; 0 \\ y &amp; z\end{pmatrix}
-\]</span> 所以有： <span class="math display">\[
-x = \frac{ad - bc}{\sqrt{b^2+d^2}}, y = \frac{ab+cd}{\sqrt{b^2+d^2}}, \theta = \begin{cases}
-\arccos\frac{d}{\sqrt{b^2+d^2}},b\le0\\
-\\\arccos{\frac{d}{\sqrt{b^2+d^2}}}+\pi, b&gt;0
-\end{cases}
-\]</span> <span class="math inline">\(\arccos\theta\)</span>的值域是<span class="math inline">\([0,\pi]\)</span>。</li>
-<li><span class="math inline">\(z = -\sqrt{b^2+d^2}\)</span>：<span class="math inline">\(\cos{\theta} = -\frac{d}{\sqrt{b^2+d^2}},\sin{\theta} = \frac{b}{\sqrt{b^2+d^2}}\)</span> <span class="math display">\[
-x = \frac{- ad + bc}{\sqrt{b^2+d^2}}, y = -\frac{ab+cd}{\sqrt{b^2+d^2}}, \theta = \begin{cases}
-2\pi-\arccos\frac{d}{\sqrt{b^2+d^2}},b\le0\\
-\pi-\arccos{\frac{d}{\sqrt{b^2+d^2}}}, b&gt;0
-\end{cases}
-\]</span></li>
-</ul>
-
+          <p>MIT 18.06</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/05/23/MIT%20Linear%20Algebra#1%20Solving%20Linear%20Equations/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1710,7 +900,16 @@ x = \frac{- ad + bc}{\sqrt{b^2+d^2}}, y = -\frac{ab+cd}{\sqrt{b^2+d^2}}, \theta 
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-05-22 06:30:00" itemprop="dateCreated datePublished" datetime="2020-05-22T06:30:00+08:00">2020-05-22</time>
+              <time title="Created: 2020-05-22 14:30:00" itemprop="dateCreated datePublished" datetime="2020-05-22T14:30:00+08:00">2020-05-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
             </span>
 
           
@@ -1724,65 +923,15 @@ x = \frac{- ad + bc}{\sqrt{b^2+d^2}}, y = -\frac{ab+cd}{\sqrt{b^2+d^2}}, \theta 
     <div class="post-body" itemprop="articleBody">
 
       
-          <h4 id="前言"><em>前言</em></h4>
-<p><em>线性代数应该是大部分工科和商科同学的必修课，然而很不幸的是：国内的线代教学简直一团糟。如同国内大学的其他课一样，一上来就是一堆不知所云的概念、定义和性质，然后是没有什么道理的计算技巧训练，期末考完试一切结束。如果你有时间看看MIT的18.06，相信绝对会刷新你对这个学科的认知，Gilbert Strang完美遵循了现实生活中遇到了什么问题、为什么会有这些问题、该如何解决、更好的方法这一教学链条。循循善诱、环环相扣，你会觉得上课、学习数学是一种享受。</em> #### <em>方式</em> <em>这门课我强烈建议去看Gil老爷子的视频，2020年的Lecture真心觉得不太良心，看完视频可以做做20版的作业加深理解。 我会在Blog中专门记录这门课的笔记和理解，并且覆盖一些有趣的作业题。废话不多说，开始吧~</em></p>
-<hr />
-<h2 id="笔记">笔记</h2>
-<p>课程的引入是通过初中的二元一次方程组： <span class="math display">\[
-\begin{cases}
-2x-y=0&amp; \text{}\\
--x+2y=3&amp; \text{}
-\end{cases}\]</span> 从几何上来看：就是二维平面上两条直线相交于<span class="math inline">\((1,2)\)</span>。 从Row Picture来看：可以很直观地写作： <span class="math display">\[
-\begin{bmatrix}
-   2 &amp; -1 \\
-   -1 &amp; 2
-  \end{bmatrix}\begin{bmatrix}
-   x \\
-   y
-  \end{bmatrix}=\begin{bmatrix}
-   0 \\
-   3
-  \end{bmatrix}
-\]</span> 这种思考方式也是国内灌输的，第一行乘以第一列得到0，第二行乘以第一列得到3，但其实更重要的是从<strong>向量(列)的线性组合</strong>角度去考虑： <span class="math display">\[
-x\begin{bmatrix}
-   2 \\
-   -1
-  \end{bmatrix}+y\begin{bmatrix}
-   -1 \\
-   2
-  \end{bmatrix}=\begin{bmatrix}
-   0 \\
-   3
-  \end{bmatrix}
-\]</span> 这样从几何上解释就是：有两个向量<span class="math inline">\(\begin{bmatrix}  2 \\  -1  \end{bmatrix}\)</span>、<span class="math inline">\(\begin{bmatrix}  -1 \\  2  \end{bmatrix}\)</span>，要找到某个组合<span class="math inline">\((x,y)\)</span>可以得到向量<span class="math inline">\(\begin{bmatrix}  0 \\  3  \end{bmatrix}\)</span>。 类似地，三元一次方程组也可以从列向量线性组合的角度考虑，几何上扩展到三维空间。 由此推广到更加一般的情形：<span class="math inline">\(Ax=b\)</span>，自然而然地，我们想知道：是否对于任意的<span class="math inline">\(b\)</span>，此方程都有解？或者换句话：对于三元一次方程组，<strong>列向量的线性组合是否能充满整个三维空间？</strong> 如果三个向量共面，那么最多只能生成一个平面，也就是不能保证可以生成任意的<span class="math inline">\(b\)</span>(有解)。后面会知道，有解的条件就是<span class="math inline">\(A\)</span><strong>可逆</strong>。 这节课最重要的一点就是要用<strong>Column Picture去思考<span class="math inline">\(Ax=b\)</span></strong>，为了加深理解，再举例： <span class="math display">\[
-\begin{bmatrix}
-   2 &amp; 5 \\
-   1 &amp; 3
-  \end{bmatrix}\begin{bmatrix}
-   1 \\
-   2
-  \end{bmatrix}=1*\begin{bmatrix}
-   2 \\
-   1
-  \end{bmatrix}+2*\begin{bmatrix}
-   5 \\
-   3
-  \end{bmatrix}=\begin{bmatrix}
-   12 \\
-   7
-  \end{bmatrix}
-\]</span> ## 作业</p>
-<ol type="1">
-<li>Draw two non-colinear vectors v and w, and the region that consists of all combinations cv+dw where 0 ≤ c ≤ 1 and 0 ≤ d ≤ 1. Now consider the linear transformation of the unit square (all points (c,d) with 0 ≤ c ≤ 1 and 0 ≤ d ≤ 1) by the 2x2 matrix with first column v and second column w. Are these two regions the same? 答：两个区域相同。 对<span class="math inline">\((c,d)\)</span>做线性变换，也即 <span class="math display">\[
-\begin{bmatrix}
-   v&amp;w \\
-  \end{bmatrix}\begin{bmatrix}
-   c \\
-   d
-  \end{bmatrix}=cv+dw(矩阵乘以列向量，即矩阵各列的线性组合)
-\]</span></li>
-</ol>
-
+          <p>MIT 18.06</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/05/22/MIT%20Linear%20Algebra#0%20Introduction%20to%20Vectors/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1881,7 +1030,7 @@ x\begin{bmatrix}
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

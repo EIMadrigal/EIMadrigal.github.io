@@ -520,7 +520,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-03-21 10:36:00" itemprop="dateCreated datePublished" datetime="2019-03-21T10:36:00+08:00">2019-03-21</time>
+              <time title="Created: 2019-03-21 18:36:00" itemprop="dateCreated datePublished" datetime="2019-03-21T18:36:00+08:00">2019-03-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -534,18 +543,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <ol type="1">
-<li>Jar包本来在project structure中，按绿色按钮也可以执行，但从命令行就会报错：找不到对应的包。 Idea为了从命令行编译程序，必须将jar包的路径添加到系统变量classpath中，再在idea中project structure中添加该jar，重启计算机。 ## 多线程 Java有2种方式实现多线程：</li>
-</ol>
-<p>继承<code>Thread</code>类</p>
-<p>单线程程序即只有主方法的线程，该线程由JVM负责启动，其他线程由程序员负责启动。<code>Thread</code>类中实例化的对象代表一个线程，继承后重写<code>run()</code>方法，将该线程的功能实现放在<code>run()</code>方法中，调用<code>Thread</code>类中的<code>start()</code>方法启动线程，<code>start()</code>方法会调用覆盖后的<code>run()</code>方法。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Test().start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>实现<code>Runnable</code>接口</p>
-<p>第一种方法的缺陷在于：如果程序需要继承其他类而非<code>Thread</code>类，但Java是单继承语言，此时就无法通过该方式实现多线程，此时就需要采用第二种方法。创建<code>Runnable</code>对象后，将其传递给<code>Thread</code>类的构造方法，调用<code>start()</code>方法即可。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Runnable runnable = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        Thread thread = <span class="keyword">new</span> Thread(runnable);</span><br><span class="line">        thread.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里比较疑惑的地方在于：Java中接口和抽象类是不能实例化的，即<code>Runnable</code>接口是不能实例化的，但是代码中却<code>new Runnable()</code>。这里实际上首先构造了一个<code>implements Runnable</code>的匿名内部类，然后构造了该类的一个实例，接着用<code>Runnable</code>表示该类的类型。</p>
-<p>不使用匿名内部类： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class Test implements Runnable &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        System.out.println(&quot;Hello&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Test hello = new Test();</span><br><span class="line">        Thread thread = new Thread(hello);</span><br><span class="line">        thread.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
+          <p>Java</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/03/21/Java%20FAQ/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -590,7 +596,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-03-07 03:36:00" itemprop="dateCreated datePublished" datetime="2019-03-07T03:36:00+08:00">2019-03-07</time>
+              <time title="Created: 2019-03-07 11:36:00" itemprop="dateCreated datePublished" datetime="2019-03-07T11:36:00+08:00">2019-03-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -604,30 +619,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>k-NN可以做分类及回归，对新的测试实例t，在训练集中找与t<strong>最近</strong>的k个实例，用投票法决定t属于哪个类，显然这是一种懒惰学习。</p>
-<p>既然要找最近的k个，就会涉及距离度量问题，下面以2个样本点（每个点有n个维度）间的距离为例枚举一些度量方式：</p>
-<ol type="1">
-<li>Minkowski距离：<span class="math inline">\(\sqrt[p]{\sum_{i=1}^{n}|x_{1i}-x_{2i}|^p}\)</span>，p=1时是曼哈顿距离，p=2时是欧氏距离，<span class="math inline">\(p\to\infty\)</span>时是切比雪夫距离<span class="math inline">\(max_{i}|x_{1i}-x_{2i}|\)</span></li>
-<li>标准欧式距离：为了克服欧氏距离各个维度数据粒度不一致对最终结果的影响，将每个维度标准化后采用欧氏距离的计算方法：<span class="math inline">\(y_{1i}=\cfrac{x_{1i}-u_i}{s_i}\)</span>，<span class="math inline">\(\sqrt{\sum_{i=1}^{n}(y_{1i}-y_{2i})^2}=\sqrt{\sum_{i=1}^{n}\cfrac{(x_{1i}-x_{2i})^2}{s_i^2}}\)</span></li>
-<li>Mahalanobis Distance：修正了各维度之间的相关性及粒度不一致性 样本向量<span class="math inline">\(x\)</span>到均值向量<span class="math inline">\(u\)</span>之间的马氏距离： <img src="https://img-blog.csdnimg.cn/20210201184937356.png" alt="在这里插入图片描述" /> 样本向量<span class="math inline">\(x\)</span>到样本向量<span class="math inline">\(y\)</span>之间的马氏距离： <img src="https://img-blog.csdnimg.cn/20210201185035296.png" alt="在这里插入图片描述" /> 如果协方差矩阵是单位阵，即每个维度之间没有相关关系，即欧氏距离；如果协方差矩阵是对角阵，即标准欧氏距离</li>
-<li>Bhattacharyya Distance：衡量概率分布的相似性， <span class="math inline">\(D_B(p,q)=-ln(BC(p,q)),BC(p,q)=\sum\sqrt{p(x)q(x)},BC(p,q)=\int\sqrt{p(x)q(x)}dx\)</span></li>
-<li>余弦相似性</li>
-<li>Jaccard Similarity Coefficient：衡量集合相似性：<span class="math inline">\(J(A,B)=\cfrac{|A\cap B|}{|A\cup B|}\)</span> Jaccard Distance：集合区分度：<span class="math inline">\(1-J(A,B)\)</span> 假设有4个二值维度，样例A={0111}，B={1011}，则<span class="math inline">\(J=\frac{M_{11}}{M_{01}+M_{10}+M_{11}},J^{&#39;}=1-J\)</span>，<span class="math inline">\(M_{11}\)</span>表示A和B中均为1的维度个数</li>
-<li>Pearson Correlation Coefficient： 总体Pearson系数：<span class="math inline">\(\rho=\frac{Cov(X,Y)}{\sqrt{DXDY}}\)</span> 相关距离：<span class="math inline">\(1-\rho\)</span> 样本Pearson系数：<span class="math inline">\(r=\frac{\sum(X_i-\bar X)(Y_i-\bar Y)}{\sqrt{\sum(X_i-\bar X)^2\sum(Y_i-\bar Y)^2}}=\frac{1}{n-1}\sum(\frac{X_i-\bar X}{S_x})(\frac{Y_i-\bar Y}{S_y})\)</span></li>
-</ol>
-<p>除了距离度量，还有k的选择：k太小容易过拟合，k太大会使得与测试实例较远的训练样例也会起作用。</p>
-<p>kNN的实现：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NearestNeighbor</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">self, X, y</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot; X is N*D &quot;&quot;&quot;</span></span><br><span class="line">        self.Xtr = X</span><br><span class="line">        self.ytr = y</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span>(<span class="params">self, X</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot; X is N*D &quot;&quot;&quot;</span></span><br><span class="line">        num_test = X.shape[<span class="number">0</span>]</span><br><span class="line">        <span class="comment"># make sure output type matches input type</span></span><br><span class="line">        Ypred = np.zeros(num_test, dtype = self.ytr.dtype)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_test):</span><br><span class="line">            distances = np.<span class="built_in">sum</span>(np.<span class="built_in">abs</span>(self.Xtr - X[i,:]), axis = <span class="number">1</span>)</span><br><span class="line">            min_index = np.argmin(distances)</span><br><span class="line">            Ypred[i] = self.ytr[min_index]</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">return</span> Ypred</span><br></pre></td></tr></table></figure>
-<p>为了加快预测速度，可以使用k-d tree来存储训练集，本质上也是一种平衡二叉树： 建树的过程可以递归进行：</p>
-<ul>
-<li>确定划分域：对训练集，统计每个维度的方差，选择方差最大的属性，意味着沿着该维度数据比较分散，容易获得较高的分辨率</li>
-<li>确定结点：将数据集按照划分域排序，正中间的点选为结点</li>
-<li>确定左(值小于父亲)右（值大于父亲）孩子</li>
-<li>设置左右孩子的parent域</li>
-</ul>
-<p>往往训练样例的维度是很高的，所以很难每个维度都去分割，所以sklearn中的kNN如果用k-d tree实现，会有一个参数<code>leaf_size</code>控制树的深度。 建好后，就可以快速查找测试样例的邻居。</p>
-<p>假设训练集为<span class="math inline">\(X_{m\times k}\)</span>，测试集为<span class="math inline">\(Y_{n\times k}\)</span>，此时需要计算训练集中每条样本与测试集中每条样本的距离，为了加速矩阵运算，不能使用循环，最终结果为<span class="math inline">\(R_{m\times n}=X\circ X+Y\circ Y-2XY^T\)</span>，具体推导可以参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/146076139">NumPy之计算两个矩阵的成对平方欧氏距离</a>。</p>
-
+          <p>KNN</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/03/07/K-Nearest%20Neighbors/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1030,7 +1030,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

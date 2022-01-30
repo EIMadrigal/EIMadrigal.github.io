@@ -368,7 +368,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-01-03 14:22:00" itemprop="dateCreated datePublished" datetime="2019-01-03T14:22:00+08:00">2019-01-03</time>
+              <time title="Created: 2019-01-03 22:22:00" itemprop="dateCreated datePublished" datetime="2019-01-03T22:22:00+08:00">2019-01-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -382,13 +391,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="思想">思想</h2>
-<p>希尔排序(Shell Sort)是基于插入排序的一种<strong>不稳定</strong>排序方法。 1，将整个序列分为h个子序列； 2，第一趟将每个子序列进行插入排序； 3，第二趟将增量缩小，重复2； 4，直至增量为1，就是简单插入排序。</p>
-<p>eg: <img src="https://img-blog.csdn.net/20180707130824188?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述" /> <img src="https://img-blog.csdn.net/20180707130836718?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述" /> ## 实现 ##</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">#define MAXSIZE 100</span><br><span class="line"></span><br><span class="line">typedef struct</span><br><span class="line">&#123;</span><br><span class="line">    int a[MAXSIZE + 1];  //a[1]~a[MAXSIZE]存储元素</span><br><span class="line">    int length;</span><br><span class="line">&#125;Sqlist;</span><br><span class="line"></span><br><span class="line">/*升序排列*/</span><br><span class="line">void Shell_Sort(Sqlist* L)</span><br><span class="line">&#123;</span><br><span class="line">    int h = 1;</span><br><span class="line">    while (h &lt; L-&gt;length / 3)</span><br><span class="line">        h = 3 * h + 1;         //增量取值</span><br><span class="line">    while (h &gt;= 1)</span><br><span class="line">    &#123;</span><br><span class="line">        //从增量的那组进行插入排序</span><br><span class="line">        for (int i = h; i &lt;= L-&gt;length; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            int j = i;</span><br><span class="line">            int get = L-&gt;a[j];</span><br><span class="line">            //同组元素中与其前一个比较</span><br><span class="line">            while (j - h &gt;= 0 &amp;&amp; L-&gt;a[j - h] &gt; get)</span><br><span class="line">            &#123;</span><br><span class="line">                L-&gt;a[j] = L-&gt;a[j - h];</span><br><span class="line">                j = j - h;</span><br><span class="line">            &#125;</span><br><span class="line">            L-&gt;a[j] = get;</span><br><span class="line">        &#125;</span><br><span class="line">        h = h / 3;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(int argc, char** argv)</span><br><span class="line">&#123;</span><br><span class="line">    Sqlist L;</span><br><span class="line"></span><br><span class="line">    scanf(&quot;%d&quot;, &amp;(L.length));</span><br><span class="line">    for (int i = 1; i &lt;= L.length; i++)</span><br><span class="line">        scanf(&quot;%d&quot;, &amp;(L.a[i]));</span><br><span class="line"></span><br><span class="line">    Shell_Sort(&amp;L);</span><br><span class="line"></span><br><span class="line">    for (int i = 1; i &lt;= L.length; i++)</span><br><span class="line">        printf(&quot;%d &quot;, L.a[i]);</span><br><span class="line">    printf(&quot;\n&quot;);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="复杂度">复杂度</h2>
-<p>希尔排序最优时间复杂度<span class="math inline">\(O(n)\)</span>，最差情况下也突破了平方级别的运行时间。 对于最差情况，之前的冒泡、选择要消除逆序，采用交换相邻元素的方法，也就是每次只能消除一个逆序，那么希尔每次交换隔得很远的元素，每次可以消除多个逆序，这样就节省了大量的交换时间。</p>
-
+          <p>希尔排序</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/01/03/Shell%20Sort/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -661,7 +672,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-09-24 14:27:00" itemprop="dateCreated datePublished" datetime="2018-09-24T14:27:00+08:00">2018-09-24</time>
+              <time title="Created: 2018-09-24 22:27:00" itemprop="dateCreated datePublished" datetime="2018-09-24T22:27:00+08:00">2018-09-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -675,11 +695,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="需求">需求</h2>
-<p>在一个非常大的文件中存在着很多敏感词，现在需要将这些敏感词全部替换为*，时间响应要求较高（几百毫秒）。 ## 思路 要做这个事，首先需要知道哪些词是敏感的，因此需要有一个敏感词词库。 例如文本是&quot;abcdefghi&quot;，长度为<span class="math inline">\(n\)</span>，敏感词库是{&quot;de&quot;, &quot;bca&quot;, &quot;bcf&quot;}，词库长度为<span class="math inline">\(l_1\)</span>，每个词的长度为<span class="math inline">\(l_2\)</span>。</p>
-<p>比较直接的做法：对每个敏感词，利用暴力匹配或KMP算法查找并作替换，这些单模式串匹配算法的缺点很明显，需要多次扫描文本<span class="math inline">\(O(n(l_1+l_2))\)</span>。</p>
-<p>目前主流的做法主要是多模式串匹配算法： 1. Trie树：将敏感词库建树，用3个指针去搞，<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/65115496">具体在这里</a>，查询复杂度<span class="math inline">\(O(nl_2)\)</span>，建树复杂度<span class="math inline">\(O(l_1l_2)\)</span>。 2. AC自动机：是Trie树的扩展，增加了一个fail指针，避免指针回溯，<a target="_blank" rel="noopener" href="https://www.cnblogs.com/shengyang17/p/13719653.html">具体在这里</a>，复杂度一般优于Trie树。 3. DFA确定有穷自动机：利用状态转移，<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_36586120/article/details/113482752">具体在这里</a>，时间复杂度<span class="math inline">\(O(n)\)</span>。</p>
-
+          <p>TODO</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/09/24/%E6%95%8F%E6%84%9F%E8%AF%8D%E8%BF%87%E6%BB%A4/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -724,7 +748,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-08-16 15:00:00" itemprop="dateCreated datePublished" datetime="2018-08-16T15:00:00+08:00">2018-08-16</time>
+              <time title="Created: 2018-08-16 23:00:00" itemprop="dateCreated datePublished" datetime="2018-08-16T23:00:00+08:00">2018-08-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -738,14 +771,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>在用Onenote 2016写笔记时，同步到Onedrive后就变成了Internet快捷方式，而且直接打开时会出现提示： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108200433406-2018295429.png" alt="image" /></p>
-<h2 id="原因">原因</h2>
-<p>用Onenote客户端在Onedrive上创建的笔记本是一种特殊文件，用Onedrive客户端将文件同步到本地的话，就会变成Internet快捷方式，不能直接打开； 但是如果用Onedrive网页版的话，就可以正常使用。</p>
-<h2 id="解决">解决</h2>
-<p>在Onenote客户端，“文件”-&gt;“打开”，找到你的笔记本，打开即可看到内容。</p>
-<h2 id="参考">参考</h2>
-<p><a target="_blank" rel="noopener" href="http://cn.onenotegem.com/24120352653838239064/-onedrive-onenote-internet-url">onedrive-onenote-internet-url</a></p>
-
+          <p>OneDrive文件打开问题</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/08/16/Onedrive%20File%20Open%20Problem/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -790,7 +824,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-07-14 09:48:00" itemprop="dateCreated datePublished" datetime="2018-07-14T09:48:00+08:00">2018-07-14</time>
+              <time title="Created: 2018-07-14 17:48:00" itemprop="dateCreated datePublished" datetime="2018-07-14T17:48:00+08:00">2018-07-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -804,15 +847,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="理解">理解</h2>
-<p>JSON（JavaScript Object Notation），一种轻量级的数据交换格式，基于JS的一个子集，但其数据格式与语言无关。 通俗来说，如果你是PHP，要和JS互相发送信息，那么这时候就可以先将PHP发的信息转为JSON，再发给JS。 那么有人要问了，为什么自己不能直接学会PHP和JS，直接先将PHP的信息转为JS，不就OK了？ 没错，但是如果你要发给C++，发给Python，发给其他各种各样的语言呢？难道你要学会所有语言，再去发信息？显然不可能。 所以： &gt; You are now able to learn only one programming language, in addition to the communications language, JSON, in order to communicate with ANY other programming language.</p>
-<p>但要注意：JSON并不是编程语言，只是一种规定的数据格式，这种格式的数据便于计算机处理。 JSON比较规范的定义是： &gt; JSON is the text grammer/format for the information that is being sent between programming language.</p>
-<p>除了JSON以外，还有一种用于交流的数据格式，XML（Extensiable Markup Language）。但是JSON更加流行。</p>
-<h2 id="格式">格式</h2>
-<p>JSON有两种结构： 1，Object：对象用<code>&#123;</code>开始，用<code>&#125;</code>结束，对象中的一系列非排序的pair中，名称和值之间用<code>:</code>分开； 2，Array：数组用<code>[</code>开始，用<code>]</code>结束，数组成员之间用<code>,</code>分开。 名称（name）是字符串； 值（value）可以是：字符串、数值、对象、布尔值、数组或者<code>null</code>。 字符串：用<code>&quot;&quot;</code>表示； 数值：可以是小数或负数，也可用<code>e</code>、<code>E</code>表示为指数格式； 对象：就是上述的Object； 布尔值：<code>true</code>或<code>false</code>； 数组：就是上述的Array。 举个栗子： <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Object &amp; Array</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Andrew&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;age&quot;</span>: <span class="string">&quot;36&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;number&quot;</span>:</span><br><span class="line">    [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;mobile&quot;</span>: <span class="string">&quot;12345678&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;fax&quot;</span>: <span class="string">&quot;87654321&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">&quot;address&quot;</span>:</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">&quot;city&quot;</span>: <span class="string">&quot;Beijing&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;code&quot;</span>: <span class="string">&quot;10000&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="参考">参考</h2>
-<p><a target="_blank" rel="noopener" href="https://www.quora.com/What-is-JSON-2/answers/50464172?share=8534699f&amp;srid=5OZ0m">quora</a> <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/JSON">wiki</a></p>
-
+          <p>JSON简介</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/07/14/JSON%20Introduction/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -857,7 +900,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-07-02 11:08:00" itemprop="dateCreated datePublished" datetime="2018-07-02T11:08:00+08:00">2018-07-02</time>
+              <time title="Created: 2018-07-02 19:08:00" itemprop="dateCreated datePublished" datetime="2018-07-02T19:08:00+08:00">2018-07-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -871,42 +923,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="内容">内容</h2>
-<p>设计系统调用，将系统的相关信息(CPU型号、操作系统的版本号、系统中的进程等类似于Windows的任务管理器的信息)以文本形式列表显示于屏幕，并编写用户程序予以验证。</p>
-<h2 id="思想">思想</h2>
-<ul>
-<li>系统调用是应用程序和操作系统内核之间的功能接口，可以使用户使用操作系统提供的有关设备管理、输入输出系统、文件系统和进程控制、通信以及存储管理等方面的功能，不必了解系统程序的内部结构和有关硬件细节，从而减轻用户负担、保护系统以及提高系统资源利用率的作用。</li>
-<li>模块是在内核空间运行的程序，实际上是一种目标文件，不能单独运行但其代码可在运行时链接到系统中作为内核的一部分运行或卸载。Linux内核模块是一个编译好的、具有特定格式的独立目标文件，用户可以通过系统提供的一组与模块相关的命令将模块加载进内核，当内核模块被加载后，有如下特点：</li>
-<li>与内核一起运行在相同的内核态和内核地址空间；</li>
-<li>运行时与内核具有同样的特权级；</li>
-<li>可方便地访问内核中的各种数据结构。</li>
-<li>内核模块还可以很容易地被移出内核，当用户不再需要某模块功能时，可以从内核卸载以节省系统主存开销。</li>
-<li>用户修改代码后，只需重新编译加载模块，不必重新编译内核和引导系统。</li>
-</ul>
-<h2 id="基础知识">基础知识</h2>
-<ul>
-<li>内核模块编程与用户态编程的区别：</li>
-</ul>
-<ol type="1">
-<li>内核模块编程不能使用C函数库，内核模块只能使用一些内核函数。比如，输出信息时使用内核函数<code>printk</code>，而不是标准库函数<code>printf</code>。</li>
-<li>内核模块代码运行在核心态，这意味着函数使用的栈是核心栈，这个空间非常有限，一般是4KB或者8KB，所以不能定义占用很大空间的自动变量。</li>
-<li>内核代码为了节省开销，不能使用浮点运算。</li>
-</ol>
-<ul>
-<li>典型内核模块组成：</li>
-</ul>
-<ol type="1">
-<li>头文件声明。其中<code>module.h</code>和<code>init.h</code>是必不可少的。<code>Module.h</code>包含加载模块时需要的函数和符号定义；<code>init.h</code>包含模块初始化和清理函数的定义。如果在加载时允许用户传递参数，模块中还应包含<code>moduleparam.h</code>头文件。</li>
-<li>模块许可声明。从内核2.4.10版本开始，模块必须通过<code>MODULE_LICENSE</code>宏声明此模块的许可证，否则在加载模块时会显示&quot;kernel tainted(内核被污染)&quot;的警告信息。从<code>linux/module.h</code>文件中可以看到，被内核接受的许可证有GPL、GPL v2、GPL and additional rights、Dual BSD/GPL、Dual MPL/GPL、Dual MIT/GPL和Proprietaty。</li>
-<li>初始化和清理函数声明。 内核模块必须调用宏<code>module_init</code>和<code>module_exit</code>去注册初始化和清理函数。初始化和清理函数必须在宏<code>module_init</code>和<code>module_exit</code>使用前定义，否则会出现编译错误。这两个函数配对使用，例如当初始化函数申请了一个资源，那么清理函数就应该释放这个资源，使得模块不留下任何副作用。除了模块初始化函数和清理函数，还可以根据需要设计编写其它函数。</li>
-</ol>
-<ul>
-<li>proc文件系统 在linux操作系统中，提供了一套在用户态检查内核状态和系统特征的机制，就是进程文件系统(process file system)。 Proc文件系统将进程信息、系统的硬件信息(包括CPU、内存状态及网卡等各种硬件设备)、系统相关机制(中断、I/O)等内容全部映射为虚拟的linux文件。它以一种特殊的文件系统的方式，为访问系统内核数据的操作提供接口。这些文件的内容都不存在于任何存储设备上，而是在读/写的时候才根据系统中的有关信息生成出来，或者映射到系统中的有关变量或者数据结构。 系统中当前运行的每一个每一个进程都有一个对应的目录在/proc下，以进程的ID为目录名： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195514838-1179859005.png" alt="image" /></li>
-</ul>
-<p>除了与进程有关的子目录，/proc还有一些内核信息的目录： <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195533943-914673534.png" alt="image" /></p>
-<h2 id="实现">实现</h2>
-<p><a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/system_call">源代码、实现过程及结果</a></p>
-
+          <p>利用内核模块添加系统调用</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/07/02/System%20Call/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1005,7 +1030,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

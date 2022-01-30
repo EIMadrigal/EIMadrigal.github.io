@@ -520,7 +520,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-01-28 14:05:00" itemprop="dateCreated datePublished" datetime="2021-01-28T14:05:00+08:00">2021-01-28</time>
+              <time title="Created: 2021-01-28 22:05:00" itemprop="dateCreated datePublished" datetime="2021-01-28T22:05:00+08:00">2021-01-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Life/" itemprop="url" rel="index"><span itemprop="name">Life</span></a>
+                </span>
             </span>
 
           
@@ -534,17 +543,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>这篇文章主要还是在元模型上创新，采用基于链接预测的方式为新数据集推荐分类算法。基本框架如下： <img src="https://img-blog.csdnimg.cn/20210127113628615.png" alt="在这里插入图片描述" /> 用元学习做AutoML主要关注：元特征、元目标的表现形式、元模型。 ## 元特征 第一步包括提特征和识别可用算法。 目前流行的元特征有5种：</p>
-<ul>
-<li>statistical and information-theory based</li>
-<li>model structure based</li>
-<li>landmarking</li>
-<li>problem-complexity</li>
-<li>structural information</li>
-</ul>
-<p>由于每个数据集可能有不定数目的可用算法，文章采用了multiple comparison procedure：如果我们用acc作为衡量标准（除此以外本文还用了ARR作为标准，将时间因素也考虑进去），这个程序能用统计检验的方法发现一系列与最佳算法相差不显著的候选算法。文中具体使用的统计检验方法是Friedman Test+Holm procedure test，即如果Friedman Test认为所有算法性能相差不显著，那么所有的算法都是meta target；否则以表现最佳的算法为参考，用Holm procedure test去识别和最佳算法没有显著差异的算法们作为meta target。 这样就得到了元数据<span class="math inline">\(M=\{m_1,...,m_n\},m_i=&lt;x_i,y_i&gt;\)</span>，其中<span class="math inline">\(x_i=(f_{i1},...,f_{ip})\)</span>是该数据集的p个元特征，<span class="math inline">\(y_i=(a_1,...,a_q)\)</span>是q个合适的算法。 ## 元目标形式 有4种： - 单标签 - 多标签 - 连续值：预测算法的表现，回归问题 - 排序：预测算法之间的相对顺序 ## 元模型 - 分类 - 回归 - ranking</p>
-<p>本文将问题看作多标签分类，并采用DAR图+链接预测作为分类模型。 建的是一个异构图，有数据集（元特征作为结点属性）和算法（算法名作为属性）两种结点，有d-d和d-a两种无向边，d-d边的构建通过数据集间的相似性（<strong>欧氏距离</strong>最近的k个邻居，需要将元特征标准化min-max scaling），d-a边就用每个数据集的候选算法构建。 建图的伪代码： <img src="https://img-blog.csdnimg.cn/2021012815482635.png" alt="在这里插入图片描述" /> 建好图后就可以推荐了，伪代码如下： <img src="https://img-blog.csdnimg.cn/20210128161524948.png" alt="在这里插入图片描述" /> 文章里LPMethod有3种：Katz,LRW,SRW。 综上，预测时需要的参数有：训练集<span class="math inline">\(D=\{d_1,...,d_n\}\)</span>，候选算法集<span class="math inline">\(A=\{a_1,..,a_m\}\)</span>，推荐的算法数目，每个数据集结点的邻边数目<span class="math inline">\(k\)</span>。 ## 评估 评估指标包括5个：Hamming损失、F值、acc、HitRatio、RA（推荐准确率）。 考虑DAR图的边的权重，类似概率图模型 &lt;/x_i,y_i&gt;</p>
-
+          <p>基于链接预测的分类算法推荐</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/01/28/A%20new%20classification%20algorithm%20recommendation%20method%20based%20on%20link%20prediction/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -893,7 +900,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-12-20 11:42:00" itemprop="dateCreated datePublished" datetime="2020-12-20T11:42:00+08:00">2020-12-20</time>
+              <time title="Created: 2020-12-20 19:42:00" itemprop="dateCreated datePublished" datetime="2020-12-20T19:42:00+08:00">2020-12-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -907,14 +923,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>程序性能的衡量一般有2种方式：Benchmarking和Profiling。 ## Benchmarking Benchmarking通过绝对运行时间来比较程序的整体性能，例如给定一组同样的输入，比较不同版本的程序在同样硬件环境下的运行时间，或者比较相同版本程序在不同硬件环境下的运行时间。 ## Profiling Profiling通常用来识别程序的耗时瓶颈（通常是一些函数），优化这些瓶颈后再去做Benchmarking评估整体性能。 Unix系统提供了GPROF工具，CSAPP上有一个示例：</p>
-<ul>
-<li>编译：<code>gcc -Og -pg prog.c -o prog</code> <code>-Og</code>表示关闭了很多编译器的优化开关，并且优化了调试信息；<code>-pg</code>表示产生供GPROF剖析用的可执行文件。</li>
-<li>执行：<code>./prog file.txt</code> 会比正常执行要慢一些（慢一倍左右），生成待分析的文件<code>gmon.out</code>。</li>
-<li>分析：<code>gprof prog</code> 结果通常有2部分。 第一部分是不同函数的耗时情况： <img src="https://img-blog.csdnimg.cn/20201012215440170.png#pic_center" alt="在这里插入图片描述" /> 第4列显示了该函数被调用了多少次（不含递归调用），库函数一般不显示在列表中，但是可以通过wrapper function去显示它的执行情况。 第二部分是函数的调用情况，以递归函数<code>find_ele_rec</code>为例： <img src="https://img-blog.csdnimg.cn/20201012220111993.png" alt="在这里插入图片描述" /> 前2行显示了调用该函数的情况：自己递归调用了158555725次，被<code>insert_string</code>调用了965027次，<code>insert_string</code>自己递归调用了965027次；后几行显示了<code>find_ele_rec</code>调用其他函数的情况。</li>
-</ul>
-<p>由于GPROF采用的是interval counting，所以计时可能不太精确，尤其对于运行时间小于1s的程序误差更大。 如何使用Profiling去优化程序，CSAPP上给了一个非常精彩的例子，这里不再赘述。</p>
-
+          <p>Profiling & Benchmarking</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/12/20/Performance%20Measurement/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1013,7 +1030,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

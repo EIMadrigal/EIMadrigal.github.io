@@ -20,16 +20,17 @@
     var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="线性变换 顾名思义，所谓线性变换即某种变换满足线性性质： \[ \begin{cases} T(v+w)&#x3D;T(v)+T(w)&amp; \text{}\\ T(cv)&#x3D;cT(v)&amp; \text{}\\ \end{cases} \] 投影变换、旋转变换满足线性，这种映射可以通过左乘矩阵完成。 如果要知道对整个空间的线性变换，只需要知道对基的变换结果即可，因为任意向量都可表示为基的">
+  <meta name="description" content="MIT 18.06">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MIT Linear Algebra#6 Linear Transformations">
 <meta property="og:url" content="https://eimadrigal.github.io/2020/06/01/MIT%20Linear%20Algebra#6%20Linear%20Transformations/index.html">
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
-<meta property="og:description" content="线性变换 顾名思义，所谓线性变换即某种变换满足线性性质： \[ \begin{cases} T(v+w)&#x3D;T(v)+T(w)&amp; \text{}\\ T(cv)&#x3D;cT(v)&amp; \text{}\\ \end{cases} \] 投影变换、旋转变换满足线性，这种映射可以通过左乘矩阵完成。 如果要知道对整个空间的线性变换，只需要知道对基的变换结果即可，因为任意向量都可表示为基的">
+<meta property="og:description" content="MIT 18.06">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-06-01T02:43:00.000Z">
-<meta property="article:modified_time" content="2022-01-13T16:01:43.620Z">
+<meta property="article:published_time" content="2020-06-01T10:43:00.000Z">
+<meta property="article:modified_time" content="2022-01-30T15:25:10.053Z">
 <meta property="article:author" content="EIMadrigal">
+<meta property="article:tag" content="Linear Algebra">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2020/06/01/MIT%20Linear%20Algebra#6%20Linear%20Transformations/">
@@ -218,7 +219,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-06-01 10:43:00" itemprop="dateCreated datePublished" datetime="2020-06-01T10:43:00+08:00">2020-06-01</time>
+              <time title="Created: 2020-06-01 18:43:00" itemprop="dateCreated datePublished" datetime="2020-06-01T18:43:00+08:00">2020-06-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
             </span>
 
           
@@ -229,6 +239,7 @@
               <span class="post-meta-item-text">Views: </span>
               <span id="busuanzi_value_page_pv"></span>
             </span>
+            <div class="post-description">MIT 18.06</div>
 
         </div>
       </header>
@@ -245,8 +256,11 @@
 T(v+w)=T(v)+T(w)&amp; \text{}\\
 T(cv)=cT(v)&amp; \text{}\\
 \end{cases}
-\]</span> 投影变换、旋转变换满足线性，这种映射可以通过左乘矩阵完成。 如果要知道对整个空间的线性变换，只需要知道对基的变换结果即可，因为任意向量都可表示为基的线性组合：<span class="math inline">\(v=c_1v_1+c_2v_2+...+c_nv_n\)</span>，<span class="math inline">\((c_1,c_2,...,c_n)\)</span>是该向量在这组基下的<strong>坐标</strong>，那么<span class="math inline">\(T(v)=c_1T(v_1)+...+c_nT(v_n)\)</span>。</p>
-<p>线性变换可以用矩阵表示，不同基下对应的矩阵是不同的，如果要求该矩阵： 假设输入基是<span class="math inline">\(v_1,...v_n\)</span>，输出空间的基是<span class="math inline">\(w_1,...w_m\)</span>，<strong><span class="math inline">\(A\)</span>的第一列就是<span class="math inline">\(T(v_1)\)</span>在<span class="math inline">\(w\)</span>下的坐标</strong>，因为输入<span class="math inline">\(v_1\)</span>，其在<span class="math inline">\(v\)</span>下的坐标就是<span class="math inline">\(\begin{bmatrix}  1\\  0\\  ...\\  0  \end{bmatrix}\)</span>，<span class="math inline">\(A\)</span>乘以该坐标就是取<span class="math inline">\(A\)</span>的第一列，同理可得其他列。 容易验证<span class="math inline">\(T=\frac{d}{dx}\)</span>也是线性变换，输入基如果选择<span class="math inline">\(1,x,x^2\)</span>，输入是<span class="math inline">\(c_1+c_2x+c_3x^2\)</span>，那么输出是<span class="math inline">\(c_2+2c_3x\)</span>，输出基是<span class="math inline">\(1,x\)</span>，那么用矩阵表示就是： <span class="math display">\[
+\]</span> 投影变换、旋转变换满足线性，这种映射可以通过左乘矩阵完成。<br />
+如果要知道对整个空间的线性变换，只需要知道对基的变换结果即可，因为任意向量都可表示为基的线性组合：<span class="math inline">\(v=c_1v_1+c_2v_2+...+c_nv_n\)</span>，<span class="math inline">\((c_1,c_2,...,c_n)\)</span>是该向量在这组基下的<strong>坐标</strong>，那么<span class="math inline">\(T(v)=c_1T(v_1)+...+c_nT(v_n)\)</span>。</p>
+<p>线性变换可以用矩阵表示，不同基下对应的矩阵是不同的，如果要求该矩阵：<br />
+假设输入基是<span class="math inline">\(v_1,...v_n\)</span>，输出空间的基是<span class="math inline">\(w_1,...w_m\)</span>，<strong><span class="math inline">\(A\)</span>的第一列就是<span class="math inline">\(T(v_1)\)</span>在<span class="math inline">\(w\)</span>下的坐标</strong>，因为输入<span class="math inline">\(v_1\)</span>，其在<span class="math inline">\(v\)</span>下的坐标就是<span class="math inline">\(\begin{bmatrix}  1\\  0\\  ...\\  0  \end{bmatrix}\)</span>，<span class="math inline">\(A\)</span>乘以该坐标就是取<span class="math inline">\(A\)</span>的第一列，同理可得其他列。<br />
+容易验证<span class="math inline">\(T=\frac{d}{dx}\)</span>也是线性变换，输入基如果选择<span class="math inline">\(1,x,x^2\)</span>，输入是<span class="math inline">\(c_1+c_2x+c_3x^2\)</span>，那么输出是<span class="math inline">\(c_2+2c_3x\)</span>，输出基是<span class="math inline">\(1,x\)</span>，那么用矩阵表示就是： <span class="math display">\[
 A\begin{bmatrix}
    c_1\\
    c_2\\
@@ -255,7 +269,12 @@ A\begin{bmatrix}
    c_2\\
    2c_3\\
   \end{bmatrix}
-\]</span> 当然可以用上面的方法求矩阵，这里比较简单<span class="math inline">\(A=\begin{bmatrix}  0 &amp; 1 &amp; 0\\  0 &amp; 0 &amp; 2\\  \end{bmatrix}\)</span>。 ## 基变换 选择合适的基，可以对图像进行压缩： 对于原始信号<span class="math inline">\(x\)</span>，可以通过基变换得到另一组基下的坐标<span class="math inline">\(c\)</span>，这一步是无损的，这些系数里可能含有大量的0，通过去掉这些项可以压缩大小，这一步是有损的，即<span class="math inline">\(\hat x=\Sigma \hat c_iv_i\)</span>。 目前比较好的有Fourier基和小波基，都是将原始图片分割为若干小块处理。 8<em>8Fourier基： <span class="math display">\[
+\]</span> 当然可以用上面的方法求矩阵，这里比较简单<span class="math inline">\(A=\begin{bmatrix}  0 &amp; 1 &amp; 0\\  0 &amp; 0 &amp; 2\\  \end{bmatrix}\)</span>。</p>
+<h2 id="基变换">基变换</h2>
+<p>选择合适的基，可以对图像进行压缩：<br />
+对于原始信号<span class="math inline">\(x\)</span>，可以通过基变换得到另一组基下的坐标<span class="math inline">\(c\)</span>，这一步是无损的，这些系数里可能含有大量的0，通过去掉这些项可以压缩大小，这一步是有损的，即<span class="math inline">\(\hat x=\Sigma \hat c_iv_i\)</span>。<br />
+目前比较好的有Fourier基和小波基，都是将原始图片分割为若干小块处理。<br />
+8<em>8Fourier基： <span class="math display">\[
 \begin{bmatrix}
    1 &amp; 1 &amp;... &amp; 1 \\
    1 &amp; w&amp;... &amp; w^{n-1} \\
@@ -283,7 +302,15 @@ p=\begin{bmatrix}
    ...\\
    c_8\\
   \end{bmatrix}=Wc
-\]</span> 所以在新的基下的坐标是<span class="math inline">\(c=W^{-1}p\)</span>。 就性能而言：我们需要<span class="math inline">\(W^{-1}\)</span>可以快速求得，这一点<span class="math inline">\(W^{-1}=W^T\)</span>；另外还要求只需要少量基向量就可以逼近原始信号。 ## 左右逆/伪逆 对于满秩的情况<span class="math inline">\(r=m=n\)</span>，左逆和右逆都存在，即<span class="math inline">\(AA^{-1}=I=A^{-1}A\)</span>； 对于列满秩<span class="math inline">\(r=n&lt;m\)</span>，比如<span class="math inline">\(\begin{bmatrix}  1 &amp; 2\\  1 &amp; 3\\  2 &amp; 4\\  \end{bmatrix}\)</span>，<span class="math inline">\(A_{left}^{-1}=(A^TA)^{-1}A^T\)</span>； 对于行满秩<span class="math inline">\(r=m&lt;n\)</span>，<span class="math inline">\(A_{right}^{-1}=A^T(AA^T)^{-1}\)</span>； 对于不满秩的情况<span class="math inline">\(r&lt;m,r&lt;n\)</span>，这样<strong>不论<span class="math inline">\(A^TA\)</span>还是<span class="math inline">\(AA^T\)</span>都是奇异的</strong>，所以不可能有左逆或者右逆。这种情况在统计学上多次出现，就提出了伪逆的概念，记作<span class="math inline">\(A^+\)</span>。 找伪逆可以通过SVD，<span class="math inline">\(A=U\Sigma V^T\)</span>，这里我们的特征值是不完整的，即<span class="math inline">\(\Sigma_{mn}=\begin{bmatrix}  \sigma_1 &amp; ... &amp; 0&amp;0 \\  ... &amp; ... &amp; ...&amp;0\\  0 &amp; ... &amp; \sigma_r &amp;0\\  ...\\  0 &amp; ... &amp; 0&amp;0 \\  \end{bmatrix}\)</span>，那么<span class="math inline">\(\Sigma_{nm}^+=\begin{bmatrix}  1/\sigma_1 &amp; ... &amp; 0&amp;0 \\  ... &amp; ... &amp; ...&amp;0\\  0 &amp; ... &amp; 1/\sigma_r &amp;0\\  ...\\  0 &amp; ... &amp; 0&amp;0 \\  \end{bmatrix}\)</span>，这样<span class="math inline">\(A^+=V\Sigma^+U^T\)</span>。 ## 作业</p>
+\]</span> 所以在新的基下的坐标是<span class="math inline">\(c=W^{-1}p\)</span>。<br />
+就性能而言：我们需要<span class="math inline">\(W^{-1}\)</span>可以快速求得，这一点<span class="math inline">\(W^{-1}=W^T\)</span>；另外还要求只需要少量基向量就可以逼近原始信号。</p>
+<h2 id="左右逆伪逆">左右逆/伪逆</h2>
+<p>对于满秩的情况<span class="math inline">\(r=m=n\)</span>，左逆和右逆都存在，即<span class="math inline">\(AA^{-1}=I=A^{-1}A\)</span>；<br />
+对于列满秩<span class="math inline">\(r=n&lt;m\)</span>，比如<span class="math inline">\(\begin{bmatrix}  1 &amp; 2\\  1 &amp; 3\\  2 &amp; 4\\  \end{bmatrix}\)</span>，<span class="math inline">\(A_{left}^{-1}=(A^TA)^{-1}A^T\)</span>；<br />
+对于行满秩<span class="math inline">\(r=m&lt;n\)</span>，<span class="math inline">\(A_{right}^{-1}=A^T(AA^T)^{-1}\)</span>；<br />
+对于不满秩的情况<span class="math inline">\(r&lt;m,r&lt;n\)</span>，这样<strong>不论<span class="math inline">\(A^TA\)</span>还是<span class="math inline">\(AA^T\)</span>都是奇异的</strong>，所以不可能有左逆或者右逆。这种情况在统计学上多次出现，就提出了伪逆的概念，记作<span class="math inline">\(A^+\)</span>。<br />
+找伪逆可以通过SVD，<span class="math inline">\(A=U\Sigma V^T\)</span>，这里我们的特征值是不完整的，即<span class="math inline">\(\Sigma_{mn}=\begin{bmatrix}  \sigma_1 &amp; ... &amp; 0&amp;0 \\  ... &amp; ... &amp; ...&amp;0\\  0 &amp; ... &amp; \sigma_r &amp;0\\  ...\\  0 &amp; ... &amp; 0&amp;0 \\  \end{bmatrix}\)</span>，那么<span class="math inline">\(\Sigma_{nm}^+=\begin{bmatrix}  1/\sigma_1 &amp; ... &amp; 0&amp;0 \\  ... &amp; ... &amp; ...&amp;0\\  0 &amp; ... &amp; 1/\sigma_r &amp;0\\  ...\\  0 &amp; ... &amp; 0&amp;0 \\  \end{bmatrix}\)</span>，这样<span class="math inline">\(A^+=V\Sigma^+U^T\)</span>。</p>
+<h2 id="作业">作业</h2>
 
     </div>
 
@@ -329,6 +356,9 @@ p=\begin{bmatrix}
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linear-Algebra/" rel="tag"># Linear Algebra</a>
+          </div>
 
         
 
@@ -406,7 +436,7 @@ p=\begin{bmatrix}
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2"><span class="nav-number">1.</span> <span class="nav-text">线性变换</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2"><span class="nav-number">1.</span> <span class="nav-text">线性变换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E5%8F%98%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">基变换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A6%E5%8F%B3%E9%80%86%E4%BC%AA%E9%80%86"><span class="nav-number">3.</span> <span class="nav-text">左右逆&#x2F;伪逆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A"><span class="nav-number">4.</span> <span class="nav-text">作业</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -435,7 +465,7 @@ p=\begin{bmatrix}
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
