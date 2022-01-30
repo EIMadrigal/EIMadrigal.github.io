@@ -27,15 +27,15 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="周期信号的傅里叶变换">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://img-blog.csdn.net/20180510103617263">
-<meta property="og:image" content="https://img-blog.csdn.net/20180510104202240">
-<meta property="og:image" content="https://img-blog.csdn.net/20180510104448987">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/074ecf83ad964d0b869dceb72a65cf43.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/d580f672cc624a02bafc1cbcb8eaee2e.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/96285b7fb96e48c1891e4745de9e5256.png">
 <meta property="article:published_time" content="2018-05-06T14:15:32.000Z">
-<meta property="article:modified_time" content="2022-01-30T09:29:08.246Z">
+<meta property="article:modified_time" content="2022-01-30T09:52:17.956Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Information Engineering">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdn.net/20180510103617263">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/074ecf83ad964d0b869dceb72a65cf43.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2018/05/06/Fourier%20Transform/">
 
@@ -259,9 +259,9 @@
 <ol type="1">
 <li><p>利用傅里叶级数进行构造<br />
 对于周期信号<span class="math inline">\(x(t)\)</span>，其傅里叶级数展开式为： <span class="math display">\[x(t) = \sum_{k = -\infty}^{+\infty}a_ke^{jkw_0t}\]</span> 系数<span class="math inline">\(a_k\)</span>表示为：<br />
-<img src="https://img-blog.csdn.net/20180510103617263" alt="这里写图片描述" /><br />
-由于 <img src="https://img-blog.csdn.net/20180510104202240" alt="这里写图片描述" /><br />
-说明周期性复指数信号的频谱是一个冲激，那么我们推广这个关系，可得： <img src="https://img-blog.csdn.net/20180510104448987" alt="这里写图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/074ecf83ad964d0b869dceb72a65cf43.png" alt="在这里插入图片描述" /><br />
+由于 <img src="https://img-blog.csdnimg.cn/d580f672cc624a02bafc1cbcb8eaee2e.png" alt="在这里插入图片描述" /><br />
+说明周期性复指数信号的频谱是一个冲激，那么我们推广这个关系，可得： <img src="https://img-blog.csdnimg.cn/96285b7fb96e48c1891e4745de9e5256.png" alt="在这里插入图片描述" /><br />
 表明：周期信号的傅里叶变换由一系列等间隔的冲激函数线性组合而成，每个冲激分别位于信号各次谐波的频率处，其强度是傅里叶级数系数的<span class="math inline">\(2\pi\)</span>倍。</p></li>
 <li><p>周期延拓<br />
 这种方法先将<span class="math inline">\(x(t)\)</span>在一个周期内截断，得信号<span class="math inline">\(x_T(t)\)</span>，求出<span class="math inline">\(x_T(t)\)</span>的傅里叶变换<span class="math inline">\(X_T(w)\)</span>，再对<span class="math inline">\(X_T(w)\)</span>周期延拓得<span class="math inline">\(X(w)\)</span>。<br />

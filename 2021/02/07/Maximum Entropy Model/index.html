@@ -20,16 +20,17 @@
     var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="熵是对随机变量不确定性的度量，是对所有可能发生的事件产生的信息量的期望，没有外部能量输入的情况下，封闭系统趋向熵增。 信息熵指离散随机事件的出现概率：\(X&#x3D;{x_1,x_2,...,x_n}\)，\(P(X&#x3D;x_i)&#x3D;p_i\) \[ H(X)&#x3D;-\sum_{i&#x3D;1}^{n}p(x_i)log\ p(x_i) \] Joint Entropy \[ H(X,Y)&#x3D;-\sum_{i&#x3D;1}">
+  <meta name="description" content="最大熵模型">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Maximum Entropy Model">
 <meta property="og:url" content="https://eimadrigal.github.io/2021/02/07/Maximum%20Entropy%20Model/index.html">
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
-<meta property="og:description" content="熵是对随机变量不确定性的度量，是对所有可能发生的事件产生的信息量的期望，没有外部能量输入的情况下，封闭系统趋向熵增。 信息熵指离散随机事件的出现概率：\(X&#x3D;{x_1,x_2,...,x_n}\)，\(P(X&#x3D;x_i)&#x3D;p_i\) \[ H(X)&#x3D;-\sum_{i&#x3D;1}^{n}p(x_i)log\ p(x_i) \] Joint Entropy \[ H(X,Y)&#x3D;-\sum_{i&#x3D;1}">
+<meta property="og:description" content="最大熵模型">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2021-02-06T21:08:00.000Z">
-<meta property="article:modified_time" content="2022-01-13T16:01:43.582Z">
+<meta property="article:published_time" content="2021-02-07T05:08:00.000Z">
+<meta property="article:modified_time" content="2022-01-30T11:40:28.982Z">
 <meta property="article:author" content="EIMadrigal">
+<meta property="article:tag" content="Machine Learning">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2021/02/07/Maximum%20Entropy%20Model/">
@@ -218,7 +219,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-02-07 05:08:00" itemprop="dateCreated datePublished" datetime="2021-02-07T05:08:00+08:00">2021-02-07</time>
+              <time title="Created: 2021-02-07 13:08:00" itemprop="dateCreated datePublished" datetime="2021-02-07T13:08:00+08:00">2021-02-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
             </span>
 
           
@@ -229,6 +239,7 @@
               <span class="post-meta-item-text">Views: </span>
               <span id="busuanzi_value_page_pv"></span>
             </span>
+            <div class="post-description">最大熵模型</div>
 
         </div>
       </header>
@@ -257,8 +268,10 @@ D_{KL}(P\ ||\ Q)=\sum_xP(x)log\frac{P(x)}{Q(x)}
 \]</span></p>
 <p>互信息 <span class="math display">\[
 I(X,Y)=\sum_x\sum_yp(x,y)log\frac{p(x,y)}{p(x)p(y)}
-\]</span> 互信息就是联合分布<span class="math inline">\(P(X,Y)\)</span>和独立分布乘积<span class="math inline">\(P(X)P(Y)\)</span>的交叉熵。 易证<span class="math inline">\(I(X,Y)=H(X)+H(Y)-H(X,Y)\)</span></p>
-<p>直观上看：在已知部分知识的前提下，对于未知分布最合理的推断就是符合已知且最不确定的推断，整个系统趋向于无序，熵最大。 在一定<strong>约束条件</strong>下，使得<span class="math inline">\(H(X|Y)\)</span>最大。 <span class="math display">\[
+\]</span> 互信息就是联合分布<span class="math inline">\(P(X,Y)\)</span>和独立分布乘积<span class="math inline">\(P(X)P(Y)\)</span>的交叉熵。<br />
+易证<span class="math inline">\(I(X,Y)=H(X)+H(Y)-H(X,Y)\)</span></p>
+<p>直观上看：在已知部分知识的前提下，对于未知分布最合理的推断就是符合已知且最不确定的推断，整个系统趋向于无序，熵最大。<br />
+在一定<strong>约束条件</strong>下，使得<span class="math inline">\(H(X|Y)\)</span>最大。 <span class="math display">\[
 p^*={\underset {p\in P}{\operatorname {arg\,max} }}\,-\sum_{i=1}^{n}\sum_{j=1}^{m}\bar p(y_j)p(x_i|y_j)log\ p(x_i|y_j)
 \]</span> 约束条件： <span class="math display">\[
 \sum_xp(x|y)=1 \\
@@ -313,6 +326,9 @@ Z_\lambda(y)=\sum_xe^{\sum_i\lambda_if_i(x,y)}
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
 
         
 

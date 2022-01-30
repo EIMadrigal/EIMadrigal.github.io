@@ -28,7 +28,7 @@
 <meta property="og:description" content="指令集简介">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2018-05-16T14:11:32.000Z">
-<meta property="article:modified_time" content="2022-01-30T09:30:40.705Z">
+<meta property="article:modified_time" content="2022-01-30T09:53:29.053Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="System">
 <meta name="twitter:card" content="summary">
@@ -256,11 +256,15 @@
 X86指令集外部看起来是CISC指令集，事实上，它是采用类RISC内核，将部分复杂指令通过micro-op模式进行翻译成简单指令，再处理。<br />
 X86指令集的几个特性</p>
 <ul>
-<li>后向兼容 Intel每推出一代新处理器，总会兼容以前处理器的feature。这是由于长期积累的用户习惯和生态环境不容更改，否则没法赚钱了~<br />
+<li>后向兼容<br />
+Intel每推出一代新处理器，总会兼容以前处理器的feature。这是由于长期积累的用户习惯和生态环境不容更改，否则没法赚钱了~<br />
 后向兼容导致指令集愈发庞大、愈发复杂，同时功耗也会比较大，不过由于Intel超高的工艺水平，这都不是事。</li>
-<li>变长指令 X86指令集采用变长指令(1-15Bytes)，一般每条指令为2-3Bytes。这样可以提高码字的利用率，但也使得译码以及读取指令时比较复杂，因为不知道一条指令应该读多长。</li>
-<li>多种寻址方式 X86指令集可以采用多种寻址方式，比如立即寻址、寄存器寻址、寄存器相对寻址......</li>
-<li>通用寄存器个数有限 X86-32的系统有8个通用寄存器，之后X86-64系统扩展到了16个。</li>
+<li>变长指令<br />
+X86指令集采用变长指令(1-15Bytes)，一般每条指令为2-3Bytes。这样可以提高码字的利用率，但也使得译码以及读取指令时比较复杂，因为不知道一条指令应该读多长。</li>
+<li>多种寻址方式<br />
+X86指令集可以采用多种寻址方式，比如立即寻址、寄存器寻址、寄存器相对寻址......</li>
+<li>通用寄存器个数有限<br />
+X86-32的系统有8个通用寄存器，之后X86-64系统扩展到了16个。</li>
 <li>指令执行时，最多只能有一个操作数在内存里，另一个操作数必为立即数或者寄存器。</li>
 <li>由于后向兼容以及类RISC内核，导致功耗增加；同时，有很多复杂的指令利用率很低。</li>
 </ul>

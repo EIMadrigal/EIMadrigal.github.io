@@ -27,13 +27,13 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="进程&#x2F;线程同步机制">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108183225108-1461792452.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/4a15405e92a745d497e2eee6f8da28a4.png">
 <meta property="article:published_time" content="2018-04-28T13:30:32.000Z">
-<meta property="article:modified_time" content="2022-01-30T09:24:55.013Z">
+<meta property="article:modified_time" content="2022-01-30T09:48:56.035Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="OS">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108183225108-1461792452.png">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/4a15405e92a745d497e2eee6f8da28a4.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2018/04/28/Process%20&%20Thread%20Synchronization/">
 
@@ -285,7 +285,7 @@
 信号量的取值具有实际意义，即为<strong>空闲资源的个数</strong>。多个进程可以同时使用这种类型的资源，直到所有空闲资源均已用完。<br />
 其特征是信号量的<strong>初始值为<span class="math inline">\(N\geq 1\)</span></strong>，然后<strong>在一个进程内部对它进行配对的PV操作</strong>。 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">P(resource);  <span class="comment">// resource的初始值为N</span></span><br><span class="line">使用该资源;</span><br><span class="line">V(resource);</span><br><span class="line">非临界区</span><br></pre></td></tr></table></figure></li>
 <li>把信号量作为<strong>进程间同步</strong>的工具，利用它来设定<strong>两个进程在运行时的先后顺序</strong>。比如，它可以是某个共享资源的当前个数，但是由一个进程负责生成该资源，而另一个进程负责消费该资源，由此引发了两个进程间的先后顺序。<br />
-其特征是信号量的<strong>初始值为<span class="math inline">\(N\geq 0\)</span></strong>，然后<strong>在一个进程里对其使用V原语，增加资源个数，而在另一个进程里对其使用P原语，减少资源个数，</strong>从而实现两个进程之间的同步关系。 <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108183225108-1461792452.png" alt="image" /></li>
+其特征是信号量的<strong>初始值为<span class="math inline">\(N\geq 0\)</span></strong>，然后<strong>在一个进程里对其使用V原语，增加资源个数，而在另一个进程里对其使用P原语，减少资源个数，</strong>从而实现两个进程之间的同步关系。 <img src="https://img-blog.csdnimg.cn/4a15405e92a745d497e2eee6f8da28a4.png" alt="在这里插入图片描述" /></li>
 </ol>
 
     </div>
