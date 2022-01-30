@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/11e883581dd48f9c8442b8273371766d.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/3110af9ecffd601bb7acd89d86ad9784.png">
 <meta property="article:published_time" content="2021-01-16T06:41:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T03:19:01.496Z">
+<meta property="article:modified_time" content="2022-01-30T03:28:58.592Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Probability &amp; Statistics">
 <meta name="twitter:card" content="summary">
@@ -258,11 +258,11 @@
 <p>再来看一个非常经典的医学上的例子：有一种很稀有的病，得病的人检测结果呈阳性的概率是0.9，没得病的人检测结果呈阴性的概率也是0.9，人们患这种病的概率是0.01。如果某人的检测结果呈阳性，那么他患这种病的概率是多少？</p>
 <p>直观上看：患病的人检测呈阳性的概率是0.9，这个人被检测为阳性，那么有很大概率这个人是患病的。不妨试着算算：</p>
 <p>假设用A表示检测结果为阳性，B表示患病，那么可以很轻松的计算出： <span class="math display">\[
-P(B|A)=\cfrac{P(A|B)P(B)}{P(A)}=\cfrac{P(A|B)P(B)}{P(A|B)P(B)+P(A|\bar B)P(\bar B)}=\cfrac{0.9*0.01}{0.9*0.01+0.1*0.99}=0.083 \\
+P(B|A)=\frac{P(A|B)P(B)}{P(A)}=\frac{P(A|B)P(B)}{P(A|B)P(B)+P(A|\bar B)P(\bar B)}=\frac{0.9*0.01}{0.9*0.01+0.1*0.99}=0.083 \\
 P(\bar B|A)=1-P(B|A)=0.917
 \]</span> 可以看到：即使检测结果呈阳性，患病的概率仍然只有8.3%，和我们的直观认识并不相同。</p>
 <p>上面的计算其实就用了贝叶斯公式：后验概率<span class="math inline">\(P(B|A)\)</span>等于条件概率<span class="math inline">\(P(A|B)\)</span>（似然函数）乘以先验概率<span class="math inline">\(P(B)\)</span>，再除以一个常数因子。我们在已知先验概率的前提下，通过新的观测值<span class="math inline">\(P(A|B)\)</span>（检测结果是否阳性）来预测患病的概率。</p>
-<p>关于常数因子<span class="math inline">\(P(A)\)</span>可以这样理解：分子<span class="math inline">\(P(A,B)\)</span>表示检测结果呈阳性并且患病的概率，那么还有一部分人<span class="math inline">\(P(A,\bar B)\)</span>检测结果呈阳性但是没有患病，<span class="math inline">\(P(A,B)+P(A,\bar B)=P(A)\)</span>，我们要求的<span class="math inline">\(P(B|A)\)</span>即检测呈阳性的人中患病的人所占的比例<span class="math inline">\(\cfrac{P(A,B)}{P(A)}\)</span>。</p>
+<p>关于常数因子<span class="math inline">\(P(A)\)</span>可以这样理解：分子<span class="math inline">\(P(A,B)\)</span>表示检测结果呈阳性并且患病的概率，那么还有一部分人<span class="math inline">\(P(A,\bar B)\)</span>检测结果呈阳性但是没有患病，<span class="math inline">\(P(A,B)+P(A,\bar B)=P(A)\)</span>，我们要求的<span class="math inline">\(P(B|A)\)</span>即检测呈阳性的人中患病的人所占的比例<span class="math inline">\(\frac{P(A,B)}{P(A)}\)</span>。</p>
 <p>更加一般的贝叶斯公式：</p>
 <p>如果参数<span class="math inline">\(\theta\)</span>的分布是离散的： <span class="math display">\[
 \pi(\theta_i|x)=\cfrac{\pi(\theta_i)f(x|\theta_i)}{\sum_{i}\pi(\theta_i)f(x|\theta_i)}
