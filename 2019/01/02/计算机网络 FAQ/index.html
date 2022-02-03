@@ -28,7 +28,7 @@
 <meta property="og:description" content="计网八股文">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-01-02T14:19:00.000Z">
-<meta property="article:modified_time" content="2022-01-24T10:04:06.018Z">
+<meta property="article:modified_time" content="2022-02-03T03:51:36.169Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Interview">
 <meta property="article:tag" content="Network">
@@ -251,7 +251,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="tcp连接">TCP连接</h2>
+        <h2 id="tcp和udp区别">TCP和UDP区别</h2>
+<ul>
+<li>TCP面向连接，提供可靠传输，收发数据前要3次握手建立连接，使用ACK对收发数据进行确认；UDP是无连接协议，不管对方是否收到或收到的数据是否正确</li>
+<li>TCP提供流量控制和拥塞控制，UDP无</li>
+<li>TCP对系统资源的要求高于UDP，因此速度稍慢</li>
+<li>TCP数据包没有边界，会出现粘包问题，UDP包是独立的，没有粘包问题</li>
+<li>应用时如果强调数据的完整性和正确性应用TCP，强调性能和速度时用UDP</li>
+</ul>
+<h2 id="tcp连接">TCP连接</h2>
 <p>建立TCP连接的过程需要使用一些系统调用</p>
 <h2 id="tcp可靠传输">TCP可靠传输</h2>
 <ul>
@@ -400,7 +408,7 @@ TCP收到乱序包时就会发ACK，发送方连续收到3个重复的ack时，�
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">TCP连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93"><span class="nav-number">2.</span> <span class="nav-text">TCP可靠传输</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp"><span class="nav-number">3.</span> <span class="nav-text">UDP</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%92%8Cudp%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">TCP和UDP区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E8%BF%9E%E6%8E%A5"><span class="nav-number">2.</span> <span class="nav-text">TCP连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93"><span class="nav-number">3.</span> <span class="nav-text">TCP可靠传输</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp"><span class="nav-number">4.</span> <span class="nav-text">UDP</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
