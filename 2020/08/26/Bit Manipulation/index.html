@@ -28,7 +28,7 @@
 <meta property="og:description" content="Bit操作">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-08-26T08:38:00.000Z">
-<meta property="article:modified_time" content="2022-02-04T05:12:04.052Z">
+<meta property="article:modified_time" content="2022-02-04T05:57:03.860Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta name="twitter:card" content="summary">
@@ -256,7 +256,7 @@
 <ul>
 <li><code>n &amp; (n - 1)</code>：将n的二进制表示中最低位的<code>1</code>改为<code>0</code></li>
 <li><code>a ^ b = b ^ a</code>，<code>(a ^ b) ^ c = a ^ (b ^ c)</code>，<code>a ^ 0 = a</code>，<code>a ^ a = 0</code></li>
-<li><code>n &amp; (-n)</code>：lowbit操作，将最低位的1及后面的0代表的数字转为十进制</li>
+<li><code>n &amp; (-n)</code>或<code>n &amp; (~n + 1)</code>：lowbit操作，将最低位的1及后面的0代表的数字转为十进制</li>
 <li><code>&amp;</code>只会递减/不变</li>
 <li><code>a = a | (1 &lt;&lt; i)</code> 将a的第i位设为1</li>
 </ul>
