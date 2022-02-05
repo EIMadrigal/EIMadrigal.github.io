@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200624083353219.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200624084335135.png">
 <meta property="article:published_time" content="2018-05-25T12:00:00.000Z">
-<meta property="article:modified_time" content="2022-02-05T05:36:14.042Z">
+<meta property="article:modified_time" content="2022-02-05T05:47:44.203Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="Interview">
@@ -328,19 +328,35 @@ T(n)=4(2T(n/8)+n/4)+2n=8T(n/8)+3n \\
 T(n)=nT(1)+nlogn=n+nlogn
 \]</span></p>
 <h2 id="counting-sort">Counting Sort</h2>
-<p>计数排序适用于数据量很大，但是数据类别很少的情况，可以做到线性时间。 举例来看：如果有100万个字符串，但只有cat, dog, person三种类型，采用基于比较的排序方式，可以做到<span class="math inline">\(NlogN\)</span>，计数排序采用了一种完全不同的思想：</p>
+<p>计数排序适用于数据量很大，但是数据类别很少的情况，可以做到线性时间。<br />
+举例来看：如果有100万个字符串，但只有cat, dog, person三种类型，采用基于比较的排序方式，可以做到<span class="math inline">\(NlogN\)</span>，计数排序采用了一种完全不同的思想：</p>
 <ul>
 <li>新建一个<code>counts[3]</code>，记录每种类型数据的出现次数；</li>
-<li>遍历待排序数组，完成<code>count[]</code>的统计，并创建一个结果数组<code>sorted[]</code>： <img src="https://img-blog.csdnimg.cn/20200624082843898.png" alt="在这里插入图片描述" /></li>
-<li>基于<code>count[]</code>，我们完全可以知道第一个cat应该放置在0，第一个dog应该放置在<code>count[0]=4</code>处，第一个person应该放置在<code>count[0]+count[1]=6</code>处，为了更加清晰，创建一个<code>starts[3]</code>表示每类数据中的第一个的起始位置： <img src="https://img-blog.csdnimg.cn/20200624083353219.png" alt="在这里插入图片描述" /></li>
-<li>接着第二次遍历待排序数组，遇到第一个cat，我们知道它应该放在<code>sorted[starts[0]]</code>；第一个dog应该放在<code>sorted[starts[1]]</code>，第二个dog应该放在<code>sorted[starts[1]+1]</code>。或者可以这样做：每当放置完一个dog，就<code>++starts[1]</code>，这样下一次的dog还是会放在<code>sorted[starts[1]]</code>，最终结果： <img src="https://img-blog.csdnimg.cn/20200624084335135.png" alt="在这里插入图片描述" /></li>
+<li>遍历待排序数组，完成<code>count[]</code>的统计，并创建一个结果数组<code>sorted[]</code>：<br />
+<img src="https://img-blog.csdnimg.cn/20200624082843898.png" alt="在这里插入图片描述" /><br />
+</li>
+<li>基于<code>count[]</code>，我们完全可以知道第一个cat应该放置在0，第一个dog应该放置在<code>count[0]=4</code>处，第一个person应该放置在<code>count[0]+count[1]=6</code>处，为了更加清晰，创建一个<code>starts[3]</code>表示每类数据中的第一个的起始位置：<br />
+<img src="https://img-blog.csdnimg.cn/20200624083353219.png" alt="在这里插入图片描述" /><br />
+</li>
+<li>接着第二次遍历待排序数组，遇到第一个cat，我们知道它应该放在<code>sorted[starts[0]]</code>；第一个dog应该放在<code>sorted[starts[1]]</code>，第二个dog应该放在<code>sorted[starts[1]+1]</code>。或者可以这样做：每当放置完一个dog，就<code>++starts[1]</code>，这样下一次的dog还是会放在<code>sorted[starts[1]]</code>，最终结果：<br />
+<img src="https://img-blog.csdnimg.cn/20200624084335135.png" alt="在这里插入图片描述" /></li>
 </ul>
 <p>对于字符串排序，我们需要规定<code>counts[]</code>中每个下标对应哪种类型。如果对于非负整数，我们可以用<code>counts[i]</code>表示i的出现次数，接着遍历<code>counts[]</code>，将整数i放置<code>counts[i]</code>次；如果有负数，可以找到最小值min和最大值max，平移到0~max-min即可。</p>
 <h2 id="radix-sort">Radix Sort</h2>
 <p>计数排序的前提就是需要知道待排序数组的内容/范围，那么如果范围很大，空间上是无法忍受的，由此来看更加general的基数排序：如果给定某种基（二进制2/十进制10/小写字母26）下的待排序数据，基数排序会逐位处理。基数排序有两种方式：</p>
 <ol type="1">
-<li>LSD(Least Significant Digit) 首先按照最右边一位排序，依次处理左边的每一位： 356, 112, 904, 294, 209, 820, 394, 810； 820, 810, 112, 904, 294, 394, 356, 209； 904, 209, 810, 112, 820, 356, 294, 394； 112, 209, 294, 356, 394, 810, 820, 904。 由于对第二位排序不能改变第一位排序的结果，所以要求按位排序算法必须是<strong>稳定</strong>的。</li>
-<li>MSD(Most Significant Digit) 从左到右处理，MSD需要用到桶： [112], [294, 209], [356, 394], [820, 810], [904]； 对于每个桶采用类似的方法直到最后一位，以[294, 209]为例，接着处理第二位：[209], [294]。 最后收集每个桶中的元素即可。</li>
+<li>LSD(Least Significant Digit)<br />
+首先按照最右边一位排序，依次处理左边的每一位：<br />
+356, 112, 904, 294, 209, 820, 394, 810；<br />
+820, 810, 112, 904, 294, 394, 356, 209；<br />
+904, 209, 810, 112, 820, 356, 294, 394；<br />
+112, 209, 294, 356, 394, 810, 820, 904。<br />
+由于对第二位排序不能改变第一位排序的结果，所以要求按位排序算法必须是<strong>稳定</strong>的。</li>
+<li>MSD(Most Significant Digit)<br />
+从左到右处理，MSD需要用到桶：<br />
+[112], [294, 209], [356, 394], [820, 810], [904]；<br />
+对于每个桶采用类似的方法直到最后一位，以[294, 209]为例，接着处理第二位：[209], [294]。<br />
+最后收集每个桶中的元素即可。</li>
 </ol>
 <h2 id="bucket-sort">Bucket Sort</h2>
 <h2 id="reference">Reference</h2>
