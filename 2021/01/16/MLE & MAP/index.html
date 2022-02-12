@@ -274,10 +274,10 @@ P(\bar B|A)=1-P(B|A)=0.917
 <p>最后来看看先验分布<span class="math inline">\(\pi(\theta)\)</span>，即在获得实验观测值之前对未知参数分布的一个主观认识，这也是贝叶斯学派一直被攻击的一点，客观的统计学中竟然引入了主观的因素！比如对于材质均匀的硬币，在抛掷之前，我们脑海中就会认为出现正反面的概率各是0.5。</p>
 <p>但是很多时候先验分布是很难获得的，如果硬币材质不均匀，我们的先验又应当是什么分布呢？此时就引入了课程上讲的<strong>无信息先验</strong>，当我们对事件没有了解的时候，认为参数所有取值的概率都是相等的，在硬币实验中，我们认为<span class="math inline">\(\theta\)</span>是服从(0,1)的均匀分布。接着我们来做实验，看看后验分布会怎么变化（图源：Cameron Davidson-Pilon, Probabilistic Programming and Bayesian Methods for Hackers, 2016）：</p>
 <figure>
-<img src="https://img-blog.csdnimg.cn/img_convert/11e883581dd48f9c8442b8273371766d.png" alt="img" /><figcaption>img</figcaption>
+<img src="https://img-blog.csdnimg.cn/img_convert/11e883581dd48f9c8442b8273371766d.png" alt="" /><figcaption>img</figcaption>
 </figure>
 <figure>
-<img src="https://img-blog.csdnimg.cn/img_convert/3110af9ecffd601bb7acd89d86ad9784.png" alt="img" /><figcaption>img</figcaption>
+<img src="https://img-blog.csdnimg.cn/img_convert/3110af9ecffd601bb7acd89d86ad9784.png" alt="" /><figcaption>img</figcaption>
 </figure>
 <p>从图中可以看出：起初是均匀分布，连续抛掷了2次正面，此时认为该硬币正面向上的概率为1的可能性是最大的，但注意：正面向上的概率取0.6,0.4的可能也不是没有，不过这种可能性更小罢了。如果我们用极大似然去估计，就会得到该硬币正面向上的概率是1，正面向上的概率取0.6,0.4的可能为0，这显然与现实不符！接着抛了一次反面，正面向上的概率分布又进行了修正，不断通过观测值修正我们的后验，最终得到一个稳定的后验分布。</p>
 <p>均匀分布<span class="math inline">\(U(a,b)\)</span>作为先验看起来很好用，但是他本质上还是有倾向性的，即认为在区间(a,b)内是有取值的，在区间外是没有取值的可能的，更加合理的无信息先验可以选取一个大方差的高斯分布。</p>
