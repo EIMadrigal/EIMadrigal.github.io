@@ -270,7 +270,7 @@ The solution is Advertised Window (W): tell the sender how much space the receiv
 <p>But if we set the size to W, we cannot solve the problem thoroughly:<br />
 <img src="https://img-blog.csdnimg.cn/2021022516554078.png" alt="在这里插入图片描述" /><br />
 Sender's window contains a set of packets that have been transmitted but not yet acked. But some packets will get dropped at router and sender will never receive ACKs for these packets. The result is these packets will remain buffered in the window. It means that we cannot set the size to W, we only want to send at 50Mbps. It will take a RTT(200ms) to receive an ACK back for the first packet. We will send 50*200=1.25MB data and that's exactly the definition of the sender's window.</p>
-<p>The window size of the sender should &lt;= bandwidth-delay product (BDP). Thus we won't overload the network. This is Congestion Control. BDP is the "volume" of the link, the amount of data that can be "in flight" at any time.</p>
+<p>The window size of the sender should &lt;= bandwidth-delay product (BDP). Thus we won't overload the network. This is Congestion Control. BDP is the &quot;volume&quot; of the link, the amount of data that can be &quot;in flight&quot; at any time.</p>
 <h2 id="how-should-we-determine-the-bdp">How should we determine the BDP</h2>
 <p>Things are much harder to calculate the BDP:</p>
 <ul>
@@ -279,7 +279,7 @@ Sender's window contains a set of packets that have been transmitted but not yet
 <li>The router will stall the excess packets in the bottleneck queue instead of dropping, so you can overshoot the size a little bit</li>
 </ul>
 <p>There are many algorithms to solve the problem given the prior constraints. The old one is Reno, although no one uses it anymore, sigh!!</p>
-<p>Use Multiplicative Increase at startup to find the right sending rate quickly, this process is called "slow start";<br />
+<p>Use Multiplicative Increase at startup to find the right sending rate quickly, this process is called &quot;slow start&quot;;<br />
 Then uses Additive Increase/Multiplicative Decrease (AIMD) to adjust the sending rate over time.<br />
 <img src="https://img-blog.csdnimg.cn/20210225174103869.png" alt="在这里插入图片描述" /></p>
 <h2 id="reference">Reference</h2>

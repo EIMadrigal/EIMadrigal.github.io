@@ -262,11 +262,11 @@
 <li>进行T的自匹配，这一步关键在于得到Next数组，从T的第一位开始对自身匹配，在某一位置能匹配的最长长度即是当前位置Next值。<br />
 Next中的值是字符串的前缀集合与后缀集合的交集中最长元素的长度，将Next[0] = -1。<br />
 举例来说：T=ababaca，前缀为pre，后缀为post。<br />
-i = 1: 要处理"a", pre = "", post = "", Next[1] = 0;<br />
-i = 2: 要处理"ab", pre = a, post = b, Next[2] = 0;<br />
-i = 3: 要处理"aba", pre = {a, ab}, post = {ba, a}, Next[3] = 1;<br />
-i = 4: 要处理"abab", pre = {a, ab, aba}, post = {bab, ab, b}, Next[4] = 2;<br />
-i = 5: 要处理"ababa", pre = {a, ab, aba, abab}, post = {baba, aba, ba, a}, Next[5] = 3;<br />
+i = 1: 要处理&quot;a&quot;, pre = &quot;&quot;, post = &quot;&quot;, Next[1] = 0;<br />
+i = 2: 要处理&quot;ab&quot;, pre = a, post = b, Next[2] = 0;<br />
+i = 3: 要处理&quot;aba&quot;, pre = {a, ab}, post = {ba, a}, Next[3] = 1;<br />
+i = 4: 要处理&quot;abab&quot;, pre = {a, ab, aba}, post = {bab, ab, b}, Next[4] = 2;<br />
+i = 5: 要处理&quot;ababa&quot;, pre = {a, ab, aba, abab}, post = {baba, aba, ba, a}, Next[5] = 3;<br />
 ......<br />
 Next数组{-1，0，0，1，2，3，0，1}</li>
 <li>S与T的匹配，这步的匹配和朴素匹配没有太大差异，只是主串S的指针不用回溯，而将子串的指针j回溯到Next[j]位置。</li>
@@ -330,8 +330,8 @@ Next数组{-1，0，0，1，2，3，0，1}</li>
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2018/03/29/B%E6%A0%91%E7%BA%A2%E9%BB%91%E6%A0%91/" rel="prev" title="高级树">
-      <i class="fa fa-chevron-left"></i> 高级树
+    <a href="/2018/03/29/B%E6%A0%91%E7%BA%A2%E9%BB%91%E6%A0%91/" rel="prev" title="Advanced Data Structures">
+      <i class="fa fa-chevron-left"></i> Advanced Data Structures
     </a></div>
       <div class="post-nav-item">
     <a href="/2018/04/11/Process%20Synchronization-Example%201/" rel="next" title="Process Synchronization-Example 1">
