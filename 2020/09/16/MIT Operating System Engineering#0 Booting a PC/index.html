@@ -272,7 +272,7 @@ MIT上课用xv6来教学，lab是做一个完整的小型操作系统JOS。</em>
 <li>安装依赖库<br />
 官方说要装5个库，但其实libtool-bin好像找不到，不过不影响后续： <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt<span class="literal">-get</span> install libsdl1.<span class="number">2</span><span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libglib2.<span class="number">0</span><span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libz<span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libpixman<span class="literal">-1</span><span class="literal">-dev</span></span><br></pre></td></tr></table></figure></li>
 <li>配置qemu<br />
-切到qemu目录，<code>./configure --disable-kvm --disable-werror --target-list=&quot;i386-softmmu x86_64-softmmu&quot;</code><br />
+切到qemu目录，<code>./configure --disable-kvm --disable-werror --target-list="i386-softmmu x86_64-softmmu"</code><br />
 <code>[--prefix=PFX]</code>可选参数是选择安装路径，这里就默认在<code>/usr/local</code></li>
 <li>安装qemu：<code>sudo make &amp;&amp; sudo make install</code></li>
 <li>下载实验代码<br />
