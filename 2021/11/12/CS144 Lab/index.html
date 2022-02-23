@@ -27,7 +27,7 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="Introduction to Computer Networking">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211103183846716-1107297673.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/1f746b5f59f44ddd8686b9b2051a5058.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211104155702139-1679706369.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211104215913218-403717095.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211106090516675-391035638.png">
@@ -60,13 +60,13 @@
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108170639108-1941733275.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108170828819-1433823727.png">
 <meta property="article:published_time" content="2021-11-12T12:49:00.000Z">
-<meta property="article:modified_time" content="2022-02-20T03:08:26.577Z">
+<meta property="article:modified_time" content="2022-02-23T10:24:52.299Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Projects">
 <meta property="article:tag" content="System">
 <meta property="article:tag" content="Network">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211103183846716-1107297673.png">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/1f746b5f59f44ddd8686b9b2051a5058.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2021/11/12/CS144%20Lab/">
 
@@ -294,7 +294,7 @@
 <p>大致按照<a target="_blank" rel="noopener" href="https://stanford.edu/class/cs144/vm_howto/">官方文档</a>配置环境，windows环境可以用powershell，无需<a target="_blank" rel="noopener" href="https://putty.org/">Putty</a>。<br />
 开启虚拟机，通过ssh client建立TCP连接到远程主机的某端口：<code>ssh user@remote -p port</code>，<code>user</code>是在远程主机的用户名，<code>remote</code>是远程机器的地址（IP/域名），<code>port</code>是ssh server监听的端口，默认22（即登录请求会送进远程主机的22端口），上面通过-p参数改变了该端口。</p>
 <p>不过遇到了点问题：<br />
-<img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211103183846716-1107297673.png" alt="image" /><br />
+<img src="https://img-blog.csdnimg.cn/1f746b5f59f44ddd8686b9b2051a5058.png" /><br />
 奇怪！远程虚拟机明明安装了ssh服务!</p>
 <p>从主机去ping虚拟机超时，但是虚拟机可以ping通主机，参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/mengjie88/p/11803879.html">这个设置</a>成功ping通，后来发现国内的这些blog都是在胡说八道，真正的原因和解决方案在<a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/145997/trying-to-ssh-to-local-vm-ubuntu-with-putty">这里</a>，本质上是虚拟机的端口转发没设置好，设置好后VB会把连接localhost:2222的TCP请求转发到虚拟机的22号端口。</p>
 <p>关于IDE，开始用的VIM，后来想用vscode，Host上安装vscode以及remote-ssh插件，关于配置网上一大堆教程，自行学习吧，powershell以后就负责编译运行了。</p>
