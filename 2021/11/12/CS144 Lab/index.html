@@ -28,10 +28,10 @@
 <meta property="og:description" content="Introduction to Computer Networking">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/1f746b5f59f44ddd8686b9b2051a5058.png">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211104155702139-1679706369.png">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211104215913218-403717095.png">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211106090516675-391035638.png">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211106091008967-598610443.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/c5b428355f194832ad43f23b5f9be3a8.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/9022db790b2c4b4783dd6164e660433c.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/7ad26846802941568a09677bb5405564.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/6e6c27e9bfa342b1b08afc292ef7eb63.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211207143452338-2049325007.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211207210801604-1226780700.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211118103108010-1947303917.png">
@@ -60,7 +60,7 @@
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108170639108-1941733275.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108170828819-1433823727.png">
 <meta property="article:published_time" content="2021-11-12T12:49:00.000Z">
-<meta property="article:modified_time" content="2022-02-23T10:24:52.299Z">
+<meta property="article:modified_time" content="2022-02-23T14:46:38.343Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Projects">
 <meta property="article:tag" content="System">
@@ -301,16 +301,22 @@
 <h2 id="lab-0">Lab 0</h2>
 <h3 id="networking-by-hand">Networking by hand</h3>
 <p>这些小游戏都是为了翻译翻译：什么是可靠的双向字节流，网络通过这种抽象完成许多重要的交互，如上网冲浪、发邮件等。</p>
-<p>第一个事是要手动模拟浏览器的请求过程（注意手速，不然还没输完就408 Timeout了）： 1. <code>telnet cs144.keithw.org http</code>：<code>telnet</code>作为一种client程序，负责和服务器的某个服务建立连接。用telnet客户端程序在本机和服务器之间开一个可靠的字节流，并请求服务器的http服务（80端口），连接成功证明端口可用 2. 建立连接后就要通过HTTP协议请求内容：需要告诉服务器所请求URL的path和host：<code>GET /hello HTTP/1.1</code> <code>Host: cs144.keithw.org</code>，不过为啥需要host呢？难道服务器不知道自己的ip吗，好像是因为服务器可以同时运行多个网站/服务 3. <code>Connection: close</code>：表示希望服务器一旦完成响应，就关闭连接 4. 输入回车（空行）：表示HTTP请求头结束，接下来是请求数据（当然GET没有，POST有）</p>
+<p>第一个事是要手动模拟浏览器的请求过程（注意手速，不然还没输完就408 Timeout了）：</p>
+<ol type="1">
+<li><code>telnet cs144.keithw.org http</code>：<code>telnet</code>作为一种client程序，负责和服务器的某个服务建立连接。用telnet客户端程序在本机和服务器之间开一个可靠的字节流，并请求服务器的http服务（80端口），连接成功证明端口可用</li>
+<li>建立连接后就要通过HTTP协议请求内容：需要告诉服务器所请求URL的path和host：<code>GET /hello HTTP/1.1</code> <code>Host: cs144.keithw.org</code>，不过为啥需要host呢？难道服务器不知道自己的ip吗，好像是因为服务器可以同时运行多个网站/服务</li>
+<li><code>Connection: close</code>：表示希望服务器一旦完成响应，就关闭连接</li>
+<li>输入回车（空行）：表示HTTP请求头结束，接下来是请求数据（当然GET没有，POST有）</li>
+</ol>
 <p>其实这就是一个HTTP请求报文，效果：<br />
-<img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211104155702139-1679706369.png" alt="image" /><br />
+<img src="https://img-blog.csdnimg.cn/c5b428355f194832ad43f23b5f9be3a8.png" alt="在这里插入图片描述" /><br />
 作业就是瞎玩：<br />
-<img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211104215913218-403717095.png" alt="image" /></p>
+<img src="https://img-blog.csdnimg.cn/9022db790b2c4b4783dd6164e660433c.png" alt="在这里插入图片描述" /></p>
 <p>第二个事是学着发邮件，请求服务器的SMTP服务（主要用来发邮件），我试试和自己的邮箱互动下：<br />
-<img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211106090516675-391035638.png" alt="image" /><br />
+<img src="https://img-blog.csdnimg.cn/7ad26846802941568a09677bb5405564.png" alt="在这里插入图片描述" /><br />
 这里要注意：首先要开启IMAP/SMTP服务，还需要获取第三方客户端登录的授权码，登录时邮箱名称和授权码都需要Base64格式。</p>
 <p>文档里说From地址是可以伪造的，有点神奇，垃圾邮件可能挺喜欢干这事！但是我实际操作时是伪造不了的：<br />
-<img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211106091008967-598610443.png" alt="image" /><br />
+<img src="https://img-blog.csdnimg.cn/6e6c27e9bfa342b1b08afc292ef7eb63.png" alt="在这里插入图片描述" /><br />
 因为已经登录了本人账户，所以发件人必须一致，Stanford那个没有登录，也许是商业邮件系统一般都比较完善？</p>
 <p>第三个事是作为服务器去监听，主要使用所谓的瑞士军刀netcat：<br />
 <code>netcat -v -l -p 9090</code>：-v表示显示执行命令过程，-l表示开启监听，-p表示在指定端口监听<br />
