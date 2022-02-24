@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2021061716123725.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20210617164041605.png">
 <meta property="article:published_time" content="2021-06-17T08:51:00.000Z">
-<meta property="article:modified_time" content="2022-01-18T12:38:12.315Z">
+<meta property="article:modified_time" content="2022-02-24T02:10:19.369Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Machine Learning">
 <meta name="twitter:card" content="summary">
@@ -299,20 +299,74 @@
 <h2 id="implementation">Implementation</h2>
 <h2 id="properties">Properties</h2>
 <ol type="1">
-<li>extrapolate问题 众所周知随机森林回归是不具备推理能力的，那么XGBoost可以吗？ 答案是可以，因为梯度提升模型并不直接根据训练集的结果做预测，而是通过一系列树的加和得到，加和结果取决于每棵树的权重，权重则是由损失函数的一二阶梯度优化得来，并不依赖于训练集的上下限。</li>
-<li>缺失值问题 GBDT/GBRT自身不支持缺失值的自动填充，例如使用sklearn中的GradientBoostingRegressor在训练数据包含缺失值时将无法训练，人工填充可能会引入偏差，但是XGBoost却可以自动地处理缺失值（但并不是填充）。 根据陈天奇大佬的说法： &gt; Internally, XGBoost will automatically learn what is the best direction to go when a value is missing. Equivalently, this can be viewed as automatically "learn" what is the best imputation value for missing values based on reduction on training loss.</li>
+<li>extrapolate问题<br />
+众所周知随机森林回归是不具备推理能力的，那么XGBoost可以吗？<br />
+答案是可以，因为梯度提升模型并不直接根据训练集的结果做预测，而是通过一系列树的加和得到，加和结果取决于每棵树的权重，权重则是由损失函数的一二阶梯度优化得来，并不依赖于训练集的上下限。</li>
+<li>缺失值问题<br />
+GBDT/GBRT自身不支持缺失值的自动填充，例如使用sklearn中的GradientBoostingRegressor在训练数据包含缺失值时将无法训练，人工填充可能会引入偏差，但是XGBoost却可以自动地处理缺失值（但并不是填充）。<br />
+根据陈天奇大佬的说法： &gt; Internally, XGBoost will automatically learn what is the best direction to go when a value is missing. Equivalently, this can be viewed as automatically "learn" what is the best imputation value for missing values based on reduction on training loss.</li>
 </ol>
-<p>那么究竟是如何自动学习最佳的分裂方向呢？ 假设在结点A有50条训练样本，并且该结点只有一个可能的分割点：比如只有一个二元特征x，那么分割点就只有该特征取值为0或1，这样训练数据可以被分为3组： 1. x取值为B的20条样例 2. x取值为C的20条样例 3. x缺失的10条样例，叫做M组</p>
-<p>那么M组的样例会被分别赋到B和C，接着计算<span class="math inline">\(\{(B,M),C\}\)</span>和<span class="math inline">\(\{B,(C,M)\}\)</span>的得分及损失函数衰减，两者中选择损失函数衰减大的。 如果使用MSE作为损失函数，并且B的标签均值为5，C的标签均值为10，M的标签均值为0。 如果使用<span class="math inline">\(\{(B,M),C\}\)</span>：<span class="math inline">\(\frac{|M|}{|B| + |M|}\text{mean}(M) + \frac{|B|}{|M|+|B|}\text{mean}(B) = \frac{10}{30}0 + \frac{20}{30}5 = 3.\overline{3}\)</span> 如果使用<span class="math inline">\(\{B,(C,M)\}\)</span>：<span class="math inline">\(\frac{|M|}{|C| + |M|}\text{mean}(M) + \frac{|C|}{|M|+|C|}\text{mean}(C) = \frac{10}{30}0 + \frac{20}{30}10 = 6.\overline{3}\)</span> 最后计算两者的MSE与划分前MSE的差，选择使得MSE下降更快的作为分裂方向（也就是得分gain更大的方向）。</p>
+<p>那么究竟是如何自动学习最佳的分裂方向呢？<br />
+假设在结点A有50条训练样本，并且该结点只有一个可能的分割点：比如只有一个二元特征x，那么分割点就只有该特征取值为0或1，这样训练数据可以被分为3组： 1. x取值为B的20条样例 2. x取值为C的20条样例 3. x缺失的10条样例，叫做M组</p>
+<p>那么M组的样例会被分别赋到B和C，接着计算<span class="math inline">\(\{(B,M),C\}\)</span>和<span class="math inline">\(\{B,(C,M)\}\)</span>的得分及损失函数衰减，两者中选择损失函数衰减大的。<br />
+如果使用MSE作为损失函数，并且B的标签均值为5，C的标签均值为10，M的标签均值为0。<br />
+如果使用<span class="math inline">\(\{(B,M),C\}\)</span>：<span class="math inline">\(\frac{|M|}{|B| + |M|}\text{mean}(M) + \frac{|B|}{|M|+|B|}\text{mean}(B) = \frac{10}{30}0 + \frac{20}{30}5 = 3.\overline{3}\)</span><br />
+如果使用<span class="math inline">\(\{B,(C,M)\}\)</span>：<span class="math inline">\(\frac{|M|}{|C| + |M|}\text{mean}(M) + \frac{|C|}{|M|+|C|}\text{mean}(C) = \frac{10}{30}0 + \frac{20}{30}10 = 6.\overline{3}\)</span><br />
+最后计算两者的MSE与划分前MSE的差，选择使得MSE下降更快的作为分裂方向（也就是得分gain更大的方向）。</p>
 <p>在寻找最优特征分裂点（如年龄＜20还是年龄＜30）时，只访问该特征不含缺失值的训练样例，即如果年龄缺失，就不参与20和30的决策，这样计算复杂度也就降低了，尤其是对于稀疏数据。</p>
-<p>预测时的缺失值有２种情况： 1.　训练阶段已经见识过该缺失值了：按照训练时选定的方向往下走就行 2.　训练阶段该特征没有缺失：默认走向右子树。</p>
-<p>Ref里还有一个更加全面的例子，训练集有6个小孩，只有一个特征年龄（其中有2个样例年龄缺失），标签是身高，初始预测值为0.5，接下来每棵树都要拟合残差。 | Age | Height | Res | | ------------ | ------------ | ------------ | | 7 | 130 | －129.5 | | 9 | 148 | －147.5 | | 6 | 115 | －114.5 | | 15 | 164 | －163.5 | | ？ | 125 | －124.5 | | ？ | 140 | －139.5 |</p>
+<p>预测时的缺失值有２种情况： 1. 训练阶段已经见识过该缺失值了：按照训练时选定的方向往下走就行 2. 训练阶段该特征没有缺失：默认走向右子树。</p>
+<p>Ref里还有一个更加全面的例子，训练集有6个小孩，只有一个特征年龄（其中有2个样例年龄缺失），标签是身高，初始预测值为0.5，接下来每棵树都要拟合残差。</p>
+<table>
+<thead>
+<tr class="header">
+<th>Age</th>
+<th>Height</th>
+<th>Res</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>7</td>
+<td>130</td>
+<td>－129.5</td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td>148</td>
+<td>－147.5</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>115</td>
+<td>－114.5</td>
+</tr>
+<tr class="even">
+<td>15</td>
+<td>164</td>
+<td>－163.5</td>
+</tr>
+<tr class="odd">
+<td>？</td>
+<td>125</td>
+<td>－124.5</td>
+</tr>
+<tr class="even">
+<td>？</td>
+<td>140</td>
+<td>－139.5</td>
+</tr>
+</tbody>
+</table>
 <p>接着要根据年龄特征寻找最优的分裂点，将年龄排序并选择中点（<strong>注意：这里就不考虑缺失值样例了</strong>），因此候选分裂点有6.5，8，12，对于每个候选点，分别计算将缺失样例划到左子树和右子树的Quality/Similarity Score：</p>
 <p><span class="math display">\[
 Quality\ Score=\frac{(\sum residuals)^2}{\#residuals + \lambda}
 \]</span></p>
-<p>比如，对于分裂点6.5： 如果划到左子树：<span class="math inline">\(Gain＝划分后的Quality\ Score－划分前的Quality\ Score＝\frac{(-114.5-124.5-139.5)^2}{3} + \frac{(-129.5-147.5-163.5)^2}{3} - \frac{(-129.5-147.5-114.5-163.5-124.5-139.5)^2}{6}=640.7\)</span> 如果划到右子树：<span class="math inline">\(Gain＝划分后的Quality\ Score－划分前的Quality\ Score＝580.8\)</span></p>
-<p>接着对于8：1083；630.8 对于12：874.8；216 从中选择gain最大的（也就是使得损失函数最小的），分裂点选8，缺失值划到左子树。</p>
+<p>比如，对于分裂点6.5：<br />
+如果划到左子树：<span class="math inline">\(Gain＝划分后的Quality\ Score－划分前的Quality\ Score＝\frac{(-114.5-124.5-139.5)^2}{3} + \frac{(-129.5-147.5-163.5)^2}{3} - \frac{(-129.5-147.5-114.5-163.5-124.5-139.5)^2}{6}=640.7\)</span><br />
+如果划到右子树：<span class="math inline">\(Gain＝划分后的Quality\ Score－划分前的Quality\ Score＝580.8\)</span></p>
+<p>接着对于8：1083；630.8<br />
+对于12：874.8；216<br />
+从中选择gain最大的（也就是使得损失函数最小的），分裂点选8，缺失值划到左子树。</p>
 <h2 id="bug">Bug</h2>
 <p><a target="_blank" rel="noopener" href="https://www.lycecho.com/archives/2364">PYTHON XGBOOST 报错 KEYERROR: ‘BASE_SCORE’</a></p>
 <h2 id="references">References</h2>
