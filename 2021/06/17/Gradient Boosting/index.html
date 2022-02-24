@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2021061716123725.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20210617164041605.png">
 <meta property="article:published_time" content="2021-06-17T08:51:00.000Z">
-<meta property="article:modified_time" content="2022-02-24T02:14:08.266Z">
+<meta property="article:modified_time" content="2022-02-24T02:25:21.193Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Machine Learning">
 <meta name="twitter:card" content="summary">
@@ -304,8 +304,11 @@
 答案是可以，因为梯度提升模型并不直接根据训练集的结果做预测，而是通过一系列树的加和得到，加和结果取决于每棵树的权重，权重则是由损失函数的一二阶梯度优化得来，并不依赖于训练集的上下限。</li>
 <li>缺失值问题<br />
 GBDT/GBRT自身不支持缺失值的自动填充，例如使用sklearn中的GradientBoostingRegressor在训练数据包含缺失值时将无法训练，人工填充可能会引入偏差，但是XGBoost却可以自动地处理缺失值（但并不是填充）。<br />
-根据陈天奇大佬的说法： &gt; Internally, XGBoost will automatically learn what is the best direction to go when a value is missing. Equivalently, this can be viewed as automatically "learn" what is the best imputation value for missing values based on reduction on training loss.</li>
+根据陈天奇大佬的说法：</li>
 </ol>
+<blockquote>
+<p>Internally, XGBoost will automatically learn what is the best direction to go when a value is missing. Equivalently, this can be viewed as automatically "learn" what is the best imputation value for missing values based on reduction on training loss.</p>
+</blockquote>
 <p>那么究竟是如何自动学习最佳的分裂方向呢？<br />
 假设在结点A有50条训练样本，并且该结点只有一个可能的分割点：比如只有一个二元特征x，那么分割点就只有该特征取值为0或1，这样训练数据可以被分为3组： 1. x取值为B的20条样例 2. x取值为C的20条样例 3. x缺失的10条样例，叫做M组</p>
 <p>那么M组的样例会被分别赋到B和C，接着计算<span class="math inline">\(\{(B,M),C\}\)</span>和<span class="math inline">\(\{B,(C,M)\}\)</span>的得分及损失函数衰减，两者中选择损失函数衰减大的。<br />
