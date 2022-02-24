@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/7ad26846802941568a09677bb5405564.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/6e6c27e9bfa342b1b08afc292ef7eb63.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2ef1c7bd21424b53bfa630bb8272e476.png">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211207210801604-1226780700.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/c7beaa90618c47ea832478aa6935e4aa.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211118103108010-1947303917.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211211135443937-770319647.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211212162034900-680357364.png">
@@ -60,7 +60,7 @@
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108170639108-1941733275.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108170828819-1433823727.png">
 <meta property="article:published_time" content="2021-11-12T12:49:00.000Z">
-<meta property="article:modified_time" content="2022-02-24T14:59:48.117Z">
+<meta property="article:modified_time" content="2022-02-24T15:21:35.333Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Projects">
 <meta property="article:tag" content="System">
@@ -337,7 +337,7 @@
 <img src="https://img-blog.csdnimg.cn/2ef1c7bd21424b53bfa630bb8272e476.png" alt="" /><figcaption>在这里插入图片描述</figcaption>
 </figure>
 <h3 id="an-in-memory-reliable-byte-stream">An in-memory reliable byte stream</h3>
-<p>在单机上实现一个可靠的字节流（内存里当然是可靠的），writer可以结束字节流输入，reader读到EOF后就无法继续读。<br />
+<p>在单机上实现一个可靠的字节流（内存里当然是可靠的），即接收方收到的字节流和发送方发出的字节流是完全一致的，writer可以结束字节流输入，reader读到EOF后就无法继续读。<br />
 基本可以理解为一个容量为<code>capacity</code>的buffer，<code>capacity</code>用来进行流量控制，文档说了只会进行单线程操作，因此不用担心并发的读/写。<br />
 需要注意：流本身可以无限长，<code>capacity</code>存储的是已经写入但还未读取的字节，哪怕<code>capacity = 1</code>，只要writer每次写入一个字节，reader读走，这个流就可以无限长。</p>
 <p>开始想用<code>queue</code>，但是<code>queue</code>无法支持<code>peek_output</code>操作，那就用<code>deque</code>了。<br />
@@ -347,8 +347,8 @@
 <p>记得先<code>make format</code>，再<code>make</code>编译，最后<code>make check_lab0</code>自动化测试。</p>
 <h2 id="lab-1">Lab 1</h2>
 <p>接下来的4个lab要自行实现一个TCP，模块如下：<br />
-<img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211207210801604-1226780700.png" alt="image" /></p>
-<p>由于sender会将发送的字节流分割为若干segments，每段不超过1460B，封装为数据报交给网络传送，但这些segments可能会乱序、丢失、重复、交叉重叠、长度不一，但是不会出现inconsistent的段，因此Lab 1要实现一个流重组器，将收到的字节流中的segments拼接还原为其原本正确的顺序。</p>
+<img src="https://img-blog.csdnimg.cn/c7beaa90618c47ea832478aa6935e4aa.png" alt="在这里插入图片描述" /><br />
+由于sender会将发送的字节流分割为若干segments，每段不超过1460B，封装为数据报交给网络传送，但这些segments可能会乱序、丢失、重复、交叉重叠、长度不一，但是不会出现inconsistent的段，因此Lab 1要实现一个流重组器，将收到的字节流中的segments拼接还原为其原本正确的顺序。</p>
 <p><code>StreamReassembler</code>会用一个可靠字节流<code>ByteStream</code>作为输出：as soon as the reassembler knows the next byte of the stream, it will write it into the <code>ByteStream</code>. 接着应用层就可以从<code>ByteStream</code>读取有序的字节流。<code>StreamReassembler</code>和<code>ByteStream</code>的容量大小是一样的，不过<code>ByteStream</code>真正的size（绿色部分）是动态变化的。</p>
 <p><code>push_substring(const string &amp;data, const uint64_t index, const bool eof)</code>一旦超出<code>StreamReassembler</code>的容量，就只能丢弃该碎片（或者丢弃部分）；<br />
 <img src="https://img2020.cnblogs.com/blog/1260581/202111/1260581-20211118103108010-1947303917.png" alt="image" /><br />
