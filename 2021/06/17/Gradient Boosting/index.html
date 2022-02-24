@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2021061716123725.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20210617164041605.png">
 <meta property="article:published_time" content="2021-06-17T08:51:00.000Z">
-<meta property="article:modified_time" content="2022-02-24T02:25:21.193Z">
+<meta property="article:modified_time" content="2022-02-24T03:13:37.875Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Machine Learning">
 <meta name="twitter:card" content="summary">
@@ -310,7 +310,12 @@ GBDT/GBRT自身不支持缺失值的自动填充，例如使用sklearn中的Grad
 <p>Internally, XGBoost will automatically learn what is the best direction to go when a value is missing. Equivalently, this can be viewed as automatically "learn" what is the best imputation value for missing values based on reduction on training loss.</p>
 </blockquote>
 <p>那么究竟是如何自动学习最佳的分裂方向呢？<br />
-假设在结点A有50条训练样本，并且该结点只有一个可能的分割点：比如只有一个二元特征x，那么分割点就只有该特征取值为0或1，这样训练数据可以被分为3组： 1. x取值为B的20条样例 2. x取值为C的20条样例 3. x缺失的10条样例，叫做M组</p>
+假设在结点A有50条训练样本，并且该结点只有一个可能的分割点：比如只有一个二元特征x，那么分割点就只有该特征取值为0或1，这样训练数据可以被分为3组：</p>
+<ol type="1">
+<li>x取值为B的20条样例</li>
+<li>x取值为C的20条样例</li>
+<li>x缺失的10条样例，叫做M组</li>
+</ol>
 <p>那么M组的样例会被分别赋到B和C，接着计算<span class="math inline">\(\{(B,M),C\}\)</span>和<span class="math inline">\(\{B,(C,M)\}\)</span>的得分及损失函数衰减，两者中选择损失函数衰减大的。<br />
 如果使用MSE作为损失函数，并且B的标签均值为5，C的标签均值为10，M的标签均值为0。<br />
 如果使用<span class="math inline">\(\{(B,M),C\}\)</span>：<span class="math inline">\(\frac{|M|}{|B| + |M|}\text{mean}(M) + \frac{|B|}{|M|+|B|}\text{mean}(B) = \frac{10}{30}0 + \frac{20}{30}5 = 3.\overline{3}\)</span><br />
