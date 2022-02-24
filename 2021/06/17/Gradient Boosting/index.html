@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2021061716123725.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20210617164041605.png">
 <meta property="article:published_time" content="2021-06-17T08:51:00.000Z">
-<meta property="article:modified_time" content="2022-02-24T02:10:19.369Z">
+<meta property="article:modified_time" content="2022-02-24T02:14:08.266Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Machine Learning">
 <meta name="twitter:card" content="summary">
@@ -362,7 +362,10 @@ GBDT/GBRT自身不支持缺失值的自动填充，例如使用sklearn中的Grad
 Quality\ Score=\frac{(\sum residuals)^2}{\#residuals + \lambda}
 \]</span></p>
 <p>比如，对于分裂点6.5：<br />
-如果划到左子树：<span class="math inline">\(Gain＝划分后的Quality\ Score－划分前的Quality\ Score＝\frac{(-114.5-124.5-139.5)^2}{3} + \frac{(-129.5-147.5-163.5)^2}{3} - \frac{(-129.5-147.5-114.5-163.5-124.5-139.5)^2}{6}=640.7\)</span><br />
+如果划到左子树： <span class="math display">\[
+Gain＝划分后的Quality\ Score－划分前的Quality\ Score \\
+＝\frac{(-114.5-124.5-139.5)^2}{3} + \frac{(-129.5-147.5-163.5)^2}{3} - \frac{(-129.5-147.5-114.5-163.5-124.5-139.5)^2}{6}=640.7
+\]</span><br />
 如果划到右子树：<span class="math inline">\(Gain＝划分后的Quality\ Score－划分前的Quality\ Score＝580.8\)</span></p>
 <p>接着对于8：1083；630.8<br />
 对于12：874.8；216<br />
