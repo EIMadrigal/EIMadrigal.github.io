@@ -418,7 +418,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/01/%E7%95%99%E7%99%BD/">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2020/01/01/%E5%88%86%E5%B8%83%E5%BC%8F%E5%A4%A7%E6%95%B0%E6%8D%AEFAQ/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/favicon.png">
@@ -432,7 +432,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/01/01/%E7%95%99%E7%99%BD/" class="post-title-link" itemprop="url">大数据题</a>
+            <a href="/2020/01/01/%E5%88%86%E5%B8%83%E5%BC%8F%E5%A4%A7%E6%95%B0%E6%8D%AEFAQ/" class="post-title-link" itemprop="url">大数据题</a>
         </h2>
 
         <div class="post-meta">
@@ -458,7 +458,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="找众数">找众数</h2>
+          <h2 id="spark">Spark</h2>
+<h2 id="找众数">找众数</h2>
 <p>一个文件包含40亿个32位的无符号整数，使用内存限制1GB找到众数。</p>
 <p>32位无符号数范围是<span class="math inline">\(0\sim 2^{32}-1(4,294,967,295)\)</span></p>
 <p>傻白甜做法就是用一个Hashmap统计每个数的频率，key是4B，value是4B，一条记录8B，最差情况下40亿个数都不同，共需40亿*8B大约32GB。</p>

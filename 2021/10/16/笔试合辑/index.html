@@ -28,7 +28,7 @@
 <meta property="og:description" content="被虐血泪...">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-10-16T12:43:00.000Z">
-<meta property="article:modified_time" content="2022-03-07T06:57:29.649Z">
+<meta property="article:modified_time" content="2022-03-16T09:34:52.698Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="Online Judge">
@@ -280,6 +280,7 @@ dp(1,i)=1，也就是说每一门课里做对哪些题没有区别，1门课做�
 <p>int tmp; string A, B; while (T--) { A.clear(); B.clear(); for (int i = 0; i &lt; 6; ++i) { cin &gt;&gt; tmp; A += to_string(tmp); } for (int i = 0; i &lt; 6; ++i) { cin &gt;&gt; tmp; B += to_string(tmp); } int ans = 0; queue<string> q; q.push(A); unordered_set<string> vis; vis.insert(A); bool flag = false; while (!q.empty()) { int size = q.size(); while (size--) { string cur = q.front(); q.pop(); if (cur == B) { flag = true; break; } string back = backward(cur), forw = forward(cur), l = left(cur), r = right(cur); if (vis.find(back) != vis.end() &amp;&amp; vis.find(forw) != vis.end() &amp;&amp; vis.find(l) != vis.end() &amp;&amp; vis.find(r) != vis.end()) { ans = -1; flag = true; break; } if (vis.find(back) == vis.end()) { q.push(back); vis.insert(back); } if (vis.find(forw) == vis.end()) { q.push(forw); vis.insert(forw); } if (vis.find(l) == vis.end()) { q.push(l); vis.insert(l); } if (vis.find(r) == vis.end()) { q.push(r); vis.insert(r); } } if (flag) { break; } ++ans; } cout &lt;&lt; ans &lt;&lt; endl; }</p>
 <p>return 0; }</p></li>
 </ol>
+<p>4399笔试 二叉树最右层节点 无重复全排列 zigzag打印矩阵</p>
 
     </div>
 
