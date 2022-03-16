@@ -204,7 +204,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/03/11/%E4%BA%91/" class="post-title-link" itemprop="url">Untitled</a>
+            <a href="/2022/03/11/%E4%BA%91/" class="post-title-link" itemprop="url">云</a>
         </h2>
 
         <div class="post-meta">
@@ -216,7 +216,16 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2022-03-11 23:51:37" itemprop="dateCreated datePublished" datetime="2022-03-11T23:51:37+08:00">2022-03-11</time>
+              <time title="Created: 2022-03-11 10:12:00" itemprop="dateCreated datePublished" datetime="2022-03-11T10:12:00+08:00">2022-03-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
             </span>
 
           
@@ -230,80 +239,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="云存储">云存储</h2>
-<p>毫无疑问基本都是分布式存储，why? 1. 数据在单机硬盘存不下：手动解决：将数据分割为一个个小文件存到单机中，记录映射关系 2. 数据在单机处理（算）不了：内存有限：每个单机只处理一个小文件，最终合并结果 MapReduce</p>
-<p>第一个问题：数据（文件）应该存到哪台服务器？ 1. 控制服务器namenode：统一调度HDFS GFS 2. 自行计算：hash一致性问题</p>
-<p>第二个问题：多个控制服务谁是leader slave 分布式一致性协调选主 1. 基于现有的分布式协调系统 2. 基于Paxos Raft算法</p>
-<p>第三个问题：文件直接映射到物理主机，迁移时数据IO都集中在2台主机，效率低 1. 虚拟主机</p>
-<p>四：文件太大导致存不下 1. 分块存储</p>
-<p>五：数据可靠性（不丢）数据可用性（可访问） 某台服务器坏了咋办 数据丢了 无法访问 1. 冗余技术：纯副本或纠删码，纠删码恢复数据，避免浪费太多存储空间 2. 副本写入方式：直接复制、链式复制 3. 如何保证副本数据同步：一致性策略：强一致性模型、最终一致性模型 CAP权衡</p>
-<p>六：节省空间： 1. 压缩技术 2. 避免存储重复文件：重删技术</p>
-<p>七：集群彻底瘫痪 1. 备份技术：拷贝到其他存储系统而非当前，拷贝到当前是副本技术 全量备份、增量备份 2. 万一没有实时备份，集群挂了：容灾策略：异地同步技术</p>
-<p>八：网络IO分配：QoS实现</p>
-<p>九：版本控制：快照技术</p>
-<p>OpenStack Swift系统：Ring组件（存储对象与物理位置的映射关系）</p>
-<h2 id="云计算">云计算</h2>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2022/03/10/6824/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/03/10/6824/" class="post-title-link" itemprop="url">Untitled</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-03-10 14:59:53" itemprop="dateCreated datePublished" datetime="2022-03-10T14:59:53+08:00">2022-03-10</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="lab1-mapreduce">Lab1 MapReduce</h2>
-
+          <p>云存储与云计算</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/03/11/%E4%BA%91/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -898,6 +842,82 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/11/12/CS144%20Lab/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2021/11/01/%E9%87%8D%E6%96%B0%E6%80%9D%E8%80%83%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%8F%8A%E8%81%8C%E4%B8%9A%E6%96%B9%E5%90%91%E9%80%89%E6%8B%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/11/01/%E9%87%8D%E6%96%B0%E6%80%9D%E8%80%83%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%8F%8A%E8%81%8C%E4%B8%9A%E6%96%B9%E5%90%91%E9%80%89%E6%8B%A9/" class="post-title-link" itemprop="url">重新思考机器学习及职业方向选择</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-11-01 14:25:00" itemprop="dateCreated datePublished" datetime="2021-11-01T14:25:00+08:00">2021-11-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Life/" itemprop="url" rel="index"><span itemprop="name">Life</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>算法还是开发</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/01/%E9%87%8D%E6%96%B0%E6%80%9D%E8%80%83%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%8F%8A%E8%81%8C%E4%B8%9A%E6%96%B9%E5%90%91%E9%80%89%E6%8B%A9/">
                 Read more &raquo;
               </a>
             </div>
