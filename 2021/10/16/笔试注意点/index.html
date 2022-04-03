@@ -27,12 +27,14 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="踩坑血泪...">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/7cd3cde9f220426cbef7fcb4d6d5a38c.png">
 <meta property="article:published_time" content="2021-10-16T12:43:00.000Z">
-<meta property="article:modified_time" content="2022-03-30T08:34:42.000Z">
+<meta property="article:modified_time" content="2022-04-02T04:12:58.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="Online Judge">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/7cd3cde9f220426cbef7fcb4d6d5a38c.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2021/10/16/%E7%AC%94%E8%AF%95%E6%B3%A8%E6%84%8F%E7%82%B9/">
 
@@ -251,7 +253,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="输入输出">输入输出</h2>
+        <figure>
+<img src="https://img-blog.csdnimg.cn/7cd3cde9f220426cbef7fcb4d6d5a38c.png" alt="" /><figcaption>知识点</figcaption>
+</figure>
+<h2 id="输入输出">输入输出</h2>
 <ol type="1">
 <li><code>cin</code>读不到回车，<code>getline</code>可以读到回车。读取一行有空格字符串需要<code>getline</code></li>
 </ol>
@@ -261,7 +266,18 @@
 </ol>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">string ss = <span class="string">&quot;shit shabi&quot;</span>;</span><br><span class="line"><span class="function">istringstream <span class="title">in</span><span class="params">(ss)</span></span>;</span><br><span class="line">vector&lt;string&gt; v;</span><br><span class="line"></span><br><span class="line">string t;</span><br><span class="line"><span class="keyword">while</span> (in &gt;&gt; t) &#123;</span><br><span class="line">    v.<span class="built_in">push_back</span>(t);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol start="3" type="1">
-<li></li>
+<li>知道数组大小后，可以直接读到数组中</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">nums</span><span class="params">(n)</span></span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">    cin &gt;&gt; nums[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="stl总结">STL总结</h2>
+<ol type="1">
+<li><p><code>int stoi(const string&amp; str, size_t* idx=0, int base=10)</code>：<code>idx</code>指向第一个非数字字符</p></li>
+<li><p><code>isalpha(int ch)</code>头文件<code>cctype</code></p></li>
+<li><p>对<code>map</code>或<code>unordered_map</code>按值排序 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">unordered_map&lt;string, <span class="keyword">int</span>&gt; record&#123;&#123;<span class="string">&quot;a&quot;</span>, <span class="number">2</span>&#125;, &#123;<span class="string">&quot;b&quot;</span>, <span class="number">1</span>&#125;&#125;;</span><br><span class="line">    vector&lt;pair&lt;string, <span class="keyword">int</span>&gt;&gt; <span class="built_in">vec</span>(record.<span class="built_in">begin</span>(), record.<span class="built_in">end</span>());</span><br><span class="line">    std::<span class="built_in">sort</span>(vec.<span class="built_in">begin</span>(), vec.<span class="built_in">end</span>(),</span><br><span class="line">        [](<span class="keyword">const</span> pair&lt;string, <span class="keyword">int</span>&gt;&amp; a, <span class="keyword">const</span> pair&lt;string, <span class="keyword">int</span>&gt;&amp; b) &#123;<span class="keyword">return</span> a.second &lt; b.second;&#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = vec.<span class="built_in">begin</span>(); it != vec.<span class="built_in">end</span>(); ++it) &#123;</span><br><span class="line">        cout &lt;&lt; it-&gt;first &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p><code>unordered_map</code>自定义key http://www.hawkers.cc/2016/04/unorderedmap-pair-funtor.html <code>unordered_map&lt;pair&lt;int, int&gt;, int&gt;</code>会报错，需要提供一个hash函数 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">PairHash</span> &#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U&gt;</span></span><br><span class="line"><span class="function">    <span class="keyword">size_t</span> <span class="title">operator</span><span class="params">()</span> <span class="params">(<span class="keyword">const</span> pair&lt;T, U&gt; &amp;x)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> hash&lt;T&gt;()(x.first) ^ hash&lt;U&gt;()(x.second);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">unordered_map&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;, <span class="keyword">int</span>, PairHash&gt; m;</span><br></pre></td></tr></table></figure> 但是<code>map</code>就不需要</p></li>
+<li><p>16进制字符串转int stoi strtol sscanf</p></li>
+<li><p><code>sort(v.begin(), v.end(), [](int a, int b) &#123; return a &gt; b; &#125;)</code></p></li>
+<li><p><code>sort(v.rbegin(), v.rend())</code> vector追加 dest.insert(dest.end(), src.begin(), src.end())</p></li>
 </ol>
 
     </div>
@@ -389,7 +405,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="nav-number">1.</span> <span class="nav-text">输入输出</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="nav-number">1.</span> <span class="nav-text">输入输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#stl%E6%80%BB%E7%BB%93"><span class="nav-number">2.</span> <span class="nav-text">STL总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -405,7 +421,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">176</span>
+          <span class="site-state-item-count">177</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
