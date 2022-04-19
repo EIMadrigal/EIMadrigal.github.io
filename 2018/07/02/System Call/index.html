@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195514838-1179859005.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195533943-914673534.png">
 <meta property="article:published_time" content="2018-07-02T11:08:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T16:45:44.014Z">
+<meta property="article:modified_time" content="2022-04-15T13:19:35.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="OS">
 <meta name="twitter:card" content="summary">
@@ -291,6 +291,8 @@ Proc文件系统将进程信息、系统的硬件信息(包括CPU、内存状态
 </ul>
 <p>除了与进程有关的子目录，/proc还有一些内核信息的目录：<br />
 <img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195533943-914673534.png" alt="image" /></p>
+<h2 id="fork">fork()</h2>
+<p><code>fork()</code>系统调用用来创建一个子进程, 为了避免多余开销, 创建子进程时并不会立即将父进程的内存页面拷贝一份, Linux kernel将所有内存页面标记为只读并由父子进程共享, 只有当需要写入这些页面时才进行拷贝, 即所谓的Copy-on-Write.</p>
 <h2 id="实现">实现</h2>
 <p><a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/system_call">源代码、实现过程及结果</a></p>
 
@@ -418,7 +420,7 @@ Proc文件系统将进程信息、系统的硬件信息(包括CPU、内存状态
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9"><span class="nav-number">1.</span> <span class="nav-text">内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E6%83%B3"><span class="nav-number">2.</span> <span class="nav-text">思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">3.</span> <span class="nav-text">基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text">实现</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9"><span class="nav-number">1.</span> <span class="nav-text">内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E6%83%B3"><span class="nav-number">2.</span> <span class="nav-text">思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">3.</span> <span class="nav-text">基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fork"><span class="nav-number">4.</span> <span class="nav-text">fork()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.</span> <span class="nav-text">实现</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -434,7 +436,7 @@ Proc文件系统将进程信息、系统的硬件信息(包括CPU、内存状态
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">176</span>
+          <span class="site-state-item-count">177</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

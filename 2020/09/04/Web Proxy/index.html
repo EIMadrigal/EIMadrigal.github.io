@@ -41,7 +41,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200819221846500.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200730162654329.png">
 <meta property="article:published_time" content="2020-09-04T14:26:00.000Z">
-<meta property="article:modified_time" content="2022-01-27T12:24:23.756Z">
+<meta property="article:modified_time" content="2022-04-16T16:38:52.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Projects">
 <meta property="article:tag" content="Network">
@@ -295,27 +295,22 @@ Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="g
 请求端口：URL中的可选字段，如果用户输入时指定，代理应该连接指定端口，否则使用默认端口80。<br />
 监听端口：代理应该在该端口监听用户的连接请求，由命令行参数给出。可以是1024~65536之间的未被其他进程占用的任意值。</li>
 </ul>
-<h2 id="implementation">Implementation</h2>
-<ul>
-<li>Sequential Web Proxy<br />
-代理首先要接收浏览器HTTP请求，将浏览器的标准请求解析，转换为自己的请求发送。<br />
+<h2 id="sequential-web-proxy">Sequential Web Proxy</h2>
+<p>代理首先要接收浏览器HTTP请求，将浏览器的标准请求解析，转换为自己的请求发送。<br />
 这里的实现不难，只要模仿Tiny Server在一个死循环中监听来自浏览器的请求，接收之后在<code>void doit(int fd)</code>里完成解析请求行、请求头、将处理后的请求发送给server、接收server的响应并写回浏览器。<br />
 一些比较方便的函数：<br />
 <code>int accept(int listenfd, struct sockaddr *addr, int *addrlen)</code>：在<code>listenfd</code>等待连接请求，将client的socket信息和长度存入<code>addr</code>和<code>addrlen</code>；<br />
 <code>int Open_clientfd(char *hostname, char *port)</code>：Open connection to server at &lt;hostname, port&gt;, return a socket descriptor ready for reading and writing.<br />
-读写时可以使用提供的RIO包。</li>
-</ul>
+读写时可以使用提供的RIO包。</p>
 <p>这里需要注意的是请求的解析：思路是在proxy这里整合所有的请求行和请求头信息，对于所有浏览器发来的请求头的内容，原封不动保存到<code>reqHeader</code>里；对于默认的4个请求头，缺少几个，就按照规定内容增加进去。<br />
 还要注意：因为规定<code>Connection</code>和<code>Proxy-Connection</code>都有Connection这个单词，所以用<code>strstr</code>查找的时候：如果浏览器自带的请求头没有<code>Connection</code>但是有<code>Proxy-Connection</code>，这时程序就可能误判为有<code>Connection</code>，所以最好用函数<code>strncmp</code>或者<code>memcmp</code>。</p>
 <p>要写一个非常robust的URI解析器还是挺繁琐的，由于C没有正则表达式（也许可以用其他语言写好编译成库，然后C程序调用？），需要考虑的情况很多。<br />
 首先明确URI的格式：一般由4部分组成：protocol://hostname:[port]/path/[parameters][?query][#fragment]<br />
 协议目前只支持HTTP和HTTPS，其它一律不合法。<br />
 因为一旦和服务器建立连接后，protocol和hostname就没用了，只需要path以及后面的query和fragment，为了方便起见，将/也放入path字段，因为其表示根目录，但是对于query和fragment，没有放?和#，因为找到请求内容的位置后，一些具体的搜索/片段直接用关键字即可，与?和#没关系，只有/特殊一些。</p>
-<ul>
-<li>Multiple Concurrent Requests<br />
-对于Iterative Server，同时只能处理一个连接请求：<img src="https://img-blog.csdnimg.cn/20200821122702755.png" alt="在这里插入图片描述" /><br />
-当第二个客户试图去连接：调用<code>connect</code>会正常返回，但Server不会<code>Accept</code>该请求，会用TCP Listen Backlog技术将该请求入队；调用<code>rio_writen</code>也会正常返回，Server会把写入的数据存入缓存；调用<code>rio_readlineb</code>会阻塞，因为Server没有发送任何的response。</li>
-</ul>
+<h2 id="multiple-concurrent-requests">Multiple Concurrent Requests</h2>
+<p>对于Iterative Server，同时只能处理一个连接请求：<img src="https://img-blog.csdnimg.cn/20200821122702755.png" alt="在这里插入图片描述" /><br />
+当第二个客户试图去连接：调用<code>connect</code>会正常返回，但Server不会<code>Accept</code>该请求，会用TCP Listen Backlog技术将该请求入队；调用<code>rio_writen</code>也会正常返回，Server会把写入的数据存入缓存；调用<code>rio_readlineb</code>会阻塞，因为Server没有发送任何的response。</p>
 <p>解决方法就是并发处理，我们的代理要能同时处理多个请求，具体的方法很多：多进程、I/O多路复用、预线程化（类似生产者-消费者问题，先创建n个线程，相当于n个缓冲区），最直接的方式就是专门有一个线程负责监听，每收到一个连接请求，就开一个新线程去进行读写。这里要采用<strong>可分离</strong>的线程模型：当其终止时，内存资源会被系统自动回收。</p>
 <p>这部分本来很简单，但是写完后测试发现挂了： <img src="https://img-blog.csdnimg.cn/20200811181713826.png" alt="在这里插入图片描述" /><br />
 这很可能是NOP Server出了问题，这个Server是用Python写的，我去启动了一下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./nop-server.py <span class="number">15000</span></span><br></pre></td></tr></table></figure> 发现： <img src="https://img-blog.csdnimg.cn/20200811182155577.png" alt="在这里插入图片描述" /><br />
@@ -328,19 +323,15 @@ Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="g
 通过代理访问该网页时，页面只能加载一部分，收到59420B数据后，会<code>segmentation fault</code> ，最后发现 主要原因是<code>init_cache()</code>时空间分配写错了，但是修改后又出现了如下错误： <img src="https://img-blog.csdnimg.cn/20200824160910224.png" alt="在这里插入图片描述" /><br />
 是<code>memcpy</code>时候数组越界，处理buffer时候要千万小心。</p>
 <p>这里要改下<code>csapp.c</code>中的错误处理，里面都是直接<code>exit(0)</code>，但是作为一个服务器，不能随便终止，所以我们注释掉所有Error-handling functions里的<code>exit()</code>，如果在读数据或者什么时候遇到错误，<code>return</code>即可：<code>exit()</code>是系统调用级别的，结束整个进程；<code>return</code>是函数级别的，返回给调用者，当然在<code>main()</code>里<code>return</code>也就是<code>exit(0)</code>。</p>
-<ul>
-<li>Caching Web Objects 缓存可以说是整个项目的难点，需要考虑的问题比较多。为了模块化，将这一部分单独写作<code>cache.c/cache.h</code>，并修改<code>Makefile</code>。<br />
-主要问题有2个：<br />
-1、多线程同步：对于cache的访问应当是线程安全的，多个线程可以同时读，但只有一个线程可以写，这就是典型的读者-写者问题（又用到操作系统的知识了）；<br />
-2、替换策略：cache块的数量是有限的，没有空间时就需要换出换入。一般来讲都是采用LRU方式，一个单线程的严格的LRU Cache可以参考<a target="_blank" rel="noopener" href="https://leetcode.com/problems/lru-cache/">leetcode146题</a>。</li>
-</ul>
-<p>我们首先来解决问题一：<br />
-读者写者问题可以分为读优先、写优先2种：<br />
-读优先：来了一个读进程，除非有一个写进程正在访问，否则读者直接去读，可能导致写进程饥饿；<br />
-写优先：有进程读时，如果来了写进程，那么禁止后续读进程请求，现有进程读完后，写进程立即去写，可能导致读进程饥饿。<br />
-写优先实现起来稍微麻烦一些，所以这里采用读优先。这里就不自己实现读者写者了，使用读写锁<code>pthread_rwlock_t</code>，确保不会死锁。</p>
-<p>接着来解决问题二：<br />
-要实现多线程并发LRU Cache，由于C实现双向链表和Hashtable有点繁琐，所以项目要求<strong>近似LRU</strong>即可：我们可以为每一个cache块附加一个时间戳，每当该块被访问时，就更新时间戳。需要替换时，换出时间戳最小的块即可。这样带来的问题就是：读的时候也需要更新时间戳，但更新时间需要加写锁，如果其他线程占用写锁，那么读进程就无法更新时间戳，也就不是严格的LRU了。</p>
+<h2 id="caching-web-objects">Caching Web Objects</h2>
+<p>HTTP协议本身就实现了缓存机制, 目的是为了减小网络传输的开销, 只需要通过URI和请求端口就可以判断是否请求的同一对象. 缓存可以说是整个项目的难点, 需要考虑的问题比较多. 为了模块化，将这一部分单独写作<code>cache.c/cache.h</code>, 并修改<code>Makefile</code>.</p>
+<p>首先, 由于内存有限, 因此代理的缓存大小<code>MAX_CACHE_SIZE</code>也是有限的. 另外, 为了避免太大的web对象占据太多缓存空间, 减小其他对象的被缓存几率, 对web对象的大小<code>MAX_OBJECT_SIZE</code>也是有要求的.</p>
+<p>难点有2个： 1. 多线程同步：对于cache的访问应当是线程安全的，多个线程可以同时读，但只有一个线程可以写，这就是典型的读者-写者问题;<br />
+2. 替换策略：cache块的数量是有限的，没有空间时就需要换出换入。一般来讲都是采用LRU方式，一个单线程的严格的LRU Cache可以参考<a target="_blank" rel="noopener" href="https://leetcode.com/problems/lru-cache/">leetcode146题</a>。</p>
+<p>我们首先来解决问题一: 保证线程安全最简单的方法就是给<strong>整个cache</strong>加一个大大的排他锁(exclusive lock), 效率当然会低到无法接受. 一个直观的改进就是将cache分区, 细化锁的粒度, 用读写锁进行保护.<br />
+读者写者问题可以有读优先和写优先2种方案: 读优先指来了一个读进程, 除非有一个写进程正在访问, 否则读者直接去读, 可能导致写进程饥饿. 写优先指有进程读时, 如果来了写进程, 那么禁止后续读进程请求, 现有进程读完后, 写进程立即去写, 可能导致读进程饥饿.<br />
+写优先实现起来稍微麻烦一些, 并且一般读操作频率高于写操作, 所以这里采用读优先. 这里就不自己实现读者写者了, 使用读写锁<code>pthread_rwlock_t</code>, 确保不会死锁.</p>
+<p>接着来解决问题二: 要实现多线程并发LRU Cache，由于C实现双向链表和Hashtable有点繁琐，所以项目要求<strong>近似LRU</strong>即可：我们可以为每一个cache块附加一个时间戳，每当该块被访问时，就更新时间戳。需要替换时，换出时间戳最小的块即可。这样带来的问题就是：读的时候也需要更新时间戳，但更新时间需要加写锁，如果其他线程占用写锁，那么读进程就无法更新时间戳，也就不是严格的LRU了。</p>
 <p>Cache的实现既可以像malloc lab一样采用分级的思想，也可以直接均分所有空间，整体流程如下：</p>
 <ul>
 <li>初始化</li>
@@ -515,7 +506,7 @@ Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="g
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#intro"><span class="nav-number">1.</span> <span class="nav-text">Intro</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#background-knowledge"><span class="nav-number">2.</span> <span class="nav-text">Background Knowledge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#implementation"><span class="nav-number">3.</span> <span class="nav-text">Implementation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#test"><span class="nav-number">4.</span> <span class="nav-text">Test</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#codereference"><span class="nav-number">5.</span> <span class="nav-text">Code&amp;Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#todo"><span class="nav-number">6.</span> <span class="nav-text">TODO</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#intro"><span class="nav-number">1.</span> <span class="nav-text">Intro</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#background-knowledge"><span class="nav-number">2.</span> <span class="nav-text">Background Knowledge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sequential-web-proxy"><span class="nav-number">3.</span> <span class="nav-text">Sequential Web Proxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multiple-concurrent-requests"><span class="nav-number">4.</span> <span class="nav-text">Multiple Concurrent Requests</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#caching-web-objects"><span class="nav-number">5.</span> <span class="nav-text">Caching Web Objects</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#test"><span class="nav-number">6.</span> <span class="nav-text">Test</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#codereference"><span class="nav-number">7.</span> <span class="nav-text">Code&amp;Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#todo"><span class="nav-number">8.</span> <span class="nav-text">TODO</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -531,7 +522,7 @@ Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="g
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">176</span>
+          <span class="site-state-item-count">177</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

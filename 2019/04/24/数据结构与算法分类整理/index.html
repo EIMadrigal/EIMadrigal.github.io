@@ -28,7 +28,7 @@
 <meta property="og:description" content="知识点与分类练习">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-04-24T06:42:00.000Z">
-<meta property="article:modified_time" content="2022-04-12T14:20:44.000Z">
+<meta property="article:modified_time" content="2022-04-19T14:24:54.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="Interview">
@@ -254,7 +254,7 @@
         <h2 id="基础数据结构">基础数据结构</h2>
 <ul>
 <li>数组/栈/队列<br />
-155 232 225 622 641 1381 895</li>
+</li>
 <li>哈希表：C++的<code>unordered_set</code>与Python的<code>set()/&#123;a&#125;</code>等价的，<code>unordered_map</code>和<code>&#123;&#125;/dict()</code>等价。C++的<code>set</code>和<code>map</code>在Python貌似没有等价的。<br />
 原地哈希</li>
 <li>字符串</li>
@@ -293,13 +293,11 @@
 <p>自求多福，策略太多 - <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/oVtruRMuMbT4N4h8L8itqA">区间问题</a></p>
 <h2 id="树">树</h2>
 <ol type="1">
-<li>二叉树前序、中序、后序的递归、非递归遍历，层次遍历，Morris遍历<br />
-144 94 145 102 107 103 314</li>
+<li>二叉树前序/中序/后序的递归和非递归遍历, 层次遍历, Morris遍历<br />
+</li>
 <li>序列化和反序列化</li>
 <li>BST问题</li>
 </ol>
-<p>二叉树路径和：<br />
-112 注意root==nullptr &amp;&amp; target==0 应该返回false 113 还是从根到叶子 注意叶子节点不应该return 437 路径的起始结束任意 树上的前缀和 666 124 257 988 124 687 543</p>
 <h2 id="暴力递归和暴搜">暴力递归和暴搜</h2>
 <ul>
 <li>树型暴搜 <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1n64y1e7cr?p=13">1:20:00开始</a></li>
@@ -341,16 +339,18 @@
 <h2 id="技巧">技巧</h2>
 <ul>
 <li>矩阵处理 <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1n64y1e7cr?p=10">1:25:00开始</a><br />
-LC 54/59/48/<a target="_blank" rel="noopener" href="https://www.nowcoder.com/questionTerminal/d2efe600e73d47a2ba1533dc926cbb46">zigzag打印</a><br />
 </li>
 <li>前缀和：原始数组不变，频繁查询区间累加和</li>
 <li>差分数组：频繁对原始数组的区间进行增减</li>
 <li>对拍</li>
 <li>打表找规律<br />
-数学规律题，输入输出都很简单如<code>int</code><br />
-<a target="_blank" rel="noopener" href="https://www.nowcoder.com/questionTerminal/61cfbb2e62104bc8aa3da5d44d38a6ef">买苹果</a><br />
-<a target="_blank" rel="noopener" href="https://www.nowcoder.com/questionTerminal/ed0334a5e88f4662bb69374b308862d8">青草游戏</a></li>
+数学规律题，输入输出都很简单如<code>int</code></li>
 </ul>
+<h2 id="板子">板子</h2>
+<p><a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/LeetCode">我的LC系列题解</a> <a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/Recap/tree/main/Templates">我的模板</a><br />
+<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/98065331">模板1</a><br />
+<a target="_blank" rel="noopener" href="https://blog.csdn.net/fuxuemingzhu/article/details/101900729">模板2</a><br />
+<a target="_blank" rel="noopener" href="https://greyireland.gitbook.io/algorithm-pattern/">模板3</a></p>
 
     </div>
 
@@ -477,7 +477,7 @@ LC 54/59/48/<a target="_blank" rel="noopener" href="https://www.nowcoder.com/que
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">基础数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">高级数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E5%8F%8A%E8%A1%8D%E7%94%9F"><span class="nav-number">3.</span> <span class="nav-text">排序及衍生</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">4.</span> <span class="nav-text">字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8"><span class="nav-number">5.</span> <span class="nav-text">链表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%88%86"><span class="nav-number">6.</span> <span class="nav-text">二分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%AA%E5%BF%83"><span class="nav-number">7.</span> <span class="nav-text">贪心</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91"><span class="nav-number">8.</span> <span class="nav-text">树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%B4%E5%8A%9B%E9%80%92%E5%BD%92%E5%92%8C%E6%9A%B4%E6%90%9C"><span class="nav-number">9.</span> <span class="nav-text">暴力递归和暴搜</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E6%8C%87%E9%92%88"><span class="nav-number">10.</span> <span class="nav-text">双指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE"><span class="nav-number">11.</span> <span class="nav-text">图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="nav-number">12.</span> <span class="nav-text">动态规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%A6%E9%A2%98"><span class="nav-number">13.</span> <span class="nav-text">数学题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E6%95%B0%E6%8D%AE"><span class="nav-number">14.</span> <span class="nav-text">大数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E5%B7%A7"><span class="nav-number">15.</span> <span class="nav-text">技巧</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">基础数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">高级数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E5%8F%8A%E8%A1%8D%E7%94%9F"><span class="nav-number">3.</span> <span class="nav-text">排序及衍生</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">4.</span> <span class="nav-text">字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8"><span class="nav-number">5.</span> <span class="nav-text">链表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%88%86"><span class="nav-number">6.</span> <span class="nav-text">二分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%AA%E5%BF%83"><span class="nav-number">7.</span> <span class="nav-text">贪心</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91"><span class="nav-number">8.</span> <span class="nav-text">树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%B4%E5%8A%9B%E9%80%92%E5%BD%92%E5%92%8C%E6%9A%B4%E6%90%9C"><span class="nav-number">9.</span> <span class="nav-text">暴力递归和暴搜</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E6%8C%87%E9%92%88"><span class="nav-number">10.</span> <span class="nav-text">双指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE"><span class="nav-number">11.</span> <span class="nav-text">图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="nav-number">12.</span> <span class="nav-text">动态规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%A6%E9%A2%98"><span class="nav-number">13.</span> <span class="nav-text">数学题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E6%95%B0%E6%8D%AE"><span class="nav-number">14.</span> <span class="nav-text">大数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E5%B7%A7"><span class="nav-number">15.</span> <span class="nav-text">技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%BF%E5%AD%90"><span class="nav-number">16.</span> <span class="nav-text">板子</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -493,7 +493,7 @@ LC 54/59/48/<a target="_blank" rel="noopener" href="https://www.nowcoder.com/que
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">176</span>
+          <span class="site-state-item-count">177</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
