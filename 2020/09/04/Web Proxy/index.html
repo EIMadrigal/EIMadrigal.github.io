@@ -41,7 +41,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200819221846500.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200730162654329.png">
 <meta property="article:published_time" content="2020-09-04T14:26:00.000Z">
-<meta property="article:modified_time" content="2022-04-16T16:38:52.000Z">
+<meta property="article:modified_time" content="2022-04-25T15:58:57.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Projects">
 <meta property="article:tag" content="Network">
@@ -265,10 +265,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="intro">Intro</h2>
+        <h2 id="introduction">Introduction</h2>
 <p>Web Proxy是浏览器和服务器的中间人：浏览器访问网页时，将请求发给代理，由代理将该请求发给服务器；服务器返回结果时，先发送给代理，由代理发给浏览器。之所以这么做，是因为可以在Proxy这做一些事情：</p>
 <ul>
-<li>防火墙：<del>有些不能直接访问的网站可以通过代理去访问</del> ；</li>
+<li>防火墙: 比如伟大的GFW, 访问国外服务器必须先被GFW的代理审查一波</li>
 <li>匿名器：代理可以隐藏浏览器的信息，使其对服务器匿名；</li>
 <li>缓存：暂存服务器返回结果，加快访问速度。</li>
 </ul>
@@ -326,8 +326,12 @@ Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="g
 <h2 id="caching-web-objects">Caching Web Objects</h2>
 <p>HTTP协议本身就实现了缓存机制, 目的是为了减小网络传输的开销, 只需要通过URI和请求端口就可以判断是否请求的同一对象. 缓存可以说是整个项目的难点, 需要考虑的问题比较多. 为了模块化，将这一部分单独写作<code>cache.c/cache.h</code>, 并修改<code>Makefile</code>.</p>
 <p>首先, 由于内存有限, 因此代理的缓存大小<code>MAX_CACHE_SIZE</code>也是有限的. 另外, 为了避免太大的web对象占据太多缓存空间, 减小其他对象的被缓存几率, 对web对象的大小<code>MAX_OBJECT_SIZE</code>也是有要求的.</p>
-<p>难点有2个： 1. 多线程同步：对于cache的访问应当是线程安全的，多个线程可以同时读，但只有一个线程可以写，这就是典型的读者-写者问题;<br />
-2. 替换策略：cache块的数量是有限的，没有空间时就需要换出换入。一般来讲都是采用LRU方式，一个单线程的严格的LRU Cache可以参考<a target="_blank" rel="noopener" href="https://leetcode.com/problems/lru-cache/">leetcode146题</a>。</p>
+<p>难点有2个：</p>
+<ol type="1">
+<li>多线程同步：对于cache的访问应当是线程安全的，多个线程可以同时读，但只有一个线程可以写，这就是典型的读者-写者问题;<br />
+</li>
+<li>替换策略：cache块的数量是有限的，没有空间时就需要换出换入。一般来讲都是采用LRU方式，一个单线程的严格的LRU Cache可以参考<a target="_blank" rel="noopener" href="https://leetcode.com/problems/lru-cache/">leetcode146题</a>。</li>
+</ol>
 <p>我们首先来解决问题一: 保证线程安全最简单的方法就是给<strong>整个cache</strong>加一个大大的排他锁(exclusive lock), 效率当然会低到无法接受. 一个直观的改进就是将cache分区, 细化锁的粒度, 用读写锁进行保护.<br />
 读者写者问题可以有读优先和写优先2种方案: 读优先指来了一个读进程, 除非有一个写进程正在访问, 否则读者直接去读, 可能导致写进程饥饿. 写优先指有进程读时, 如果来了写进程, 那么禁止后续读进程请求, 现有进程读完后, 写进程立即去写, 可能导致读进程饥饿.<br />
 写优先实现起来稍微麻烦一些, 并且一般读操作频率高于写操作, 所以这里采用读优先. 这里就不自己实现读者写者了, 使用读写锁<code>pthread_rwlock_t</code>, 确保不会死锁.</p>
@@ -370,7 +374,7 @@ Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="g
 说明基本功能是OK的！！ - 实际浏览器测试<br />
 满分之后，万里长征走了一半吧，因为要在实际浏览器测试，不断增强程序的<strong>鲁棒性</strong>。 测试之前，先禁用浏览器自带的cache，清空之前的缓存。 测下内存泄漏：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">valgrind --leak-check=full --show-leak-kinds=all ./proxy 8080</span><br></pre></td></tr></table></figure>
-<h2 id="codereference">Code&amp;Reference</h2>
+<h2 id="code-reference">Code &amp; Reference</h2>
 <p><a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/15-213/tree/master/Web%20Proxy">code here</a><br />
 <a target="_blank" rel="noopener" href="http://csapp.cs.cmu.edu/3e/labs.html">reference here</a></p>
 <h2 id="todo">TODO</h2>
@@ -506,7 +510,7 @@ Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="g
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#intro"><span class="nav-number">1.</span> <span class="nav-text">Intro</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#background-knowledge"><span class="nav-number">2.</span> <span class="nav-text">Background Knowledge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sequential-web-proxy"><span class="nav-number">3.</span> <span class="nav-text">Sequential Web Proxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multiple-concurrent-requests"><span class="nav-number">4.</span> <span class="nav-text">Multiple Concurrent Requests</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#caching-web-objects"><span class="nav-number">5.</span> <span class="nav-text">Caching Web Objects</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#test"><span class="nav-number">6.</span> <span class="nav-text">Test</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#codereference"><span class="nav-number">7.</span> <span class="nav-text">Code&amp;Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#todo"><span class="nav-number">8.</span> <span class="nav-text">TODO</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#background-knowledge"><span class="nav-number">2.</span> <span class="nav-text">Background Knowledge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sequential-web-proxy"><span class="nav-number">3.</span> <span class="nav-text">Sequential Web Proxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multiple-concurrent-requests"><span class="nav-number">4.</span> <span class="nav-text">Multiple Concurrent Requests</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#caching-web-objects"><span class="nav-number">5.</span> <span class="nav-text">Caching Web Objects</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#test"><span class="nav-number">6.</span> <span class="nav-text">Test</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#code-reference"><span class="nav-number">7.</span> <span class="nav-text">Code &amp; Reference</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#todo"><span class="nav-number">8.</span> <span class="nav-text">TODO</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
