@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200229202936650.png">
 <meta property="article:published_time" content="2019-03-04T12:37:32.000Z">
-<meta property="article:modified_time" content="2022-04-03T02:40:08.161Z">
+<meta property="article:modified_time" content="2022-04-27T13:12:33.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Language">
 <meta property="article:tag" content="Interview">
@@ -324,7 +324,11 @@
 <li>隐藏作用：多文件编译时，定义的全局变量和函数都是整个工程可见的，只要使用时加上<code>extern</code>关键字即可。如果加上<code>static</code>关键字，那么该变量或函数就变为<strong>仅当前文件</strong>可见，这样我们可以在不同文件中定义同名的变量或函数而不用担心冲突。</li>
 <li>全局生存期：<code>static</code>变量存储在静态数据区，默认值为0，<strong>只被初始化一次</strong>，即使作为局部变量，生存期也为整个程序，但作用域与普通变量相同，退出函数后即使变量存在，但不能使用。</li>
 </ul>
-<p>在C语言中https://stackoverflow.com/questions/572547/what-does-static-mean-in-c</p>
+<p>在C语言中主要有<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/572547/what-does-static-mean-in-c">2种用途</a>:</p>
+<ul>
+<li>函数内的<code>static</code>变量在函数结束后仍然保持其值;</li>
+<li><code>static</code>全局变量/函数只能在其定义的文件中调用, 可以用来进行访问控制和封装.</li>
+</ul>
 <h2 id="const">const</h2>
 <ul>
 <li>定义const对象：一旦创建其值不能改变，故const对象必须初始化。</li>
