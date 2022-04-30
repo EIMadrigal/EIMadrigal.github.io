@@ -266,6 +266,89 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/03/04/C++%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/03/04/C++%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="post-title-link" itemprop="url">C++多线程编程</a>
+        </h2>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-03-04 20:37:32" itemprop="dateCreated datePublished" datetime="2019-03-04T20:37:32+08:00">2019-03-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="生产者消费者">生产者消费者</h2>
+<p>本质上是通过引入缓冲区来平衡生产速度和消费速度，包括单生产者-单消费者，单生产者-多消费者，多生产者-单消费者和多生产者-多消费者。</p>
+<p><a href="">实现在这里</a></p>
+<p>有几个需要注意的地方： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">    cv.<span class="built_in">wait</span>(lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+使用<code>while</code>而不是<code>if</code>，因为<code>wait</code>从阻塞到返回并不一定是由<code>notify_one()</code>造成的，还可能由于其他原因导致，即伪唤醒，这样就会导致后续执行出错。</p>
+<p>由于单独使用<code>mutex</code>可能导致死锁，因此选择使用<code>unique_lock</code>管理互斥锁。之所以不能用<code>lock_guard</code>，因为<code>lock_guard</code>只能是在构造时自动调用<code>lock()</code>上锁，析构时自动释放锁，即所谓的RAII(资源分配即初始化)，没有<code>lock()</code>和<code>unlock()</code>接口供程序员使用。</p>
+<h2 id="多线程打印">多线程打印</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;deque&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;condition_variable&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line">mutex mtx;</span><br><span class="line">condition_variable cv;</span><br><span class="line"><span class="keyword">int</span> flag = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i) &#123;</span><br><span class="line">        <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lk</span><span class="params">(mtx)</span></span>;</span><br><span class="line">        cv.<span class="built_in">wait</span>(lk, [&amp;]() &#123; <span class="keyword">return</span> num == flag; &#125;);</span><br><span class="line">        std::cout &lt;&lt; <span class="built_in"><span class="keyword">char</span></span>(<span class="string">&#x27;A&#x27;</span> + num);</span><br><span class="line">        flag = (flag + <span class="number">1</span>) % <span class="number">3</span>;</span><br><span class="line">        cv.<span class="built_in">notify_all</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">std::thread <span class="title">t1</span><span class="params">(print, <span class="number">0</span>)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">t2</span><span class="params">(print, <span class="number">1</span>)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">t3</span><span class="params">(print, <span class="number">2</span>)</span></span>;</span><br><span class="line">    </span><br><span class="line">    t1.<span class="built_in">join</span>();</span><br><span class="line">    t2.<span class="built_in">join</span>();</span><br><span class="line">    t3.<span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;\n&quot;</span> &lt;&lt; <span class="string">&quot;main thread&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ref">Ref</h2>
+<p><a target="_blank" rel="noopener" href="https://andrew128.github.io/ProducerConsumer/">The Producer
+Consumer Problem in C++</a><br />
+<a
+target="_blank" rel="noopener" href="https://gist.github.com/ictlyh/f8473ad0cb1008c6b32c41f3dea98ef5">producer-consumer</a><br />
+<a
+target="_blank" rel="noopener" href="https://immortalqx.github.io/2022/02/08/cpp-notes-6/">生产者消费者模型</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/03/04/C%20&%20C++%20FAQ/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -324,85 +407,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2019/03/04/C++%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/03/04/C++%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="post-title-link" itemprop="url">C++多线程编程</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-03-04 20:37:32" itemprop="dateCreated datePublished" datetime="2019-03-04T20:37:32+08:00">2019-03-04</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="生产者消费者">生产者消费者</h2>
-<p>本质上是通过引入缓冲区来平衡生产速度和消费速度，包括单生产者-单消费者，单生产者-多消费者，多生产者-单消费者和多生产者-多消费者。</p>
-<p><a href="">实现在这里</a></p>
-<p>有几个需要注意的地方： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">    cv.<span class="built_in">wait</span>(lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 使用<code>while</code>而不是<code>if</code>，因为<code>wait</code>从阻塞到返回并不一定是由<code>notify_one()</code>造成的，还可能由于其他原因导致，即伪唤醒，这样就会导致后续执行出错。</p>
-<p>由于单独使用<code>mutex</code>可能导致死锁，因此选择使用<code>unique_lock</code>管理互斥锁。之所以不能用<code>lock_guard</code>，因为<code>lock_guard</code>只能是在构造时自动调用<code>lock()</code>上锁，析构时自动释放锁，即所谓的RAII(资源分配即初始化)，没有<code>lock()</code>和<code>unlock()</code>接口供程序员使用。</p>
-<h2 id="多线程打印">多线程打印</h2>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;deque&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;condition_variable&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line">mutex mtx;</span><br><span class="line">condition_variable cv;</span><br><span class="line"><span class="keyword">int</span> flag = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i) &#123;</span><br><span class="line">        <span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lk</span><span class="params">(mtx)</span></span>;</span><br><span class="line">        cv.<span class="built_in">wait</span>(lk, [&amp;]() &#123; <span class="keyword">return</span> num == flag; &#125;);</span><br><span class="line">        std::cout &lt;&lt; <span class="built_in"><span class="keyword">char</span></span>(<span class="string">&#x27;A&#x27;</span> + num);</span><br><span class="line">        flag = (flag + <span class="number">1</span>) % <span class="number">3</span>;</span><br><span class="line">        cv.<span class="built_in">notify_all</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">std::thread <span class="title">t1</span><span class="params">(print, <span class="number">0</span>)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">t2</span><span class="params">(print, <span class="number">1</span>)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">t3</span><span class="params">(print, <span class="number">2</span>)</span></span>;</span><br><span class="line">    </span><br><span class="line">    t1.<span class="built_in">join</span>();</span><br><span class="line">    t2.<span class="built_in">join</span>();</span><br><span class="line">    t3.<span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;\n&quot;</span> &lt;&lt; <span class="string">&quot;main thread&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="ref">Ref</h2>
-<p><a target="_blank" rel="noopener" href="https://andrew128.github.io/ProducerConsumer/">The Producer Consumer Problem in C++</a><br />
-<a target="_blank" rel="noopener" href="https://gist.github.com/ictlyh/f8473ad0cb1008c6b32c41f3dea98ef5">producer-consumer</a><br />
-<a target="_blank" rel="noopener" href="https://immortalqx.github.io/2022/02/08/cpp-notes-6/">生产者消费者模型</a></p>
-
       
     </div>
 

@@ -28,7 +28,7 @@
 <meta property="og:description" content="MIT 18.06">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-06-01T10:43:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T15:25:10.053Z">
+<meta property="article:modified_time" content="2022-01-30T15:25:10.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Linear Algebra">
 <meta name="twitter:card" content="summary">
@@ -251,16 +251,37 @@
 
       
         <h2 id="线性变换">线性变换</h2>
-<p>顾名思义，所谓线性变换即某种变换满足线性性质： <span class="math display">\[
+<p>顾名思义，所谓线性变换即某种变换满足线性性质： <span
+class="math display">\[
 \begin{cases}
 T(v+w)=T(v)+T(w)&amp; \text{}\\
 T(cv)=cT(v)&amp; \text{}\\
 \end{cases}
-\]</span> 投影变换、旋转变换满足线性，这种映射可以通过左乘矩阵完成。<br />
-如果要知道对整个空间的线性变换，只需要知道对基的变换结果即可，因为任意向量都可表示为基的线性组合：<span class="math inline">\(v=c_1v_1+c_2v_2+...+c_nv_n\)</span>，<span class="math inline">\((c_1,c_2,...,c_n)\)</span>是该向量在这组基下的<strong>坐标</strong>，那么<span class="math inline">\(T(v)=c_1T(v_1)+...+c_nT(v_n)\)</span>。</p>
+\]</span>
+投影变换、旋转变换满足线性，这种映射可以通过左乘矩阵完成。<br />
+如果要知道对整个空间的线性变换，只需要知道对基的变换结果即可，因为任意向量都可表示为基的线性组合：<span
+class="math inline">\(v=c_1v_1+c_2v_2+...+c_nv_n\)</span>，<span
+class="math inline">\((c_1,c_2,...,c_n)\)</span>是该向量在这组基下的<strong>坐标</strong>，那么<span
+class="math inline">\(T(v)=c_1T(v_1)+...+c_nT(v_n)\)</span>。</p>
 <p>线性变换可以用矩阵表示，不同基下对应的矩阵是不同的，如果要求该矩阵：<br />
-假设输入基是<span class="math inline">\(v_1,...v_n\)</span>，输出空间的基是<span class="math inline">\(w_1,...w_m\)</span>，<strong><span class="math inline">\(A\)</span>的第一列就是<span class="math inline">\(T(v_1)\)</span>在<span class="math inline">\(w\)</span>下的坐标</strong>，因为输入<span class="math inline">\(v_1\)</span>，其在<span class="math inline">\(v\)</span>下的坐标就是<span class="math inline">\(\begin{bmatrix}  1\\  0\\  ...\\  0  \end{bmatrix}\)</span>，<span class="math inline">\(A\)</span>乘以该坐标就是取<span class="math inline">\(A\)</span>的第一列，同理可得其他列。<br />
-容易验证<span class="math inline">\(T=\frac{d}{dx}\)</span>也是线性变换，输入基如果选择<span class="math inline">\(1,x,x^2\)</span>，输入是<span class="math inline">\(c_1+c_2x+c_3x^2\)</span>，那么输出是<span class="math inline">\(c_2+2c_3x\)</span>，输出基是<span class="math inline">\(1,x\)</span>，那么用矩阵表示就是： <span class="math display">\[
+假设输入基是<span
+class="math inline">\(v_1,...v_n\)</span>，输出空间的基是<span
+class="math inline">\(w_1,...w_m\)</span>，<strong><span
+class="math inline">\(A\)</span>的第一列就是<span
+class="math inline">\(T(v_1)\)</span>在<span
+class="math inline">\(w\)</span>下的坐标</strong>，因为输入<span
+class="math inline">\(v_1\)</span>，其在<span
+class="math inline">\(v\)</span>下的坐标就是<span
+class="math inline">\(\begin{bmatrix}  1\\  0\\  ...\\  0  \end{bmatrix}\)</span>，<span
+class="math inline">\(A\)</span>乘以该坐标就是取<span
+class="math inline">\(A\)</span>的第一列，同理可得其他列。<br />
+容易验证<span
+class="math inline">\(T=\frac{d}{dx}\)</span>也是线性变换，输入基如果选择<span
+class="math inline">\(1,x,x^2\)</span>，输入是<span
+class="math inline">\(c_1+c_2x+c_3x^2\)</span>，那么输出是<span
+class="math inline">\(c_2+2c_3x\)</span>，输出基是<span
+class="math inline">\(1,x\)</span>，那么用矩阵表示就是： <span
+class="math display">\[
 A\begin{bmatrix}
    c_1\\
    c_2\\
@@ -269,10 +290,15 @@ A\begin{bmatrix}
    c_2\\
    2c_3\\
   \end{bmatrix}
-\]</span> 当然可以用上面的方法求矩阵，这里比较简单<span class="math inline">\(A=\begin{bmatrix}  0 &amp; 1 &amp; 0\\  0 &amp; 0 &amp; 2\\  \end{bmatrix}\)</span>。</p>
+\]</span> 当然可以用上面的方法求矩阵，这里比较简单<span
+class="math inline">\(A=\begin{bmatrix}  0 &amp; 1 &amp; 0\\  0 &amp; 0
+&amp; 2\\  \end{bmatrix}\)</span>。</p>
 <h2 id="基变换">基变换</h2>
 <p>选择合适的基，可以对图像进行压缩：<br />
-对于原始信号<span class="math inline">\(x\)</span>，可以通过基变换得到另一组基下的坐标<span class="math inline">\(c\)</span>，这一步是无损的，这些系数里可能含有大量的0，通过去掉这些项可以压缩大小，这一步是有损的，即<span class="math inline">\(\hat x=\Sigma \hat c_iv_i\)</span>。<br />
+对于原始信号<span
+class="math inline">\(x\)</span>，可以通过基变换得到另一组基下的坐标<span
+class="math inline">\(c\)</span>，这一步是无损的，这些系数里可能含有大量的0，通过去掉这些项可以压缩大小，这一步是有损的，即<span
+class="math inline">\(\hat x=\Sigma \hat c_iv_i\)</span>。<br />
 目前比较好的有Fourier基和小波基，都是将原始图片分割为若干小块处理。<br />
 8<em>8Fourier基： <span class="math display">\[
 \begin{bmatrix}
@@ -302,14 +328,37 @@ p=\begin{bmatrix}
    ...\\
    c_8\\
   \end{bmatrix}=Wc
-\]</span> 所以在新的基下的坐标是<span class="math inline">\(c=W^{-1}p\)</span>。<br />
-就性能而言：我们需要<span class="math inline">\(W^{-1}\)</span>可以快速求得，这一点<span class="math inline">\(W^{-1}=W^T\)</span>；另外还要求只需要少量基向量就可以逼近原始信号。</p>
+\]</span> 所以在新的基下的坐标是<span
+class="math inline">\(c=W^{-1}p\)</span>。<br />
+就性能而言：我们需要<span
+class="math inline">\(W^{-1}\)</span>可以快速求得，这一点<span
+class="math inline">\(W^{-1}=W^T\)</span>；另外还要求只需要少量基向量就可以逼近原始信号。</p>
 <h2 id="左右逆伪逆">左右逆/伪逆</h2>
-<p>对于满秩的情况<span class="math inline">\(r=m=n\)</span>，左逆和右逆都存在，即<span class="math inline">\(AA^{-1}=I=A^{-1}A\)</span>；<br />
-对于列满秩<span class="math inline">\(r=n&lt;m\)</span>，比如<span class="math inline">\(\begin{bmatrix}  1 &amp; 2\\  1 &amp; 3\\  2 &amp; 4\\  \end{bmatrix}\)</span>，<span class="math inline">\(A_{left}^{-1}=(A^TA)^{-1}A^T\)</span>；<br />
-对于行满秩<span class="math inline">\(r=m&lt;n\)</span>，<span class="math inline">\(A_{right}^{-1}=A^T(AA^T)^{-1}\)</span>；<br />
-对于不满秩的情况<span class="math inline">\(r&lt;m,r&lt;n\)</span>，这样<strong>不论<span class="math inline">\(A^TA\)</span>还是<span class="math inline">\(AA^T\)</span>都是奇异的</strong>，所以不可能有左逆或者右逆。这种情况在统计学上多次出现，就提出了伪逆的概念，记作<span class="math inline">\(A^+\)</span>。<br />
-找伪逆可以通过SVD，<span class="math inline">\(A=U\Sigma V^T\)</span>，这里我们的特征值是不完整的，即<span class="math inline">\(\Sigma_{mn}=\begin{bmatrix}  \sigma_1 &amp; ... &amp; 0&amp;0 \\  ... &amp; ... &amp; ...&amp;0\\  0 &amp; ... &amp; \sigma_r &amp;0\\  ...\\  0 &amp; ... &amp; 0&amp;0 \\  \end{bmatrix}\)</span>，那么<span class="math inline">\(\Sigma_{nm}^+=\begin{bmatrix}  1/\sigma_1 &amp; ... &amp; 0&amp;0 \\  ... &amp; ... &amp; ...&amp;0\\  0 &amp; ... &amp; 1/\sigma_r &amp;0\\  ...\\  0 &amp; ... &amp; 0&amp;0 \\  \end{bmatrix}\)</span>，这样<span class="math inline">\(A^+=V\Sigma^+U^T\)</span>。</p>
+<p>对于满秩的情况<span
+class="math inline">\(r=m=n\)</span>，左逆和右逆都存在，即<span
+class="math inline">\(AA^{-1}=I=A^{-1}A\)</span>；<br />
+对于列满秩<span class="math inline">\(r=n&lt;m\)</span>，比如<span
+class="math inline">\(\begin{bmatrix}  1 &amp; 2\\  1 &amp; 3\\  2 &amp;
+4\\  \end{bmatrix}\)</span>，<span
+class="math inline">\(A_{left}^{-1}=(A^TA)^{-1}A^T\)</span>；<br />
+对于行满秩<span class="math inline">\(r=m&lt;n\)</span>，<span
+class="math inline">\(A_{right}^{-1}=A^T(AA^T)^{-1}\)</span>；<br />
+对于不满秩的情况<span
+class="math inline">\(r&lt;m,r&lt;n\)</span>，这样<strong>不论<span
+class="math inline">\(A^TA\)</span>还是<span
+class="math inline">\(AA^T\)</span>都是奇异的</strong>，所以不可能有左逆或者右逆。这种情况在统计学上多次出现，就提出了伪逆的概念，记作<span
+class="math inline">\(A^+\)</span>。<br />
+找伪逆可以通过SVD，<span class="math inline">\(A=U\Sigma
+V^T\)</span>，这里我们的特征值是不完整的，即<span
+class="math inline">\(\Sigma_{mn}=\begin{bmatrix}  \sigma_1 &amp; ...
+&amp; 0&amp;0 \\  ... &amp; ... &amp; ...&amp;0\\  0 &amp; ... &amp;
+\sigma_r &amp;0\\  ...\\  0 &amp; ... &amp; 0&amp;0
+\\  \end{bmatrix}\)</span>，那么<span
+class="math inline">\(\Sigma_{nm}^+=\begin{bmatrix}  1/\sigma_1 &amp;
+... &amp; 0&amp;0 \\  ... &amp; ... &amp; ...&amp;0\\  0 &amp; ... &amp;
+1/\sigma_r &amp;0\\  ...\\  0 &amp; ... &amp; 0&amp;0
+\\  \end{bmatrix}\)</span>，这样<span
+class="math inline">\(A^+=V\Sigma^+U^T\)</span>。</p>
 <h2 id="作业">作业</h2>
 
     </div>
