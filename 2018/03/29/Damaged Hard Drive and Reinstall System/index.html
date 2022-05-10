@@ -28,7 +28,7 @@
 <meta property="og:description" content="硬盘损坏及重装系统">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2018-03-29T05:09:32.000Z">
-<meta property="article:modified_time" content="2022-01-30T09:19:46.000Z">
+<meta property="article:modified_time" content="2022-01-30T09:19:46.965Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="System">
 <meta name="twitter:card" content="summary">
@@ -265,8 +265,7 @@
 <p>第一次重装系统，折腾了很久，试错的细节记不清了，只说一下大体的步骤：</p>
 <ol type="1">
 <li>插上新硬盘之后，先用WinPE启动，用DiskGenius将硬盘的MBR格式转为GPT格式，此时不用分区；</li>
-<li>插上U盘启动盘，重启电脑，按F2进入BIOS，切记关掉Boot
-Security，否则系统无法安装；</li>
+<li>插上U盘启动盘，重启电脑，按F2进入BIOS，切记关掉Boot Security，否则系统无法安装；</li>
 <li>如果出现安装程序无法创建新的系统分区，也无法定位现有系统分区的提示，建议如下处理：<br />
 </li>
 </ol>
@@ -275,8 +274,7 @@ Security，否则系统无法安装；</li>
 </li>
 <li>输入diskpart启动磁盘程序，接着输入list disk查看电脑的硬盘；<br />
 </li>
-<li>按提示输入select disk
-0，选中编号为0的磁盘，输入clean，删除硬盘所有数据；<br />
+<li>按提示输入select disk 0，选中编号为0的磁盘，输入clean，删除硬盘所有数据；<br />
 </li>
 <li>输入convert GPT，转换格式，然后list partition，查看分区情况；<br />
 </li>
@@ -287,8 +285,7 @@ Security，否则系统无法安装；</li>
 <li>输入<code>create partition primary size*50000</code>，创建主分区，大小50GB。(建议这个系统盘分的大一点，否则以后清理很麻烦)；<br />
 </li>
 <li>输入list partition，查看分区情况。<br />
-P.s.
-遇到这种情况，网上有的说可以重新插拔u盘启动盘，刷新；或者利用Windows自带的引导文件安装，具体的可以自己试试~</li>
+P.s. 遇到这种情况，网上有的说可以重新插拔u盘启动盘，刷新；或者利用Windows自带的引导文件安装，具体的可以自己试试~</li>
 </ol>
 <ol start="4" type="1">
 <li>下来一路Next，装系统即可。</li>
@@ -296,18 +293,15 @@ P.s.
 <h2 id="再次遭殃">再次遭殃</h2>
 <p>距离上次硬盘事件已经过去了一年半，当我开心地吃着零食追着剧，想把页面切到咪咕下几首歌时，电脑瞬间卡死。<br />
 后来反思了一下：一是我习惯长期不关电脑，只是进入睡眠状态，可能资源本身已经占用很多了；二是打开的页面太多，而且切换太过频繁。<br />
-强制关机后就Game
-Over了~（遇到这种情况，一定不要继续操作，等着吧！等到听不到硬盘的转动声再按电源键！！！）<br />
+强制关机后就Game Over了~（遇到这种情况，一定不要继续操作，等着吧！等到听不到硬盘的转动声再按电源键！！！）<br />
 BIOS偶尔还能检测到HDD，经过专业人士检测：硬盘损坏，600RMB修复1T，好像比上次便宜了一些~<br />
 一般机械硬盘保修期都是2年，所以就免费换了块新的~<br />
 建议有条件的直接上固态吧，条件差点的可以固态装系统、机械存文件，没条件的就凑合用吧。。。<br />
 这次数据损失不大，吃了一堑还是有点用的，不过备份频率得改为一周一次了。<br />
-重装系统可以去老毛桃做个启动盘，把Windows的ISO镜像拷到U盘根目录，开机进入Win
-PE系统后，里面有个一键装机的软件~<br />
+重装系统可以去老毛桃做个启动盘，把Windows的ISO镜像拷到U盘根目录，开机进入Win PE系统后，里面有个一键装机的软件~<br />
 不过不知道是不是由于机型的原因，那个软件我的本用不了（垃圾Acer）：<br />
 所以就利用UltraISO把ISO镜像写入到U盘，插上之后开机，就会进入Windows的安装引导程序，分区也会在其中的一步引导你去做。<br />
-不同机型可能稍有差异，具体步骤可以参考<a
-target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43175701/article/details/84349445">笔记本换硬盘装系统完整教程</a>。</p>
+不同机型可能稍有差异，具体步骤可以参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43175701/article/details/84349445">笔记本换硬盘装系统完整教程</a>。</p>
 
     </div>
 

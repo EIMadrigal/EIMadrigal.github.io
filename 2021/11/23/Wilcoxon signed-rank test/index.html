@@ -28,7 +28,7 @@
 <meta property="og:description" content="Wilcoxon符号秩检验">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-11-23T06:33:00.000Z">
-<meta property="article:modified_time" content="2022-01-23T12:53:56.000Z">
+<meta property="article:modified_time" content="2022-01-23T12:53:56.955Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Probability &amp; Statistics">
 <meta name="twitter:card" content="summary">
@@ -252,28 +252,11 @@
       
         <h2 id="motivation">Motivation</h2>
 <p>Wilcoxon符号秩检验是一种非参数检验方法（总体没有高斯分布），t检验貌似要数据服从高斯分布。</p>
-<p>具体是这么操作的： 假如有两组数据<span
-class="math inline">\(X\)</span>和<span
-class="math inline">\(Y\)</span>需要检验对比：<span
-class="math inline">\((X_i,Y_i)\)</span>首先被转为差值<span
-class="math inline">\(X_i-Y_i\)</span>，记为<span
-class="math inline">\(Z_i\)</span>，假设<span
-class="math inline">\(Z_i\neq 0\)</span>且绝对值均不等： 1. 计算<span
-class="math inline">\(|Z_i|\)</span> 2. 将<span
-class="math inline">\(|Z_i|\)</span>排序得排序后的索引<span
-class="math inline">\(R_i\)</span> 3. 检验统计量<span
-class="math inline">\(T=\sum sgn(Z_i)R_i\)</span> 4. 通过对比<span
-class="math inline">\(T\)</span>和原假设下的分布求出p值</p>
-<p>如果存在<span class="math inline">\(Z_i=0\)</span>，有几种处理方法：
-1. <code>zero_method="wilcox"</code>：忽略所有等于0的数据 2.
-<code>zero_method="pratt"</code>：排序时考虑为0的项，排完后扔掉这些0项的秩
-3. <code>zero_method="zsplit"</code>：</p>
+<p>具体是这么操作的： 假如有两组数据<span class="math inline">\(X\)</span>和<span class="math inline">\(Y\)</span>需要检验对比：<span class="math inline">\((X_i,Y_i)\)</span>首先被转为差值<span class="math inline">\(X_i-Y_i\)</span>，记为<span class="math inline">\(Z_i\)</span>，假设<span class="math inline">\(Z_i\neq 0\)</span>且绝对值均不等： 1. 计算<span class="math inline">\(|Z_i|\)</span> 2. 将<span class="math inline">\(|Z_i|\)</span>排序得排序后的索引<span class="math inline">\(R_i\)</span> 3. 检验统计量<span class="math inline">\(T=\sum sgn(Z_i)R_i\)</span> 4. 通过对比<span class="math inline">\(T\)</span>和原假设下的分布求出p值</p>
+<p>如果存在<span class="math inline">\(Z_i=0\)</span>，有几种处理方法： 1. <code>zero_method="wilcox"</code>：忽略所有等于0的数据 2. <code>zero_method="pratt"</code>：排序时考虑为0的项，排完后扔掉这些0项的秩 3. <code>zero_method="zsplit"</code>：</p>
 <h2 id="refs">Refs</h2>
-<p><a
-target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test">Wilcoxon
-signed-rank test</a><br />
-<a
-target="_blank" rel="noopener" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.wilcoxon.html">scipy.stats.wilcoxon</a></p>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Wilcoxon_signed-rank_test">Wilcoxon signed-rank test</a><br />
+<a target="_blank" rel="noopener" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.wilcoxon.html">scipy.stats.wilcoxon</a></p>
 
     </div>
 

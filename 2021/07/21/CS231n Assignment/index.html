@@ -27,12 +27,15 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="Convolutional Neural Networks for Visual Recognition">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202109/1260581-20210912161403754-1113281186.png">
+<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202109/1260581-20210912162656860-43278840.png">
 <meta property="article:published_time" content="2021-07-21T05:29:00.000Z">
-<meta property="article:modified_time" content="2022-01-23T13:21:45.000Z">
+<meta property="article:modified_time" content="2022-01-23T13:21:45.615Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Machine Learning">
 <meta property="article:tag" content="Projects">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img2020.cnblogs.com/blog/1260581/202109/1260581-20210912161403754-1113281186.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2021/07/21/CS231n%20Assignment/">
 
@@ -251,240 +254,60 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>先吹一波Google
-Colab，所有操作都可在云上进行，还能白嫖🐕家的GPU；再吹一下Stanford的骨架代码，真的是干净整洁优美，堪称典范。
-<a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/CS231n">My Code</a> ## kNN
-最幼稚的机器学习算法。</p>
+        <p>先吹一波Google Colab，所有操作都可在云上进行，还能白嫖🐕家的GPU；再吹一下Stanford的骨架代码，真的是干净整洁优美，堪称典范。 <a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/CS231n">My Code</a> ## kNN 最幼稚的机器学习算法。</p>
 <ol type="1">
-<li>计算测试集和训练集的距离 训练集<code>X_train</code>的shape为<span
-class="math inline">\((N,
-D)\)</span>，<code>y_train</code>的shape为<span
-class="math inline">\((N,)\)</span>，<code>y[i]</code>取值范围<span
-class="math inline">\([0,C-1]\)</span>
-测试集<code>X_test</code>的shape为<span class="math inline">\((M,
-D)\)</span>，最终的distance matrix的shape为<span
-class="math inline">\((M,N)\)</span>
-声明：不能使用类似于<code>np.linalg.norm()</code>这种东西作弊。
-首先来看看2重循环：第一重遍历测试集，第二重遍历训练集，当然如果你愿意，还可以用第三重遍历dimension去累加距离；
-再来看看只遍历测试集的单层循环：对于每个测试样例<code>X[i]</code>，减去<code>X_train</code>，通过广播机制得到一个<span
-class="math inline">\((N,
-D)\)</span>的差矩阵，做element-wise的平方，按列相加得到<span
-class="math inline">\((N,)\)</span>，表示测试样例<code>X[i]</code>与每个训练样例的距离，作为距离矩阵的第<span
-class="math inline">\(i\)</span>行；
-最后来看看full-vectorized的版本，数学推导见<a
-target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/146076139">NumPy之计算两个矩阵的成对平方欧氏距离</a>，吃饱没事干的同学可以自己推推，我数学太差就溜了。</li>
-<li>根据距离矩阵预测测试集的标签
-对于每个测试样例<code>X[i]</code>，选k个距离最小的训练样例，将其label（从<code>y_train</code>获得）存入<code>cloest_y</code>中，投票决定最终的预测标签。
-先用<code>idx=np.argsort(dists[i])[:k]</code>取出前k个训练样例的index，再用<code>y_train[idx]</code>得到对应的k个label，最后用<code>np.argmax(np.bincount(cloest_y))</code>得到最终的预测label。</li>
+<li>计算测试集和训练集的距离 训练集<code>X_train</code>的shape为<span class="math inline">\((N, D)\)</span>，<code>y_train</code>的shape为<span class="math inline">\((N,)\)</span>，<code>y[i]</code>取值范围<span class="math inline">\([0,C-1]\)</span> 测试集<code>X_test</code>的shape为<span class="math inline">\((M, D)\)</span>，最终的distance matrix的shape为<span class="math inline">\((M,N)\)</span> 声明：不能使用类似于<code>np.linalg.norm()</code>这种东西作弊。 首先来看看2重循环：第一重遍历测试集，第二重遍历训练集，当然如果你愿意，还可以用第三重遍历dimension去累加距离； 再来看看只遍历测试集的单层循环：对于每个测试样例<code>X[i]</code>，减去<code>X_train</code>，通过广播机制得到一个<span class="math inline">\((N, D)\)</span>的差矩阵，做element-wise的平方，按列相加得到<span class="math inline">\((N,)\)</span>，表示测试样例<code>X[i]</code>与每个训练样例的距离，作为距离矩阵的第<span class="math inline">\(i\)</span>行； 最后来看看full-vectorized的版本，数学推导见<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/146076139">NumPy之计算两个矩阵的成对平方欧氏距离</a>，吃饱没事干的同学可以自己推推，我数学太差就溜了。</li>
+<li>根据距离矩阵预测测试集的标签 对于每个测试样例<code>X[i]</code>，选k个距离最小的训练样例，将其label（从<code>y_train</code>获得）存入<code>cloest_y</code>中，投票决定最终的预测标签。 先用<code>idx=np.argsort(dists[i])[:k]</code>取出前k个训练样例的index，再用<code>y_train[idx]</code>得到对应的k个label，最后用<code>np.argmax(np.bincount(cloest_y))</code>得到最终的预测label。</li>
 </ol>
-<p>kNN效果当然比较拉垮了，在CIFAR-10的子集上分类正确率大概在27%左右。比较令我震惊的是三个计算距离函数耗费的时间，2重循环57s，单层循环41s，fully-vectorized只有0.57s，竟然<strong>降低了100倍</strong>，写出高效的代码对于程序性能有着至关重要的影响，反思下自己写出的junk
-code，不由得留下了伤心的泪水...</p>
-<p>最后就是用cross-validation确定超参k的取值，就略过了哈。 ## Linear
-Multiclass SVM
-首先要为多分类SVM写一个损失函数，老规矩还是先写一个naive版本<code>svm_loss_naive(W, X, y, reg)</code>：
-权重矩阵W：<span class="math inline">\((D, C)\)</span>
-minibatch输入X：<span class="math inline">\((N, D)\)</span> 标签y：<span
-class="math inline">\((N,)\)</span>，<code>y[i]=c</code>表示<code>X[i]</code>的标签是c，<span
-class="math inline">\(0 \leq c&lt;c\)</span> <span
-class="math display">\[l=&quot;\frac{1}{N}&quot; \]</span>l_i="_{j" +=""
--="" )="" ),s_j="f(x_i," ="" ="" _i="" <em>k<em>l="" </em>{j=""
-f(x_i;="" loss为：="" loss和正则项两部分，对于第<span
-class="math inline">\(i\)</span>个训练样本，data=""
-loss是这么定义的：="" machine="" multiclass="" s_j="" s</em>{y_i}=""
-support="" vector="" w)_j="" w)_j<span
-class="math display">\[=&quot;&quot; w)_{y_i}=&quot;&quot;
-w_{k,l}^2\]</span>="" y_i}="" 什么意思呢？<span
-class="math inline">\(s\)</span>是第<span
-class="math inline">\(i\)</span>个训练样本的得分向量<span
-class="math inline">\((c,)\)</span>，<span
-class="math inline">\(s_{y_i}\)</span>表示正确标签的得分，<span
-class="math inline">\(s_j\)</span>表示其他类的得分。不妨看看什么时候损失为0呢？稍作变形即有：当<span
-class="math inline">\(s_{y_i}-s_j=&quot;&quot;
-看着有点复杂哦！主要有data=&quot;&quot;
-返回浮点数`loss`和解析梯度`dw`=&quot;&quot;&gt;\Delta\)</span>时，第<span
-class="math inline">\(j\)</span>类损失为0，说人话就是只有当正确类的得分减去其他类的得分大于某个间隔<span
-class="math inline">\(\Delta\)</span>时才不会累积损失，否则就累加损失（必然为正数），这就是大名鼎鼎的<strong>Hinge
-Loss</strong>。</p>
-<p>如果<span class="math inline">\(f\)</span>用的是linear score
-function，进一步有： <span class="math display">\[L_i = \sum_{j\neq y_i}
-\max(0, w_j^T x_i - w_{y_i}^T x_i + \Delta)\]</span> 其中，<span
-class="math inline">\(w_j\)</span>表示W的第<span
-class="math inline">\(j\)</span>列。
-至此，naive版本的<code>loss</code>实现就不必废话了。接着来求<code>dW</code>，老规矩，还是先研究单个样本。</p>
-<p>如果你的数学还行，下面的梯度推导可以略过： <span
-class="math display">\[L_i = max(0,w_1^T x_i - w_{y_i}^T x_i +
-\Delta)+max(0,w_2^T x_i - w_{y_i}^T x_i + \Delta)+...+max(0,w_C^T x_i -
-w_{y_i}^T x_i + \Delta)\]</span> 共有<span
-class="math inline">\(C-1\)</span>项，因为<span
-class="math inline">\(j=y_i\)</span>那项不算。另，只有在<span
-class="math inline">\(w_j^T x_i - w_{y_i}^T x_i +
-\Delta&gt;0\)</span>时第<span
-class="math inline">\(j\)</span>项的梯度不为0。</p>
+<p>kNN效果当然比较拉垮了，在CIFAR-10的子集上分类正确率大概在27%左右。比较令我震惊的是三个计算距离函数耗费的时间，2重循环57s，单层循环41s，fully-vectorized只有0.57s，竟然<strong>降低了100倍</strong>，写出高效的代码对于程序性能有着至关重要的影响，反思下自己写出的junk code，不由得留下了伤心的泪水...</p>
+<p>最后就是用cross-validation确定超参k的取值，就略过了哈。 ## Linear Multiclass SVM 首先要为多分类SVM写一个损失函数，老规矩还是先写一个naive版本<code>svm_loss_naive(W, X, y, reg)</code>： 权重矩阵W：<span class="math inline">\((D, C)\)</span> minibatch输入X：<span class="math inline">\((N, D)\)</span> 标签y：<span class="math inline">\((N,)\)</span>，<code>y[i]=c</code>表示<code>X[i]</code>的标签是c，<span class="math inline">\(0 \leq c&lt;c\)</span> <span class="math display">\[l=&quot;\frac{1}{N}&quot; \]</span>l_i="_{j" +="" -="" )="" ),s_j="f(x_i," ="" ="" _i="" <em>k<em>l="" </em>{j="" f(x_i;="" loss为：="" loss和正则项两部分，对于第<span class="math inline">\(i\)</span>个训练样本，data="" loss是这么定义的：="" machine="" multiclass="" s_j="" s</em>{y_i}="" support="" vector="" w)_j="" w)_j<span class="math display">\[=&quot;&quot; w)_{y_i}=&quot;&quot; w_{k,l}^2\]</span>="" y_i}="" 什么意思呢？<span class="math inline">\(s\)</span>是第<span class="math inline">\(i\)</span>个训练样本的得分向量<span class="math inline">\((c,)\)</span>，<span class="math inline">\(s_{y_i}\)</span>表示正确标签的得分，<span class="math inline">\(s_j\)</span>表示其他类的得分。不妨看看什么时候损失为0呢？稍作变形即有：当<span class="math inline">\(s_{y_i}-s_j=&quot;&quot; 看着有点复杂哦！主要有data=&quot;&quot; 返回浮点数`loss`和解析梯度`dw`=&quot;&quot;&gt;\Delta\)</span>时，第<span class="math inline">\(j\)</span>类损失为0，说人话就是只有当正确类的得分减去其他类的得分大于某个间隔<span class="math inline">\(\Delta\)</span>时才不会累积损失，否则就累加损失（必然为正数），这就是大名鼎鼎的<strong>Hinge Loss</strong>。</p>
+<p>如果<span class="math inline">\(f\)</span>用的是linear score function，进一步有： <span class="math display">\[L_i = \sum_{j\neq y_i} \max(0, w_j^T x_i - w_{y_i}^T x_i + \Delta)\]</span> 其中，<span class="math inline">\(w_j\)</span>表示W的第<span class="math inline">\(j\)</span>列。 至此，naive版本的<code>loss</code>实现就不必废话了。接着来求<code>dW</code>，老规矩，还是先研究单个样本。</p>
+<p>如果你的数学还行，下面的梯度推导可以略过： <span class="math display">\[L_i = max(0,w_1^T x_i - w_{y_i}^T x_i + \Delta)+max(0,w_2^T x_i - w_{y_i}^T x_i + \Delta)+...+max(0,w_C^T x_i - w_{y_i}^T x_i + \Delta)\]</span> 共有<span class="math inline">\(C-1\)</span>项，因为<span class="math inline">\(j=y_i\)</span>那项不算。另，只有在<span class="math inline">\(w_j^T x_i - w_{y_i}^T x_i + \Delta&gt;0\)</span>时第<span class="math inline">\(j\)</span>项的梯度不为0。</p>
 <ol type="1">
-<li>对<span class="math inline">\(w_{y_i}\)</span>的梯度
-每项都有，并且都是0或<span
-class="math inline">\(-x_i\)</span>，因此只要看几项大于0，梯度就是几倍的<span
-class="math inline">\(-x_i\)</span>，正式点就是： <span
-class="math display">\[\nabla_{w_{y_i}} L_i = - \left( \sum_{j\neq y_i}
-\mathbb{1}(w_j^Tx_i - w_{y_i}^Tx_i + \Delta &gt; 0) \right)
-x_i\]</span></li>
-<li>对<span class="math inline">\(w_j\)</span>的梯度 只有第<span
-class="math inline">\(j\)</span>项有，0或<span
-class="math inline">\(x_i\)</span>，正式点就是： <span
-class="math display">\[\nabla_{w_j} L_i = \mathbb{1}(w_j^Tx_i -
-w_{y_i}^Tx_i + \Delta &gt; 0) x_i\]</span></li>
+<li>对<span class="math inline">\(w_{y_i}\)</span>的梯度 每项都有，并且都是0或<span class="math inline">\(-x_i\)</span>，因此只要看几项大于0，梯度就是几倍的<span class="math inline">\(-x_i\)</span>，正式点就是： <span class="math display">\[\nabla_{w_{y_i}} L_i = - \left( \sum_{j\neq y_i} \mathbb{1}(w_j^Tx_i - w_{y_i}^Tx_i + \Delta &gt; 0) \right) x_i\]</span></li>
+<li>对<span class="math inline">\(w_j\)</span>的梯度 只有第<span class="math inline">\(j\)</span>项有，0或<span class="math inline">\(x_i\)</span>，正式点就是： <span class="math display">\[\nabla_{w_j} L_i = \mathbb{1}(w_j^Tx_i - w_{y_i}^Tx_i + \Delta &gt; 0) x_i\]</span></li>
 </ol>
-<p>naive版本的<code>dW[:,j]</code>和<code>dW[:,y[i]]</code>就2重循环按部就班更新即可，别忘了除以<span
-class="math inline">\(N\)</span>和正则项梯度。</p>
+<p>naive版本的<code>dW[:,j]</code>和<code>dW[:,y[i]]</code>就2重循环按部就班更新即可，别忘了除以<span class="math inline">\(N\)</span>和正则项梯度。</p>
 <p>接着来实现<code>svm_loss_vectorized(W, X, y, reg)</code>：</p>
 <ol type="1">
-<li>loss 首先求得整个训练集的得分矩阵<code>scores</code>，shape为<span
-class="math inline">\((N,C)\)</span>，每一行表示一个样例的得分。正确类得分向量<code>correct_class_score</code>可用<code>scores[np.arange(num_train), y]</code>得到，shape为<span
-class="math inline">\((N,)\)</span>，注意这里不能用<code>scores[:, y]</code>，简单试验下：</li>
+<li>loss 首先求得整个训练集的得分矩阵<code>scores</code>，shape为<span class="math inline">\((N,C)\)</span>，每一行表示一个样例的得分。正确类得分向量<code>correct_class_score</code>可用<code>scores[np.arange(num_train), y]</code>得到，shape为<span class="math inline">\((N,)\)</span>，注意这里不能用<code>scores[:, y]</code>，简单试验下：</li>
 </ol>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X = np.array([[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],[<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]])</span><br><span class="line">y = np.array([<span class="number">2</span>, <span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>(X[np.arange(<span class="number">2</span>), y])  <span class="comment"># [3,4]</span></span><br><span class="line"><span class="built_in">print</span>(X[:, y])  <span class="comment"># [[3,2],[5,4]]</span></span><br></pre></td></tr></table></figure>
-<p>下来到了最关键的<code>margins</code>矩阵，该矩阵和<code>scores</code>矩阵shape相同<span
-class="math inline">\((N,C)\)</span>，第<span
-class="math inline">\(i\)</span>行表示第<span
-class="math inline">\(i\)</span>个训练样本的margin即<span
-class="math inline">\(max(0,s_j - s_{y_i} +
-\Delta)\)</span>，在每一行第<span
-class="math inline">\(y_i\)</span>个位置上应当设置为0，其余位置按照公式即可：</p>
+<p>下来到了最关键的<code>margins</code>矩阵，该矩阵和<code>scores</code>矩阵shape相同<span class="math inline">\((N,C)\)</span>，第<span class="math inline">\(i\)</span>行表示第<span class="math inline">\(i\)</span>个训练样本的margin即<span class="math inline">\(max(0,s_j - s_{y_i} + \Delta)\)</span>，在每一行第<span class="math inline">\(y_i\)</span>个位置上应当设置为0，其余位置按照公式即可：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">margins = np.maximum(<span class="number">0</span>, scores - correct_class_score[:, np.newaxis] + <span class="number">1</span>)</span><br><span class="line">margins[np.arange(num_train), y] = <span class="number">0</span></span><br></pre></td></tr></table></figure>
-<p>需要注意：<code>correct_class_score</code>是一个<span
-class="math inline">\((N,)\)</span>的向量，如果直接<code>scores-correct_class_score</code>就会报错，广播机制从最后一个维度开始比对，只有相等或者其中某个为1才行，因此用<code>np.newaxis</code>将<code>correct_class_score</code>的shape变为<span
-class="math inline">\((N,1)\)</span>；还有就是<code>np.max()</code>和<code>np.maximum()</code>的区别，<code>np.max()</code>和<code>np.amax(a, axis=None, ...)</code>等价，返回数组的最大值，<code>np.maximum(x1, x2, out=None, ...)</code>返回element-wise的较大值。</p>
+<p>需要注意：<code>correct_class_score</code>是一个<span class="math inline">\((N,)\)</span>的向量，如果直接<code>scores-correct_class_score</code>就会报错，广播机制从最后一个维度开始比对，只有相等或者其中某个为1才行，因此用<code>np.newaxis</code>将<code>correct_class_score</code>的shape变为<span class="math inline">\((N,1)\)</span>；还有就是<code>np.max()</code>和<code>np.maximum()</code>的区别，<code>np.max()</code>和<code>np.amax(a, axis=None, ...)</code>等价，返回数组的最大值，<code>np.maximum(x1, x2, out=None, ...)</code>返回element-wise的较大值。</p>
 <ol start="2" type="1">
-<li>梯度 这里也稍微有点tricky，根据naive版本对梯度的讨论：对<span
-class="math inline">\(w_j\)</span>的梯度需要知道margin的正负，对<span
-class="math inline">\(w_{y_i}\)</span>的梯度需要知道<strong>有几项大于0</strong>。怎么借助<code>margins</code>矩阵统计每一行大于0的项数呢？无聊的程序员先将矩阵中大于0的项都设为1，然后按列相加即可：</li>
+<li>梯度 这里也稍微有点tricky，根据naive版本对梯度的讨论：对<span class="math inline">\(w_j\)</span>的梯度需要知道margin的正负，对<span class="math inline">\(w_{y_i}\)</span>的梯度需要知道<strong>有几项大于0</strong>。怎么借助<code>margins</code>矩阵统计每一行大于0的项数呢？无聊的程序员先将矩阵中大于0的项都设为1，然后按列相加即可：</li>
 </ol>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">margins[margins &gt; <span class="number">0</span>] = <span class="number">1.0</span></span><br><span class="line">num_to_loss = np.<span class="built_in">sum</span>(margins, axis=<span class="number">1</span>)  <span class="comment"># (N,)</span></span><br><span class="line">margins[np.arange(num_train, y)] = -num_to_loss</span><br></pre></td></tr></table></figure>
-<p>对单个样本<span
-class="math inline">\(i\)</span>来说，其对<code>dW</code>的贡献要么是在第<span
-class="math inline">\(j\)</span>列（即第<span
-class="math inline">\(j\)</span>个类）加上<span
-class="math inline">\(x_i\)</span>，要么在第<span
-class="math inline">\(y_i\)</span>列加上<span
-class="math inline">\(-kx_i\)</span>，<span
-class="math inline">\(k\)</span>为<code>margins[i]</code>中大于0的元素个数，即<code>num_to_loss[i]</code>，整个训练集对<code>dW</code>的更新即是在累加单个样本对<code>dW</code>每一列（每个类）的影响。对第<span
-class="math inline">\(j\)</span>列，其更新即为每个训练样本对该类贡献的线性组合，组合系数取决于该样本的标签以及是否满足指示函数，即为<code>margins</code>的第<span
-class="math inline">\(j\)</span>列，取值范围<span
-class="math inline">\(\{0,1,-k\}\)</span>，0表示该样本对第<span
-class="math inline">\(j\)</span>个类的梯度没有贡献（该样本标签不是<span
-class="math inline">\(j\)</span>且不满足指示函数），1表示贡献了<span
-class="math inline">\(x_i\)</span>（该样本标签不是<span
-class="math inline">\(j\)</span>且满足指示函数），<span
-class="math inline">\(-k\)</span>表示贡献了<span
-class="math inline">\(-kx_i\)</span>（该样本的标签就是<span
-class="math inline">\(j\)</span>），因此：</p>
+<p>对单个样本<span class="math inline">\(i\)</span>来说，其对<code>dW</code>的贡献要么是在第<span class="math inline">\(j\)</span>列（即第<span class="math inline">\(j\)</span>个类）加上<span class="math inline">\(x_i\)</span>，要么在第<span class="math inline">\(y_i\)</span>列加上<span class="math inline">\(-kx_i\)</span>，<span class="math inline">\(k\)</span>为<code>margins[i]</code>中大于0的元素个数，即<code>num_to_loss[i]</code>，整个训练集对<code>dW</code>的更新即是在累加单个样本对<code>dW</code>每一列（每个类）的影响。对第<span class="math inline">\(j\)</span>列，其更新即为每个训练样本对该类贡献的线性组合，组合系数取决于该样本的标签以及是否满足指示函数，即为<code>margins</code>的第<span class="math inline">\(j\)</span>列，取值范围<span class="math inline">\(\{0,1,-k\}\)</span>，0表示该样本对第<span class="math inline">\(j\)</span>个类的梯度没有贡献（该样本标签不是<span class="math inline">\(j\)</span>且不满足指示函数），1表示贡献了<span class="math inline">\(x_i\)</span>（该样本标签不是<span class="math inline">\(j\)</span>且满足指示函数），<span class="math inline">\(-k\)</span>表示贡献了<span class="math inline">\(-kx_i\)</span>（该样本的标签就是<span class="math inline">\(j\)</span>），因此：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dW = np.dot(X.T, margins) / num_train + <span class="number">2</span> * reg * W</span><br></pre></td></tr></table></figure>
-<p>可以从矩阵维度相容的角度验证。 ## Softmax
-先用循环实现一个<code>softmax_loss_naive(W, X, y, reg)</code>，输入的shape和SVM相同。
-softmax分类器不再将<span
-class="math inline">\(f(x_i;W)\)</span>看做每个类的得分，而是希望输出normalized
-class
-probabilities，最终选一个概率最大的类作为预测，<strong>softmax函数</strong>就能将<span
-class="math inline">\(f(x_i;W)\)</span>映射到<span
-class="math inline">\([0,1]\)</span>且满足概率的性质： <span
-class="math display">\[P(y_i \mid x_i; W) = \frac{e^{f_{y_i}}}{\sum_j
-e^{f_j} }\]</span> 从预测函数可以看到：softmax是把<span
-class="math inline">\(f(x_i;W)\)</span>看作unnormalized log
-probabilities，因此对<span
-class="math inline">\(f(x_i;W)\)</span>先指数再归一化得到每个类的概率。</p>
-<p>再来看softmax的损失函数： <span class="math display">\[L_i =
--\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right) \hspace{0.1in}
-\text{or equivalently} \hspace{0.1in} L_i = -f_{y_i} + \log\sum_j
-e^{f_j}\]</span> 从直觉上说：属于正确类<span
-class="math inline">\(y_i\)</span>的概率（括号里的分式）越高，损失应该越小，这就是大名鼎鼎的<strong>cross-entropy
-loss</strong>，衡量了真实分布<span
-class="math inline">\(p\)</span>和预测分布<span
-class="math inline">\(q\)</span>之间的差距： <span
-class="math display">\[H(p,q) = - \sum_x p(x) \log q(x)= H(p) +
-D_{KL}(p||q)\]</span> 具体到softmax： <span
-class="math display">\[q=\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} },p = [0,
-\ldots 1, \ldots, 0]\]</span> 其中，<span
-class="math inline">\(p\)</span>在第<span
-class="math inline">\(y_i\)</span>个位置上为1。 由于<span
-class="math inline">\(H(p)=0\)</span>，因此其实是在最小化<span
-class="math inline">\(p\)</span>和<span
-class="math inline">\(q\)</span>的KL散度，即希望预测结果<span
-class="math inline">\(q\)</span>尽量向<span
-class="math inline">\(p\)</span>靠近。</p>
-<p>从概率的角度出发看损失函数，我们是在最小化正确类<span
-class="math inline">\(y_i\)</span>的负对数似然，本质上就是在做一个极大似然估计。</p>
-<p>看完理论，还要考虑一些现实问题。比如数值稳定性，由于指数的原因可能会导致overflow或者underflow，因此做一个简单的等价变换：
-<span class="math display">\[\frac{e^{f_{y_i}}}{\sum_j e^{f_j}}
+<p>可以从矩阵维度相容的角度验证。 ## Softmax 先用循环实现一个<code>softmax_loss_naive(W, X, y, reg)</code>，输入的shape和SVM相同。 softmax分类器不再将<span class="math inline">\(f(x_i;W)\)</span>看做每个类的得分，而是希望输出normalized class probabilities，最终选一个概率最大的类作为预测，<strong>softmax函数</strong>就能将<span class="math inline">\(f(x_i;W)\)</span>映射到<span class="math inline">\([0,1]\)</span>且满足概率的性质： <span class="math display">\[P(y_i \mid x_i; W) = \frac{e^{f_{y_i}}}{\sum_j e^{f_j} }\]</span> 从预测函数可以看到：softmax是把<span class="math inline">\(f(x_i;W)\)</span>看作unnormalized log probabilities，因此对<span class="math inline">\(f(x_i;W)\)</span>先指数再归一化得到每个类的概率。</p>
+<p>再来看softmax的损失函数： <span class="math display">\[L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right) \hspace{0.1in} \text{or equivalently} \hspace{0.1in} L_i = -f_{y_i} + \log\sum_j e^{f_j}\]</span> 从直觉上说：属于正确类<span class="math inline">\(y_i\)</span>的概率（括号里的分式）越高，损失应该越小，这就是大名鼎鼎的<strong>cross-entropy loss</strong>，衡量了真实分布<span class="math inline">\(p\)</span>和预测分布<span class="math inline">\(q\)</span>之间的差距： <span class="math display">\[H(p,q) = - \sum_x p(x) \log q(x)= H(p) + D_{KL}(p||q)\]</span> 具体到softmax： <span class="math display">\[q=\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} },p = [0, \ldots 1, \ldots, 0]\]</span> 其中，<span class="math inline">\(p\)</span>在第<span class="math inline">\(y_i\)</span>个位置上为1。 由于<span class="math inline">\(H(p)=0\)</span>，因此其实是在最小化<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>的KL散度，即希望预测结果<span class="math inline">\(q\)</span>尽量向<span class="math inline">\(p\)</span>靠近。</p>
+<p>从概率的角度出发看损失函数，我们是在最小化正确类<span class="math inline">\(y_i\)</span>的负对数似然，本质上就是在做一个极大似然估计。</p>
+<p>看完理论，还要考虑一些现实问题。比如数值稳定性，由于指数的原因可能会导致overflow或者underflow，因此做一个简单的等价变换： <span class="math display">\[\frac{e^{f_{y_i}}}{\sum_j e^{f_j}}
 = \frac{Ce^{f_{y_i}}}{C\sum_j e^{f_j}}
-= \frac{e^{f_{y_i} + \log C}}{\sum_j e^{f_j + \log C}}\]</span>
-一般选<span class="math inline">\(\log C = -\max_j
-f_j\)</span>，这个变换不会改变预测函数或者损失函数，只是将得分做了平移。</p>
-<p>至此，naive版本的loss就基本有了，接着看看梯度咋求。先稍稍展开康康：
-<span class="math display">\[L_i=-f_{y_i} + \log\sum_j
-e^{f_j}=-w_{y_i}^Tx_i+log\sum_je^{w_j^Tx_i}\]</span> 其中，<span
-class="math inline">\(w_j\)</span>表示W的第<span
-class="math inline">\(j\)</span>列。
-然后使用我们的小学数学知识去求偏导： <span
-class="math display">\[\nabla_{w_{y_i}} L_i =(\frac{e^{f_{y_i}}}{ \sum_j
-e^{f_j}}-1)x_i \\
-\nabla_{w_j} L_i = \frac{e^{f_{j}}}{ \sum_j e^{f_j}}x_i\]</span>
-记<code>p = np.exp(scores) / np.sum(np.exp(scores))</code>，shape为<span
-class="math inline">\((C,)\)</span>，表示样本<span
-class="math inline">\(i\)</span>属于每个类的概率。
-所以<code>dW</code>的第<code>y[i]</code>列更新即为<code>(p[y[i]] - 1) * X[i]</code>，其他列更新为<code>p[j] * X[i]</code>。</p>
-<p>接着看下vectorized版本，<code>scores</code>的shape变为了<span
-class="math inline">\((N,C)\)</span>，首先处理数值稳定性问题，每一行都减去该行的最大值（注意<code>keepdim=True</code>）；接着求出概率矩阵<code>p</code>，shape与<code>scores</code>相同，那么loss为：
-<code>loss = np.sum(-np.log(p[np.arange(X.shape[0]), y])) / X.shape[0]</code>
-与SVM类似，<code>dW</code>的每一列（每个类）是由每个训练样本影响的线性组合决定的，组合系数取决于该训练样例的标签，比如对于<code>dW</code>的第<span
-class="math inline">\(j\)</span>个类来说，如果某个样例的标签恰好是<span
-class="math inline">\(j\)</span>，那么其对梯度的贡献就是<code>p[j]-1</code>，否则系数就是<code>p[j]</code>。因此只要将概率矩阵<code>p</code>中所有正确标签的值减1即得到系数矩阵，进而得到<code>dW</code>：</p>
+= \frac{e^{f_{y_i} + \log C}}{\sum_j e^{f_j + \log C}}\]</span> 一般选<span class="math inline">\(\log C = -\max_j f_j\)</span>，这个变换不会改变预测函数或者损失函数，只是将得分做了平移。</p>
+<p>至此，naive版本的loss就基本有了，接着看看梯度咋求。先稍稍展开康康： <span class="math display">\[L_i=-f_{y_i} + \log\sum_j e^{f_j}=-w_{y_i}^Tx_i+log\sum_je^{w_j^Tx_i}\]</span> 其中，<span class="math inline">\(w_j\)</span>表示W的第<span class="math inline">\(j\)</span>列。 然后使用我们的小学数学知识去求偏导： <span class="math display">\[\nabla_{w_{y_i}} L_i =(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j}}-1)x_i \\
+\nabla_{w_j} L_i = \frac{e^{f_{j}}}{ \sum_j e^{f_j}}x_i\]</span> 记<code>p = np.exp(scores) / np.sum(np.exp(scores))</code>，shape为<span class="math inline">\((C,)\)</span>，表示样本<span class="math inline">\(i\)</span>属于每个类的概率。 所以<code>dW</code>的第<code>y[i]</code>列更新即为<code>(p[y[i]] - 1) * X[i]</code>，其他列更新为<code>p[j] * X[i]</code>。</p>
+<p>接着看下vectorized版本，<code>scores</code>的shape变为了<span class="math inline">\((N,C)\)</span>，首先处理数值稳定性问题，每一行都减去该行的最大值（注意<code>keepdim=True</code>）；接着求出概率矩阵<code>p</code>，shape与<code>scores</code>相同，那么loss为： <code>loss = np.sum(-np.log(p[np.arange(X.shape[0]), y])) / X.shape[0]</code> 与SVM类似，<code>dW</code>的每一列（每个类）是由每个训练样本影响的线性组合决定的，组合系数取决于该训练样例的标签，比如对于<code>dW</code>的第<span class="math inline">\(j\)</span>个类来说，如果某个样例的标签恰好是<span class="math inline">\(j\)</span>，那么其对梯度的贡献就是<code>p[j]-1</code>，否则系数就是<code>p[j]</code>。因此只要将概率矩阵<code>p</code>中所有正确标签的值减1即得到系数矩阵，进而得到<code>dW</code>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">p[np.arange(X.shape[<span class="number">0</span>]), y] = p[np.arange(X.shape[<span class="number">0</span>]), y] - <span class="number">1</span></span><br><span class="line">dW = np.dot(X.T, p)</span><br></pre></td></tr></table></figure>
-<p>同样可以用维度相容去check。 ## Neural Network
-这是一个两层的全连接神经网络，架构如下： 输入<span
-class="math inline">\((N,D)\)</span>-&gt;全连接层1-&gt;ReLU-&gt;全连接层2（输出每个类的得分）-&gt;softmax
-参数们的shape为：<span
-class="math inline">\(X(N,D),W1(D,H),b1(H,),W2(H,C),b2(C,)\)</span></p>
-<p>第一步Forward Pass，根据输入X和权值W计算<span
-class="math inline">\(scores(N,C)\)</span>，然后计算softmax loss；
-第二步Backward Pass，需要计算loss对于参数们的梯度，根据网络结构： <span
-class="math display">\[h=XW1+b1\\
+<p>同样可以用维度相容去check。 ## Neural Network 这是一个两层的全连接神经网络，架构如下： 输入<span class="math inline">\((N,D)\)</span>-&gt;全连接层1-&gt;ReLU-&gt;全连接层2（输出每个类的得分）-&gt;softmax 参数们的shape为：<span class="math inline">\(X(N,D),W1(D,H),b1(H,),W2(H,C),b2(C,)\)</span></p>
+<p>第一步Forward Pass，根据输入X和权值W计算<span class="math inline">\(scores(N,C)\)</span>，然后计算softmax loss； 第二步Backward Pass，需要计算loss对于参数们的梯度，根据网络结构： <span class="math display">\[h=XW1+b1\\
 o=ReLU(h)\\
 s=oW2+b2\\
-L=\sum_i(-s_{y_i}+log\sum_j e^{s_j})\]</span> 根据链式法则+维度相容：
-<span class="math display">\[\nabla_{w_2} L =o^T \nabla_{s} L\\
-\nabla_{b_2} L =(\nabla_{s} L)^T(\nabla_{b_2} s)=(C,N)(N,1)=(C,N)(all\
-1\ col)\\
+L=\sum_i(-s_{y_i}+log\sum_j e^{s_j})\]</span> 根据链式法则+维度相容： <span class="math display">\[\nabla_{w_2} L =o^T \nabla_{s} L\\
+\nabla_{b_2} L =(\nabla_{s} L)^T(\nabla_{b_2} s)=(C,N)(N,1)=(C,N)(all\ 1\ col)\\
 \nabla_{w_1} L =X^T \nabla_{s} L\nabla_{h} s\\
-\nabla_{b_1} L =\nabla_{h} s (\nabla_{s} L)^T\nabla_{b_1}
-h=(H,C)(C,N)(N,1)=(H,C)(C,N)(all\ 1\ col)\]</span>
-可以看出：关键在于求出<span class="math inline">\(\nabla_{s}
-L\)</span>，在对softmax的讨论中可知，对于第<span
-class="math inline">\(y_i\)</span>列导数为<code>p[y[i]]-1</code>，对其他列为<code>p[j]</code>，因此该偏导为：</p>
+\nabla_{b_1} L =\nabla_{h} s (\nabla_{s} L)^T\nabla_{b_1} h=(H,C)(C,N)(N,1)=(H,C)(C,N)(all\ 1\ col)\]</span> 可以看出：关键在于求出<span class="math inline">\(\nabla_{s} L\)</span>，在对softmax的讨论中可知，对于第<span class="math inline">\(y_i\)</span>列导数为<code>p[y[i]]-1</code>，对其他列为<code>p[j]</code>，因此该偏导为：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">d2 = p</span><br><span class="line">d2[np.arange(X.shape[<span class="number">0</span>]), y] -= <span class="number">1</span></span><br></pre></td></tr></table></figure>
-<p>另外对于<span class="math inline">\(W_1,b_1\)</span>，还需要<span
-class="math inline">\(\nabla_{h} s\)</span>：这玩意在<span
-class="math inline">\(h&gt;0\)</span>就是<span
-class="math inline">\(W_2^T\)</span>，否则就是0。因此<span
-class="math inline">\(\nabla_{s} L\nabla_{h} s\)</span>可以写为：</p>
+<p>另外对于<span class="math inline">\(W_1,b_1\)</span>，还需要<span class="math inline">\(\nabla_{h} s\)</span>：这玩意在<span class="math inline">\(h&gt;0\)</span>就是<span class="math inline">\(W_2^T\)</span>，否则就是0。因此<span class="math inline">\(\nabla_{s} L\nabla_{h} s\)</span>可以写为：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d1 = d2.dot(W2.T) * (h &gt; <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
 <h2 id="image-features">Image Features</h2>
-<p>之前的样例都是直接用raw
-pixel，加上都是线性模型，效果拉跨太正常了。这里用的人工feature包括HOG(Histogram
-of Oriented Gradients)和color
-histogram，HOG捕捉texture（纹理变化？）信息，color
-histogram捕捉颜色信息，两者互相辅助。&lt;/c$&gt;</p>
-<h2 id="fully-connected-neural-network">Fully-connected Neural
-Network</h2>
-<p>我好菜啊！！很早就写完代码了，gradient
-check也过了，但是需要过拟合50张图片的时候一直不太对，调了几下学习率，我看train
-acc只有0.14左右，loss曲线波动也很大： <img
-src="https://img2020.cnblogs.com/blog/1260581/202109/1260581-20210912161403754-1113281186.png"
-alt="image" /> 因为最后要100%的train
-acc嘛，我看差的挺远的，就开始怀疑是网络哪里写错了，就没管超参数，检查代码检查了好几天tmd，深度学习debug还真是无从下手...后来跑去看了下别人的东西，发现原因竟然是不会调参(T^T)。</p>
-<p>仔细看下，这里还是很明显的，20个epoch训练损失才下降了一点点，说明学习率太小了。
-<img
-src="https://img2020.cnblogs.com/blog/1260581/202109/1260581-20210912162656860-43278840.png"
-alt="image" /></p>
+<p>之前的样例都是直接用raw pixel，加上都是线性模型，效果拉跨太正常了。这里用的人工feature包括HOG(Histogram of Oriented Gradients)和color histogram，HOG捕捉texture（纹理变化？）信息，color histogram捕捉颜色信息，两者互相辅助。&lt;/c$&gt;</p>
+<h2 id="fully-connected-neural-network">Fully-connected Neural Network</h2>
+<p>我好菜啊！！很早就写完代码了，gradient check也过了，但是需要过拟合50张图片的时候一直不太对，调了几下学习率，我看train acc只有0.14左右，loss曲线波动也很大： <img src="https://img2020.cnblogs.com/blog/1260581/202109/1260581-20210912161403754-1113281186.png" alt="image" /> 因为最后要100%的train acc嘛，我看差的挺远的，就开始怀疑是网络哪里写错了，就没管超参数，检查代码检查了好几天tmd，深度学习debug还真是无从下手...后来跑去看了下别人的东西，发现原因竟然是不会调参(T^T)。</p>
+<p>仔细看下，这里还是很明显的，20个epoch训练损失才下降了一点点，说明学习率太小了。 <img src="https://img2020.cnblogs.com/blog/1260581/202109/1260581-20210912162656860-43278840.png" alt="image" /></p>
 
     </div>
 
@@ -611,8 +434,7 @@ alt="image" /></p>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#image-features"><span class="nav-number">1.</span> <span class="nav-text">Image Features</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fully-connected-neural-network"><span class="nav-number">2.</span> <span class="nav-text">Fully-connected Neural
-Network</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#image-features"><span class="nav-number">1.</span> <span class="nav-text">Image Features</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fully-connected-neural-network"><span class="nav-number">2.</span> <span class="nav-text">Fully-connected Neural Network</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20210519212745377.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20210519213431456.png">
 <meta property="article:published_time" content="2021-04-13T11:53:00.000Z">
-<meta property="article:modified_time" content="2022-02-24T06:49:02.000Z">
+<meta property="article:modified_time" content="2022-02-24T06:49:02.330Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Machine Learning">
 <meta property="article:tag" content="AutoML">
@@ -261,120 +261,47 @@
 
       
         <h2 id="motivation">Motivation</h2>
-<p>We all know that Monte Carlo Simulation is used to estimate some
-unknown variables through random simulation. It is because that the
-process is too complicated so we cannot know the true rule behind it.
-Only god knows. But thankful to the randomness we can do lots of
-experiments to approach the truth.</p>
-<p>MCTS has the same idea but it is based on a tree. Every path from
-root to leaf forms a solution and the whole tree defines the search
-space. It is a heuristic search strategy based on some loss functions.
-But it will follow not only the loss but also try to explore the
-unvisited nodes. So it's also trying to make a balance between
-exploration &amp; exploitation.</p>
-<p>One iteration has 4 processes: Selection, Expansion, Simulation and
-Backpropagation. Let's start to build the tree. Initially the tree only
-has a root node. Every node holds 3 info: action list for the next
-decision; visit times to measure the exploration; quality values to
-measure the exploitation.</p>
+<p>We all know that Monte Carlo Simulation is used to estimate some unknown variables through random simulation. It is because that the process is too complicated so we cannot know the true rule behind it. Only god knows. But thankful to the randomness we can do lots of experiments to approach the truth.</p>
+<p>MCTS has the same idea but it is based on a tree. Every path from root to leaf forms a solution and the whole tree defines the search space. It is a heuristic search strategy based on some loss functions. But it will follow not only the loss but also try to explore the unvisited nodes. So it's also trying to make a balance between exploration &amp; exploitation.</p>
+<p>One iteration has 4 processes: Selection, Expansion, Simulation and Backpropagation. Let's start to build the tree. Initially the tree only has a root node. Every node holds 3 info: action list for the next decision; visit times to measure the exploration; quality values to measure the exploitation.</p>
 <ol type="1">
 <li>Selection<br />
-Using some criterion to select a child node which is eager to expand.
-There are 3 possibilities for the current state: If all the actions have
-been expanded thus the node has finished a complete search, then we will
-find a child with max UCB value and go down the tree recursively; Else
-if there are still some actions which have not been expanded (e.g. the
-node has 20 possible actions but there are 19 child node in the tree),
-then it will select one action randomly from the unexpanded actions and
-do Step 2 Expansion; Else game over and do Step 4 Backpropagation.</li>
+Using some criterion to select a child node which is eager to expand. There are 3 possibilities for the current state: If all the actions have been expanded thus the node has finished a complete search, then we will find a child with max UCB value and go down the tree recursively; Else if there are still some actions which have not been expanded (e.g. the node has 20 possible actions but there are 19 child node in the tree), then it will select one action randomly from the unexpanded actions and do Step 2 Expansion; Else game over and do Step 4 Backpropagation.</li>
 <li>Expansion<br />
-We have found the most eager node N to expand and the action A after
-Selection. So we need to add a new node S to the tree as N's child node
-by doing A.</li>
+We have found the most eager node N to expand and the action A after Selection. So we need to add a new node S to the tree as N's child node by doing A.</li>
 <li>Simulation/Playout<br />
-Start from S to let the game run randomly until game over. Then we get a
-performance to be S's initial quality value.</li>
+Start from S to let the game run randomly until game over. Then we get a performance to be S's initial quality value.</li>
 <li>Backpropagation<br />
-The nodes along the path from root to N will update their quality values
-after S's simulation.</li>
+The nodes along the path from root to N will update their quality values after S's simulation.</li>
 </ol>
-<p>After some fixed number of iterations or time limit, we will get a
-large tree and select the best leaf node as the result. Below is a
-figure: <img src="https://img-blog.csdnimg.cn/20210404201349819.png"
-alt="在这里插入图片描述" /></p>
+<p>After some fixed number of iterations or time limit, we will get a large tree and select the best leaf node as the result. Below is a figure: <img src="https://img-blog.csdnimg.cn/20210404201349819.png" alt="在这里插入图片描述" /></p>
 <h2 id="upper-confidence-bound-ucb">Upper Confidence Bound (UCB)</h2>
-<p>When we need to select a child node to go down the tree, we usually
-use UCB criterion: <span
-class="math display">\[\underset{child}{\operatorname{arg\
-max}}(\hat\mu_{child}+C\sqrt\frac{log\ n(s)}{n(child)})\]</span> <span
-class="math inline">\(\hat\mu_{child}\)</span> is the average reward
-gathered over all tree-walks with prefix child, <span
-class="math inline">\(n(s)\)</span> the number of the parent's visits
-and <span class="math inline">\(C\)</span> is constant controlling
-exploration &amp; exploitation. UCB tends to select a node with high
-quality value (for exploitation) and relatively low visit times (for
-exploration).</p>
+<p>When we need to select a child node to go down the tree, we usually use UCB criterion: <span class="math display">\[\underset{child}{\operatorname{arg\ max}}(\hat\mu_{child}+C\sqrt\frac{log\ n(s)}{n(child)})\]</span> <span class="math inline">\(\hat\mu_{child}\)</span> is the average reward gathered over all tree-walks with prefix child, <span class="math inline">\(n(s)\)</span> the number of the parent's visits and <span class="math inline">\(C\)</span> is constant controlling exploration &amp; exploitation. UCB tends to select a node with high quality value (for exploitation) and relatively low visit times (for exploration).</p>
 <h2 id="an-example">An example</h2>
 <ol type="1">
 <li>Initial tree<br />
-Actually we only have root node <span
-class="math inline">\(S_0\)</span>. Assume there are only two actions
-<span class="math inline">\(A_1\)</span> and <span
-class="math inline">\(A_2\)</span>. <span
-class="math inline">\((Q,N)\)</span> means the quality value and #visits
-of this node.<br />
-<img src="https://img-blog.csdnimg.cn/20210519201721793.png"
-alt="在这里插入图片描述" /></li>
+Actually we only have root node <span class="math inline">\(S_0\)</span>. Assume there are only two actions <span class="math inline">\(A_1\)</span> and <span class="math inline">\(A_2\)</span>. <span class="math inline">\((Q,N)\)</span> means the quality value and #visits of this node.<br />
+<img src="https://img-blog.csdnimg.cn/20210519201721793.png" alt="在这里插入图片描述" /></li>
 <li>First Iteration<br />
-Since <span class="math inline">\(S_0\)</span> is a leaf node now, we
-should expand. Since the 2 actions are both unexpanded so we randomly
-select one (assume we select <span class="math inline">\(A_1\)</span>).
-Then we add <span class="math inline">\(S_1\)</span> to the tree and
-playout from <span class="math inline">\(S_1\)</span>.<br />
-<img src="https://img-blog.csdnimg.cn/20210519202838706.png"
-alt="在这里插入图片描述" /><br />
-Assume we got a performance of 20. Next we need to backpropagate the
-value to <span class="math inline">\(S_1\)</span> and <span
-class="math inline">\(S_0\)</span> and update Q and #visits.<br />
-<img src="https://img-blog.csdnimg.cn/20210519203559429.png"
-alt="在这里插入图片描述" /><br />
+Since <span class="math inline">\(S_0\)</span> is a leaf node now, we should expand. Since the 2 actions are both unexpanded so we randomly select one (assume we select <span class="math inline">\(A_1\)</span>). Then we add <span class="math inline">\(S_1\)</span> to the tree and playout from <span class="math inline">\(S_1\)</span>.<br />
+<img src="https://img-blog.csdnimg.cn/20210519202838706.png" alt="在这里插入图片描述" /><br />
+Assume we got a performance of 20. Next we need to backpropagate the value to <span class="math inline">\(S_1\)</span> and <span class="math inline">\(S_0\)</span> and update Q and #visits.<br />
+<img src="https://img-blog.csdnimg.cn/20210519203559429.png" alt="在这里插入图片描述" /><br />
 We finished the first iteration.</li>
 <li>Second iteration<br />
-Start from <span class="math inline">\(S_0\)</span>, since <span
-class="math inline">\(A_2\)</span> has not been expanded so we have to
-choose it. Then add <span class="math inline">\(S_2\)</span> to the tree
-and playout from here.<br />
-<img src="https://img-blog.csdnimg.cn/2021051921175522.png"
-alt="在这里插入图片描述" /><br />
-Then backpropagate to <span class="math inline">\(S_2\)</span> and <span
-class="math inline">\(S_0\)</span>:<br />
-<img src="https://img-blog.csdnimg.cn/20210519212028325.png"
-alt="在这里插入图片描述" /></li>
+Start from <span class="math inline">\(S_0\)</span>, since <span class="math inline">\(A_2\)</span> has not been expanded so we have to choose it. Then add <span class="math inline">\(S_2\)</span> to the tree and playout from here.<br />
+<img src="https://img-blog.csdnimg.cn/2021051921175522.png" alt="在这里插入图片描述" /><br />
+Then backpropagate to <span class="math inline">\(S_2\)</span> and <span class="math inline">\(S_0\)</span>:<br />
+<img src="https://img-blog.csdnimg.cn/20210519212028325.png" alt="在这里插入图片描述" /></li>
 <li>Third iteration<br />
-From <span class="math inline">\(S_0\)</span> there are no unexpanded
-actions so we need to select one child using UCB (assume C=2). <span
-class="math inline">\(UCB(S_1)=21.67,UCB(S_2)=11.67\)</span>. Thus we
-select the leaf node <span class="math inline">\(S_1\)</span>. Assume
-<span class="math inline">\(S_1\)</span> has 2 unexpanded actions.<br />
-Choose one randomly (assume <span class="math inline">\(S_3\)</span>)
-and playout from here and backpropagate, assume we get performance of
-0:<br />
-<img src="https://img-blog.csdnimg.cn/20210519212745377.png"
-alt="在这里插入图片描述" /></li>
+From <span class="math inline">\(S_0\)</span> there are no unexpanded actions so we need to select one child using UCB (assume C=2). <span class="math inline">\(UCB(S_1)=21.67,UCB(S_2)=11.67\)</span>. Thus we select the leaf node <span class="math inline">\(S_1\)</span>. Assume <span class="math inline">\(S_1\)</span> has 2 unexpanded actions.<br />
+Choose one randomly (assume <span class="math inline">\(S_3\)</span>) and playout from here and backpropagate, assume we get performance of 0:<br />
+<img src="https://img-blog.csdnimg.cn/20210519212745377.png" alt="在这里插入图片描述" /></li>
 <li>Fourth iteration<br />
-From root we should decide which one to select. Again using UCB: <span
-class="math inline">\(UCB(S_1)=11.48,UCB(S_2)=12.10\)</span>. So we
-choose <span class="math inline">\(S_2\)</span>. Assume there are two
-unexpanded actions so we randomly choose <span
-class="math inline">\(S_5\)</span> and playout and get a performance of
-14. After backpropagate:<br />
-<img src="https://img-blog.csdnimg.cn/20210519213431456.png"
-alt="在这里插入图片描述" /></li>
+From root we should decide which one to select. Again using UCB: <span class="math inline">\(UCB(S_1)=11.48,UCB(S_2)=12.10\)</span>. So we choose <span class="math inline">\(S_2\)</span>. Assume there are two unexpanded actions so we randomly choose <span class="math inline">\(S_5\)</span> and playout and get a performance of 14. After backpropagate:<br />
+<img src="https://img-blog.csdnimg.cn/20210519213431456.png" alt="在这里插入图片描述" /></li>
 </ol>
-<p>Assume the max iteration number is 4 so we get the final tree above.
-Finally we can select the best solution from <span
-class="math inline">\(S_0\)</span> to leaf node according to UCB
-value.</p>
+<p>Assume the max iteration number is 4 so we get the final tree above. Finally we can select the best solution from <span class="math inline">\(S_0\)</span> to leaf node according to UCB value.</p>
 
     </div>
 
