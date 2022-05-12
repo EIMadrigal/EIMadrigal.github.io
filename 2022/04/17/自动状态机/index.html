@@ -27,13 +27,11 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="有限状态机">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/3f282f79feeb47d799fcf0d02a5a4867.png">
 <meta property="article:published_time" content="2022-04-17T06:22:32.000Z">
 <meta property="article:modified_time" content="2022-04-19T15:16:46.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/3f282f79feeb47d799fcf0d02a5a4867.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2022/04/17/%E8%87%AA%E5%8A%A8%E7%8A%B6%E6%80%81%E6%9C%BA/">
 
@@ -252,12 +250,26 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>有限状态机在本科数电实验接触过, 但是最近在做LeetCode第8题时才发现其妙用. FSM通常可以用5元组<span class="math inline">\((Q, \Sigma, T, q_0, F)\)</span>表示: Q表示有限的状态集合, <span class="math inline">\(\Sigma\)</span>表示有限的输入集合, T表示状态转移函数, <span class="math inline">\(q_0\)</span>表示初始状态, F表示结束状态.</p>
-<h2 id="deterministic-finite-automaton">Deterministic Finite Automaton</h2>
-<p>如果不知道DFA, 那么在做诸如LC 8/65等题时, 面对浩如烟海的corner case, 即使写出了代码, 想必也是一团乱麻.</p>
-<p>以LC 65题为例, 给一个包含大小写英文字母/数字/+/-/.的字符串, 判断其是否是一个有效的数字.</p>
-<p>DFA的思路是: 开始是自动机处于初始状态, 之后顺序读取每个字符, 根据当前状态和该字符的转移规则转移到下一个状态, 读完整个字符串后如果自动机处于某个可接受状态, 则合法. 如果读取过程中转移失败或者最终自动机处于非接受状态, 则非法.</p>
-<p>第一步就是要枚举所有的可能状态, 通常对于字符串匹配问题可以考虑用字符串的不同部分作为状态集合. 例如本题中一个合法的字符串应当包含以下部分:</p>
+        <p>有限状态机在本科数电实验接触过,
+但是最近在做LeetCode第8题时才发现其妙用. FSM通常可以用5元组<span
+class="math inline">\((Q, \Sigma, T, q_0, F)\)</span>表示:
+Q表示有限的状态集合, <span
+class="math inline">\(\Sigma\)</span>表示有限的输入集合,
+T表示状态转移函数, <span class="math inline">\(q_0\)</span>表示初始状态,
+F表示结束状态.</p>
+<h2 id="deterministic-finite-automaton">Deterministic Finite
+Automaton</h2>
+<p>如果不知道DFA, 那么在做诸如LC 8/65等题时, 面对浩如烟海的corner case,
+即使写出了代码, 想必也是一团乱麻.</p>
+<p>以LC 65题为例, 给一个包含大小写英文字母/数字/+/-/.的字符串,
+判断其是否是一个有效的数字.</p>
+<p>DFA的思路是: 开始是自动机处于初始状态, 之后顺序读取每个字符,
+根据当前状态和该字符的转移规则转移到下一个状态,
+读完整个字符串后如果自动机处于某个可接受状态, 则合法.
+如果读取过程中转移失败或者最终自动机处于非接受状态, 则非法.</p>
+<p>第一步就是要枚举所有的可能状态,
+通常对于字符串匹配问题可以考虑用字符串的不同部分作为状态集合.
+例如本题中一个合法的字符串应当包含以下部分:</p>
 <ul>
 <li>符号位+/-: 如果存在, 其后必须跟着数字或小数点</li>
 <li>整数部分: 若干0-9组成的串</li>
@@ -285,14 +297,30 @@
 </li>
 <li>指数部分的整数部分</li>
 </ol>
-<p>小数点有些特殊, 其两侧至少一侧有数字才合法. 通常来讲小数点可以转移到e或小数部分, 但是对于左侧没有整数的小数点, 其右侧必须有数字, 不能转移到e, 只能转移到小数部分, 否则违背了小数点的规则. 例如<code>.e1</code>就是非法的, <code>3.e1</code>就是合法的. 因此小数点的状态需要分为2类: 左侧有整数以及左侧无整数. 那么为什么不按照小数点右侧有无数字来分类呢? 我认为最大原因在于状态机是不能回退的, 即如果已经访问到了小数点右侧, 那么无法结合其左侧状态进行下一步的转移.</p>
-<p>假设右侧有数字的小数点为a, 右侧没有数字的小数点为b. 例如对于初始状态的输入<code>.</code>, 能否转移到a或b都是<strong>不确定的</strong>, 因为此时无法判断小数点右侧是否有数字. 如果采用左侧的划分方式, 转移则是确定的.</p>
+<p>小数点有些特殊, 其两侧至少一侧有数字才合法.
+通常来讲小数点可以转移到e或小数部分, 但是对于左侧没有整数的小数点,
+其右侧必须有数字, 不能转移到e, 只能转移到小数部分,
+否则违背了小数点的规则. 例如<code>.e1</code>就是非法的,
+<code>3.e1</code>就是合法的. 因此小数点的状态需要分为2类:
+左侧有整数以及左侧无整数. 那么为什么不按照小数点右侧有无数字来分类呢?
+我认为最大原因在于状态机是不能回退的, 即如果已经访问到了小数点右侧,
+那么无法结合其左侧状态进行下一步的转移.</p>
+<p>假设右侧有数字的小数点为a, 右侧没有数字的小数点为b.
+例如对于初始状态的输入<code>.</code>,
+能否转移到a或b都是<strong>不确定的</strong>,
+因为此时无法判断小数点右侧是否有数字. 如果采用左侧的划分方式,
+转移则是确定的.</p>
 <p>第二步需要找到初始状态0和可接受状态2/3/5/8.</p>
-<p>最后需要根据合法字符串的格式定义转移规则, 并画出转移图: <img src="https://img-blog.csdnimg.cn/3f282f79feeb47d799fcf0d02a5a4867.png" alt="状态转移图" /></p>
-<p>为了写代码方便, 通常用<code>unordered_map&lt;state, unordered_map&lt;cur, state&gt;&gt;</code>来表示状态转移表, 只要将上述转移图翻译成代码即可.</p>
+<p>最后需要根据合法字符串的格式定义转移规则, 并画出转移图: <img
+src="https://img-blog.csdnimg.cn/3f282f79feeb47d799fcf0d02a5a4867.png"
+alt="状态转移图" /></p>
+<p>为了写代码方便,
+通常用<code>unordered_map&lt;state, unordered_map&lt;cur, state&gt;&gt;</code>来表示状态转移表,
+只要将上述转移图翻译成代码即可.</p>
 <p>除了算法题的应用, FSM与KMP算法和正则表达式都有着密切关联.</p>
 <h2 id="refs">Refs</h2>
-<p><a target="_blank" rel="noopener" href="https://patterns.eecs.berkeley.edu/?page_id=470">Finite State Machine</a></p>
+<p><a target="_blank" rel="noopener" href="https://patterns.eecs.berkeley.edu/?page_id=470">Finite
+State Machine</a></p>
 
     </div>
 
@@ -418,7 +446,8 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#deterministic-finite-automaton"><span class="nav-number">1.</span> <span class="nav-text">Deterministic Finite Automaton</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#refs"><span class="nav-number">2.</span> <span class="nav-text">Refs</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#deterministic-finite-automaton"><span class="nav-number">1.</span> <span class="nav-text">Deterministic Finite
+Automaton</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#refs"><span class="nav-number">2.</span> <span class="nav-text">Refs</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

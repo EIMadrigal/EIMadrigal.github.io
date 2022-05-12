@@ -27,14 +27,11 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="Philosophy of Bayesian statistics">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/11e883581dd48f9c8442b8273371766d.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/3110af9ecffd601bb7acd89d86ad9784.png">
 <meta property="article:published_time" content="2021-01-16T06:41:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T03:28:58.592Z">
+<meta property="article:modified_time" content="2022-01-30T03:28:58.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Probability &amp; Statistics">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/img_convert/11e883581dd48f9c8442b8273371766d.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2021/01/16/MLE%20&%20MAP/">
 
@@ -257,36 +254,107 @@
 <p>频率学派认为概率是基于大量实验所得的定值（大数定理），比如抛掷一枚材质均匀的硬币10000次，出现正面的次数有4995次，反面的次数有5005次，大致认为出现正反面的概率都是50%。然而现实生活中很多事情是无法做大量实验的，比如某人得心脏病的概率是5%，显然我们无法通过多次实验来计算出这个概率值。回到硬币的例子，如果只允许你抛5次，5次的结果都是正面，那么出现正面的概率是100%了吗？显然这是存在弊端的。</p>
 <p>再来看一个非常经典的医学上的例子：有一种很稀有的病，得病的人检测结果呈阳性的概率是0.9，没得病的人检测结果呈阴性的概率也是0.9，人们患这种病的概率是0.01。如果某人的检测结果呈阳性，那么他患这种病的概率是多少？</p>
 <p>直观上看：患病的人检测呈阳性的概率是0.9，这个人被检测为阳性，那么有很大概率这个人是患病的。不妨试着算算：</p>
-<p>假设用A表示检测结果为阳性，B表示患病，那么可以很轻松的计算出： <span class="math display">\[
-P(B|A)=\frac{P(A|B)P(B)}{P(A)}=\frac{P(A|B)P(B)}{P(A|B)P(B)+P(A|\bar B)P(\bar B)}=\frac{0.9*0.01}{0.9*0.01+0.1*0.99}=0.083 \\
+<p>假设用A表示检测结果为阳性，B表示患病，那么可以很轻松的计算出： <span
+class="math display">\[
+P(B|A)=\frac{P(A|B)P(B)}{P(A)}=\frac{P(A|B)P(B)}{P(A|B)P(B)+P(A|\bar
+B)P(\bar B)}=\frac{0.9*0.01}{0.9*0.01+0.1*0.99}=0.083 \\
 P(\bar B|A)=1-P(B|A)=0.917
-\]</span> 可以看到：即使检测结果呈阳性，患病的概率仍然只有8.3%，和我们的直观认识并不相同。</p>
-<p>上面的计算其实就用了贝叶斯公式：后验概率<span class="math inline">\(P(B|A)\)</span>等于条件概率<span class="math inline">\(P(A|B)\)</span>（似然函数）乘以先验概率<span class="math inline">\(P(B)\)</span>，再除以一个常数因子。我们在已知先验概率的前提下，通过新的观测值<span class="math inline">\(P(A|B)\)</span>（检测结果是否阳性）来预测患病的概率。</p>
-<p>关于常数因子<span class="math inline">\(P(A)\)</span>可以这样理解：分子<span class="math inline">\(P(A,B)\)</span>表示检测结果呈阳性并且患病的概率，那么还有一部分人<span class="math inline">\(P(A,\bar B)\)</span>检测结果呈阳性但是没有患病，<span class="math inline">\(P(A,B)+P(A,\bar B)=P(A)\)</span>，我们要求的<span class="math inline">\(P(B|A)\)</span>即检测呈阳性的人中患病的人所占的比例<span class="math inline">\(\frac{P(A,B)}{P(A)}\)</span>。</p>
+\]</span>
+可以看到：即使检测结果呈阳性，患病的概率仍然只有8.3%，和我们的直观认识并不相同。</p>
+<p>上面的计算其实就用了贝叶斯公式：后验概率<span
+class="math inline">\(P(B|A)\)</span>等于条件概率<span
+class="math inline">\(P(A|B)\)</span>（似然函数）乘以先验概率<span
+class="math inline">\(P(B)\)</span>，再除以一个常数因子。我们在已知先验概率的前提下，通过新的观测值<span
+class="math inline">\(P(A|B)\)</span>（检测结果是否阳性）来预测患病的概率。</p>
+<p>关于常数因子<span
+class="math inline">\(P(A)\)</span>可以这样理解：分子<span
+class="math inline">\(P(A,B)\)</span>表示检测结果呈阳性并且患病的概率，那么还有一部分人<span
+class="math inline">\(P(A,\bar
+B)\)</span>检测结果呈阳性但是没有患病，<span
+class="math inline">\(P(A,B)+P(A,\bar B)=P(A)\)</span>，我们要求的<span
+class="math inline">\(P(B|A)\)</span>即检测呈阳性的人中患病的人所占的比例<span
+class="math inline">\(\frac{P(A,B)}{P(A)}\)</span>。</p>
 <p>更加一般的贝叶斯公式：</p>
-<p>如果参数<span class="math inline">\(\theta\)</span>的分布是离散的： <span class="math display">\[
+<p>如果参数<span class="math inline">\(\theta\)</span>的分布是离散的：
+<span class="math display">\[
 \pi(\theta_i|x)=\cfrac{\pi(\theta_i)f(x|\theta_i)}{\sum_{i}\pi(\theta_i)f(x|\theta_i)}
-\]</span> 如果参数<span class="math inline">\(\theta\)</span>的分布是连续的： <span class="math display">\[
+\]</span> 如果参数<span
+class="math inline">\(\theta\)</span>的分布是连续的： <span
+class="math display">\[
 \pi(\theta|x)=\cfrac{\pi(\theta)f(x|\theta)}{\int_{\Theta}\pi(\theta)f(x|\theta)d\theta}
-\]</span> 后验概率密度表示在已知x的前提下关于参数<span class="math inline">\(\theta\)</span>的一个概率密度函数，即<span class="math inline">\(\theta\)</span>是一个分布，而不是一个固定的值，这是贝叶斯学派与传统学派最大的不同。</p>
-<p>似然函数<span class="math inline">\(f(x|\theta)\)</span>可以这么理解：每个事件的背后都有一个分布，这个分布里是含有参数的，并且传统学派认为这个参数<span class="math inline">\(\theta\)</span>是固定的，我们做了大量的实验，用很多样本x就是为了求出这个参数的值，观测到的样本x是以参数<span class="math inline">\(\theta\)</span>为前提的一个分布。为了估计<span class="math inline">\(\theta\)</span>，我们用到了<strong>矩估计</strong>和<strong>极大似然估计</strong>，本质上都是一样的，我们在参数<span class="math inline">\(\theta\)</span>的前提下，从总体X中采样n个样本，用样本的性质来大致替代总体的参数<span class="math inline">\(\theta\)</span>。具体到极大似然：通过找到使似然函数<span class="math inline">\(\prod_{i=1}^{n}f(x_i|\theta)\)</span>最大的参数当作<span class="math inline">\(\theta\)</span>，其实就是选择一个<span class="math inline">\(\theta\)</span>使得样本出现的概率最大，本质上仍然是在拟合样本数据。</p>
-<p>从上面的分析可以看出：我们的未知参数<span class="math inline">\(\theta\)</span>是从样本中计算得到的，必然和总体中原本的参数值存在误差，并且只能求得一个固定的参数值。贝叶斯理论认为：参数<span class="math inline">\(\theta\)</span>不应该是一个单独的值，更加合理的解释应该是参数<span class="math inline">\(\theta\)</span>有很多取值，并且每个取值都有相应的概率，即参数是服从某种分布的。概率最大的那个参数值即<strong>最大后验估计</strong>，参数取值的中位数即<strong>后验中位数估计</strong>，参数取值的均值即<strong>后验期望估计</strong>。为什么仍然叫估计呢？因为我们的后验分布是从似然计算得到的，我们无法采样所有的总体中的样本，所以也就无法计算出参数<span class="math inline">\(\theta\)</span>的精确分布。</p>
-<p>最后来看看先验分布<span class="math inline">\(\pi(\theta)\)</span>，即在获得实验观测值之前对未知参数分布的一个主观认识，这也是贝叶斯学派一直被攻击的一点，客观的统计学中竟然引入了主观的因素！比如对于材质均匀的硬币，在抛掷之前，我们脑海中就会认为出现正反面的概率各是0.5。</p>
-<p>但是很多时候先验分布是很难获得的，如果硬币材质不均匀，我们的先验又应当是什么分布呢？此时就引入了课程上讲的<strong>无信息先验</strong>，当我们对事件没有了解的时候，认为参数所有取值的概率都是相等的，在硬币实验中，我们认为<span class="math inline">\(\theta\)</span>是服从(0,1)的均匀分布。接着我们来做实验，看看后验分布会怎么变化（图源：Cameron Davidson-Pilon, Probabilistic Programming and Bayesian Methods for Hackers, 2016）：</p>
+\]</span> 后验概率密度表示在已知x的前提下关于参数<span
+class="math inline">\(\theta\)</span>的一个概率密度函数，即<span
+class="math inline">\(\theta\)</span>是一个分布，而不是一个固定的值，这是贝叶斯学派与传统学派最大的不同。</p>
+<p>似然函数<span
+class="math inline">\(f(x|\theta)\)</span>可以这么理解：每个事件的背后都有一个分布，这个分布里是含有参数的，并且传统学派认为这个参数<span
+class="math inline">\(\theta\)</span>是固定的，我们做了大量的实验，用很多样本x就是为了求出这个参数的值，观测到的样本x是以参数<span
+class="math inline">\(\theta\)</span>为前提的一个分布。为了估计<span
+class="math inline">\(\theta\)</span>，我们用到了<strong>矩估计</strong>和<strong>极大似然估计</strong>，本质上都是一样的，我们在参数<span
+class="math inline">\(\theta\)</span>的前提下，从总体X中采样n个样本，用样本的性质来大致替代总体的参数<span
+class="math inline">\(\theta\)</span>。具体到极大似然：通过找到使似然函数<span
+class="math inline">\(\prod_{i=1}^{n}f(x_i|\theta)\)</span>最大的参数当作<span
+class="math inline">\(\theta\)</span>，其实就是选择一个<span
+class="math inline">\(\theta\)</span>使得样本出现的概率最大，本质上仍然是在拟合样本数据。</p>
+<p>从上面的分析可以看出：我们的未知参数<span
+class="math inline">\(\theta\)</span>是从样本中计算得到的，必然和总体中原本的参数值存在误差，并且只能求得一个固定的参数值。贝叶斯理论认为：参数<span
+class="math inline">\(\theta\)</span>不应该是一个单独的值，更加合理的解释应该是参数<span
+class="math inline">\(\theta\)</span>有很多取值，并且每个取值都有相应的概率，即参数是服从某种分布的。概率最大的那个参数值即<strong>最大后验估计</strong>，参数取值的中位数即<strong>后验中位数估计</strong>，参数取值的均值即<strong>后验期望估计</strong>。为什么仍然叫估计呢？因为我们的后验分布是从似然计算得到的，我们无法采样所有的总体中的样本，所以也就无法计算出参数<span
+class="math inline">\(\theta\)</span>的精确分布。</p>
+<p>最后来看看先验分布<span
+class="math inline">\(\pi(\theta)\)</span>，即在获得实验观测值之前对未知参数分布的一个主观认识，这也是贝叶斯学派一直被攻击的一点，客观的统计学中竟然引入了主观的因素！比如对于材质均匀的硬币，在抛掷之前，我们脑海中就会认为出现正反面的概率各是0.5。</p>
+<p>但是很多时候先验分布是很难获得的，如果硬币材质不均匀，我们的先验又应当是什么分布呢？此时就引入了课程上讲的<strong>无信息先验</strong>，当我们对事件没有了解的时候，认为参数所有取值的概率都是相等的，在硬币实验中，我们认为<span
+class="math inline">\(\theta\)</span>是服从(0,1)的均匀分布。接着我们来做实验，看看后验分布会怎么变化（图源：Cameron
+Davidson-Pilon, Probabilistic Programming and Bayesian Methods for
+Hackers, 2016）：</p>
 <figure>
-<img src="https://img-blog.csdnimg.cn/img_convert/11e883581dd48f9c8442b8273371766d.png" alt="" /><figcaption>img</figcaption>
+<img
+src="https://img-blog.csdnimg.cn/img_convert/11e883581dd48f9c8442b8273371766d.png"
+alt="img" />
+<figcaption aria-hidden="true">img</figcaption>
 </figure>
 <figure>
-<img src="https://img-blog.csdnimg.cn/img_convert/3110af9ecffd601bb7acd89d86ad9784.png" alt="" /><figcaption>img</figcaption>
+<img
+src="https://img-blog.csdnimg.cn/img_convert/3110af9ecffd601bb7acd89d86ad9784.png"
+alt="img" />
+<figcaption aria-hidden="true">img</figcaption>
 </figure>
 <p>从图中可以看出：起初是均匀分布，连续抛掷了2次正面，此时认为该硬币正面向上的概率为1的可能性是最大的，但注意：正面向上的概率取0.6,0.4的可能也不是没有，不过这种可能性更小罢了。如果我们用极大似然去估计，就会得到该硬币正面向上的概率是1，正面向上的概率取0.6,0.4的可能为0，这显然与现实不符！接着抛了一次反面，正面向上的概率分布又进行了修正，不断通过观测值修正我们的后验，最终得到一个稳定的后验分布。</p>
-<p>均匀分布<span class="math inline">\(U(a,b)\)</span>作为先验看起来很好用，但是他本质上还是有倾向性的，即认为在区间(a,b)内是有取值的，在区间外是没有取值的可能的，更加合理的无信息先验可以选取一个大方差的高斯分布。</p>
-<p>选择高斯分布作为先验带来的一个问题是计算上的复杂性骤然提高，所以引入了<strong>共轭先验分布</strong>：即后验分布<span class="math inline">\(\pi(\theta|x)\)</span>与先验分布<span class="math inline">\(\pi(\theta)\)</span>是同一种类型的分布，就称先验分布<span class="math inline">\(\pi(\theta)\)</span>是<span class="math inline">\(f(x|\theta)\)</span>的共轭先验分布。这样我们在计算后验分布时，就无需计算复杂的积分，只要调整先验分布的参数即可确定后验分布。可以证明：<span class="math inline">\(\beta\)</span>分布是二项分布<span class="math inline">\(B(n,p)\)</span>中参数<span class="math inline">\(p\)</span>的共轭先验分布。即如果总体<span class="math inline">\(X|\theta\sim B(N,\theta)\)</span>，从中采样n个样本，样本分布即似然函数<span class="math inline">\(f(x|\theta)\)</span>服从<span class="math inline">\(\beta\)</span>分布，假设先验<span class="math inline">\(\theta\sim\beta(a,b)\)</span>，那么后验分布<span class="math inline">\(\theta|x\sim\beta(a+\sum x_i,b+nN-\sum x_i)\)</span>。</p>
-<p>证明： 总体<span class="math inline">\(X|\theta\sim B(N,\theta)\)</span>，先验<span class="math inline">\(\theta\sim\beta(a,b)\)</span>，<span class="math inline">\(X=(X_1,...,X_n)^T\)</span>是来自总体的n个样本，则样本分布为： <span class="math display">\[
+<p>均匀分布<span
+class="math inline">\(U(a,b)\)</span>作为先验看起来很好用，但是他本质上还是有倾向性的，即认为在区间(a,b)内是有取值的，在区间外是没有取值的可能的，更加合理的无信息先验可以选取一个大方差的高斯分布。</p>
+<p>选择高斯分布作为先验带来的一个问题是计算上的复杂性骤然提高，所以引入了<strong>共轭先验分布</strong>：即后验分布<span
+class="math inline">\(\pi(\theta|x)\)</span>与先验分布<span
+class="math inline">\(\pi(\theta)\)</span>是同一种类型的分布，就称先验分布<span
+class="math inline">\(\pi(\theta)\)</span>是<span
+class="math inline">\(f(x|\theta)\)</span>的共轭先验分布。这样我们在计算后验分布时，就无需计算复杂的积分，只要调整先验分布的参数即可确定后验分布。可以证明：<span
+class="math inline">\(\beta\)</span>分布是二项分布<span
+class="math inline">\(B(n,p)\)</span>中参数<span
+class="math inline">\(p\)</span>的共轭先验分布。即如果总体<span
+class="math inline">\(X|\theta\sim
+B(N,\theta)\)</span>，从中采样n个样本，样本分布即似然函数<span
+class="math inline">\(f(x|\theta)\)</span>服从<span
+class="math inline">\(\beta\)</span>分布，假设先验<span
+class="math inline">\(\theta\sim\beta(a,b)\)</span>，那么后验分布<span
+class="math inline">\(\theta|x\sim\beta(a+\sum x_i,b+nN-\sum
+x_i)\)</span>。</p>
+<p>证明： 总体<span class="math inline">\(X|\theta\sim
+B(N,\theta)\)</span>，先验<span
+class="math inline">\(\theta\sim\beta(a,b)\)</span>，<span
+class="math inline">\(X=(X_1,...,X_n)^T\)</span>是来自总体的n个样本，则样本分布为：
+<span class="math display">\[
 p(x|\theta)=L(\theta)=\prod_{i=1}^{n}\tbinom{N}{x_i}\theta^{x_i}(1-\theta)^{N-x_i}\propto\theta^{\sum_{i=1}^{n}x_i}(1-\theta)^{nN-\sum_{i=1}^{n}x_i}
-\]</span> 可以看到：似然函数<span class="math inline">\(L(\theta)\)</span>具有<span class="math inline">\(\beta\)</span>分布的核，先验的核为<span class="math inline">\(\theta^{a-1}(1-\theta)^{b-1}\)</span>，所以后验为： <span class="math display">\[
+\]</span> 可以看到：似然函数<span
+class="math inline">\(L(\theta)\)</span>具有<span
+class="math inline">\(\beta\)</span>分布的核，先验的核为<span
+class="math inline">\(\theta^{a-1}(1-\theta)^{b-1}\)</span>，所以后验为：
+<span class="math display">\[
 \pi(\theta|x)\propto\theta^{a-1+\sum_{i=1}^{n}x_i}(1-\theta)^{b-1+nN-\sum_{i=1}^{n}x_i},0&lt;\theta&lt;1
-\]</span> 显然后验分布的核与<span class="math inline">\(\beta\)</span>分布的核是同种类型，即<span class="math inline">\(\theta|x\sim\beta(a+\sum x_i,b+nN-\sum x_i)\)</span>，所以<span class="math inline">\(\beta\)</span>分布是二项分布<span class="math inline">\(B(n,p)\)</span>中参数<span class="math inline">\(p\)</span>的共轭先验分布。</p>
+\]</span> 显然后验分布的核与<span
+class="math inline">\(\beta\)</span>分布的核是同种类型，即<span
+class="math inline">\(\theta|x\sim\beta(a+\sum x_i,b+nN-\sum
+x_i)\)</span>，所以<span
+class="math inline">\(\beta\)</span>分布是二项分布<span
+class="math inline">\(B(n,p)\)</span>中参数<span
+class="math inline">\(p\)</span>的共轭先验分布。</p>
 
     </div>
 

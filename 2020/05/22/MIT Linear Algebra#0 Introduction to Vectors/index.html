@@ -28,7 +28,7 @@
 <meta property="og:description" content="MIT 18.06">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-05-22T06:30:00.000Z">
-<meta property="article:modified_time" content="2022-04-30T13:11:01.000Z">
+<meta property="article:modified_time" content="2022-04-30T13:11:01.157Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Linear Algebra">
 <meta name="twitter:card" content="summary">
@@ -251,7 +251,8 @@
 
       
         <h4 id="前言"><em>前言</em></h4>
-<p><em>线性代数应该是大部分工科和商科同学的必修课，然而很不幸的是：国内的线代教学简直一团糟。如同国内大学的其他课一样，一上来就是一堆不知所云的概念、定义和性质，然后是没有什么道理的计算技巧训练，期末考完试一切结束。如果你有时间看看MIT的18.06，相信绝对会刷新你对这个学科的认知，Gilbert Strang完美遵循了现实生活中遇到了什么问题、为什么会有这些问题、该如何解决、更好的方法这一教学链条。循循善诱、环环相扣，你会觉得上课、学习数学是一种享受。</em></p>
+<p><em>线性代数应该是大部分工科和商科同学的必修课，然而很不幸的是：国内的线代教学简直一团糟。如同国内大学的其他课一样，一上来就是一堆不知所云的概念、定义和性质，然后是没有什么道理的计算技巧训练，期末考完试一切结束。如果你有时间看看MIT的18.06，相信绝对会刷新你对这个学科的认知，Gilbert
+Strang完美遵循了现实生活中遇到了什么问题、为什么会有这些问题、该如何解决、更好的方法这一教学链条。循循善诱、环环相扣，你会觉得上课、学习数学是一种享受。</em></p>
 <h4 id="方式"><em>方式</em></h4>
 <p><em>这门课我强烈建议去看Gil老爷子的视频，2020年的Lecture真心觉得不太良心，看完视频可以做做20版的作业加深理解。<br />
 我会在Blog中专门记录这门课的笔记和理解，并且覆盖一些有趣的作业题。废话不多说，开始吧~</em></p>
@@ -261,7 +262,8 @@
 \begin{cases}
 2x-y=0&amp; \text{}\\
 -x+2y=3&amp; \text{}
-\end{cases}\]</span> 从几何上来看：就是二维平面上两条直线相交于<span class="math inline">\((1,2)\)</span>。<br />
+\end{cases}\]</span> 从几何上来看：就是二维平面上两条直线相交于<span
+class="math inline">\((1,2)\)</span>。<br />
 从Row Picture来看：可以很直观地写作： <span class="math display">\[
 \begin{bmatrix}
    2 &amp; -1 \\
@@ -273,7 +275,9 @@
    0 \\
    3
   \end{bmatrix}
-\]</span> 这种思考方式也是国内灌输的，第一行乘以第一列得到0，第二行乘以第一列得到3，但其实更重要的是从<strong>向量(列)的线性组合</strong>角度去考虑： <span class="math display">\[
+\]</span>
+这种思考方式也是国内灌输的，第一行乘以第一列得到0，第二行乘以第一列得到3，但其实更重要的是从<strong>向量(列)的线性组合</strong>角度去考虑：
+<span class="math display">\[
 x\begin{bmatrix}
    2 \\
    -1
@@ -284,11 +288,24 @@ x\begin{bmatrix}
    0 \\
    3
   \end{bmatrix}
-\]</span> 这样从几何上解释就是：有两个向量<span class="math inline">\(\begin{bmatrix}  2 \\  -1  \end{bmatrix}\)</span>、<span class="math inline">\(\begin{bmatrix}  -1 \\  2  \end{bmatrix}\)</span>，要找到某个组合<span class="math inline">\((x,y)\)</span>可以得到向量<span class="math inline">\(\begin{bmatrix}  0 \\  3  \end{bmatrix}\)</span>。<br />
+\]</span> 这样从几何上解释就是：有两个向量<span
+class="math inline">\(\begin{bmatrix}  2
+\\  -1  \end{bmatrix}\)</span>、<span
+class="math inline">\(\begin{bmatrix}  -1
+\\  2  \end{bmatrix}\)</span>，要找到某个组合<span
+class="math inline">\((x,y)\)</span>可以得到向量<span
+class="math inline">\(\begin{bmatrix}  0
+\\  3  \end{bmatrix}\)</span>。<br />
 类似地，三元一次方程组也可以从列向量线性组合的角度考虑，几何上扩展到三维空间。<br />
-由此推广到更加一般的情形：<span class="math inline">\(Ax=b\)</span>，自然而然地，我们想知道：是否对于任意的<span class="math inline">\(b\)</span>，此方程都有解？或者换句话：对于三元一次方程组，<strong>列向量的线性组合是否能充满整个三维空间？</strong><br />
-如果三个向量共面，那么最多只能生成一个平面，也就是不能保证可以生成任意的<span class="math inline">\(b\)</span>(有解)。后面会知道，有解的条件就是<span class="math inline">\(A\)</span><strong>可逆</strong>。<br />
-这节课最重要的一点就是要用<strong>Column Picture去思考<span class="math inline">\(Ax=b\)</span></strong>，为了加深理解，再举例： <span class="math display">\[
+由此推广到更加一般的情形：<span
+class="math inline">\(Ax=b\)</span>，自然而然地，我们想知道：是否对于任意的<span
+class="math inline">\(b\)</span>，此方程都有解？或者换句话：对于三元一次方程组，<strong>列向量的线性组合是否能充满整个三维空间？</strong><br />
+如果三个向量共面，那么最多只能生成一个平面，也就是不能保证可以生成任意的<span
+class="math inline">\(b\)</span>(有解)。后面会知道，有解的条件就是<span
+class="math inline">\(A\)</span><strong>可逆</strong>。<br />
+这节课最重要的一点就是要用<strong>Column Picture去思考<span
+class="math inline">\(Ax=b\)</span></strong>，为了加深理解，再举例：
+<span class="math display">\[
 \begin{bmatrix}
    2 &amp; 5 \\
    1 &amp; 3
@@ -308,8 +325,14 @@ x\begin{bmatrix}
 \]</span></p>
 <h2 id="作业">作业</h2>
 <ol type="1">
-<li>Draw two non-colinear vectors v and w, and the region that consists of all combinations cv+dw where 0 ≤ c ≤ 1 and 0 ≤ d ≤ 1. Now consider the linear transformation of the unit square (all points (c,d) with 0 ≤ c ≤ 1 and 0 ≤ d ≤ 1) by the 2x2 matrix with first column v and second column w. Are these two regions the same?<br />
-答：两个区域相同。 对<span class="math inline">\((c,d)\)</span>做线性变换，也即 <span class="math display">\[
+<li>Draw two non-colinear vectors v and w, and the region that consists
+of all combinations cv+dw where 0 ≤ c ≤ 1 and 0 ≤ d ≤ 1. Now consider
+the linear transformation of the unit square (all points (c,d) with 0 ≤
+c ≤ 1 and 0 ≤ d ≤ 1) by the 2x2 matrix with first column v and second
+column w. Are these two regions the same?<br />
+答：两个区域相同。 对<span
+class="math inline">\((c,d)\)</span>做线性变换，也即 <span
+class="math display">\[
 \begin{bmatrix}
    v&amp;w \\
   \end{bmatrix}\begin{bmatrix}

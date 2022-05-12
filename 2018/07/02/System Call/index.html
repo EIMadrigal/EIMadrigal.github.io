@@ -27,14 +27,11 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="利用内核模块添加系统调用">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195514838-1179859005.png">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195533943-914673534.png">
 <meta property="article:published_time" content="2018-07-02T11:08:00.000Z">
 <meta property="article:modified_time" content="2022-04-15T13:19:35.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="OS">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195514838-1179859005.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2018/07/02/System%20Call/">
 
@@ -279,22 +276,35 @@
 </ul>
 <ol type="1">
 <li>头文件声明。其中<code>module.h</code>和<code>init.h</code>是必不可少的。<code>Module.h</code>包含加载模块时需要的函数和符号定义；<code>init.h</code>包含模块初始化和清理函数的定义。如果在加载时允许用户传递参数，模块中还应包含<code>moduleparam.h</code>头文件。</li>
-<li>模块许可声明。从内核2.4.10版本开始，模块必须通过<code>MODULE_LICENSE</code>宏声明此模块的许可证，否则在加载模块时会显示"kernel tainted(内核被污染)"的警告信息。从<code>linux/module.h</code>文件中可以看到，被内核接受的许可证有GPL、GPL v2、GPL and additional rights、Dual BSD/GPL、Dual MPL/GPL、Dual MIT/GPL和Proprietaty。</li>
+<li>模块许可声明。从内核2.4.10版本开始，模块必须通过<code>MODULE_LICENSE</code>宏声明此模块的许可证，否则在加载模块时会显示"kernel
+tainted(内核被污染)"的警告信息。从<code>linux/module.h</code>文件中可以看到，被内核接受的许可证有GPL、GPL
+v2、GPL and additional rights、Dual BSD/GPL、Dual MPL/GPL、Dual
+MIT/GPL和Proprietaty。</li>
 <li>初始化和清理函数声明。<br />
 内核模块必须调用宏<code>module_init</code>和<code>module_exit</code>去注册初始化和清理函数。初始化和清理函数必须在宏<code>module_init</code>和<code>module_exit</code>使用前定义，否则会出现编译错误。这两个函数配对使用，例如当初始化函数申请了一个资源，那么清理函数就应该释放这个资源，使得模块不留下任何副作用。除了模块初始化函数和清理函数，还可以根据需要设计编写其它函数。</li>
 </ol>
 <ul>
-<li>proc文件系统 在linux操作系统中，提供了一套在用户态检查内核状态和系统特征的机制，就是进程文件系统(process file system)。<br />
+<li>proc文件系统
+在linux操作系统中，提供了一套在用户态检查内核状态和系统特征的机制，就是进程文件系统(process
+file system)。<br />
 Proc文件系统将进程信息、系统的硬件信息(包括CPU、内存状态及网卡等各种硬件设备)、系统相关机制(中断、I/O)等内容全部映射为虚拟的linux文件。它以一种特殊的文件系统的方式，为访问系统内核数据的操作提供接口。这些文件的内容都不存在于任何存储设备上，而是在读/写的时候才根据系统中的有关信息生成出来，或者映射到系统中的有关变量或者数据结构。<br />
 系统中当前运行的每一个每一个进程都有一个对应的目录在/proc下，以进程的ID为目录名：<br />
-<img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195514838-1179859005.png" alt="image" /></li>
+<img
+src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195514838-1179859005.png"
+alt="image" /></li>
 </ul>
 <p>除了与进程有关的子目录，/proc还有一些内核信息的目录：<br />
-<img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195533943-914673534.png" alt="image" /></p>
+<img
+src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108195533943-914673534.png"
+alt="image" /></p>
 <h2 id="fork">fork()</h2>
-<p><code>fork()</code>系统调用用来创建一个子进程, 为了避免多余开销, 创建子进程时并不会立即将父进程的内存页面拷贝一份, Linux kernel将所有内存页面标记为只读并由父子进程共享, 只有当需要写入这些页面时才进行拷贝, 即所谓的Copy-on-Write.</p>
+<p><code>fork()</code>系统调用用来创建一个子进程, 为了避免多余开销,
+创建子进程时并不会立即将父进程的内存页面拷贝一份, Linux
+kernel将所有内存页面标记为只读并由父子进程共享,
+只有当需要写入这些页面时才进行拷贝, 即所谓的Copy-on-Write.</p>
 <h2 id="实现">实现</h2>
-<p><a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/system_call">源代码、实现过程及结果</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/EIMadrigal/system_call">源代码、实现过程及结果</a></p>
 
     </div>
 

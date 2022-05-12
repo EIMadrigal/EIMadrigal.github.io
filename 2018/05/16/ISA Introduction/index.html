@@ -28,7 +28,7 @@
 <meta property="og:description" content="指令集简介">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2018-05-16T14:11:32.000Z">
-<meta property="article:modified_time" content="2022-01-30T09:53:29.053Z">
+<meta property="article:modified_time" content="2022-01-30T09:53:29.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="System">
 <meta name="twitter:card" content="summary">
@@ -269,7 +269,8 @@ X86-32的系统有8个通用寄存器，之后X86-64系统扩展到了16个。</
 <li>由于后向兼容以及类RISC内核，导致功耗增加；同时，有很多复杂的指令利用率很低。</li>
 </ul>
 <h2 id="mips指令集">MIPS指令集</h2>
-<p>MIPS指令集是典型的RISC(Reduced Instruction Set Computer)指令集。<br />
+<p>MIPS指令集是典型的RISC(Reduced Instruction Set
+Computer)指令集。<br />
 精简指令集系统的设计思想就是：把复杂指令集中一些不常用的指令踢出指令集，这些复杂指令由日益强大的软件技术(编译)去实现，这样使得每个指令的流水线分段比较均匀，充分利用了处理器的流水线结构，提高了主频。<br />
 MIPS指令集以32个寄存器为中心，只能通过<strong>Load/Store</strong>指令访问内存，其余涉及计算的指令都从寄存器堆中读取数据，并且将计算结果写入寄存器堆中。<br />
 另外，MIPS指令的格式比较规整，所有指令长度一致，指令操作码都在固定的位置；寻址方式、对于每条指令的操作都很简单。<br />
