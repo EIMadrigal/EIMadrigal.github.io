@@ -28,7 +28,7 @@
 <meta property="og:description" content="部分题目分析">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-07-16T07:21:00.000Z">
-<meta property="article:modified_time" content="2022-01-29T14:54:55.000Z">
+<meta property="article:modified_time" content="2022-05-15T16:04:41.741Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="Interview">
@@ -292,6 +292,10 @@ target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-ru
 <p>对于大于等于P的电池，只能利用P，让其一直供应一台电脑即可，即填充一列，剩余电量只能丢弃，因为该电池不能同时供应2台电脑。对于小于P的，让其供应一台电脑直到电量耗尽，注意这些小于P的电池不可能出现同时供应2台电脑的情况，对于小于P的电池，首先拿一个填充一列，当然填不满，接着拿第二个继续填充，如果该列满了就填下一列，以此类推，由于小于P的电池最多填充P
 -
 1行，因此不会出现相同颜色。（最极端的情况就是：某种颜色的电量为1，只能填1行，第二种颜色最多P-1行，因此下一列不会重复，如果第二种颜色可以填P行，那么下一列才会重复）。</p>
+<p>假设共m个电池, 大于等于P的有a个, 小于P的有m-a个.
+由于大于等于P的只需要撑a台电脑,
+因此问题转变为小于P的m-a个电池能否撑n-a台, 即sum(m-a) &gt;= (n-a) * P.
+稍微转化下: sum(m-a) + a * P &gt;= n * P.</p>
 <p>因此判断P是否合法只需要求所有电池里：如果电量大于等于P，sum +=
 P，否则将剩余所有的电量小于P的电量全部加到sum起来，判断sum是否大于等于P
 * K。</p>

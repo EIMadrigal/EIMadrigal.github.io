@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20201014165121101.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2020111909030584.png">
 <meta property="article:published_time" content="2020-11-28T02:12:00.000Z">
-<meta property="article:modified_time" content="2022-04-27T13:32:11.988Z">
+<meta property="article:modified_time" content="2022-05-16T01:50:14.583Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Projects">
 <meta name="twitter:card" content="summary">
@@ -258,7 +258,8 @@
         <h2 id="basic-info">Basic Info</h2>
 <p>这是CMU 15-213的Malloc Lab，本来没打算做，被同学安利了一波~<br />
 需要用C语言实现一个动态内存分配器(Dynamic Storage
-Allocator)，类似于<code>Glibc</code>中的<code>malloc/free/realloc</code>，整体来看难度较大.</p>
+Allocator)，类似于<code>Glibc</code>中的<code>malloc/free/realloc</code>,
+由于涉及到很多未知类型的指针操作, 整体来看难度较大.</p>
 <p>开始没什么思路，看了下CSAPP动态内存分配那一节，内存的划分是这样子的：
 <img src="https://img-blog.csdnimg.cn/2020101116464245.png" alt="在这里插入图片描述" style="zoom:80%;" />
 程序动态申请的内存主要是Heap段，Allocator将堆视作不同size的块，Allocator有2种：</p>
@@ -294,10 +295,18 @@ Allocators：需要应用程序手动释放申请的内存块，<code>malloc/fre
 <code>size_t mem_heapsize()</code>: 返回当前堆的大小；<br />
 <code>size_t mem_pagesize()</code>: 返回系统页面大小。</p>
 <h2 id="implementation">Implementation</h2>
-<p>首先明确设计约束条件： - 可以处理任意的请求释放序列 -
-请求需要被立即响应 - 内存对齐要求 - 不能修改已经分配的内存块</p>
-<p>再明确设计目标： - 最大化吞吐量：平均每秒能够完成的操作次数 -
-最大化内存利用率：<code>mm_alloc</code>或<code>mm_realloc</code>申请但还未被释放的内存空间与堆大小的比值</p>
+<p>首先明确设计约束条件：</p>
+<ul>
+<li>可以处理任意的请求释放序列</li>
+<li>请求需要被立即响应</li>
+<li>内存对齐要求</li>
+<li>不能修改已经分配的内存块</li>
+</ul>
+<p>再明确设计目标：</p>
+<ul>
+<li>最大化吞吐量：平均每秒能够完成的操作次数</li>
+<li>最大化内存利用率：<code>mm_alloc</code>或<code>mm_realloc</code>申请但还未被释放的内存空间与堆大小的比值</li>
+</ul>
 <p>内存利用率最大化：用peak utilization衡量，假设有<span
 class="math inline">\(n\)</span>个请求：<span class="math inline">\(R_0,
 R_1, ... R_k, ..., R_{n-1}\)</span>，在<span
@@ -314,20 +323,20 @@ class="math display">\[U_k=\frac{max_{i\leq k}P_i}{H_k}\]</span>
 <p>具体来说，有以下几点： <img
 src="https://img-blog.csdnimg.cn/20201023215211206.png"
 alt="在这里插入图片描述" />
-这些关键细节的设计非常重要，再BB一次：程序架构、数据结构和接口设计是一门艺术！
--
-<code>free</code>只给一个指针，怎么知道要释放多少空间：记录每一块的大小；
--
-空闲块的组织管理：隐式空闲链表、显式空闲链表（双向链表）（存储指针域开销太大）、Segregated
-Free Lists、将空闲块始终按大小排序； - Placement Policy:
+这些关键细节的设计非常重要，再BB一次：程序架构、数据结构和接口设计是一门艺术！</p>
+<ul>
+<li><code>free</code>只给一个指针，怎么知道要释放多少空间：记录每一块的大小；</li>
+<li>空闲块的组织管理：隐式空闲链表、显式空闲链表（双向链表）（存储指针域开销太大）、Segregated
+Free Lists、将空闲块始终按大小排序；</li>
+<li>Placement Policy:
 有多个满足要求的空闲块，如何选择以放置新的申请：First Fit, Next Fit,
-Best Fit - Splitting:
-在一个空闲块放置申请后如何处理剩余的空闲空间。可以直接将整个空闲块分配出去，也可以将剩余的空闲空间重新利用；
--
-无法找到合适的满足请求的块：做空闲块合并后再次检查是否可以满足；用<code>sbrk</code>向内核申请更多的内存，插入空闲链表；
--
-<strong>空闲块合并</strong>：需要考虑何时合并：立即合并（可能引发抖动）、延迟合并（申请失败时合并整个堆里所有的空闲块）；合并后面的块很容易，但是要高效合并前面的空闲块，需要用双向的Boundary
-Tag(可以优化以减少空间开销)；</p>
+Best Fit</li>
+<li>Splitting:
+在一个空闲块放置申请后如何处理剩余的空闲空间。可以直接将整个空闲块分配出去，也可以将剩余的空闲空间重新利用；</li>
+<li>无法找到合适的满足请求的块：做空闲块合并后再次检查是否可以满足；用<code>sbrk</code>向内核申请更多的内存，插入空闲链表；</li>
+<li><strong>空闲块合并</strong>：需要考虑何时合并：立即合并（可能引发抖动）、延迟合并（申请失败时合并整个堆里所有的空闲块）；合并后面的块很容易，但是要高效合并前面的空闲块，需要用双向的Boundary
+Tag(可以优化以减少空间开销)；</li>
+</ul>
 <p>不仅需要记录每块的大小，还需要区分已分配块和空闲块，所以block的格式可以设计如下：
 <img src="https://img-blog.csdnimg.cn/20201011195117307.png"
 alt="在这里插入图片描述" /> 如果要求double-word(8B)对齐，那么Block
@@ -352,10 +361,13 @@ block的中间是做了一些小优化，方便直接定位到下一块的数据
 block size，即使只请求了1B，也要分配minimum block size，这里是16B。</p>
 <p>写代码时先实现并测试<code>malloc</code>和<code>free</code>，如果能正确并且高效执行，再去实现<code>realloc</code>。</p>
 <h2 id="evaluation">Evaluation</h2>
-<p>性能主要考虑2方面因素： - 空间利用率<span
-class="math inline">\(U\)</span>：peak
-ratio即评测程序申请的总内存（<code>mm_malloc/mm_realloc</code>但是还没有<code>mm_free</code>）与分配器使用的堆容量的比值，需要用好的策略减小碎片，使得该值接近1；
-- 吞吐量<span class="math inline">\(T\)</span>：每秒完成的操作数量</p>
+<p>性能主要考虑2方面因素：</p>
+<ul>
+<li>空间利用率<span class="math inline">\(U\)</span>：peak
+ratio即评测程序申请的总内存（<code>mm_malloc/mm_realloc</code>但是还没有<code>mm_free</code>）与分配器使用的堆容量的比值，需要用好的策略减小碎片，使得该值接近1；</li>
+<li>吞吐量<span
+class="math inline">\(T\)</span>：每秒完成的操作数量</li>
+</ul>
 <p>评测程序会综合考虑2个方面，计算一个performance index <span
 class="math display">\[P=wU+(1-w)min(1,\frac{T}{T_{libc}})\]</span>
 <span
