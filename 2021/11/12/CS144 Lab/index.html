@@ -28,7 +28,7 @@
 <meta property="og:description" content="Introduction to Computer Networking">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-11-12T12:49:00.000Z">
-<meta property="article:modified_time" content="2022-02-27T14:07:50.000Z">
+<meta property="article:modified_time" content="2022-05-31T03:42:34.112Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="System">
 <meta property="article:tag" content="Projects">
@@ -566,8 +566,10 @@ alt="image" />
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (_receiver_free_space) &#123;</span><br><span class="line">    <span class="keyword">size_t</span> payload_size =</span><br><span class="line">        <span class="built_in">min</span>(&#123;_stream.<span class="built_in">buffer_size</span>(), <span class="keyword">static_cast</span>&lt;<span class="keyword">size_t</span>&gt;(_receiver_free_space),</span><br><span class="line">             TCPConfig::MAX_PAYLOAD_SIZE&#125;);</span><br><span class="line">    TCPSegment seg;</span><br><span class="line">    <span class="keyword">if</span> (_stream.<span class="built_in">eof</span>() &amp;&amp;</span><br><span class="line">        <span class="keyword">static_cast</span>&lt;<span class="keyword">size_t</span>&gt;(_receiver_free_space) &gt; payload_size) &#123;</span><br><span class="line">        seg.<span class="built_in">header</span>().fin = <span class="literal">true</span>;</span><br><span class="line">        _fin = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    seg.<span class="built_in">payload</span>() = <span class="built_in">Buffer</span>(_stream.<span class="built_in">read</span>(payload_size));</span><br><span class="line">    <span class="keyword">if</span> (seg.<span class="built_in">length_in_sequence_space</span>() == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">    _send_segment(seg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 但是这样可能导致一直发送只包含FIN的段，因此要在while循环限定<code>_fin</code>来确保只发一次FIN段。</p>
 <p>关于重传，闲来无事，把重传计时器单独写一个类，因为这个类相对比较简单，所以就和sender放在同一个头文件吧，不过据说有些公司的coding
-guideline有规定： &gt; Each class shall have it's own header and
-implementation file.</p>
+guideline有规定：</p>
+<blockquote>
+<p>Each class shall have it's own header and implementation file.</p>
+</blockquote>
 <p>采用累计确认：如果发送方收到ackno代表之前的所有段都正常接收，因此用<code>std::queue</code>存没有收到ack的段（包括只被ack了一部分的段），超时后从队头开始传。<br />
 <code>_segments_outstanding</code>发送时在<code>std::queue</code>里是按照seqno有序的，只有每次收到ack才从<code>std::queue</code>里扔掉一些已经被完全确认收到的段，否则认为<code>std::queue</code>里的所有段接收方均未收到。</p>
 <p>收到ack并清理完<code>_segments_outstanding</code>后，如果此时还有未被确认的段，重启计时器并将RTO和重传counter恢复初始值。<br />
@@ -884,7 +886,7 @@ stream</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-l
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">178</span>
+          <span class="site-state-item-count">180</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
