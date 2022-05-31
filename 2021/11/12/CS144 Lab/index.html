@@ -27,13 +27,15 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="Introduction to Computer Networking">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://eimadrigal.github.io/2021/11/12/CS144%20Lab/retransmit.png">
 <meta property="article:published_time" content="2021-11-12T12:49:00.000Z">
-<meta property="article:modified_time" content="2022-05-31T03:42:34.112Z">
+<meta property="article:modified_time" content="2022-05-31T05:11:31.925Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="System">
 <meta property="article:tag" content="Projects">
 <meta property="article:tag" content="Network">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://eimadrigal.github.io/2021/11/12/CS144%20Lab/retransmit.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2021/11/12/CS144%20Lab/">
 
@@ -576,9 +578,8 @@ guideline有规定：</p>
 注意收到的ack可能是非法的，比如ack了一个还没有发送的段或者ack了已经收到的段的序列号<br />
 还有一个corner
 case在<code>send_extra.cc</code>的95行，如果收到了与上次相同的ack，计时器是不应该重启的，重传时只有收到的ackno严格大于上一次的ackno才重启。</p>
-<p>计时器的启动可以参考课本： <img
-src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211222163312884-1740072168.png"
-alt="image" /></p>
+<p>计时器的启动可以参考课本： <img src="retransmit.png"
+alt="计时器" /></p>
 <h2 id="lab-4">Lab 4</h2>
 <p>本次实验要实现<code>TCPConnection</code>负责将同一个主机内的<code>TCPSender</code>和<code>TCPReceiver</code>衔接起来，理论上如果<code>TCPSender</code>和<code>TCPReceiver</code>足够鲁棒，那么<code>TCPConnection</code>写起来很快，然而现实太过冰冷...第一次在项目中体会到测试的重要性，也有点理解TDD的好处了，好的测试不仅能够发现问题，还能根据测试样例debug，再次跪谢Stanford~</p>
 <p><code>TCPConnection</code>既充当接收者，也充当发送者，可以理解为实现以后就可以在你自己的主机上使用，接收别人的消息，发送自己的消息。还有syn的处理需要考虑作为接收方和发送方两种情况分别处理。</p>
@@ -886,7 +887,7 @@ stream</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-l
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-count">179</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

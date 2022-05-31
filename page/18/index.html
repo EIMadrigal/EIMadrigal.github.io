@@ -190,82 +190,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/04/20/Process%20Synchronization-Example%202/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/favicon.png">
-      <meta itemprop="name" content="EIMadrigal">
-      <meta itemprop="description" content="Hello World">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EI Madrigal's Space">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/04/20/Process%20Synchronization-Example%202/" class="post-title-link" itemprop="url">Process Synchronization-Example 2</a>
-        </h2>
-
-        <div class="post-meta">
-
-		  
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2018-04-20 20:59:32" itemprop="dateCreated datePublished" datetime="2018-04-20T20:59:32+08:00">2018-04-20</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>理发师睡觉问题</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/04/20/Process%20Synchronization-Example%202/">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/2018/04/11/Process%20Synchronization-Example%201/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -849,6 +773,8 @@ src="https://img-blog.csdnimg.cn/54aa480dbe924f0a86bdb02b6af3c73a.png"
 alt="在这里插入图片描述" />
 <figcaption aria-hidden="true">在这里插入图片描述</figcaption>
 </figure>
+<p>数组只能固定长度，传入变量只能创建为定义了size的切片</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">length := <span class="number">5</span></span><br><span class="line">array := [length]<span class="keyword">int</span>  <span class="comment">// error: non-constant array bound length</span></span><br><span class="line">array := <span class="built_in">make</span>([]<span class="keyword">int</span>, length)</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -1011,7 +937,7 @@ alt="在这里插入图片描述" />
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-count">179</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

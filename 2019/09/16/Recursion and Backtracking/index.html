@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200704153731705.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200704162901848.png">
 <meta property="article:published_time" content="2019-09-16T15:24:00.000Z">
-<meta property="article:modified_time" content="2022-05-11T12:12:31.000Z">
+<meta property="article:modified_time" content="2022-05-31T05:52:58.121Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta name="twitter:card" content="summary">
@@ -322,7 +322,7 @@ alt="image" />
 <figcaption aria-hidden="true">image</figcaption>
 </figure>
 <p>回溯用来搜索选择性问题（a series of
-choices）的所有/部分解，每做一次选择，就递归一次，如果约束条件不满足，需要<strong>回退到上一层递归的参数状态</strong>。<br />
+choices）的所有/部分解，每做一次选择，就递归一次，如果约束条件不满足，需要<strong>回退到上一层递归的参数状态</strong>。通常在返回上层之前，要将本层节点的状态还原。<br />
 通过约束条件的剪枝可以避免对整个搜索空间的穷举，从而提高效率。</p>
 <p>三个关键点：</p>
 <ol type="1">
@@ -510,7 +510,7 @@ O(N^dlogN)\)</span></li>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-count">179</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
