@@ -28,7 +28,7 @@
 <meta property="og:description" content="计网八股文">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-01-02T14:19:00.000Z">
-<meta property="article:modified_time" content="2022-05-31T04:07:36.292Z">
+<meta property="article:modified_time" content="2022-06-02T03:57:54.436Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Interview">
 <meta property="article:tag" content="Network">
@@ -330,6 +330,17 @@ target="_blank" rel="noopener" href="https://www.cnblogs.com/wqhwe/p/5407468.htm
 <p>客户端的对称加密密钥其实是三个随机数的哈希（1.
 客户端第一次给服务端发送请求时附带的随机数 2. 服务器返回时的随机数 3.
 客户端收到返回时的随机数）</p>
+<h2 id="tcp异常连接">TCP异常连接</h2>
+<ol type="1">
+<li>未开启TCP
+keepalive，双方一直没有数据交互，客户端<strong>主机崩溃</strong>：服务器无法感知客户端崩溃，其TCP连接会一直处于<code>ESTABLISHED</code>状态，直到服务端重启进程。</li>
+<li>未开启TCP
+keepalive，双方一直没有数据交互，客户端<strong>进程崩溃</strong>：客户端OS能够感知到进程崩溃，发送FIN报文，正常进行四次挥手。</li>
+<li>未开启TCP
+keepalive，有数据交互，客户端<strong>主机崩溃</strong>，迅速重启：服务端发送的报文无法得到响应，触发超时重传机制，客户端重启完成后接收重传报文。此时如果客户端没有进程监听该报文的目标端口，客户端回复RST报文，断开连接；如果有进程监听，但是之前的TCP连接的数据结构已经丢失，客户端内核协议栈会发现找不到该TCP连接的socket结构体，回复RST报文，断开连接。</li>
+<li>未开启TCP
+keepalive，有数据交互，客户端<strong>主机崩溃</strong>，一直没有重启：服务端超时重传达到最大次数后，内核判定该连接有问题，通过socket接口通知应用程序，断开连接。</li>
+</ol>
 <h2 id="url解析">URL解析</h2>
 <ol type="1">
 <li>域名解析，host使用DNS协议将URL解析为相应的IP</li>
@@ -343,8 +354,6 @@ target="_blank" rel="noopener" href="https://www.cnblogs.com/wqhwe/p/5407468.htm
 <p>常见的发RST的情况：https://zhuanlan.zhihu.com/p/30791159 1.
 SYN包试图连接一个没有任何服务监听的端口 2.
 收到了之前连接的包，但是该连接已经关闭</p>
-<p>TCP连接异常<br />
-https://zhuanlan.zhihu.com/p/390939380</p>
 <p>SYN泛洪攻击</p>
 <p>服务器收到SYN连接请求后，分配缓冲区等资源，初始化连接变量。
 如果客户端的第三次ACK没有收到，服务器首先会重传SYNACK，多次重传后服务器通常会在1min后终止半连接状态并且回收资源。</p>
@@ -500,7 +509,7 @@ lock</p>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%92%8Cudp%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">TCP和UDP区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E8%BF%9E%E6%8E%A5"><span class="nav-number">2.</span> <span class="nav-text">TCP连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93"><span class="nav-number">3.</span> <span class="nav-text">TCP可靠传输</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp"><span class="nav-number">4.</span> <span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#https"><span class="nav-number">5.</span> <span class="nav-text">HTTPS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#url%E8%A7%A3%E6%9E%90"><span class="nav-number">6.</span> <span class="nav-text">URL解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http%E8%AF%B7%E6%B1%82"><span class="nav-number">7.</span> <span class="nav-text">HTTP请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F"><span class="nav-number">8.</span> <span class="nav-text">条件变量</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%92%8Cudp%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">TCP和UDP区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E8%BF%9E%E6%8E%A5"><span class="nav-number">2.</span> <span class="nav-text">TCP连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93"><span class="nav-number">3.</span> <span class="nav-text">TCP可靠传输</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp"><span class="nav-number">4.</span> <span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#https"><span class="nav-number">5.</span> <span class="nav-text">HTTPS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%BC%82%E5%B8%B8%E8%BF%9E%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">TCP异常连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#url%E8%A7%A3%E6%9E%90"><span class="nav-number">7.</span> <span class="nav-text">URL解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http%E8%AF%B7%E6%B1%82"><span class="nav-number">8.</span> <span class="nav-text">HTTP请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F"><span class="nav-number">9.</span> <span class="nav-text">条件变量</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
