@@ -28,7 +28,7 @@
 <meta property="og:description" content="计网八股文">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-01-02T14:19:00.000Z">
-<meta property="article:modified_time" content="2022-06-02T03:57:54.436Z">
+<meta property="article:modified_time" content="2022-07-03T15:45:33.349Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Interview">
 <meta property="article:tag" content="Network">
@@ -379,10 +379,6 @@ guard构造时加锁，局部作用域结束析构释放锁，不够灵活。因
 lock</p>
 <p>shared和weak区别 循环引用导致内存泄漏</p>
 <p>GET：完整请求一个资源，没有请求数据 POST：提交表单，文件等</p>
-<p>孤儿进程：父进程先于子进程结束，被init进程收养
-僵尸进程：子进程先结束但是并未被回收，残留资源PCB在内核中，不能用kill杀死。和阿里的认知不同，待确认！！</p>
-<p>处理僵尸进程方法： 1. 杀死其父进程，使其成为孤儿进程 2.
-信号机制：子进程退出时向父进程发送SIGCHILD信号，父进程处理该信号，在处理函数中调用wait回收资源。</p>
 
     </div>
 
