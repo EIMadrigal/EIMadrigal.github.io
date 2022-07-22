@@ -28,7 +28,7 @@
 <meta property="og:description" content="计网八股文">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-01-02T14:19:00.000Z">
-<meta property="article:modified_time" content="2022-07-19T13:45:53.016Z">
+<meta property="article:modified_time" content="2022-07-19T13:45:53.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Interview">
 <meta property="article:tag" content="Network">
@@ -265,14 +265,10 @@
 <ul>
 <li>校验和：伪首部+TCP header二进制相加取反</li>
 <li>seq + ack：接收方按序组织，避免重复，确保收到所有Segments</li>
-<li><a
-target="_blank" rel="noopener" href="https://stackoverflow.com/questions/12956685">超时重传</a>：发送方维护超时时间，没有收到ack就重传，即ARQ（包括停等，go
-back
-N，选择重传）。RTO时间采用指数回退，重传超过一定次数（比如8次）就断开连接。</li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/12956685">超时重传</a>：发送方维护超时时间，没有收到ack就重传，即ARQ（包括停等，go back N，选择重传）。RTO时间采用指数回退，重传超过一定次数（比如8次）就断开连接。</li>
 <li>流量控制：可变大小的滑动窗宽recv_win</li>
 <li>拥塞控制：慢启动，拥塞避免，快速重传，快速恢复<br />
-发送方维持拥塞窗口cwnd记录网络链路的拥塞程度，发送窗口=min{recv_win,
-cwnd}</li>
+发送方维持拥塞窗口cwnd记录网络链路的拥塞程度，发送窗口=min{recv_win, cwnd}</li>
 </ul>
 <ol type="1">
 <li>慢启动<br />
@@ -280,17 +276,12 @@ cwnd指数增加{1, 2, 4, 8, 16, ...}，超过阈值时开始拥塞避免算法<
 <li>拥塞避免<br />
 cwnd线性增加</li>
 <li>快速重传<br />
-要求接收方每收到一个失序的报文段后就立即发出重复确认而不是等待自己发送数据时才捎带确认
-发送方只要一连收到三个重复确认就立即重传对方尚未收到的报文段，而不必等待设置的重传计时器到期</li>
+要求接收方每收到一个失序的报文段后就立即发出重复确认而不是等待自己发送数据时才捎带确认 发送方只要一连收到三个重复确认就立即重传对方尚未收到的报文段，而不必等待设置的重传计时器到期</li>
 <li>快速恢复<br />
-当发送方连续收到三个重复确认时，就执行“乘法减小”算法，把慢开始门限ssthresh减半，为了预防网络拥塞
-将拥塞窗口cwnd值设置为慢开始门限ssthresh减半后的数值，然后开始执行拥塞避免算法
-TCP Tahoe版本与TCP
-Reno版本的区别：Reno版本在快重传之后采用快恢复算法而不是采用慢开始算法</li>
+当发送方连续收到三个重复确认时，就执行“乘法减小”算法，把慢开始门限ssthresh减半，为了预防网络拥塞 将拥塞窗口cwnd值设置为慢开始门限ssthresh减半后的数值，然后开始执行拥塞避免算法 TCP Tahoe版本与TCP Reno版本的区别：Reno版本在快重传之后采用快恢复算法而不是采用慢开始算法</li>
 </ol>
 <h2 id="udp">UDP</h2>
-<p>UDP对实时性要求高，数据准确性要求不是太高的场合、视频通话、QQ主要UDP为主，TCP为辅
-应用场景：实时音视频传输，DNS协议</p>
+<p>UDP对实时性要求高，数据准确性要求不是太高的场合、视频通话、QQ主要UDP为主，TCP为辅 应用场景：实时音视频传输，DNS协议</p>
 <ul>
 <li>对延迟要求高，可靠性要求低，无法忍受重传，需要看到实时的图像和声音，中间丢一帧完全没事。</li>
 <li>网络非常可靠，不需要考虑UDP丢包的问题。</li>
@@ -303,22 +294,13 @@ Reno版本的区别：Reno版本在快重传之后采用快恢复算法而不是
 <li>未验证通信双方身份, 可能伪装</li>
 <li>未验证报文完整性, 可能篡改</li>
 </ul>
-<p>为了解决上述问题, HTTPS在HTTP的基础上增加了SSL/TLS传输层,
-进行安全传输.</p>
+<p>为了解决上述问题, HTTPS在HTTP的基础上增加了SSL/TLS传输层, 进行安全传输.</p>
 <ul>
-<li>加密: 混合加密方式. 非对称加密传输session key, 对称加密传输信息.
-非对称加密需要公钥和私钥，公钥用来加密，私钥用来解密. 安全，不怕泄漏,
-速度慢. 常用算法包括RSA，ECC，DSA.
-对称加密计算量小，算法速度快，加密效率高,
-密钥容易泄漏。不同的会话需要不同的密钥，管理起来很费劲,
-常用算法：DES，3DES，IDEA，CR4，CR5，CR6，AES.</li>
-<li>认证: 数字证书验证双方身份.
-权威CA使用私钥将网站A的信息和消息摘要（签名S）进行加密打包形成数字证书。网站A将自己的信息和数字证书发给客户端，客户端用CA的公钥对数字证书进行解密，得到签名S，与手动将网站的信息进行消息摘要得到的结果S*进行对比，如果签名一致就证明网站A可以信任。</li>
+<li>加密: 混合加密方式. 非对称加密传输session key, 对称加密传输信息. 非对称加密需要公钥和私钥，公钥用来加密，私钥用来解密. 安全，不怕泄漏, 速度慢. 常用算法包括RSA，ECC，DSA. 对称加密计算量小，算法速度快，加密效率高, 密钥容易泄漏。不同的会话需要不同的密钥，管理起来很费劲, 常用算法：DES，3DES，IDEA，CR4，CR5，CR6，AES.</li>
+<li>认证: 数字证书验证双方身份. 权威CA使用私钥将网站A的信息和消息摘要（签名S）进行加密打包形成数字证书。网站A将自己的信息和数字证书发给客户端，客户端用CA的公钥对数字证书进行解密，得到签名S，与手动将网站的信息进行消息摘要得到的结果S*进行对比，如果签名一致就证明网站A可以信任。</li>
 <li>完整性保护:</li>
 </ul>
-<p>具体细节可以参考<a
-target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/43789231">彻底搞懂HTTPS的加密原理</a>和<a
-target="_blank" rel="noopener" href="https://www.cnblogs.com/wqhwe/p/5407468.html">HTTP与HTTPS的区别</a>.</p>
+<p>具体细节可以参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/43789231">彻底搞懂HTTPS的加密原理</a>和<a target="_blank" rel="noopener" href="https://www.cnblogs.com/wqhwe/p/5407468.html">HTTP与HTTPS的区别</a>.</p>
 <p>https包括非对称加密和对称加密两个阶段，在客户端与服务器建立连接的时候使用非对称加密，连接建立以后使用的是对称加密。</p>
 <ol type="1">
 <li>客户使用https的URL访问Web服务器，要求与Web服务器建立SSL连接</li>
@@ -327,19 +309,13 @@ target="_blank" rel="noopener" href="https://www.cnblogs.com/wqhwe/p/5407468.htm
 <li>Web服务器利用自己的私钥解密出会话密钥。</li>
 <li>Web服务器利用会话密钥加密与客户端之间的通信，这个过程是对称加密的过程。</li>
 </ol>
-<p>客户端的对称加密密钥其实是三个随机数的哈希（1.
-客户端第一次给服务端发送请求时附带的随机数 2. 服务器返回时的随机数 3.
-客户端收到返回时的随机数）</p>
+<p>客户端的对称加密密钥其实是三个随机数的哈希（1. 客户端第一次给服务端发送请求时附带的随机数 2. 服务器返回时的随机数 3. 客户端收到返回时的随机数）</p>
 <h2 id="tcp异常连接">TCP异常连接</h2>
 <ol type="1">
-<li>未开启TCP
-keepalive，双方一直没有数据交互，客户端<strong>主机崩溃</strong>：服务器无法感知客户端崩溃，其TCP连接会一直处于<code>ESTABLISHED</code>状态，直到服务端重启进程。</li>
-<li>未开启TCP
-keepalive，双方一直没有数据交互，客户端<strong>进程崩溃</strong>：客户端OS能够感知到进程崩溃，发送FIN报文，正常进行四次挥手。</li>
-<li>未开启TCP
-keepalive，有数据交互，客户端<strong>主机崩溃</strong>，迅速重启：服务端发送的报文无法得到响应，触发超时重传机制，客户端重启完成后接收重传报文。此时如果客户端没有进程监听该报文的目标端口，客户端回复RST报文，断开连接；如果有进程监听，但是之前的TCP连接的数据结构已经丢失，客户端内核协议栈会发现找不到该TCP连接的socket结构体，回复RST报文，断开连接。</li>
-<li>未开启TCP
-keepalive，有数据交互，客户端<strong>主机崩溃</strong>，一直没有重启：服务端超时重传达到最大次数后，内核判定该连接有问题，通过socket接口通知应用程序，断开连接。</li>
+<li>未开启TCP keepalive，双方一直没有数据交互，客户端<strong>主机崩溃</strong>：服务器无法感知客户端崩溃，其TCP连接会一直处于<code>ESTABLISHED</code>状态，直到服务端重启进程。</li>
+<li>未开启TCP keepalive，双方一直没有数据交互，客户端<strong>进程崩溃</strong>：客户端OS能够感知到进程崩溃，发送FIN报文，正常进行四次挥手。</li>
+<li>未开启TCP keepalive，有数据交互，客户端<strong>主机崩溃</strong>，迅速重启：服务端发送的报文无法得到响应，触发超时重传机制，客户端重启完成后接收重传报文。此时如果客户端没有进程监听该报文的目标端口，客户端回复RST报文，断开连接；如果有进程监听，但是之前的TCP连接的数据结构已经丢失，客户端内核协议栈会发现找不到该TCP连接的socket结构体，回复RST报文，断开连接。</li>
+<li>未开启TCP keepalive，有数据交互，客户端<strong>主机崩溃</strong>，一直没有重启：服务端超时重传达到最大次数后，内核判定该连接有问题，通过socket接口通知应用程序，断开连接。</li>
 </ol>
 <h2 id="url解析">URL解析</h2>
 <ol type="1">
@@ -351,18 +327,13 @@ keepalive，有数据交互，客户端<strong>主机崩溃</strong>，一直没
 </ol>
 <p>子网中第一个地址是网络地址，最后一个地址是广播地址</p>
 <p>RST 1. 直接丢弃缓冲区中的包发送RST 2. 收到RST包不必回复ACK包</p>
-<p>常见的发RST的情况：https://zhuanlan.zhihu.com/p/30791159 1.
-SYN包试图连接一个没有任何服务监听的端口 2.
-收到了之前连接的包，但是该连接已经关闭</p>
+<p>常见的发RST的情况：https://zhuanlan.zhihu.com/p/30791159 1. SYN包试图连接一个没有任何服务监听的端口 2. 收到了之前连接的包，但是该连接已经关闭</p>
 <p>SYN泛洪攻击</p>
-<p>服务器收到SYN连接请求后，分配缓冲区等资源，初始化连接变量。
-如果客户端的第三次ACK没有收到，服务器首先会重传SYNACK，多次重传后服务器通常会在1min后终止半连接状态并且回收资源。</p>
-<p>客户端可以发送大量的SYN段耗尽服务器的资源，合法的请求得不到响应，就是一种典型的DoS(Denial
-of Service)攻击。</p>
+<p>服务器收到SYN连接请求后，分配缓冲区等资源，初始化连接变量。 如果客户端的第三次ACK没有收到，服务器首先会重传SYNACK，多次重传后服务器通常会在1min后终止半连接状态并且回收资源。</p>
+<p>客户端可以发送大量的SYN段耗尽服务器的资源，合法的请求得不到响应，就是一种典型的DoS(Denial of Service)攻击。</p>
 <p>一般通过SYN cookies预防：对比第一次和第三次握手hash值是否相同</p>
 <p>HTTP状态码<br />
-200 - 请求成功 301 - 资源（网页等）被永久转移到其它URL 400 - 请求无效
-403 - 禁止访问 404 - 请求的资源（网页等）不存在 500 - 内部服务器错误</p>
+200 - 请求成功 301 - 资源（网页等）被永久转移到其它URL 400 - 请求无效 403 - 禁止访问 404 - 请求的资源（网页等）不存在 500 - 内部服务器错误</p>
 <p>https://networkengineering.stackexchange.com/questions/24068/why-do-we-need-a-3-way-handshake-why-not-just-2-way</p>
 <h2 id="http请求">HTTP请求</h2>
 <ol type="1">
@@ -374,9 +345,7 @@ of Service)攻击。</p>
 <h2 id="条件变量">条件变量</h2>
 <p>用于多线程间状态的同步，控制其交替执行的先后顺序，条件不满足时相关线程阻塞，满足时唤醒，个人认为原理类似于线程间共享的全局变量，至于该变量如何工作还有待考究。</p>
 <p>锁是用来保护共享资源，但是这两究竟有什么区别，为什么要同时使用，待确定。</p>
-<p>lock
-guard构造时加锁，局部作用域结束析构释放锁，不够灵活。因此用unique
-lock</p>
+<p>lock guard构造时加锁，局部作用域结束析构释放锁，不够灵活。因此用unique lock</p>
 <p>shared和weak区别 循环引用导致内存泄漏</p>
 <p>GET：完整请求一个资源，没有请求数据 POST：提交表单，文件等</p>
 

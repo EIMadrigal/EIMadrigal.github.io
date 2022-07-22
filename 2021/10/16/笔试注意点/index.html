@@ -27,13 +27,15 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="踩坑血泪...">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/7cd3cde9f220426cbef7fcb4d6d5a38c.png">
 <meta property="article:published_time" content="2021-10-16T12:43:00.000Z">
-<meta property="article:modified_time" content="2022-05-25T13:34:07.573Z">
+<meta property="article:modified_time" content="2022-05-25T13:34:07.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="Interview">
 <meta property="article:tag" content="Online Judge">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/7cd3cde9f220426cbef7fcb4d6d5a38c.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2021/10/16/%E7%AC%94%E8%AF%95%E6%B3%A8%E6%84%8F%E7%82%B9/">
 
@@ -254,10 +256,7 @@
       
         <h2 id="输入输出">输入输出</h2>
 <ol type="1">
-<li><code>cin</code>的结束符是空格, 制表符和回车,
-读完后结束符仍然在缓冲区. <code>getline</code>的结束符是回车,
-读完后结束符不在缓冲区.
-读取一行有空格字符串需要<code>getline</code>.</li>
+<li><code>cin</code>的结束符是空格, 制表符和回车, 读完后结束符仍然在缓冲区. <code>getline</code>的结束符是回车, 读完后结束符不在缓冲区. 读取一行有空格字符串需要<code>getline</code>.</li>
 </ol>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> n;</span><br><span class="line">cin &gt;&gt; n;</span><br><span class="line">cin.<span class="built_in">ignore</span>();  <span class="comment">// 忽略\n</span></span><br><span class="line"><span class="function">vector&lt;string&gt; <span class="title">s</span><span class="params">(n)</span></span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">    <span class="built_in">getline</span>(cin, s[i]);  <span class="comment">// s[i].size()返回原长度 + 1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删掉该行所有的回车</span></span><br><span class="line">string input;</span><br><span class="line"><span class="built_in">getline</span>(cin, input);</span><br><span class="line">input.<span class="built_in">erase</span>(<span class="built_in">remove</span>(input.<span class="built_in">begin</span>(), input.<span class="built_in">end</span>(), <span class="string">&#x27;\r&#x27;</span>), input.<span class="built_in">end</span>());</span><br><span class="line">input.<span class="built_in">erase</span>(<span class="built_in">remove</span>(input.<span class="built_in">begin</span>(), input.<span class="built_in">end</span>(), <span class="string">&#x27;\t&#x27;</span>), input.<span class="built_in">end</span>());</span><br><span class="line">input.<span class="built_in">erase</span>(<span class="built_in">remove</span>(input.<span class="built_in">begin</span>(), input.<span class="built_in">end</span>(), <span class="string">&#x27;\n&#x27;</span>), input.<span class="built_in">end</span>());</span><br></pre></td></tr></table></figure>
 <ol start="2" type="1">
@@ -276,32 +275,16 @@
 <ol type="1">
 <li><code>int stoi(const string&amp; str, size_t* idx=0, int base=10)</code>：<code>idx</code>指向第一个非数字字符</li>
 <li><code>isalpha(int ch)</code>: 头文件<code>cctype</code></li>
-<li>对<code>map</code>或<code>unordered_map</code>按值排序
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">unordered_map&lt;string, <span class="keyword">int</span>&gt; record&#123;&#123;<span class="string">&quot;a&quot;</span>, <span class="number">2</span>&#125;, &#123;<span class="string">&quot;b&quot;</span>, <span class="number">1</span>&#125;&#125;;</span><br><span class="line">vector&lt;pair&lt;string, <span class="keyword">int</span>&gt;&gt; <span class="built_in">vec</span>(record.<span class="built_in">begin</span>(), record.<span class="built_in">end</span>());</span><br><span class="line">std::<span class="built_in">sort</span>(vec.<span class="built_in">begin</span>(), vec.<span class="built_in">end</span>(),</span><br><span class="line">    [](<span class="keyword">const</span> pair&lt;string, <span class="keyword">int</span>&gt;&amp; a, <span class="keyword">const</span> pair&lt;string, <span class="keyword">int</span>&gt;&amp; b) &#123;<span class="keyword">return</span> a.second &lt; b.second;&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> it = vec.<span class="built_in">begin</span>(); it != vec.<span class="built_in">end</span>(); ++it) &#123;</span><br><span class="line">    cout &lt;&lt; it-&gt;first &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><code>unordered_map</code><a
-target="_blank" rel="noopener" href="http://www.hawkers.cc/2016/04/unorderedmap-pair-funtor.html">自定义key</a><br />
-<code>unordered_map&lt;pair&lt;int, int&gt;, int&gt;</code>会报错，需要提供一个hash函数.
-如果key不存在，访问仍然成功，返回value对象默认构造值 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">PairHash</span> &#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U&gt;</span></span><br><span class="line"><span class="function">    <span class="keyword">size_t</span> <span class="title">operator</span><span class="params">()</span> <span class="params">(<span class="keyword">const</span> pair&lt;T, U&gt; &amp;x)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">auto</span> h1 = hash&lt;T&gt;()(x.first), h2 = hash&lt;U&gt;()(x.second);</span><br><span class="line">        <span class="keyword">return</span> h1 ^ h2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">unordered_map&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;, <span class="keyword">int</span>, PairHash&gt; m;</span><br></pre></td></tr></table></figure>
-但是<code>map</code>就不需要,
-map的key类型必须支持<code>&lt;</code>运算符</li>
+<li>对<code>map</code>或<code>unordered_map</code>按值排序 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">unordered_map&lt;string, <span class="keyword">int</span>&gt; record&#123;&#123;<span class="string">&quot;a&quot;</span>, <span class="number">2</span>&#125;, &#123;<span class="string">&quot;b&quot;</span>, <span class="number">1</span>&#125;&#125;;</span><br><span class="line">vector&lt;pair&lt;string, <span class="keyword">int</span>&gt;&gt; <span class="built_in">vec</span>(record.<span class="built_in">begin</span>(), record.<span class="built_in">end</span>());</span><br><span class="line">std::<span class="built_in">sort</span>(vec.<span class="built_in">begin</span>(), vec.<span class="built_in">end</span>(),</span><br><span class="line">    [](<span class="keyword">const</span> pair&lt;string, <span class="keyword">int</span>&gt;&amp; a, <span class="keyword">const</span> pair&lt;string, <span class="keyword">int</span>&gt;&amp; b) &#123;<span class="keyword">return</span> a.second &lt; b.second;&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> it = vec.<span class="built_in">begin</span>(); it != vec.<span class="built_in">end</span>(); ++it) &#123;</span><br><span class="line">    cout &lt;&lt; it-&gt;first &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><code>unordered_map</code><a target="_blank" rel="noopener" href="http://www.hawkers.cc/2016/04/unorderedmap-pair-funtor.html">自定义key</a><br />
+<code>unordered_map&lt;pair&lt;int, int&gt;, int&gt;</code>会报错，需要提供一个hash函数. 如果key不存在，访问仍然成功，返回value对象默认构造值 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">PairHash</span> &#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U&gt;</span></span><br><span class="line"><span class="function">    <span class="keyword">size_t</span> <span class="title">operator</span><span class="params">()</span> <span class="params">(<span class="keyword">const</span> pair&lt;T, U&gt; &amp;x)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">auto</span> h1 = hash&lt;T&gt;()(x.first), h2 = hash&lt;U&gt;()(x.second);</span><br><span class="line">        <span class="keyword">return</span> h1 ^ h2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">unordered_map&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;, <span class="keyword">int</span>, PairHash&gt; m;</span><br></pre></td></tr></table></figure> 但是<code>map</code>就不需要, map的key类型必须支持<code>&lt;</code>运算符</li>
 <li><code>sort(v.begin(), v.end(), [](int a, int b) &#123; return a &gt; b; &#125;)</code>或<code>sort(v.rbegin(), v.rend())</code></li>
-<li>vector追加:
-<code>dest.insert(dest.end(), src.begin(), src.end())</code>.
-<code>vector&lt;vector&lt;int&gt;&gt;</code>每一维元素个数可以不同</li>
-<li>C++ 17的structured binding:
-<code>for (auto [k, v] : unordered_map)</code></li>
-<li><code>std::lower_bound</code>和<code>std::upper_bound</code>对于random-access
-iterators的时间复杂度是<span
-class="math inline">\(O(lgn)\)</span>，但对于non-random-access
-iterators如<code>set::iterator</code>是<span
-class="math inline">\(O(n)\)</span>的。这种情况下应使用<code>set</code>自带的<code>setObj.upper_bound(target)</code>，复杂度<span
-class="math inline">\(O(lgn)\)</span></li>
+<li>vector追加: <code>dest.insert(dest.end(), src.begin(), src.end())</code>. <code>vector&lt;vector&lt;int&gt;&gt;</code>每一维元素个数可以不同</li>
+<li>C++ 17的structured binding: <code>for (auto [k, v] : unordered_map)</code></li>
+<li><code>std::lower_bound</code>和<code>std::upper_bound</code>对于random-access iterators的时间复杂度是<span class="math inline">\(O(lgn)\)</span>，但对于non-random-access iterators如<code>set::iterator</code>是<span class="math inline">\(O(n)\)</span>的。这种情况下应使用<code>set</code>自带的<code>setObj.upper_bound(target)</code>，复杂度<span class="math inline">\(O(lgn)\)</span></li>
 </ol>
 <figure>
-<img
-src="https://img-blog.csdnimg.cn/7cd3cde9f220426cbef7fcb4d6d5a38c.png"
-alt="知识点" />
-<figcaption aria-hidden="true">知识点</figcaption>
+<img src="https://img-blog.csdnimg.cn/7cd3cde9f220426cbef7fcb4d6d5a38c.png" alt="" /><figcaption>知识点</figcaption>
 </figure>
 
     </div>

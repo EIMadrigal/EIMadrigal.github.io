@@ -44,7 +44,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190416211900707.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190416212610387.png">
 <meta property="article:published_time" content="2020-01-01T15:07:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T14:02:10.000Z">
+<meta property="article:modified_time" content="2022-01-30T14:02:10.486Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Language">
 <meta name="twitter:card" content="summary">
@@ -267,33 +267,25 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><em>Stanford CS Education Library #102</em> ## Basic Pointers
-指针主要有两个用途：使不同的代码段共享信息、方便链表（树）的处理。<br />
+        <p><em>Stanford CS Education Library #102</em> ## Basic Pointers 指针主要有两个用途：使不同的代码段共享信息、方便链表（树）的处理。<br />
 指针示意图：<br />
-<img src="https://img-blog.csdnimg.cn/2019041619200938.png"
-alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/2019041619200938.png" alt="在这里插入图片描述" /><br />
 <code>dereference</code>操作会根据指针的值去找到它的<code>pointee</code>。<br />
 <code>NULL</code>是一个特殊的指针值（一般是地址0），表示这个指针不指向任何<code>pointee</code>。<br />
-<img src="https://img-blog.csdnimg.cn/20190416193109659.png"
-alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20190416193109659.png" alt="在这里插入图片描述" /><br />
 指针的赋值会使得两个指针指向相同的<code>pointee</code>，但<code>pointee</code>本身不会改变：<br />
-<img src="https://img-blog.csdnimg.cn/20190416192708547.png"
-alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20190416192708547.png" alt="在这里插入图片描述" /><br />
 传指针vs传值：<br />
-<img src="https://img-blog.csdnimg.cn/20190416193445969.png"
-alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20190416193445969.png" alt="在这里插入图片描述" /><br />
 定义一个指针后，这个指针是没有被初始化的：<br />
-<img src="https://img-blog.csdnimg.cn/2019041619372662.png"
-alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/2019041619372662.png" alt="在这里插入图片描述" /><br />
 这时候如果进行<code>dereference</code>操作会发生Runtime Error.<br />
 对于Java、LISP等语言，当定义一个指针时，系统会将其设置为<code>NULL</code>，并且会在<code>dereference</code>操作时检查其值，这也是Java比较慢的原因之一。<br />
-<img src="https://img-blog.csdnimg.cn/20190416194404553.png"
-alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20190416194404553.png" alt="在这里插入图片描述" /><br />
 一个比较典型的指针错误：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BadPointer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>* p;  <span class="comment">//allocate the pointer, but not the pointee</span></span><br><span class="line">    *p = <span class="number">42</span>; <span class="comment">//serious RE</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>当执行<code>*p</code>时：<br />
-<img src="https://img-blog.csdnimg.cn/20190416195104100.png"
-alt="在这里插入图片描述" /></p>
+<img src="https://img-blog.csdnimg.cn/20190416195104100.png" alt="在这里插入图片描述" /></p>
 <h2 id="local-memory">Local Memory</h2>
 <p>函数开始运行时，会为局部变量分配内存，结束运行会回收内存。<br />
 看一个错误的例子：</p>
@@ -302,34 +294,25 @@ alt="在这里插入图片描述" /></p>
 <h2 id="reference-parameters">Reference Parameters</h2>
 <p>传值：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">B</span><span class="params">(<span class="keyword">int</span> worth)</span> </span>&#123;</span><br><span class="line">    worth++;</span><br><span class="line">    <span class="comment">// T2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">A</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> netWorth = <span class="number">55</span>;  <span class="comment">//T1</span></span><br><span class="line">    B(netWorth);</span><br><span class="line">    <span class="comment">// T3 -- B() did not change netWorth</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20190416203356234.png"
-alt="在这里插入图片描述" /><br />
+<p><img src="https://img-blog.csdnimg.cn/20190416203356234.png" alt="在这里插入图片描述" /><br />
 传指针：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">B</span><span class="params">(<span class="keyword">int</span>* worthRef)</span> </span>&#123;</span><br><span class="line">    (*worthRef)++;</span><br><span class="line">    <span class="comment">// T2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">A</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> netWorth = <span class="number">55</span>;  <span class="comment">//T1</span></span><br><span class="line">    B(&amp;netWorth);</span><br><span class="line">    <span class="comment">// T3</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20190416203939385.png"
-alt="在这里插入图片描述" /><br />
+<p><img src="https://img-blog.csdnimg.cn/20190416203939385.png" alt="在这里插入图片描述" /><br />
 传指针在c++中可以通过<strong>传引用</strong>的方式实现：<br />
-<img src="https://img-blog.csdnimg.cn/20190416205349526.png"
-alt="在这里插入图片描述" /></p>
+<img src="https://img-blog.csdnimg.cn/20190416205349526.png" alt="在这里插入图片描述" /></p>
 <h2 id="heap-memory">Heap Memory</h2>
 <p>分配示意图：<br />
-<img src="https://img-blog.csdnimg.cn/20190416205821650.png"
-alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20190416205821650.png" alt="在这里插入图片描述" /><br />
 释放示意图：<br />
-<img src="https://img-blog.csdnimg.cn/20190416210059909.png"
-alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20190416210059909.png" alt="在这里插入图片描述" /><br />
 释放后，指针虽然还在，但却不可以在使用。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//size以字节为单位，分配成功返回指针，失败返回NULL</span></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">malloc</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">long</span> size)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//不需要size，因为heap manager之前已经记录过</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span>* heapBlockPointer)</span></span>;</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20190416211219354.png"
-alt="在这里插入图片描述" /><br />
-<img src="https://img-blog.csdnimg.cn/20190416211242340.png"
-alt="在这里插入图片描述" /><br />
+<p><img src="https://img-blog.csdnimg.cn/20190416211219354.png" alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20190416211242340.png" alt="在这里插入图片描述" /><br />
 一个<code>StringCopy()</code>的例子：<br />
-<img src="https://img-blog.csdnimg.cn/20190416211900707.png"
-alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20190416211900707.png" alt="在这里插入图片描述" /><br />
 对于分配的堆内存，只有一个负责释放的，要么是<code>caller</code>，要么是<code>callee</code>：<br />
-<img src="https://img-blog.csdnimg.cn/20190416212610387.png"
-alt="在这里插入图片描述" /></p>
+<img src="https://img-blog.csdnimg.cn/20190416212610387.png" alt="在这里插入图片描述" /></p>
 
     </div>
 

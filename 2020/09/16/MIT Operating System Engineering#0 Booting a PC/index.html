@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200523082913317.png">
 <meta property="article:published_time" content="2020-09-16T01:25:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T15:10:23.000Z">
+<meta property="article:modified_time" content="2022-01-30T15:10:23.650Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="System">
 <meta property="article:tag" content="OS">
@@ -258,23 +258,19 @@ XJTU的操作系统课就是写一个系统调用，改下进程软中断通信�
 MIT上课用xv6来教学，lab是做一个完整的小型操作系统JOS。</em></p>
 <hr />
 <h2 id="配置环境">配置环境</h2>
-<p>虽然没什么技术含量，但是这真的是令人头疼的事。附：<a
-target="_blank" rel="noopener" href="https://blog.csdn.net/eye_water/article/details/80638463">图文教程</a><br />
+<p>虽然没什么技术含量，但是这真的是令人头疼的事。附：<a target="_blank" rel="noopener" href="https://blog.csdn.net/eye_water/article/details/80638463">图文教程</a><br />
 需要一台x86机器，一般的Linux发行版应该都可以，可以使用<code>unabenlme -a</code>查看，如果显示<code>xxx GNU/Linux</code>就行，MIT的学生可以使用配置好的远程Server。<br />
 本来打算白嫖下Harvard的服务器，但是没有<code>root</code>权限，只能可怜巴巴地在Win环境用虚拟机。<br />
-平台：Vmware Player15，<a
-target="_blank" rel="noopener" href="http://old-releases.ubuntu.com/releases/14.04.5/">Ubuntu-14.04.5-desktop-i386.iso</a></p>
+平台：Vmware Player15，<a target="_blank" rel="noopener" href="http://old-releases.ubuntu.com/releases/14.04.5/">Ubuntu-14.04.5-desktop-i386.iso</a></p>
 <ul>
 <li>检验编译链<br />
 <code>objdump -i</code>：第二行显示elf32-i386；<br />
 <code>gcc -m32 -print-libgcc-file-name</code>：打印出/usr/lib/gcc/i686-linux-gnu/4.8/libgcc.a</li>
 <li>安装git：<code>sudo apt-get install git</code></li>
 <li>下载qemu<br />
-建议不要作死，安装MIT
-Patch过的版本：<code>git clone https://github.com/mit-pdos/6.828-qemu.git qemu</code></li>
+建议不要作死，安装MIT Patch过的版本：<code>git clone https://github.com/mit-pdos/6.828-qemu.git qemu</code></li>
 <li>安装依赖库<br />
-官方说要装5个库，但其实libtool-bin好像找不到，不过不影响后续：
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt<span class="literal">-get</span> install libsdl1.<span class="number">2</span><span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libglib2.<span class="number">0</span><span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libz<span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libpixman<span class="literal">-1</span><span class="literal">-dev</span></span><br></pre></td></tr></table></figure></li>
+官方说要装5个库，但其实libtool-bin好像找不到，不过不影响后续： <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt<span class="literal">-get</span> install libsdl1.<span class="number">2</span><span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libglib2.<span class="number">0</span><span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libz<span class="literal">-dev</span></span><br><span class="line">sudo apt<span class="literal">-get</span> install libpixman<span class="literal">-1</span><span class="literal">-dev</span></span><br></pre></td></tr></table></figure></li>
 <li>配置qemu<br />
 切到qemu目录，<code>./configure --disable-kvm --disable-werror --target-list="i386-softmmu x86_64-softmmu"</code><br />
 <code>[--prefix=PFX]</code>可选参数是选择安装路径，这里就默认在<code>/usr/local</code></li>
@@ -284,14 +280,8 @@ Patch过的版本：<code>git clone https://github.com/mit-pdos/6.828-qemu.git q
 </ul>
 <h2 id="pc-bootstrap">PC Bootstrap</h2>
 <p>物理地址空间：<br />
-<img src="https://img-blog.csdnimg.cn/20200523082913317.png"
-alt="在这里插入图片描述" /><br />
-以前的PC内存只有1MB，Low Memory是PC唯一能用的RAM。VGA
-Display是VGA缓冲区和固件，BIOS以前都在ROM中，不过现今都在闪存中，做完系统初始化（PCI总线等重要设备），寻找bootable设备(硬盘)，读取boot
-loader加载OS，将控制权转OS。后来内存远远超过1MB，可用的也就有Extended
-Memory，不过为了后向兼容，还是保留了Low
-Memory，这样可用的RAM就被分为了两部分。如果64位系统，那么内存更大，这样为了兼容，32-bit
-memory mapped devices还是要保留，就又被割裂了。</p>
+<img src="https://img-blog.csdnimg.cn/20200523082913317.png" alt="在这里插入图片描述" /><br />
+以前的PC内存只有1MB，Low Memory是PC唯一能用的RAM。VGA Display是VGA缓冲区和固件，BIOS以前都在ROM中，不过现今都在闪存中，做完系统初始化（PCI总线等重要设备），寻找bootable设备(硬盘)，读取boot loader加载OS，将控制权转OS。后来内存远远超过1MB，可用的也就有Extended Memory，不过为了后向兼容，还是保留了Low Memory，这样可用的RAM就被分为了两部分。如果64位系统，那么内存更大，这样为了兼容，32-bit memory mapped devices还是要保留，就又被割裂了。</p>
 <h2 id="the-boot-loader">The Boot Loader</h2>
 <p>硬盘的第一个分区存放启动程序，包括一个汇编文件<code>boot/boot.S</code>和一个C文件<code>boot/main.c</code>，启动程序将CPU从实模式转为32位保护模式，通过特殊的I/O指令读取内核。</p>
 <h2 id="the-kernel">The Kernel</h2>

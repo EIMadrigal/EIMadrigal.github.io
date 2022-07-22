@@ -28,7 +28,7 @@
 <meta property="og:description" content="自制压缩软件">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-02-13T07:20:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T15:56:18.000Z">
+<meta property="article:modified_time" content="2022-01-30T15:56:18.593Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Projects">
 <meta name="twitter:card" content="summary">
@@ -297,33 +297,14 @@
 <p>压缩率和压缩时间和专业软件没法比。之所以出现压缩文件大于源文件，是因为压缩文件中还存储了Huffman树等信息，为解压所需。<br />
 对于不同内容的文件，得到的压缩文件大小也不尽相同，这主要与Huffman编码的性质有关。</p>
 <h2 id="理论分析">理论分析</h2>
-<p>Huffman编码依赖于信源的统计特征，其背后的原理在于为出现频率高的字符分配尽可能短的码长，这样就可以降低平均码长：
-<span class="math display">\[L=\Sigma p_il_i\]</span> 使得<span
-class="math inline">\(L\)</span>最短的编码就是最优编码，可以证明Huffman编码是一种最优编码。<br />
+<p>Huffman编码依赖于信源的统计特征，其背后的原理在于为出现频率高的字符分配尽可能短的码长，这样就可以降低平均码长： <span class="math display">\[L=\Sigma p_il_i\]</span> 使得<span class="math inline">\(L\)</span>最短的编码就是最优编码，可以证明Huffman编码是一种最优编码。<br />
 同时Huffman编码还是前缀码，简化了解码过程。<br />
-假设一种理想情况：源文件长<span
-class="math inline">\(len\)</span>很大，共有<span
-class="math inline">\(m\)</span>种不同字符，每个字符用8bits表示，并且每种字符出现频率<span
-class="math inline">\(\frac{len}{m}\)</span>相同，忽略掉存储Huffman树等信息所需的空间。<br />
-这棵完全二叉树共有结点<span
-class="math inline">\(n=2*m-1\)</span>个，那么树深度为<span
-class="math inline">\(h=1+\lfloor log_2n
-\rfloor\)</span>，每个字符的压缩长度为<span
-class="math inline">\(h-1=\lfloor log_2n
-\rfloor\)</span>，故压缩后的串长度为<span
-class="math inline">\(\frac{(h-1)*len}{8}\)</span>，可得压缩率<span
-class="math inline">\(\frac{h-1}{8}\)</span>，即： <span
-class="math display">\[\alpha=\frac{\lfloor log_2(2*m-1)
-\rfloor}{8}\]</span> 源文件中不同字符种类<span
-class="math inline">\(m\)</span>越小，即源文件分布越集中，压缩效果越好。<br />
-如果和定长编码比较，可以得到压缩率： <span
-class="math display">\[\alpha=\frac{\lfloor log_2(2*m-1) \rfloor}{\lceil
-log_2(m) \rceil}\]</span> <span
-class="math inline">\(m\)</span>取值256时，Huffman树是一棵满二叉树，压缩率为100%，并不比8位固定长度编码更高效。</p>
+假设一种理想情况：源文件长<span class="math inline">\(len\)</span>很大，共有<span class="math inline">\(m\)</span>种不同字符，每个字符用8bits表示，并且每种字符出现频率<span class="math inline">\(\frac{len}{m}\)</span>相同，忽略掉存储Huffman树等信息所需的空间。<br />
+这棵完全二叉树共有结点<span class="math inline">\(n=2*m-1\)</span>个，那么树深度为<span class="math inline">\(h=1+\lfloor log_2n \rfloor\)</span>，每个字符的压缩长度为<span class="math inline">\(h-1=\lfloor log_2n \rfloor\)</span>，故压缩后的串长度为<span class="math inline">\(\frac{(h-1)*len}{8}\)</span>，可得压缩率<span class="math inline">\(\frac{h-1}{8}\)</span>，即： <span class="math display">\[\alpha=\frac{\lfloor log_2(2*m-1) \rfloor}{8}\]</span> 源文件中不同字符种类<span class="math inline">\(m\)</span>越小，即源文件分布越集中，压缩效果越好。<br />
+如果和定长编码比较，可以得到压缩率： <span class="math display">\[\alpha=\frac{\lfloor log_2(2*m-1) \rfloor}{\lceil log_2(m) \rceil}\]</span> <span class="math inline">\(m\)</span>取值256时，Huffman树是一棵满二叉树，压缩率为100%，并不比8位固定长度编码更高效。</p>
 <h2 id="收获">收获</h2>
 <ul>
-<li><code>EOF</code>和<code>feof()</code>
-<code>EOF</code>是一个定义在<code>cstdio</code>头文件中的宏，一般为-1：</li>
+<li><code>EOF</code>和<code>feof()</code> <code>EOF</code>是一个定义在<code>cstdio</code>头文件中的宏，一般为-1：</li>
 </ul>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EOF (-1)</span></span><br></pre></td></tr></table></figure>
 <p>但是如果按照二进制读取文件，对于文件中的-1又该如何处理？<br />
@@ -348,8 +329,7 @@ class="math inline">\(m\)</span>取值256时，Huffman树是一棵满二叉树�
 <p>如果基类的析构函数不是虚函数，输出：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f in derive</span><br><span class="line">destructor in base</span><br></pre></td></tr></table></figure>
 <p>结果并没有调用派生类的析构函数，造成内存泄漏。<br />
-所以基类的虚析构函数的作用是：<strong>当一个基类指针删除一个派生类对象，确保调用派生类的析构函数</strong>。
-- 二进制文件<br />
+所以基类的虚析构函数的作用是：<strong>当一个基类指针删除一个派生类对象，确保调用派生类的析构函数</strong>。 - 二进制文件<br />
 在压缩过程中，对于不同格式源文件的读取都是采用二进制方式<code>rb</code>。<br />
 实际上二进制文件和文本文件并没有本质区别，你所看到的内容取决于打开文件的软件对二进制流的解释方式，文件扩展名帮助计算机知道应该用哪种解释方式，通常的文本文件的解释方式有ASCII码和Unicode码。</p>
 

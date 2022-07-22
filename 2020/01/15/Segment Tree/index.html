@@ -253,46 +253,24 @@
 
       
         <h2 id="引言">引言</h2>
-<p><a
-target="_blank" rel="noopener" href="https://leetcode.com/problems/range-sum-query-mutable/">Leetcode307</a>
-这道题如果没有优化, 那么单次query的时间复杂度<span
-class="math inline">\(O(n)\)</span>, 单次update复杂度<span
-class="math inline">\(O(1)\)</span> 如果用前缀和数组,
-那么单次query的时间复杂度<span class="math inline">\(O(1)\)</span>,
-单次update复杂度<span class="math inline">\(O(n)\)</span>,
-因为update(i)会使得前缀和数组i以后的元素均更新</p>
+<p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/range-sum-query-mutable/">Leetcode307</a> 这道题如果没有优化, 那么单次query的时间复杂度<span class="math inline">\(O(n)\)</span>, 单次update复杂度<span class="math inline">\(O(1)\)</span> 如果用前缀和数组, 那么单次query的时间复杂度<span class="math inline">\(O(1)\)</span>, 单次update复杂度<span class="math inline">\(O(n)\)</span>, 因为update(i)会使得前缀和数组i以后的元素均更新</p>
 <p>因此如果query和update非常多次, 上面的2种方式效率都比较低.</p>
-<p>这道题除了使用树状数组，还可以使用线段树。
-线段树是一种平衡二叉树，支持快速区间查找<span
-class="math inline">\(O(lgn+k)\)</span>和更新<span
-class="math inline">\(O(lgn)\)</span>。</p>
+<p>这道题除了使用树状数组，还可以使用线段树。 线段树是一种平衡二叉树，支持快速区间查找<span class="math inline">\(O(lgn+k)\)</span>和更新<span class="math inline">\(O(lgn)\)</span>。</p>
 <h2 id="线段树">线段树</h2>
-<p><a
-target="_blank" rel="noopener" href="https://github.com/EIMadrigal/Recap/blob/main/Templates/Advanced/segment_tree.cpp">具体实现在这里</a>
-线段树核心思想是叶子结点负责保存原始信息，非叶结点负责其孩子表示范围的union，可以是求和、最值等：
-<img src="https://img-blog.csdnimg.cn/20200115103411544.png"
-alt="在这里插入图片描述" />
-对于每个结点，需要存储起始点、终止点、值、左右指针：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/Recap/blob/main/Templates/Advanced/segment_tree.cpp">具体实现在这里</a> 线段树核心思想是叶子结点负责保存原始信息，非叶结点负责其孩子表示范围的union，可以是求和、最值等： <img src="https://img-blog.csdnimg.cn/20200115103411544.png" alt="在这里插入图片描述" /> 对于每个结点，需要存储起始点、终止点、值、左右指针：</p>
 <p>建树可以通过递归方式进行：</p>
-<p>对于<strong>更新</strong>操作，只要找到叶子结点，一路向上更新至根结点，复杂度<span
-class="math inline">\(O(lgn)\)</span>：</p>
+<p>对于<strong>更新</strong>操作，只要找到叶子结点，一路向上更新至根结点，复杂度<span class="math inline">\(O(lgn)\)</span>：</p>
 <p>对于<strong>查询</strong>操作，查询范围有三种情况：</p>
 <ol type="1">
 <li>范围正好和根结点负责的范围一致，直接返回；</li>
 <li>范围由某个下层结点负责，找到该结点返回其值；</li>
 <li>范围由两个下层结点组合负责，返回两个结点的sum。</li>
 </ol>
-<p>查询最好情况复杂度<span
-class="math inline">\(O(1)\)</span>，最坏情况<span
-class="math inline">\(O(lgn+k)\)</span>，<span
-class="math inline">\(k\)</span>是某层结点的数目：</p>
+<p>查询最好情况复杂度<span class="math inline">\(O(1)\)</span>，最坏情况<span class="math inline">\(O(lgn+k)\)</span>，<span class="math inline">\(k\)</span>是某层结点的数目：</p>
 <h2 id="reference">Reference</h2>
 <ul>
-<li><a
-target="_blank" rel="noopener" href="https://zxi.mytechroad.com/blog/sp/segment-tree-sp14/">花花酱
-Segment Tree 线段树 SP14</a></li>
-<li><a
-target="_blank" rel="noopener" href="https://www.cnblogs.com/TenosDoIt/p/3453089.html">一步一步理解线段树</a></li>
+<li><a target="_blank" rel="noopener" href="https://zxi.mytechroad.com/blog/sp/segment-tree-sp14/">花花酱 Segment Tree 线段树 SP14</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/TenosDoIt/p/3453089.html">一步一步理解线段树</a></li>
 </ul>
 
     </div>

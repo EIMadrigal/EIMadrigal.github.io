@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2019021915473671.png">
 <meta property="article:published_time" content="2019-04-29T14:38:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T16:32:33.000Z">
+<meta property="article:modified_time" content="2022-01-30T16:32:33.129Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Language">
 <meta name="twitter:card" content="summary">
@@ -283,27 +283,22 @@
 <p>这时在32位环境下<code>sizeof(a) = 12</code>，因为a中的3个元素都是<code>char*</code>指针，而指针变量占4个字节。<br />
 可以打印出来看看：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">printf(&quot;%p %p %p\n&quot;,a[0],a[1],a[2]);</span><br><span class="line">printf(&quot;%p %p %p\n&quot;,&amp;a[0],&amp;a[1],&amp;a[2]);</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/2019021915473671.png"
-alt="在这里插入图片描述" /><br />
+<p><img src="https://img-blog.csdnimg.cn/2019021915473671.png" alt="在这里插入图片描述" /><br />
 数组中3个元素保存了3个地址，也就是3个字符串的首地址。</p>
 <p>对于<code>char** s</code>：<br />
 二级指针变量s保存一级指针<code>char*</code>的地址，我们可以：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s = a;</span><br></pre></td></tr></table></figure>
 <p>数组名<code>a=&amp;a[0]=62FE30</code>，而这个地址中（即a[0]）保存的是<code>404000</code>这个地址，也就是字符串<code>"me"</code>的首地址，即：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*s = 404000 = &quot;me&quot;;</span><br></pre></td></tr></table></figure>
-<p>易错点1： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">char** s = &quot;Hello&quot;;</span><br></pre></td></tr></table></figure> 这是错的，因为s是<code>char**</code>
-，而"Hello"是<code>char*</code>。<br />
-虽然都是地址，但是"Hello"表示的地址中内容是H，char型；
-s存的地址中的内容（<code>*s</code>）是<code>char*</code>型，指针类型。</p>
-<p>易错点2： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">char** s;</span><br><span class="line">*s = &quot;Hello&quot;;</span><br></pre></td></tr></table></figure>
-这样编译不会错，但是运行时<code>printf("%s",*s);</code>就会崩溃。</p>
+<p>易错点1： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">char** s = &quot;Hello&quot;;</span><br></pre></td></tr></table></figure> 这是错的，因为s是<code>char**</code> ，而"Hello"是<code>char*</code>。<br />
+虽然都是地址，但是"Hello"表示的地址中内容是H，char型； s存的地址中的内容（<code>*s</code>）是<code>char*</code>型，指针类型。</p>
+<p>易错点2： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">char** s;</span><br><span class="line">*s = &quot;Hello&quot;;</span><br></pre></td></tr></table></figure> 这样编译不会错，但是运行时<code>printf("%s",*s);</code>就会崩溃。</p>
 <p>假设<code>s=0x1000</code>，在<code>0x1000</code>内存单元中存的是"Hello"的地址<code>0x2000</code>，即<code>*s = 0x2000</code>，这样执行时先找到<code>0x1000</code>，然后是<code>0x2000</code>，没有问题。</p>
 <p>但<code>char** s;</code>，s存的是一个随机的地址，也就是野指针，<code>*s</code>就可能会崩溃。</p>
 <p>所以要先分配一个地址：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">char** s;</span><br><span class="line">s = (char**) malloc(sizeof(char**));</span><br><span class="line">*s = &quot;Hello&quot;;</span><br></pre></td></tr></table></figure>
 <p>这样s就有了可用的地址。</p>
-<p>参考：
-https://blog.csdn.net/liusicheng2008_liu/article/details/80412586</p>
+<p>参考： https://blog.csdn.net/liusicheng2008_liu/article/details/80412586</p>
 
     </div>
 

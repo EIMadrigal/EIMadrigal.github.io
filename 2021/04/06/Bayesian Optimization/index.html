@@ -27,13 +27,15 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="贝叶斯优化">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210401193953429.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210404141525979.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20210404155244142.png">
 <meta property="article:published_time" content="2021-04-06T14:18:00.000Z">
-<meta property="article:modified_time" content="2022-01-18T12:44:00.000Z">
+<meta property="article:modified_time" content="2022-01-18T12:44:00.148Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="AutoML">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210404155244142.png">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210401193953429.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2021/04/06/Bayesian%20Optimization/">
 
@@ -253,218 +255,50 @@
 
       
         <h2 id="motivation">Motivation</h2>
-<p>Hyper-parameters tuning has become an important work during training
-neural networks. As the number of Hyper-parameter is becoming larger,
-researchers proposed Grid Search &amp; Random Search to wish to get
-better combinations of Hyper-parameters. However, Grid Search has a high
-time cost. Although some experiments showed that Random Search got a
-better result than Grid Search but the result is still not
-fulfilling.</p>
-<p>Besides, there are some gradient-based methods to solve the problem.
-But the objective function is usually not differentiable or even not
-continuous. Thus these methods have a very finite usage.</p>
-<p>BO is a gradient-free optimization method to get global solutions of
-a black-box function. The function usually has a high cost to compute
-such as training a deep neural network after tuning the
-Hyper-parameters. For this reason, we usually find a
-<strong>surrogate</strong> function to approximate the original function
-<span class="math inline">\(f\)</span>. In the field of AutoML, we often
-use Gaussian Process, Random Forest or deep network as the surrogate
-model. The simplest form of BO is as follows: <img
-src="https://img-blog.csdnimg.cn/20210401193953429.png"
-alt="在这里插入图片描述" /> <span class="math inline">\(f\)</span>
-represents the black-box function that we want to optimize (black-box
-means that the function transforms a configuration <span
-class="math inline">\(x\)</span> to an output but we don't know the
-exact function relationship). <span class="math inline">\(\chi\)</span>
-represents the search space of the combination of hyper-parameters.
-<span class="math inline">\(S\)</span> represents <strong>Acquisition
-Function</strong> which is used to select the promising <span
-class="math inline">\(x\)</span>. <span class="math inline">\(M\)</span>
-represents the surrogate model which takes a configuration <span
-class="math inline">\(x\)</span> and outputs the performance (much like
-<span class="math inline">\(f\)</span> does).</p>
-<p>First we need to get some samples from <span
-class="math inline">\((f,\chi)\)</span>, thus we get <span
-class="math inline">\(D=(x_i,f(x_i)), i=1...n\)</span>.</p>
-<p>Next we iterate <span class="math inline">\(T\)</span> times (often
-fixed) to select configuration <span class="math inline">\(x\)</span>.
-Use the dataset <span class="math inline">\(D\)</span> to train the
-surrogate model <span class="math inline">\(M\)</span> (much easier than
-train <span class="math inline">\(f\)</span>). <span
-class="math inline">\(M\)</span> has several choices such as Random
-Forest, Tree Parzen Estimators. Here we use GP so we get the
-probabilistic model <span class="math inline">\(p(y|x,D)\)</span>.</p>
-<p>Then we need to find the most promising configuration <span
-class="math inline">\(x\)</span>. The most important thing for
-Acquisition Function is to make a balance between <strong>exploration
-&amp; exploitation</strong>. It means that when selecting the next <span
-class="math inline">\(x\)</span> we not only want to select those
-untried points (exploration) but also want to select those tried points
-which has a great <span class="math inline">\(f(x)\)</span>
-(exploitation).</p>
-<p>Finally use the promising <span class="math inline">\(x_i\)</span> to
-get corresponding performance <span class="math inline">\(y_i\)</span>
-and join the pair into <span class="math inline">\(D\)</span>. ##
-Gaussian Process If we assume <span class="math inline">\(x_i\)</span>
-is independent with each other, the Multivariant Gaussian Distribution's
-probability density is as follows: <span class="math display">\[
+<p>Hyper-parameters tuning has become an important work during training neural networks. As the number of Hyper-parameter is becoming larger, researchers proposed Grid Search &amp; Random Search to wish to get better combinations of Hyper-parameters. However, Grid Search has a high time cost. Although some experiments showed that Random Search got a better result than Grid Search but the result is still not fulfilling.</p>
+<p>Besides, there are some gradient-based methods to solve the problem. But the objective function is usually not differentiable or even not continuous. Thus these methods have a very finite usage.</p>
+<p>BO is a gradient-free optimization method to get global solutions of a black-box function. The function usually has a high cost to compute such as training a deep neural network after tuning the Hyper-parameters. For this reason, we usually find a <strong>surrogate</strong> function to approximate the original function <span class="math inline">\(f\)</span>. In the field of AutoML, we often use Gaussian Process, Random Forest or deep network as the surrogate model. The simplest form of BO is as follows: <img src="https://img-blog.csdnimg.cn/20210401193953429.png" alt="在这里插入图片描述" /> <span class="math inline">\(f\)</span> represents the black-box function that we want to optimize (black-box means that the function transforms a configuration <span class="math inline">\(x\)</span> to an output but we don't know the exact function relationship). <span class="math inline">\(\chi\)</span> represents the search space of the combination of hyper-parameters. <span class="math inline">\(S\)</span> represents <strong>Acquisition Function</strong> which is used to select the promising <span class="math inline">\(x\)</span>. <span class="math inline">\(M\)</span> represents the surrogate model which takes a configuration <span class="math inline">\(x\)</span> and outputs the performance (much like <span class="math inline">\(f\)</span> does).</p>
+<p>First we need to get some samples from <span class="math inline">\((f,\chi)\)</span>, thus we get <span class="math inline">\(D=(x_i,f(x_i)), i=1...n\)</span>.</p>
+<p>Next we iterate <span class="math inline">\(T\)</span> times (often fixed) to select configuration <span class="math inline">\(x\)</span>. Use the dataset <span class="math inline">\(D\)</span> to train the surrogate model <span class="math inline">\(M\)</span> (much easier than train <span class="math inline">\(f\)</span>). <span class="math inline">\(M\)</span> has several choices such as Random Forest, Tree Parzen Estimators. Here we use GP so we get the probabilistic model <span class="math inline">\(p(y|x,D)\)</span>.</p>
+<p>Then we need to find the most promising configuration <span class="math inline">\(x\)</span>. The most important thing for Acquisition Function is to make a balance between <strong>exploration &amp; exploitation</strong>. It means that when selecting the next <span class="math inline">\(x\)</span> we not only want to select those untried points (exploration) but also want to select those tried points which has a great <span class="math inline">\(f(x)\)</span> (exploitation).</p>
+<p>Finally use the promising <span class="math inline">\(x_i\)</span> to get corresponding performance <span class="math inline">\(y_i\)</span> and join the pair into <span class="math inline">\(D\)</span>. ## Gaussian Process If we assume <span class="math inline">\(x_i\)</span> is independent with each other, the Multivariant Gaussian Distribution's probability density is as follows: <span class="math display">\[
 p(x_1,...,x_n)=\frac{1}{(2\pi)^{\frac{n}{2}}\sigma_1...\sigma_n}exp(-\frac{1}{2}[\frac{(x_1-\mu_1)^2}{\sigma_1^2}+...+\frac{(x_n-\mu_n)^2}{\sigma_n^2}])
-\]</span> We can rewrite the formula to the vectorized version: <span
-class="math display">\[
+\]</span> We can rewrite the formula to the vectorized version: <span class="math display">\[
 p(x)=(2\pi)^{-\frac{n}{2}}|K|^{-\frac{1}{2}}exp[-\frac{1}{2}(x-\mu)^TK^{-1}(x-\mu)]
 \]</span> in which <span class="math display">\[
 K=\left[
 \begin{matrix}
   \sigma_1^2     &amp; 0      &amp; \cdots &amp; 0      \\
-0      &amp; \sigma_2^2      &amp; \cdots &amp; 0      \\
-\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
-0     &amp; 0      &amp; \cdots &amp; \sigma_n^2     \\
+ 0      &amp; \sigma_2^2      &amp; \cdots &amp; 0      \\
+ \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+ 0     &amp; 0      &amp; \cdots &amp; \sigma_n^2     \\
 \end{matrix}
 \right], x-\mu=[x_1-\mu_1,...,x_n-\mu_n]^T
-\]</span> Thus <span class="math inline">\(x\sim N(\mu,K)\)</span>,
-<span class="math inline">\(\mu\)</span> is the mean vector and <span
-class="math inline">\(K\)</span> is the covariance matrix (a diagonal
-matrix since the independence).</p>
-<p>But what should we do when <span class="math inline">\(x\)</span> has
-infinite dimensions? Such as in a continuous temporal T or spatial S.
-Actually GP means Gaussian Distribution and Stochastic Process (about
-time T). GP is defined by an infinite number of Random Variables on a
-continuous domain. In other words, it is an infinite dimension Gaussian
-Distribution. Formally, let's sample n moments from T: <span
-class="math inline">\(t_1,...,t_n\in T\)</span>, thus we get a
-n-dimensional vector <span
-class="math inline">\((\xi_1,...,\xi_n)\)</span>, if this vector is a
-n-dimensional Gaussian Distribution then <span
-class="math inline">\({\xi_t}\)</span> is a GP.</p>
-<p>Let's take an easy example to illustrate: suppose during peoples'
-life time, at every moment <span class="math inline">\(t\)</span> the
-energy of the population forms a Gaussian Distribution but different
-moments have different <span class="math inline">\(\mu\)</span> and
-<span class="math inline">\(\sigma\)</span>: <img
-src="https://img-blog.csdnimg.cn/20210404141525979.png"
-alt="在这里插入图片描述" /> If we take 5 moments during a population's
-life time, then <span class="math inline">\(\xi_1-\xi_5\)</span> all
-forms Gaussian Distribution but they have different <span
-class="math inline">\(\mu\)</span> and <span
-class="math inline">\(\sigma\)</span>. If we sample an arbitrary moment
-<span class="math inline">\(t\)</span> then <span
-class="math inline">\(\xi(t)\sim N(\mu_t,\sigma_t^2)\)</span>. If we
-sample at some points and connect them together we get two samples of
-the GP, as the figure shows.</p>
-<p>Now that we know what happens at <span
-class="math inline">\(t\)</span>, let's consider the whole <span
-class="math inline">\(T\)</span>. We know that for a finite Gaussian
-Distribution, it can be determined by a n-dimensional vector <span
-class="math inline">\(\mu_n\)</span> (reflects every Random Variable's
-expectation) and a <span class="math inline">\(n\times n\)</span> matrix
-<span class="math inline">\(\Sigma\)</span> (reflects every RV's
-variances and covariance between different dimensions). It is almost the
-same for GP except that we cannot use a vector to describe every <span
-class="math inline">\(t\)</span>'s mean since it is infinite. So we need
-a function <span class="math inline">\(m(t)\)</span> to describe the
-continuous <span class="math inline">\(T\)</span>. For <span
-class="math inline">\(\Sigma\)</span> we should use a kernel function
-<span class="math inline">\(k(s,t)\)</span> to describe the covariance
-between time <span class="math inline">\(t\)</span> and <span
-class="math inline">\(s\)</span>. Once <span
-class="math inline">\(m(t)\)</span> and <span
-class="math inline">\(k(s,t)\)</span> is defined the GP is determined
-<span class="math inline">\(\xi_t\sim GP(m(t),k(s,t))\)</span>.</p>
-<p>The most popular kernel function is RBF which is defined as follows:
-<span
-class="math display">\[k(s,t)=\sigma^2exp(-\frac{||s-t||^2}{2l^2})\]</span>
-<span class="math inline">\(\sigma\)</span> and <span
-class="math inline">\(l\)</span> are two hyper-parameters. If <span
-class="math inline">\(s\)</span> and <span
-class="math inline">\(t\)</span> are close in <span
-class="math inline">\(T\)</span> then the output covariance will be
-larger and it means the correlation between the two points is
-bigger.</p>
-<p>Once we have some knowledge about GP we can start to know Gaussian
-Process Regression, which is a kind of Probabilistic Model. It means
-that we can use Prior and Observations to calculate Posterior. First we
-define a GP by <span class="math inline">\(m(t)\)</span> and <span
-class="math inline">\(k(s,t)\)</span>, which is a Prior. Then we observe
-some data to revise the GP's <span class="math inline">\(m(t)\)</span>
-and <span class="math inline">\(k(s,t)\)</span> to get Posterior. But
-how?</p>
-<p>Here we need to use some Gaussian Distribution's nice properties:
-Once Gaussian always Gaussian. It means that marginal distribution,
-summation and conditional distribution of a GD are still GD. Assume a
-n-dimensional RV <span class="math inline">\(x\sim
-N(\mu,\Sigma)\)</span> and we divide it into two parts <span
-class="math inline">\(x_A\)</span> and <span
-class="math inline">\(x_B\)</span> then we get: <span
-class="math display">\[x=\begin{bmatrix} x_A\\ x_B
-\end{bmatrix},\mu=\begin{bmatrix} \mu_A\\ \mu_B
-\end{bmatrix},\Sigma=\begin{bmatrix} \Sigma_{AA}, \Sigma_{AB} \\
-\Sigma_{BA}, \Sigma_{BB} \end{bmatrix}\]</span> Then we can get: <span
-class="math display">\[x_A|x_B\sim
-\mathcal{N}(\mu_A+\Sigma_{AB}\Sigma_{BB}^{-1}(x_B-\mu_B),\Sigma_{AA}-\Sigma_{AB}\Sigma_{BB}^{-1}\Sigma_{BA})\]</span>
-Thus we could update the GD's Posterior parameters. It is much the same
-in GP. If we get some samples <span class="math inline">\((X,Y)\)</span>
-then the rest is <span class="math inline">\((X^*,f(X^*))\)</span>. The
-joint distribution forms an infinite GD: <span
-class="math display">\[\begin{bmatrix} Y\\ f(X^*) \end{bmatrix}\sim
-N(\begin{bmatrix} \mu(X)\\ \mu(X^*) \end{bmatrix},\begin{bmatrix}
-k(X,X), k(X,X^*) \\ k(X^*,X), k(X^*,X^*) \end{bmatrix})\]</span> So we
-want to know the rest of the points based on the observed points: <span
-class="math inline">\(f(X^*)|Y\sim N(\mu^*,k^*)\)</span>. <span
-class="math display">\[\mu^*=\mu(X^*)+k(X^*,X)k(X,X)^{-1}(Y-\mu(X))\\
-k^*=k(X^*,X^*)-k(X^*,X)k(X,X)^{-1}k(X,X^*)\]</span> Here is an example:
-<img src="https://img-blog.csdnimg.cn/20210404155244142.png"
-alt="在这里插入图片描述" /> Finally let's return back to our BO's <span
-class="math inline">\(M\)</span>. We first assume our prior: <span
-class="math inline">\(\mu(X)=0,k(X,X^*)=RBF\)</span>. Plus the observed
-and evaluated <span class="math inline">\(D=\{x_i,y_i\}\)</span> we can
-get <span class="math inline">\(\hat \mu\)</span> and <span
-class="math inline">\(\hat{\sigma}^{2}\)</span>, then the posterior
-prediction is <span class="math inline">\(p(y|x,D)\)</span>, which is
-still a Gaussian Distribution. The calculation process is as follows:
-<span class="math display">\[
+\]</span> Thus <span class="math inline">\(x\sim N(\mu,K)\)</span>, <span class="math inline">\(\mu\)</span> is the mean vector and <span class="math inline">\(K\)</span> is the covariance matrix (a diagonal matrix since the independence).</p>
+<p>But what should we do when <span class="math inline">\(x\)</span> has infinite dimensions? Such as in a continuous temporal T or spatial S. Actually GP means Gaussian Distribution and Stochastic Process (about time T). GP is defined by an infinite number of Random Variables on a continuous domain. In other words, it is an infinite dimension Gaussian Distribution. Formally, let's sample n moments from T: <span class="math inline">\(t_1,...,t_n\in T\)</span>, thus we get a n-dimensional vector <span class="math inline">\((\xi_1,...,\xi_n)\)</span>, if this vector is a n-dimensional Gaussian Distribution then <span class="math inline">\({\xi_t}\)</span> is a GP.</p>
+<p>Let's take an easy example to illustrate: suppose during peoples' life time, at every moment <span class="math inline">\(t\)</span> the energy of the population forms a Gaussian Distribution but different moments have different <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>: <img src="https://img-blog.csdnimg.cn/20210404141525979.png" alt="在这里插入图片描述" /> If we take 5 moments during a population's life time, then <span class="math inline">\(\xi_1-\xi_5\)</span> all forms Gaussian Distribution but they have different <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>. If we sample an arbitrary moment <span class="math inline">\(t\)</span> then <span class="math inline">\(\xi(t)\sim N(\mu_t,\sigma_t^2)\)</span>. If we sample at some points and connect them together we get two samples of the GP, as the figure shows.</p>
+<p>Now that we know what happens at <span class="math inline">\(t\)</span>, let's consider the whole <span class="math inline">\(T\)</span>. We know that for a finite Gaussian Distribution, it can be determined by a n-dimensional vector <span class="math inline">\(\mu_n\)</span> (reflects every Random Variable's expectation) and a <span class="math inline">\(n\times n\)</span> matrix <span class="math inline">\(\Sigma\)</span> (reflects every RV's variances and covariance between different dimensions). It is almost the same for GP except that we cannot use a vector to describe every <span class="math inline">\(t\)</span>'s mean since it is infinite. So we need a function <span class="math inline">\(m(t)\)</span> to describe the continuous <span class="math inline">\(T\)</span>. For <span class="math inline">\(\Sigma\)</span> we should use a kernel function <span class="math inline">\(k(s,t)\)</span> to describe the covariance between time <span class="math inline">\(t\)</span> and <span class="math inline">\(s\)</span>. Once <span class="math inline">\(m(t)\)</span> and <span class="math inline">\(k(s,t)\)</span> is defined the GP is determined <span class="math inline">\(\xi_t\sim GP(m(t),k(s,t))\)</span>.</p>
+<p>The most popular kernel function is RBF which is defined as follows: <span class="math display">\[k(s,t)=\sigma^2exp(-\frac{||s-t||^2}{2l^2})\]</span> <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(l\)</span> are two hyper-parameters. If <span class="math inline">\(s\)</span> and <span class="math inline">\(t\)</span> are close in <span class="math inline">\(T\)</span> then the output covariance will be larger and it means the correlation between the two points is bigger.</p>
+<p>Once we have some knowledge about GP we can start to know Gaussian Process Regression, which is a kind of Probabilistic Model. It means that we can use Prior and Observations to calculate Posterior. First we define a GP by <span class="math inline">\(m(t)\)</span> and <span class="math inline">\(k(s,t)\)</span>, which is a Prior. Then we observe some data to revise the GP's <span class="math inline">\(m(t)\)</span> and <span class="math inline">\(k(s,t)\)</span> to get Posterior. But how?</p>
+<p>Here we need to use some Gaussian Distribution's nice properties: Once Gaussian always Gaussian. It means that marginal distribution, summation and conditional distribution of a GD are still GD. Assume a n-dimensional RV <span class="math inline">\(x\sim N(\mu,\Sigma)\)</span> and we divide it into two parts <span class="math inline">\(x_A\)</span> and <span class="math inline">\(x_B\)</span> then we get: <span class="math display">\[x=\begin{bmatrix} x_A\\ x_B \end{bmatrix},\mu=\begin{bmatrix} \mu_A\\ \mu_B \end{bmatrix},\Sigma=\begin{bmatrix} \Sigma_{AA}, \Sigma_{AB} \\ \Sigma_{BA}, \Sigma_{BB} \end{bmatrix}\]</span> Then we can get: <span class="math display">\[x_A|x_B\sim \mathcal{N}(\mu_A+\Sigma_{AB}\Sigma_{BB}^{-1}(x_B-\mu_B),\Sigma_{AA}-\Sigma_{AB}\Sigma_{BB}^{-1}\Sigma_{BA})\]</span> Thus we could update the GD's Posterior parameters. It is much the same in GP. If we get some samples <span class="math inline">\((X,Y)\)</span> then the rest is <span class="math inline">\((X^*,f(X^*))\)</span>. The joint distribution forms an infinite GD: <span class="math display">\[\begin{bmatrix} Y\\ f(X^*) \end{bmatrix}\sim N(\begin{bmatrix} \mu(X)\\ \mu(X^*) \end{bmatrix},\begin{bmatrix} k(X,X), k(X,X^*) \\ k(X^*,X), k(X^*,X^*) \end{bmatrix})\]</span> So we want to know the rest of the points based on the observed points: <span class="math inline">\(f(X^*)|Y\sim N(\mu^*,k^*)\)</span>. <span class="math display">\[\mu^*=\mu(X^*)+k(X^*,X)k(X,X)^{-1}(Y-\mu(X))\\
+k^*=k(X^*,X^*)-k(X^*,X)k(X,X)^{-1}k(X,X^*)\]</span> Here is an example: <img src="https://img-blog.csdnimg.cn/20210404155244142.png" alt="在这里插入图片描述" /> Finally let's return back to our BO's <span class="math inline">\(M\)</span>. We first assume our prior: <span class="math inline">\(\mu(X)=0,k(X,X^*)=RBF\)</span>. Plus the observed and evaluated <span class="math inline">\(D=\{x_i,y_i\}\)</span> we can get <span class="math inline">\(\hat \mu\)</span> and <span class="math inline">\(\hat{\sigma}^{2}\)</span>, then the posterior prediction is <span class="math inline">\(p(y|x,D)\)</span>, which is still a Gaussian Distribution. The calculation process is as follows: <span class="math display">\[
 y=(y_1,...,y_i)^T \\
 \hat \mu=k^T(x)(k+\sigma_{n}^{2}I)^{-1}y \\
 \hat{\sigma}^{2}=k(x^*x)-k(x)^T(k+\sigma_{n}^{2}I)^{-1}k(x)
-\]</span> Once we get the posterior prediction <span
-class="math inline">\(p(y|x,D)\)</span>, we can feed them to the
-Acquisition Function to get next <span
-class="math inline">\(x_t\)</span>. ## Acquisition Function There are
-some popular Acquisition Functions:</p>
+\]</span> Once we get the posterior prediction <span class="math inline">\(p(y|x,D)\)</span>, we can feed them to the Acquisition Function to get next <span class="math inline">\(x_t\)</span>. ## Acquisition Function There are some popular Acquisition Functions:</p>
 <ol type="1">
-<li>Upper Confidence Bound (UCB) <span
-class="math inline">\(x_{t+1}=\underset{x\in X}{\operatorname{arg\
-max}}[\mu_{t}(x)+\beta_t^{1/2}\sigma_t(x)]\)</span> The weighted sum of
-posterior mean and posterior standard deviation. The two items
-correspond exploitation and exploration, respectively.</li>
-<li>Expected Improvement (EI) <span
-class="math inline">\(x_{t+1}=\underset{x\in X}{\operatorname{arg\
-max}}\ E_{f(x)\sim
-N(\mu_{t}(x),\sigma_t^2(x))}[max(0,f(x)-f_t^+)]\)</span>, <span
-class="math inline">\(f_t^+\)</span> is the max observation value during
-the first <span class="math inline">\(t\)</span> iterations.</li>
+<li>Upper Confidence Bound (UCB) <span class="math inline">\(x_{t+1}=\underset{x\in X}{\operatorname{arg\ max}}[\mu_{t}(x)+\beta_t^{1/2}\sigma_t(x)]\)</span> The weighted sum of posterior mean and posterior standard deviation. The two items correspond exploitation and exploration, respectively.</li>
+<li>Expected Improvement (EI) <span class="math inline">\(x_{t+1}=\underset{x\in X}{\operatorname{arg\ max}}\ E_{f(x)\sim N(\mu_{t}(x),\sigma_t^2(x))}[max(0,f(x)-f_t^+)]\)</span>, <span class="math inline">\(f_t^+\)</span> is the max observation value during the first <span class="math inline">\(t\)</span> iterations.</li>
 </ol>
-<p>Except the above functions, there are Probability of Improvement,
-Entropy Search and so on.</p>
+<p>Except the above functions, there are Probability of Improvement, Entropy Search and so on.</p>
 <h2 id="reference">Reference</h2>
-<p><a
-target="_blank" rel="noopener" href="https://jgoertler.com/visual-exploration-gaussian-processes/">A
-Visual Exploration of Gaussian Processes</a><br />
-<a
-target="_blank" rel="noopener" href="https://www.zhihu.com/question/46631426">如何通俗易懂地介绍Gaussian
-Process</a><br />
-<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/76269142">贝叶斯优化/Bayesian
-Optimization</a><br />
-<a
-target="_blank" rel="noopener" href="https://github.com/fmfn/BayesianOptimization/blob/master/examples/exploitation_vs_exploration.ipynb">Exploitation
-vs Exploration</a><br />
-<a
-target="_blank" rel="noopener" href="https://github.com/fmfn/BayesianOptimization">BayesianOptimization</a><br />
-<a
-target="_blank" rel="noopener" href="https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote15.html">Lecture
-15: Gaussian Processes</a><br />
-<a target="_blank" rel="noopener" href="https://distill.pub/2020/bayesian-optimization/">Exploring
-Bayesian Optimization</a></p>
+<p><a target="_blank" rel="noopener" href="https://jgoertler.com/visual-exploration-gaussian-processes/">A Visual Exploration of Gaussian Processes</a><br />
+<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/46631426">如何通俗易懂地介绍Gaussian Process</a><br />
+<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/76269142">贝叶斯优化/Bayesian Optimization</a><br />
+<a target="_blank" rel="noopener" href="https://github.com/fmfn/BayesianOptimization/blob/master/examples/exploitation_vs_exploration.ipynb">Exploitation vs Exploration</a><br />
+<a target="_blank" rel="noopener" href="https://github.com/fmfn/BayesianOptimization">BayesianOptimization</a><br />
+<a target="_blank" rel="noopener" href="https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote15.html">Lecture 15: Gaussian Processes</a><br />
+<a target="_blank" rel="noopener" href="https://distill.pub/2020/bayesian-optimization/">Exploring Bayesian Optimization</a></p>
 
     </div>
 
