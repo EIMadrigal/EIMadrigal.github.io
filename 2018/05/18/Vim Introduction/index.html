@@ -29,12 +29,9 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://eimadrigal.github.io/2018/05/18/Vim%20Introduction/vimmode.png">
 <meta property="og:image" content="https://eimadrigal.github.io/2018/05/18/Vim%20Introduction/fcitx.png">
-<meta property="og:image" content="https://eimadrigal.github.io/2018/05/18/Vim%20Introduction/dependency.png">
 <meta property="og:image" content="https://eimadrigal.github.io/2018/05/18/Vim%20Introduction/success.png">
-<meta property="og:image" content="https://eimadrigal.github.io/2018/05/18/Vim%20Introduction/configure.png">
-<meta property="og:image" content="https://eimadrigal.github.io/2018/05/18/Vim%20Introduction/1260581-20211229103646985-2704756.png">
 <meta property="article:published_time" content="2018-05-18T08:03:32.000Z">
-<meta property="article:modified_time" content="2022-06-10T15:00:20.000Z">
+<meta property="article:modified_time" content="2022-06-10T15:00:20.698Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Tools">
 <meta name="twitter:card" content="summary">
@@ -267,16 +264,19 @@
       
         <h2 id="配置">配置</h2>
 <p>安装原生态的Vim之后，界面非常简略：行号，自动缩进，括号匹配都没有.</p>
-<p>为了我们使用的方便，进行一些基本的配置： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/vim/vimrc</span><br></pre></td></tr></table></figure> 进入配置文件后可以删掉注释或添加新的配置:</p>
+<p>为了我们使用的方便，进行一些基本的配置： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/vim/vimrc</span><br></pre></td></tr></table></figure>
+进入配置文件后可以删掉注释或添加新的配置:</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">set number  # 左侧显示行号</span><br><span class="line">set ts=4  # Tab键长度4个空格</span><br><span class="line">set expandtab  # 输入Tab自动转换为空格</span><br><span class="line">set cursorline  # 突出显示当前行</span><br><span class="line">set autoindent  # 自动缩进</span><br><span class="line">set showmatch  # 显示括号匹配</span><br><span class="line">syntax on</span><br></pre></td></tr></table></figure>
 <h2 id="使用">使用</h2>
 <p>Vim有三种模式：输入模式、命令模式和末行命令模式。<br />
-输入模式用来输入文字，命令模式用来下达编排文件的操作指令，末行命令模式用来进行文件存档、离开编辑器等操作: <img src="vimmode.png" alt="image" /></p>
+输入模式用来输入文字，命令模式用来下达编排文件的操作指令，末行命令模式用来进行文件存档、离开编辑器等操作:
+<img src="vimmode.png" alt="image" /></p>
 <ol type="1">
 <li>进入及离开 末行模式下： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">:w  # 保存当前文件</span><br><span class="line">:x  # 保存文件并退出</span><br><span class="line">:q!  # 放弃此次编辑并强制退出</span><br><span class="line">:wq a.txt  # 保存退出</span><br><span class="line">:syntax on  # 一次性语法高亮</span><br><span class="line">:set number  # 一次性显示行号</span><br></pre></td></tr></table></figure></li>
 <li>基本编辑 命令模式下按v进入visual模式： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">d  # 选中目标文字段，按d(delete)剪切</span><br><span class="line">y  # 选中目标文字段，按y(yank)复制</span><br><span class="line">p  # 移动光标到目标位置，按p(put)粘贴</span><br></pre></td></tr></table></figure></li>
 </ol>
-<p>命令模式: hjkl和方向键类似,w可以按词向后移动,b按词向前移动,ctrl+f/ctrl+b与pageup/down功能一样<br />
+<p>命令模式:
+hjkl和方向键类似,w可以按词向后移动,b按词向前移动,ctrl+f/ctrl+b与pageup/down功能一样<br />
 88gg直接跳到第88行 10j向下跳10行 10k向上跳10行<br />
 /Node高亮所有Node以后 按n后跳 按shift+n前跳<br />
 cc/dd/yy,按u取消操作 c2c删掉连续2行<br />
@@ -287,16 +287,26 @@ ctrl+n自动补全</p>
 vim plug<br />
 vim awesome</p>
 <h2 id="中文输入">中文输入</h2>
-<p>确保键盘输入系统选中fcitx，搜狗拼音输入法基于fcitx(Free Chinese Input Toy for X)框架，所以要选中fcitx： <img src="fcitx.png" alt="image" /></p>
-<p>下载并安装搜狗输入法<a target="_blank" rel="noopener" href="https://pinyin.sogou.com/linux/?r=pinyin">安装包</a>，切换到安装包所在的目录，改下安装包的名字，不然太长了不方便，我这里改为<code>ha.deb</code>，之后安装： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i ha.deb</span><br></pre></td></tr></table></figure></p>
-<p>这里可能会提示依赖关系不满足(没提示的话跳过即可)： <img src="dependency.png" alt="image" /></p>
-<p>这是由于你的电脑可能没有安装有关fictx的内容，修复依赖关系： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install -f</span><br></pre></td></tr></table></figure></p>
+<p>确保键盘输入系统选中fcitx，搜狗拼音输入法基于fcitx(Free Chinese Input
+Toy for X)框架，所以要选中fcitx： <img src="fcitx.png"
+alt="image" /></p>
+<p>下载并安装搜狗输入法<a
+target="_blank" rel="noopener" href="https://pinyin.sogou.com/linux/?r=pinyin">安装包</a>，切换到安装包所在的目录，改下安装包的名字，不然太长了不方便，我这里改为<code>ha.deb</code>，之后安装：
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i ha.deb</span><br></pre></td></tr></table></figure></p>
+<p>这里可能会提示依赖关系不满足(没提示的话跳过即可)： <img
+src="dependency.png" alt="image" /></p>
+<p>这是由于你的电脑可能没有安装有关fictx的内容，修复依赖关系：
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install -f</span><br></pre></td></tr></table></figure></p>
 <p>顺利的话，桌面右上角会出现键盘图标：<br />
 <img src="success.png" alt="image" /><br />
 可以看到搜狗输入法已经安装。</p>
-<p>如果看不到搜狗的图标(尤其是第一次安装)，重启系统。 右键键盘图标，选择configure(或者搜fcitx configuration)： <img src="configure.png" alt="image" /></p>
-<p>你现在应该没有Sogou Pinyin这一项，点那个+号： <img src="1260581-20211229103646985-2704756.png" alt="image" /></p>
-<p>取消Only Show Current Language前的对号，搜索Sogou Pinyin，点击OK。<br />
+<p>如果看不到搜狗的图标(尤其是第一次安装)，重启系统。
+右键键盘图标，选择configure(或者搜fcitx configuration)： <img
+src="configure.png" alt="image" /></p>
+<p>你现在应该没有Sogou Pinyin这一项，点那个+号： <img
+src="1260581-20211229103646985-2704756.png" alt="image" /></p>
+<p>取消Only Show Current Language前的对号，搜索Sogou
+Pinyin，点击OK。<br />
 现在，输入法应该已经安装好了。可以去桌面那个键盘图标看看了~</p>
 <h2 id="ref">Ref</h2>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Yt411X7mu">vim教程</a></p>

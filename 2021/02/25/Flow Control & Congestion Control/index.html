@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2021022516554078.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20210225174103869.png">
 <meta property="article:published_time" content="2021-02-25T09:43:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T11:42:23.538Z">
+<meta property="article:modified_time" content="2022-01-30T11:42:23.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Network">
 <meta name="twitter:card" content="summary">
@@ -262,36 +262,72 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>In order to make sure that every packet reaches its destination, we use Retransmit. There are 3 approaches: Stop-and-Wait, Go Back N and Selective Repeat.</p>
+        <p>In order to make sure that every packet reaches its destination, we
+use Retransmit. There are 3 approaches: Stop-and-Wait, Go Back N and
+Selective Repeat.</p>
 <ul>
 <li>Stop-and-Wait<br />
-Sender transmits packet one by one, label each with a sequence number and sets timer after transmitting. If receive ACK, send next. If timer goes off, resend the previous packet.<br />
-When receive packet, send ACK. If packet is corrupted, ignore it and sender will resend.</li>
+Sender transmits packet one by one, label each with a sequence number
+and sets timer after transmitting. If receive ACK, send next. If timer
+goes off, resend the previous packet.<br />
+When receive packet, send ACK. If packet is corrupted, ignore it and
+sender will resend.</li>
 <li>SR<br />
-Send packets from the window and set timeout for each packet. On receiving ACK for left side of the window, slide forward and send packets that have now entered the window. On timeout, resend only the timed out packet.<br />
-Receiver keeps a buffer of size of the window. On receiving packets, send ACK. If packet comes in out of order, just store it in the buffer and send ACK anyway.</li>
+Send packets from the window and set timeout for each packet. On
+receiving ACK for left side of the window, slide forward and send
+packets that have now entered the window. On timeout, resend only the
+timed out packet.<br />
+Receiver keeps a buffer of size of the window. On receiving packets,
+send ACK. If packet comes in out of order, just store it in the buffer
+and send ACK anyway.</li>
 </ul>
-<h2 id="how-big-should-we-size-the-senders-window">How big should we size the sender's window</h2>
-<p>Don't overload the receiver. Sender cannot send as fast as possible since it will overflow the receiver's buffer.<br />
-<img src="https://img-blog.csdnimg.cn/20200417151819468.png" alt="在这里插入图片描述" /><br />
-The solution is Advertised Window (W): tell the sender how much space the receiver's buffer has through ACK. So the window size of the sender: the size &lt;= W. Thus we won't overload the receiver. This is Flow Control.</p>
-<p>But if we set the size to W, we cannot solve the problem thoroughly:<br />
-<img src="https://img-blog.csdnimg.cn/2021022516554078.png" alt="在这里插入图片描述" /><br />
-Sender's window contains a set of packets that have been transmitted but not yet acked. But some packets will get dropped at router and sender will never receive ACKs for these packets. The result is these packets will remain buffered in the window. It means that we cannot set the size to W, we only want to send at 50Mbps. It will take a RTT(200ms) to receive an ACK back for the first packet. We will send 50*200=1.25MB data and that's exactly the definition of the sender's window.</p>
-<p>The window size of the sender should &lt;= bandwidth-delay product (BDP). Thus we won't overload the network. This is Congestion Control. BDP is the "volume" of the link, the amount of data that can be "in flight" at any time.</p>
-<h2 id="how-should-we-determine-the-bdp">How should we determine the BDP</h2>
+<h2 id="how-big-should-we-size-the-senders-window">How big should we
+size the sender's window</h2>
+<p>Don't overload the receiver. Sender cannot send as fast as possible
+since it will overflow the receiver's buffer.<br />
+<img src="https://img-blog.csdnimg.cn/20200417151819468.png"
+alt="在这里插入图片描述" /><br />
+The solution is Advertised Window (W): tell the sender how much space
+the receiver's buffer has through ACK. So the window size of the sender:
+the size &lt;= W. Thus we won't overload the receiver. This is Flow
+Control.</p>
+<p>But if we set the size to W, we cannot solve the problem
+thoroughly:<br />
+<img src="https://img-blog.csdnimg.cn/2021022516554078.png"
+alt="在这里插入图片描述" /><br />
+Sender's window contains a set of packets that have been transmitted but
+not yet acked. But some packets will get dropped at router and sender
+will never receive ACKs for these packets. The result is these packets
+will remain buffered in the window. It means that we cannot set the size
+to W, we only want to send at 50Mbps. It will take a RTT(200ms) to
+receive an ACK back for the first packet. We will send 50*200=1.25MB
+data and that's exactly the definition of the sender's window.</p>
+<p>The window size of the sender should &lt;= bandwidth-delay product
+(BDP). Thus we won't overload the network. This is Congestion Control.
+BDP is the "volume" of the link, the amount of data that can be "in
+flight" at any time.</p>
+<h2 id="how-should-we-determine-the-bdp">How should we determine the
+BDP</h2>
 <p>Things are much harder to calculate the BDP:</p>
 <ul>
 <li>We don't know the bandwidth or RTT</li>
-<li>My share of bandwidth is dependent on the other user on the network, so the window size will change as other users start or stop sending</li>
-<li>The router will stall the excess packets in the bottleneck queue instead of dropping, so you can overshoot the size a little bit</li>
+<li>My share of bandwidth is dependent on the other user on the network,
+so the window size will change as other users start or stop sending</li>
+<li>The router will stall the excess packets in the bottleneck queue
+instead of dropping, so you can overshoot the size a little bit</li>
 </ul>
-<p>There are many algorithms to solve the problem given the prior constraints. The old one is Reno, although no one uses it anymore, sigh!!</p>
-<p>Use Multiplicative Increase at startup to find the right sending rate quickly, this process is called "slow start";<br />
-Then uses Additive Increase/Multiplicative Decrease (AIMD) to adjust the sending rate over time.<br />
-<img src="https://img-blog.csdnimg.cn/20210225174103869.png" alt="在这里插入图片描述" /></p>
+<p>There are many algorithms to solve the problem given the prior
+constraints. The old one is Reno, although no one uses it anymore,
+sigh!!</p>
+<p>Use Multiplicative Increase at startup to find the right sending rate
+quickly, this process is called "slow start";<br />
+Then uses Additive Increase/Multiplicative Decrease (AIMD) to adjust the
+sending rate over time.<br />
+<img src="https://img-blog.csdnimg.cn/20210225174103869.png"
+alt="在这里插入图片描述" /></p>
 <h2 id="reference">Reference</h2>
-<p><a target="_blank" rel="noopener" href="https://computer-networks.github.io/sp19/lectures.html">CMU 15-441 TCP Part 2</a></p>
+<p><a target="_blank" rel="noopener" href="https://computer-networks.github.io/sp19/lectures.html">CMU
+15-441 TCP Part 2</a></p>
 
     </div>
 
@@ -418,7 +454,9 @@ Then uses Additive Increase/Multiplicative Decrease (AIMD) to adjust the sending
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#how-big-should-we-size-the-senders-window"><span class="nav-number">1.</span> <span class="nav-text">How big should we size the sender&#39;s window</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how-should-we-determine-the-bdp"><span class="nav-number">2.</span> <span class="nav-text">How should we determine the BDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">3.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#how-big-should-we-size-the-senders-window"><span class="nav-number">1.</span> <span class="nav-text">How big should we
+size the sender&#39;s window</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how-should-we-determine-the-bdp"><span class="nav-number">2.</span> <span class="nav-text">How should we determine the
+BDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">3.</span> <span class="nav-text">Reference</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

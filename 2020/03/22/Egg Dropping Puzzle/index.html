@@ -27,13 +27,11 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="扔鸡蛋问题">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20200319150302530.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70">
 <meta property="article:published_time" content="2020-03-22T06:26:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T15:52:57.744Z">
+<meta property="article:modified_time" content="2022-01-30T15:52:57.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200319150302530.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2020/03/22/Egg%20Dropping%20Puzzle/">
 
@@ -262,33 +260,90 @@
       
         <h2 id="the-two-egg-problem">The Two Egg Problem</h2>
 <p>曾经是Google的一道经典题。<br />
-题意：有一个百层高楼，鸡蛋在<span class="math inline">\(L\)</span>层及以下扔都不碎，在<span class="math inline">\(L\)</span>层以上都会碎。现在某人有<span class="math inline">\(k\)</span>个鸡蛋，问在<strong>最坏情况下</strong>，至少扔多少次(用<span class="math inline">\(m\)</span>表示)可以确定<span class="math inline">\(L\)</span>的值。<br />
-分析：先来考虑<span class="math inline">\(k=1\)</span>的情况。只有1个鸡蛋，为了得到一个确定的<span class="math inline">\(L\)</span>，只能从第一层开始，逐渐尝试增加楼层高度，因此<span class="math inline">\(m=100\)</span>时，无论<span class="math inline">\(L\)</span>的值是多少，都可以被确定。<br />
-再来考虑<span class="math inline">\(k=\infty\)</span>的情况。这种情况就变为了binary search的问题，先拿一个在50层扔，如果碎，则在25层扔；如果不碎，则在75层扔...即<span class="math inline">\(m=7\)</span>。<br />
-最后来考虑<span class="math inline">\(k=2\)</span>的情况。因为<span class="math inline">\(k=1\)</span>只能一层一层试，所以第一个鸡蛋应该尽可能缩小搜索空间，但是如果第一个鸡蛋的楼层间隔太小(比如在2层、4层...)，无疑会增加<span class="math inline">\(m\)</span>。不妨取第一个鸡蛋在10层、20层...，共10次；假如第一个在10层没碎，在20碎了，那么第二个鸡蛋可以尝试11、12...19，共9次；故<span class="math inline">\(m=19\)</span>。<br />
+题意：有一个百层高楼，鸡蛋在<span
+class="math inline">\(L\)</span>层及以下扔都不碎，在<span
+class="math inline">\(L\)</span>层以上都会碎。现在某人有<span
+class="math inline">\(k\)</span>个鸡蛋，问在<strong>最坏情况下</strong>，至少扔多少次(用<span
+class="math inline">\(m\)</span>表示)可以确定<span
+class="math inline">\(L\)</span>的值。<br />
+分析：先来考虑<span
+class="math inline">\(k=1\)</span>的情况。只有1个鸡蛋，为了得到一个确定的<span
+class="math inline">\(L\)</span>，只能从第一层开始，逐渐尝试增加楼层高度，因此<span
+class="math inline">\(m=100\)</span>时，无论<span
+class="math inline">\(L\)</span>的值是多少，都可以被确定。<br />
+再来考虑<span
+class="math inline">\(k=\infty\)</span>的情况。这种情况就变为了binary
+search的问题，先拿一个在50层扔，如果碎，则在25层扔；如果不碎，则在75层扔...即<span
+class="math inline">\(m=7\)</span>。<br />
+最后来考虑<span class="math inline">\(k=2\)</span>的情况。因为<span
+class="math inline">\(k=1\)</span>只能一层一层试，所以第一个鸡蛋应该尽可能缩小搜索空间，但是如果第一个鸡蛋的楼层间隔太小(比如在2层、4层...)，无疑会增加<span
+class="math inline">\(m\)</span>。不妨取第一个鸡蛋在10层、20层...，共10次；假如第一个在10层没碎，在20碎了，那么第二个鸡蛋可以尝试11、12...19，共9次；故<span
+class="math inline">\(m=19\)</span>。<br />
 上面方案的问题在于：如果临界楼层比较高，那么第二个鸡蛋的次数是确定的，但第一个就需要多试几次，总次数就会增加。<br />
-那么如何使得不论临界楼层在哪，<span class="math inline">\(m\)</span>的值都不会波动呢？<br />
+那么如何使得不论临界楼层在哪，<span
+class="math inline">\(m\)</span>的值都不会波动呢？<br />
 很简单，只要第一个多扔一次，确定的范围(第二个要试的次数)减小，总次数就会均衡。<br />
-对于第一个鸡蛋，第一次在<span class="math inline">\(a\)</span>层扔，如果不碎，第二次向上增加<span class="math inline">\(a-1\)</span>层...直到最后只向上增加<span class="math inline">\(1\)</span>层：<span class="math inline">\(a+(a-1)+...+1\geq100\)</span>，故<span class="math inline">\(a\geq13.7\)</span>。<br />
+对于第一个鸡蛋，第一次在<span
+class="math inline">\(a\)</span>层扔，如果不碎，第二次向上增加<span
+class="math inline">\(a-1\)</span>层...直到最后只向上增加<span
+class="math inline">\(1\)</span>层：<span
+class="math inline">\(a+(a-1)+...+1\geq100\)</span>，故<span
+class="math inline">\(a\geq13.7\)</span>。<br />
 鸡蛋一：在14层、27层、39层、50层、60层、69层、77层、84层、90层、95层、99层、100层扔，共12次；<br />
-鸡蛋二：如果蛋一在14层碎了，蛋二要扔13次，共14次；如果蛋一在27层碎了，蛋二要扔12次，共14次...故<span class="math inline">\(m=14\)</span>。</p>
+鸡蛋二：如果蛋一在14层碎了，蛋二要扔13次，共14次；如果蛋一在27层碎了，蛋二要扔12次，共14次...故<span
+class="math inline">\(m=14\)</span>。</p>
 <h2 id="super-egg-problem">Super Egg Problem</h2>
-<p>对于<span class="math inline">\(k=2\)</span>，我们有了一个比较好的解决方案。那么现在有<span class="math inline">\(k\)</span>个鸡蛋，楼高<span class="math inline">\(n\)</span>层，<a target="_blank" rel="noopener" href="https://leetcode.com/problems/super-egg-drop/">问题</a>(记作<span class="math inline">\(m(k,n)\)</span>)又该如何解决？<br />
-<span class="math inline">\(k=1\)</span>和<span class="math inline">\(n=1\)</span>的情况比较简单： |n1|2|3|4|...| |--|--|--|--|--|--| |1|1|1|1|1| |2|2| |3|3| |...| | 那么如果我们递归地思考：任选一层<span class="math inline">\(h\)</span>扔第一个鸡蛋，无非有碎和不碎2种情况：<br />
-碎：临界楼层在1~h之间，问题规模缩小为<span class="math inline">\(m(k-1,h-1)\)</span>；<br />
-不碎：临界楼层在h~n之间，问题规模缩小为<span class="math inline">\(m(k,n-h)\)</span>。<br />
-所以：<span class="math inline">\(m_h(k,n)=1+max\{ m(k-1,h-1),m(k,n-h)\}\)</span>。<br />
-对于<span class="math inline">\(h\)</span>，可以采用枚举的方法，计算<span class="math inline">\(m_h(k,n)\)</span>，在其中选出一个最小的值，故问题得到解决： <span class="math display">\[m(k,n)=min\{m_h(k,n)\},h=1,2,...n\]</span> Base Case就是<span class="math inline">\(k=1\)</span>和<span class="math inline">\(n=1\)</span>。<br />
-时间复杂度<span class="math inline">\(O(KN^2)\)</span>，空间复杂度<span class="math inline">\(O(KN)\)</span>。<br />
+<p>对于<span
+class="math inline">\(k=2\)</span>，我们有了一个比较好的解决方案。那么现在有<span
+class="math inline">\(k\)</span>个鸡蛋，楼高<span
+class="math inline">\(n\)</span>层，<a
+target="_blank" rel="noopener" href="https://leetcode.com/problems/super-egg-drop/">问题</a>(记作<span
+class="math inline">\(m(k,n)\)</span>)又该如何解决？<br />
+<span class="math inline">\(k=1\)</span>和<span
+class="math inline">\(n=1\)</span>的情况比较简单： |n1|2|3|4|...|
+|--|--|--|--|--|--| |1|1|1|1|1| |2|2| |3|3| |...| |
+那么如果我们递归地思考：任选一层<span
+class="math inline">\(h\)</span>扔第一个鸡蛋，无非有碎和不碎2种情况：<br />
+碎：临界楼层在1~h之间，问题规模缩小为<span
+class="math inline">\(m(k-1,h-1)\)</span>；<br />
+不碎：临界楼层在h~n之间，问题规模缩小为<span
+class="math inline">\(m(k,n-h)\)</span>。<br />
+所以：<span class="math inline">\(m_h(k,n)=1+max\{
+m(k-1,h-1),m(k,n-h)\}\)</span>。<br />
+对于<span
+class="math inline">\(h\)</span>，可以采用枚举的方法，计算<span
+class="math inline">\(m_h(k,n)\)</span>，在其中选出一个最小的值，故问题得到解决：
+<span class="math display">\[m(k,n)=min\{m_h(k,n)\},h=1,2,...n\]</span>
+Base Case就是<span class="math inline">\(k=1\)</span>和<span
+class="math inline">\(n=1\)</span>。<br />
+时间复杂度<span class="math inline">\(O(KN^2)\)</span>，空间复杂度<span
+class="math inline">\(O(KN)\)</span>。<br />
 记忆化递归：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">superEggDrop</span><span class="params">(<span class="keyword">int</span> K, <span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">        vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">memo</span>(K + <span class="number">1</span>, vector&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>, <span class="number">0</span>));</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">helper</span>(K, N, memo);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">helper</span><span class="params">(<span class="keyword">int</span> K, <span class="keyword">int</span> N, vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; memo)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(K == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> N;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(N &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> N;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(memo[K][N]) &#123;</span><br><span class="line">            <span class="keyword">return</span> memo[K][N];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> ans = INT_MAX;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= N;++i) &#123;</span><br><span class="line">            ans = <span class="built_in">min</span>(ans, <span class="number">1</span> + <span class="built_in">max</span>(<span class="built_in">superEggDrop</span>(K - <span class="number">1</span>, i - <span class="number">1</span>), <span class="built_in">superEggDrop</span>(K, N - i)));</span><br><span class="line">        &#125;</span><br><span class="line">        memo[K][N] = ans;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>上述最直观的解法复杂度太高，无法通过Leetcode的数据。如何优化呢？<br />
-<span class="math inline">\(m(K,N)\)</span>表示该问题的解，如果鸡蛋数<span class="math inline">\(K\)</span>固定，随着楼层数<span class="math inline">\(N\)</span>增加，问题的解一定是增加的。<br />
-我们又把问题分解为了2个子问题<span class="math inline">\(m(k-1,h-1)\)</span>和<span class="math inline">\(m(k,n-h)\)</span>，<span class="math inline">\(m(k-1,h-1)\)</span>随<span class="math inline">\(h\)</span>单调递增，<span class="math inline">\(m(k,n-h)\)</span>单调递减(<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/92288604">图源</a>)：<br />
-<img src="https://img-blog.csdnimg.cn/20200319150302530.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /><br />
-此时<span class="math inline">\(min(max(...))\)</span>就是求中间的折点，可以使用Binary Search，时间复杂度降为<span class="math inline">\(O(KNlgN)\)</span>：</p>
+<span
+class="math inline">\(m(K,N)\)</span>表示该问题的解，如果鸡蛋数<span
+class="math inline">\(K\)</span>固定，随着楼层数<span
+class="math inline">\(N\)</span>增加，问题的解一定是增加的。<br />
+我们又把问题分解为了2个子问题<span
+class="math inline">\(m(k-1,h-1)\)</span>和<span
+class="math inline">\(m(k,n-h)\)</span>，<span
+class="math inline">\(m(k-1,h-1)\)</span>随<span
+class="math inline">\(h\)</span>单调递增，<span
+class="math inline">\(m(k,n-h)\)</span>单调递减(<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/92288604">图源</a>)：<br />
+<img
+src="https://img-blog.csdnimg.cn/20200319150302530.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70"
+alt="在这里插入图片描述" /><br />
+此时<span
+class="math inline">\(min(max(...))\)</span>就是求中间的折点，可以使用Binary
+Search，时间复杂度降为<span
+class="math inline">\(O(KNlgN)\)</span>：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">superEggDrop</span><span class="params">(<span class="keyword">int</span> K, <span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">        vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">memo</span>(K + <span class="number">1</span>, vector&lt;<span class="keyword">int</span>&gt;(N + <span class="number">1</span>, <span class="number">0</span>));</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">helper</span>(K, N, memo);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">helper</span><span class="params">(<span class="keyword">int</span> K, <span class="keyword">int</span> N, vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; memo)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(K == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> N;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(N &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> N;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(memo[K][N]) &#123;</span><br><span class="line">            <span class="keyword">return</span> memo[K][N];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> ans = INT_MAX;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">1</span>, r = N + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(l &lt; r) &#123;</span><br><span class="line">            <span class="keyword">int</span> m = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">int</span> broken = <span class="built_in">helper</span>(K - <span class="number">1</span>, m - <span class="number">1</span>, memo), noBroken = <span class="built_in">helper</span>(K, N - m, memo);</span><br><span class="line">            <span class="keyword">if</span>(broken &gt; noBroken) &#123;</span><br><span class="line">                r = m;</span><br><span class="line">                ans = <span class="built_in">min</span>(ans, <span class="number">1</span> + broken);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                l = m + <span class="number">1</span>;</span><br><span class="line">                ans = <span class="built_in">min</span>(ans, <span class="number">1</span> + noBroken);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        memo[K][N] = ans;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>当然，此题还有<span class="math inline">\(O(KN)\)</span>的做法，甚至还有一种数学做法可以达到<span class="math inline">\(O(KlgN)\)</span>的时间复杂度和<span class="math inline">\(O(1)\)</span>的空间复杂度，由于本人水平实在有限，就不再探索。</p>
+<p>当然，此题还有<span
+class="math inline">\(O(KN)\)</span>的做法，甚至还有一种数学做法可以达到<span
+class="math inline">\(O(KlgN)\)</span>的时间复杂度和<span
+class="math inline">\(O(1)\)</span>的空间复杂度，由于本人水平实在有限，就不再探索。</p>
 
     </div>
 

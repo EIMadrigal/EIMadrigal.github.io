@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20210226181824674.png">
 <meta property="article:published_time" content="2021-03-13T11:08:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T03:22:37.435Z">
+<meta property="article:modified_time" content="2022-01-30T03:22:37.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Machine Learning">
 <meta name="twitter:card" content="summary">
@@ -260,19 +260,46 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>For binary classification (+1, -1), if we classify correctly then <span class="math inline">\(y\cdot f = y\cdot \theta^Tx\gt0\)</span>; otherwise <span class="math inline">\(y\cdot f = y\cdot\theta^Tx\lt0\)</span>. Thus we have following loss functions:</p>
+        <p>For binary classification (+1, -1), if we classify correctly then
+<span class="math inline">\(y\cdot f = y\cdot \theta^Tx\gt0\)</span>;
+otherwise <span class="math inline">\(y\cdot f =
+y\cdot\theta^Tx\lt0\)</span>. Thus we have following loss functions:</p>
 <ul>
 <li>0/1 loss<br />
-<span class="math inline">\(\min_\theta\sum_i L_{0/1}(\theta^Tx)\)</span>. We define <span class="math inline">\(L_{0/1}(\theta^Tx) =1\)</span> if <span class="math inline">\(y\cdot f \lt 0\)</span>, and <span class="math inline">\(=0\)</span> o.w. Non convex and very hard to optimize.</li>
+<span class="math inline">\(\min_\theta\sum_i
+L_{0/1}(\theta^Tx)\)</span>. We define <span
+class="math inline">\(L_{0/1}(\theta^Tx) =1\)</span> if <span
+class="math inline">\(y\cdot f \lt 0\)</span>, and <span
+class="math inline">\(=0\)</span> o.w. Non convex and very hard to
+optimize.</li>
 <li>Hinge loss<br />
-Upper Bound of 0/1 loss. Approximate 0/1 loss by <span class="math inline">\(\min_\theta\sum_i H(\theta^Tx)\)</span>. We define <span class="math inline">\(H(\theta^Tx) = max(0, 1 - y\cdot f)\)</span>. Apparently <span class="math inline">\(H\)</span> is small if we classify correctly.</li>
+Upper Bound of 0/1 loss. Approximate 0/1 loss by <span
+class="math inline">\(\min_\theta\sum_i H(\theta^Tx)\)</span>. We define
+<span class="math inline">\(H(\theta^Tx) = max(0, 1 - y\cdot
+f)\)</span>. Apparently <span class="math inline">\(H\)</span> is small
+if we classify correctly.</li>
 <li>Logistic loss<br />
-<span class="math inline">\(\min_\theta \sum_i log(1+\exp(-y\cdot \theta^Tx))\)</span>.</li>
+<span class="math inline">\(\min_\theta \sum_i log(1+\exp(-y\cdot
+\theta^Tx))\)</span>.</li>
 </ul>
-<p>Fortunately, hinge loss, logistic loss and square loss are all convex functions. Convexity ensures global minimum and it's computationally appealing. <img src="https://img-blog.csdnimg.cn/20210226181824674.png" alt="在这里插入图片描述" /> Figure 7.5 from Chris Bishop's PRML book. The Hinge Loss E(z) = max(0,1-z) is plotted in blue, the Log Loss in red, the Square Loss in green and the 0/1 error in black.</p>
-<p>From the figure we can observe that the hard instance (near the boundary) will influence the loss function a lot so we need to make the model robust and can deal with the hard ones.</p>
-<p>For binary classification we can unify the two cases (classify correctly or not) by <span class="math inline">\(y\cdot f\)</span>, but for multi-class classification (0, 1, 2, ..., k) we cannot unify all the cases. So we use cross-entropy as the loss.</p>
-<p>There exists a vivid example for transform the target function: If a noisy picture is given, and want to output the clean one. Here the clean one is hard to control so we can let the noise be the target function and wo should minimize the amplitude of the noise. Thus the problem becomes controllable.</p>
+<p>Fortunately, hinge loss, logistic loss and square loss are all convex
+functions. Convexity ensures global minimum and it's computationally
+appealing. <img src="https://img-blog.csdnimg.cn/20210226181824674.png"
+alt="在这里插入图片描述" /> Figure 7.5 from Chris Bishop's PRML book.
+The Hinge Loss E(z) = max(0,1-z) is plotted in blue, the Log Loss in
+red, the Square Loss in green and the 0/1 error in black.</p>
+<p>From the figure we can observe that the hard instance (near the
+boundary) will influence the loss function a lot so we need to make the
+model robust and can deal with the hard ones.</p>
+<p>For binary classification we can unify the two cases (classify
+correctly or not) by <span class="math inline">\(y\cdot f\)</span>, but
+for multi-class classification (0, 1, 2, ..., k) we cannot unify all the
+cases. So we use cross-entropy as the loss.</p>
+<p>There exists a vivid example for transform the target function: If a
+noisy picture is given, and want to output the clean one. Here the clean
+one is hard to control so we can let the noise be the target function
+and wo should minimize the amplitude of the noise. Thus the problem
+becomes controllable.</p>
 
     </div>
 

@@ -28,7 +28,7 @@
 <meta property="og:description" content="偏差方差分解">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-03-25T06:48:00.000Z">
-<meta property="article:modified_time" content="2022-01-24T10:45:19.016Z">
+<meta property="article:modified_time" content="2022-01-24T10:45:19.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Machine Learning">
 <meta name="twitter:card" content="summary">
@@ -259,22 +259,34 @@
 
       
         <h2 id="motivation">Motivation</h2>
-<p>对于机器学习模型<span class="math inline">\(g\)</span>的泛化性能的分析不仅可以通过实验的方式进行评估，还可以从理论上进行分析，这也是learning theory研究的一部分。</p>
+<p>对于机器学习模型<span
+class="math inline">\(g\)</span>的泛化性能的分析不仅可以通过实验的方式进行评估，还可以从理论上进行分析，这也是learning
+theory研究的一部分。</p>
 <h2 id="推导">推导</h2>
-<p>首先假设无噪，定义在训练集<span class="math inline">\(D\)</span>上学习到的模型<span class="math inline">\(g^{(D)}\)</span>的期望泛化误差为： <span class="math display">\[
+<p>首先假设无噪，定义在训练集<span
+class="math inline">\(D\)</span>上学习到的模型<span
+class="math inline">\(g^{(D)}\)</span>的期望泛化误差为： <span
+class="math display">\[
 E_{out}(g^{(D)})=E_x[(g^{(D)}(x)-f(x))^2]
 \]</span> 先使用小学数学做点预备： <span class="math display">\[
 E_D[g^{(D)}(x)]=\bar g(x)\\
 E_D[g^{(D)}(x)^2]-\bar g(x)^2=E_D[(g^{(D)}(x)-\bar g(x))^2]=var(x)\\
 \bar g(x)^2-2E_D[g^{(D)}(x)]f(x)+f(x)^2=(\bar g(x)-f(x))^2=bias(x)^2
-\]</span> 不同的方式会生成不同的训练集<span class="math inline">\(D\)</span>，因此<span class="math inline">\(g\)</span>的总的期望泛化误差为： <span class="math display">\[
+\]</span> 不同的方式会生成不同的训练集<span
+class="math inline">\(D\)</span>，因此<span
+class="math inline">\(g\)</span>的总的期望泛化误差为： <span
+class="math display">\[
 E_D[E_{out}(g^{(D)})]=E_D[E_x[(g^{(D)}(x)-f(x))^2]]=E_x[E_D[(g^{(D)}(x)-f(x))^2]]\\
 =E_x[E_D[g^{(D)}(x)^2]-2E_D[g^{(D)}(x)]f(x)+f(x)^2]\\
-=E_x[E_D[g^{(D)}(x)^2]-\bar g(x)^2+\bar g(x)^2-2E_D[g^{(D)}(x)]f(x)+f(x)^2]\\
+=E_x[E_D[g^{(D)}(x)^2]-\bar g(x)^2+\bar
+g(x)^2-2E_D[g^{(D)}(x)]f(x)+f(x)^2]\\
 =E_x[var(x)+bias(x)^2]=E_x[var(x)]+E_x[bias(x)^2]=var+bias^2
 \]</span></p>
 <p>如果数据有噪，还是用MSE推一个漂亮的分解，其他的损失函数可能没有这么好搞：<br />
-以下推导针对单条测试样例<span class="math inline">\((x,y)\)</span>，其中<span class="math inline">\(y=f(x)+\epsilon,E_D(\epsilon)=0,V_D(\epsilon)=\sigma^2\)</span>，噪声只需要均值为0即可，甚至都不需要是高斯分布。 <span class="math display">\[
+以下推导针对单条测试样例<span
+class="math inline">\((x,y)\)</span>，其中<span
+class="math inline">\(y=f(x)+\epsilon,E_D(\epsilon)=0,V_D(\epsilon)=\sigma^2\)</span>，噪声只需要均值为0即可，甚至都不需要是高斯分布。
+<span class="math display">\[
 E_D[(g^{(D)}(x)-y)^2]=E_D[(f(x)+\epsilon-g^{(D)}(x))^2]\\
 =E_D[\epsilon^2]+E_D[(g^{(D)}(x)-f(x))^2]+E_D[2\epsilon(g^{(D)}(x)-f(x))]\\
 =V_D[\epsilon]+E_D[\epsilon]^2+E_D[(g^{(D)}(x)-f(x))^2]+E_D[\epsilon]E_D[2(g^{(D)}(x)-f(x)]\\
@@ -282,13 +294,19 @@ E_D[(g^{(D)}(x)-y)^2]=E_D[(f(x)+\epsilon-g^{(D)}(x))^2]\\
 =\sigma^2+E_D[g^{(D)}(x)-f(x)]^2+V_D[g^{(D)}(x)-f(x)]\\
 =\sigma^2+(f(x)-E_D[g^{(D)}(x)])^2+V_D[g^{(D)}(x)]\\
 =\sigma^2+(\bar g(x)-f(x))^2+var(x)=\sigma^2+bias(x)^2+var(x)
-\]</span> 其中测试样例噪声<span class="math inline">\(\epsilon\)</span>与<span class="math inline">\(f(x),g^{(D)}(x)\)</span>均独立，因此拆为乘积。</p>
+\]</span> 其中测试样例噪声<span
+class="math inline">\(\epsilon\)</span>与<span
+class="math inline">\(f(x),g^{(D)}(x)\)</span>均独立，因此拆为乘积。</p>
 <p>可以看到：bias表达的是所有可能的训练数据集训练出的所有模型的平均值与真实值的差异，variance表达的是同等规模的不同的训练数据集学习到的模型之间的差异。<br />
 当训练数据无穷多时，数据扰动对模型的泛化性能没有影响，variance就为0，此时复杂模型的bias通常更低，泛化能力也就更强。<br />
 训练数据较少时，复杂模型的variance很大，此时即使训练误差很低，泛化误差也会很高，即所谓的过拟合。</p>
 <h2 id="refs">Refs</h2>
-<p><a target="_blank" rel="noopener" href="https://nbviewer.org/github/tournami/Learning-From-Data-MOOC/blob/master/Homework%204.html">Bias and Variance</a><br />
-<a target="_blank" rel="noopener" href="https://engineering.purdue.edu/ChanGroup/ECE595/files/chapter4.pdf">Learning Theory</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://nbviewer.org/github/tournami/Learning-From-Data-MOOC/blob/master/Homework%204.html">Bias
+and Variance</a><br />
+<a
+target="_blank" rel="noopener" href="https://engineering.purdue.edu/ChanGroup/ECE595/files/chapter4.pdf">Learning
+Theory</a></p>
 
     </div>
 

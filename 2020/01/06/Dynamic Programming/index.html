@@ -258,7 +258,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>DP是算法学习中非常重要的一种思想，关于动态规划的解释，可以参考<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/23995189/answer/613096905">这篇文章</a>。</p>
+        <p>DP是算法学习中非常重要的一种思想，关于动态规划的解释，可以参考<a
+target="_blank" rel="noopener" href="https://www.zhihu.com/question/23995189/answer/613096905">这篇文章</a>。</p>
 <h2 id="概念">概念</h2>
 <p>使用DP三个条件：</p>
 <ol type="1">
@@ -275,15 +276,20 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 记忆化递归</span></span><br><span class="line">unordered_map&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; hash;  <span class="comment">// memory dict</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">f</span><span class="params">(i, j, ...)</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">if</span> <span class="title">base_case</span><span class="params">(i, j)</span></span></span><br><span class="line"><span class="function">		<span class="keyword">return</span> ...</span>;</span><br><span class="line">    <span class="keyword">if</span> (i, j) <span class="keyword">not</span> in hash</span><br><span class="line">        hash[(i, j)] = <span class="built_in">f</span>(...);</span><br><span class="line">    <span class="keyword">return</span> hash[(i, j)];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="built_in">f</span>(n, m);</span><br><span class="line"></span><br><span class="line"><span class="comment">// DP</span></span><br><span class="line"><span class="keyword">int</span> dp[][];   <span class="comment">// need padding sometimes</span></span><br><span class="line">dp[<span class="number">0</span>][<span class="number">0</span>] = ...;   <span class="comment">// base case</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;++i)</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j =  <span class="number">0</span>;j &lt; m;++j)</span><br><span class="line">        dp[i][j] = ...  <span class="comment">// 状态转移</span></span><br><span class="line"><span class="keyword">return</span> dp[n][m];</span><br></pre></td></tr></table></figure>
 <h2 id="分类">分类</h2>
 <ul>
-<li>基础题：LeetCode 509/70/746/62/63/343/96/<a target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/11478906.html">Fibonacci</a></li>
+<li>基础题：LeetCode 509/70/746/62/63/343/96/<a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/11478906.html">Fibonacci</a></li>
 <li>背包问题：
 <ul>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/12345051.html">0/1 Knapsack</a>：LeetCode 416/1049/494/474</li>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/12345051.html">Unbounded Knapsack</a>：LeetCode 518/377/70/322/279/139</li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/12345051.html">0/1
+Knapsack</a>：LeetCode 416/1049/494/474</li>
+<li><a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/12345051.html">Unbounded
+Knapsack</a>：LeetCode 518/377/70/322/279/139</li>
 </ul></li>
 <li>House Thief：LeetCode 198/213/337</li>
 <li>股票问题：LeetCode 121/122/123/188/309/714</li>
-<li>Longest Common Substring/Subsequeunce：LeetCode 300/1143/1035/674/718/53/392/115/583/72/647/516</li>
+<li>Longest Common Substring/Subsequeunce：LeetCode
+300/1143/1035/674/718/53/392/115/583/72/647/516</li>
 </ul>
 <h2 id="步骤">步骤</h2>
 <p>一般来讲，都是通过暴力-&gt;记忆化递归-&gt;Bottom-up三部曲，当然熟悉后可以快速判断这是一个DP问题，然后直接写出Bottom-up的解法。<br />
@@ -291,13 +297,16 @@
 <ul>
 <li>确定问题分类</li>
 <li>确定状态：需要几个变量来跟踪目前的状态，一般来讲至少需要index，因为这决定了我们已经考虑过了哪些值，没考虑哪些值，正在考虑哪些值。选定的变量组合要能唯一确定一个状态</li>
-<li>状态转移：为了达到base case，当前状态怎么才能由之前的状态得到。也就是Top-down逐渐分解问题，每一次递归调用都会分解一下</li>
+<li>状态转移：为了达到base
+case，当前状态怎么才能由之前的状态得到。也就是Top-down逐渐分解问题，每一次递归调用都会分解一下</li>
 <li>base case：一般比较简单，不废话了</li>
 <li>code：思路清楚了，也不难</li>
 <li>优化：一般优化空间复杂度</li>
 </ul>
 <h2 id="ref">Ref</h2>
-<p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/target-sum/discuss/455024/DP-IS-EASY!-5-Steps-to-Think-Through-DP-Questions.">DP IS EASY! 5 Steps to Think Through DP Questions.</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://leetcode.com/problems/target-sum/discuss/455024/DP-IS-EASY!-5-Steps-to-Think-Through-DP-Questions.">DP
+IS EASY! 5 Steps to Think Through DP Questions.</a></p>
 
     </div>
 

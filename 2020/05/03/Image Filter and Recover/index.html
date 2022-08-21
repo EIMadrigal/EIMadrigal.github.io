@@ -27,13 +27,11 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="图像处理和恢复">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20200502165239931.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70">
 <meta property="article:published_time" content="2020-05-03T06:57:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T15:48:52.368Z">
+<meta property="article:modified_time" content="2022-01-30T15:48:52.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200502165239931.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2020/05/03/Image%20Filter%20and%20Recover/">
 
@@ -260,11 +258,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>这是CS50的第四次大作业，顺便学习了图像的入门知识。 ## 基础 黑白图(bitmap)的每个像素点只能取值0/1，1代表白色，0代表黑色。<br />
+        <p>这是CS50的第四次大作业，顺便学习了图像的入门知识。 ## 基础
+黑白图(bitmap)的每个像素点只能取值0/1，1代表白色，0代表黑色。<br />
 常见的图片格式有JPEG/PNG/BMP，这些格式都支持RGB，每个像素点可以用多个bit表示，常见的是24-bit，红、绿、蓝分别由8bit表示，范围0~255。<br />
 BMP图的开始位置有两个header，第一个叫<code>BITMAPFILEHEADER</code>，14B；第二个叫<code>BITMAPINFOHEADER</code>，40B。接下来的每个像素点是按照BGR的顺序存储的。</p>
 <h2 id="过滤器">过滤器</h2>
-<p>Image Filter就是对原图的像素点的像素进行操作，得到一幅新图。主要有下面几种：</p>
+<p>Image
+Filter就是对原图的像素点的像素进行操作，得到一幅新图。主要有下面几种：</p>
 <ul>
 <li>Grayscale<br />
 将RGB图变为灰度图。将每个像素点的R/G/B的值改为相同，值越大，亮度越大。一般取三色的平均值。</li>
@@ -277,10 +277,13 @@ BMP图的开始位置有两个header，第一个叫<code>BITMAPFILEHEADER</code>
 <li>Edges<br />
 边缘检测，可以用Sobel Operator去做：<br />
 Blur是对周围的格子取平均，Sobel是求一个加权和，对于x和y方向，有两个kernel：<br />
-<img src="https://img-blog.csdnimg.cn/20200502165239931.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /><br />
+<img
+src="https://img-blog.csdnimg.cn/20200502165239931.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70"
+alt="在这里插入图片描述" /><br />
 对每个像素点的每种颜色，用周围3*3格子的对应颜色分别去乘Gx/Gy，得到加权和sumx/sumy。<br />
 以x为例，如果左右两边差不多，那么加权和接近0，否则得到一个大正数/负数，说明很有可能是<strong>两个物体的分界</strong>。<br />
-综合考虑x和y方向，取<span class="math inline">\(\sqrt{sumx^2+sumy^2}\)</span>，再四舍五入到0~255之间。<br />
+综合考虑x和y方向，取<span
+class="math inline">\(\sqrt{sumx^2+sumy^2}\)</span>，再四舍五入到0~255之间。<br />
 对于边缘的格子，可以做padding，围一圈全黑(0)的格子，相当于不用计算。</li>
 </ul>
 <h2 id="图片恢复">图片恢复</h2>

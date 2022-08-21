@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://eimadrigal.github.io/2018/05/23/Function-time()/1260581-20220108191119700-2067131670.png">
 <meta property="article:published_time" content="2018-05-23T13:58:32.000Z">
-<meta property="article:modified_time" content="2022-06-10T15:15:54.000Z">
+<meta property="article:modified_time" content="2022-06-10T15:15:54.129Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Language">
 <meta name="twitter:card" content="summary">
@@ -261,8 +261,10 @@
 
       
         <p><code>time()</code>函数返回自1970年1月1日0点以来经过的秒数，每秒变化一次?<br />
-<code>time()</code>函数定义在头文件<code>&lt;time.h&gt;</code>中，原型是： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">time_t</span> <span class="title">time</span><span class="params">(<span class="keyword">time_t</span> *arg)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>如果<code>arg</code>不是空指针，那么函数返回<code>time_t</code>类型的calendar time，并且把结果保存在<code>arg</code>指向的对象；<br />
+<code>time()</code>函数定义在头文件<code>&lt;time.h&gt;</code>中，原型是：
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">time_t</span> <span class="title">time</span><span class="params">(<span class="keyword">time_t</span> *arg)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>如果<code>arg</code>不是空指针，那么函数返回<code>time_t</code>类型的calendar
+time，并且把结果保存在<code>arg</code>指向的对象；<br />
 如果<code>arg == NULL</code>，那么函数只是返回一个值，值不能存储在空指针指向的对象。<br />
 之前不明白为什么要设计一个参数<code>arg</code>，直接返回一个值就好了啊？<br />
 有大神说，这是因为：</p>
@@ -272,15 +274,22 @@
 <p>那么<code>time_t</code>到底是什么类型呢？<br />
 看看cppreference.com的定义：</p>
 <blockquote>
-<p>The encoding of calendar time in <code>time_t</code> is unspecified, but most systems conform to POSIX specification and return a value of integral type holding the number of seconds since the Epoch.Implementations in which <code>time_t</code> is a 32-bit signed interger(many historical implementations) fail in the year 2038.</p>
+<p>The encoding of calendar time in <code>time_t</code> is unspecified,
+but most systems conform to POSIX specification and return a value of
+integral type holding the number of seconds since the
+Epoch.Implementations in which <code>time_t</code> is a 32-bit signed
+interger(many historical implementations) fail in the year 2038.</p>
 </blockquote>
-<p>就是说：C标准委员会并没有定义<code>time_t</code>的精度，也没有指定标准的Epoch，所以这取决于你的operating system以及你的compiler。<br />
-如果你的系统支持<strong>POSIX标准</strong>(包括很多类Unix系统、Windows系统)，那么<code>time_t</code>是一个<code>signed int 32</code>，最大表示范围是2147483647秒，标准Epoch是1970年1月1日0点，所以最终时间就是2038年1月19日，这就是著名的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Year_2038_problem">2038年问题</a>。</p>
+<p>就是说：C标准委员会并没有定义<code>time_t</code>的精度，也没有指定标准的Epoch，所以这取决于你的operating
+system以及你的compiler。<br />
+如果你的系统支持<strong>POSIX标准</strong>(包括很多类Unix系统、Windows系统)，那么<code>time_t</code>是一个<code>signed int 32</code>，最大表示范围是2147483647秒，标准Epoch是1970年1月1日0点，所以最终时间就是2038年1月19日，这就是著名的<a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Year_2038_problem">2038年问题</a>。</p>
 <p>那么这个函数的实现，GNU C Library是这么写的： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stddef.h&gt;</span>                <span class="comment">/* For NULL.  */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="comment">/* Return the current time as a `time_t&#x27; and also put it in *T if T is</span></span><br><span class="line"><span class="comment">   not NULL.  Time is represented as seconds from Jan 1 00:00:00 1970.  */</span></span><br><span class="line"><span class="function"><span class="keyword">time_t</span></span></span><br><span class="line"><span class="function"><span class="title">time</span> <span class="params">(<span class="keyword">time_t</span> *t)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> <span class="title">tv</span>;</span></span><br><span class="line">  <span class="keyword">time_t</span> result;</span><br><span class="line">  <span class="keyword">if</span> (__gettimeofday (&amp;tv, (struct timezone *) <span class="literal">NULL</span>))</span><br><span class="line">    result = (<span class="keyword">time_t</span>) <span class="number">-1</span>;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    result = (<span class="keyword">time_t</span>) tv.tv_sec;</span><br><span class="line">  <span class="keyword">if</span> (t != <span class="literal">NULL</span>)</span><br><span class="line">    *t = result;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line">libc_hidden_def (time)</span><br></pre></td></tr></table></figure></p>
 <p>如果返回<code>time_t</code>类型的值，说明调用成功；<br />
 如果返回<code>(time_t)(-1)</code>，说明无法取得现在的时间，调用失败。<br />
 举个栗子，获得当前时间： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">time_t</span> current = time(<span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">char</span>* <span class="built_in">string</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*把日期和时间转为字符串*/</span></span><br><span class="line">    <span class="built_in">string</span> = ctime(&amp;current);</span><br><span class="line">    <span class="keyword">if</span> (current == (<span class="keyword">time_t</span>)<span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Fail to get the current time!\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;The current time is %s&quot;</span>, <span class="built_in">string</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;(%d seconds since the Epoch)\n&quot;</span>,current);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>运行结果： <img src="1260581-20220108191119700-2067131670.png" alt="image" /></p>
+<p>运行结果： <img src="1260581-20220108191119700-2067131670.png"
+alt="image" /></p>
 
     </div>
 

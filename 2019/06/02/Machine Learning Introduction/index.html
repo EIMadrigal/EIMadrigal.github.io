@@ -28,7 +28,7 @@
 <meta property="og:description" content="关于机器学习">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-06-02T14:53:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T16:25:13.895Z">
+<meta property="article:modified_time" content="2022-01-30T16:25:13.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Machine Learning">
 <meta name="twitter:card" content="summary">
@@ -260,8 +260,11 @@
       
         <p>对一个背后的pattern很复杂的问题，我们无法显式编程求解，就需要ML。如果能做到100%正确并且这个过程并不很复杂，就完全没有必要上ML。</p>
 <p>ML我们并没有也不可能直接考虑所有可能出现的情况，然后用对应的方法解决。此时我们编写的程序其实是在操纵一个学习器，它可以根据模型参数的不同灵活应对输入的情况，并且每组参数都可以很好地处理输入的变化。</p>
-<p>现实生活中有许多不同类型的问题，因此学习器也有很多不同的类型，不同类型的学习器针对不同的问题，当然也可以一对多或者多对一或者多对多。训练就是要根据数据获得一组表现良好的参数，下次给出相似类型的输入，我们的模型（参数固定的学习器）可以获得良好的预测表现。此外，还要有一个衡量当前这组参数表现好坏的措施，这就是objective function，训练时要用algorithm去有策略地调整参数，优化objective/loss function。</p>
-<p>数据的难点在于：数量要够只是基本，数据应该合理反应所有可能的类别，对于特定任务的特征选择也应该慎重，比如简历筛选时如果把历史面试结果作为一个特征，那么就很可能在无意中引入historical injustices。</p>
+<p>现实生活中有许多不同类型的问题，因此学习器也有很多不同的类型，不同类型的学习器针对不同的问题，当然也可以一对多或者多对一或者多对多。训练就是要根据数据获得一组表现良好的参数，下次给出相似类型的输入，我们的模型（参数固定的学习器）可以获得良好的预测表现。此外，还要有一个衡量当前这组参数表现好坏的措施，这就是objective
+function，训练时要用algorithm去有策略地调整参数，优化objective/loss
+function。</p>
+<p>数据的难点在于：数量要够只是基本，数据应该合理反应所有可能的类别，对于特定任务的特征选择也应该慎重，比如简历筛选时如果把历史面试结果作为一个特征，那么就很可能在无意中引入historical
+injustices。</p>
 
     </div>
 

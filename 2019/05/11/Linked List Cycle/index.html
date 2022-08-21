@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200309193026391.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200309203553400.png">
 <meta property="article:published_time" content="2019-05-11T14:43:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T16:29:40.968Z">
+<meta property="article:modified_time" content="2022-01-30T16:29:40.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta name="twitter:card" content="summary">
@@ -262,27 +262,69 @@
 
       
         <h2 id="一单链表是否有环">一、单链表是否有环</h2>
-<p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/linked-list-cycle/">题目描述</a><br />
+<p><a
+target="_blank" rel="noopener" href="https://leetcode.com/problems/linked-list-cycle/">题目描述</a><br />
 快慢指针：若链表有环，则两指针必在将来某一时刻相遇：</p>
 <ul>
 <li>直观来看：本质上就是物理上的相对运动。快指针每次2步，慢指针每次1步。<br />
 如果没有环，快指针先到达链尾，结束；<br />
 如果有环，相对速度为1，即相当于慢指针静止，快指针每次1步，则必然在一圈之内相遇。</li>
 <li>那如果快指针每次3步，4步呢？由之前的相对运动，我们知道两个指针不一定相遇。那么什么情况下可以相遇呢？<br />
-<img src="https://img-blog.csdnimg.cn/20200309193026391.png" alt="在这里插入图片描述" /><br />
-当S第一次到达环口，F可能已经在环里转了n圈。假设S的速度为<span class="math inline">\(v_s\)</span>，F的速度为<span class="math inline">\(v_f\)</span>，环长为<span class="math inline">\(L\)</span>，经过时间<span class="math inline">\(t\)</span>相遇： <span class="math display">\[disS=L_1, disF=L_1+L_2+nL\]</span><br />
-即问题转化为是否存在正整数<span class="math inline">\(t\)</span>，使得S和F在环内走过的路程相等： <span class="math display">\[v_st\%L=(L_2+nL+v_ft)\%L\]</span> 根据模运算性质： <span class="math display">\[(L_2+nL+(v_f-v_s)t)\%L=0\]</span> 再化简： <span class="math display">\[(L_2+(v_f-v_s)t)\%L=0\]</span> 也就是当<span class="math inline">\(L_2+(v_f-v_s)t\)</span>是环长<span class="math inline">\(L\)</span>的整数倍，快慢指针可以相遇。<br />
-回头去看最简单的情形：<span class="math inline">\(v_f-v_s=1\)</span>，则<span class="math inline">\(t=mL-L_2\)</span>，取<span class="math inline">\(m=1,t=L-L_2\)</span>。所以经过<span class="math inline">\(t\)</span>步必然相遇。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// 单链表定义</span><br><span class="line">struct ListNode&#123;</span><br><span class="line">    int val;</span><br><span class="line">    ListNode* next;</span><br><span class="line">    ListNode(int x):val(x),next(NULL) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool hasCycle(ListNode* head)</span><br><span class="line">    &#123;</span><br><span class="line">    	if (head == NULL)</span><br><span class="line">   			return false;</span><br><span class="line">  		ListNode* fast = head;</span><br><span class="line">  		ListNode* slow = head;</span><br><span class="line">  		while (fast &amp;&amp; fast-&gt;next)</span><br><span class="line">  		&#123;</span><br><span class="line">            fast = fast-&gt;next-&gt;next;</span><br><span class="line">    		slow = slow-&gt;next;</span><br><span class="line">    		if(fast == slow)</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<img src="https://img-blog.csdnimg.cn/20200309193026391.png"
+alt="在这里插入图片描述" /><br />
+当S第一次到达环口，F可能已经在环里转了n圈。假设S的速度为<span
+class="math inline">\(v_s\)</span>，F的速度为<span
+class="math inline">\(v_f\)</span>，环长为<span
+class="math inline">\(L\)</span>，经过时间<span
+class="math inline">\(t\)</span>相遇： <span
+class="math display">\[disS=L_1, disF=L_1+L_2+nL\]</span><br />
+即问题转化为是否存在正整数<span
+class="math inline">\(t\)</span>，使得S和F在环内走过的路程相等： <span
+class="math display">\[v_st\%L=(L_2+nL+v_ft)\%L\]</span>
+根据模运算性质： <span
+class="math display">\[(L_2+nL+(v_f-v_s)t)\%L=0\]</span> 再化简： <span
+class="math display">\[(L_2+(v_f-v_s)t)\%L=0\]</span> 也就是当<span
+class="math inline">\(L_2+(v_f-v_s)t\)</span>是环长<span
+class="math inline">\(L\)</span>的整数倍，快慢指针可以相遇。<br />
+回头去看最简单的情形：<span
+class="math inline">\(v_f-v_s=1\)</span>，则<span
+class="math inline">\(t=mL-L_2\)</span>，取<span
+class="math inline">\(m=1,t=L-L_2\)</span>。所以经过<span
+class="math inline">\(t\)</span>步必然相遇。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// 单链表定义</span><br><span class="line">struct ListNode&#123;</span><br><span class="line">    int val;</span><br><span class="line">    ListNode* next;</span><br><span class="line">    ListNode(int x):val(x),next(NULL) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool hasCycle(ListNode* head)</span><br><span class="line">    &#123;</span><br><span class="line">    	if (head == NULL)</span><br><span class="line">   			return false;</span><br><span class="line">  		ListNode* fast = head;</span><br><span class="line">  		ListNode* slow = head;</span><br><span class="line">  		while (fast &amp;&amp; fast-&gt;next)</span><br><span class="line">  		&#123;</span><br><span class="line">            fast = fast-&gt;next-&gt;next;</span><br><span class="line">    		slow = slow-&gt;next;</span><br><span class="line">    		if(fast == slow)</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
 </ul>
 <h2 id="二寻找环的入口">二、寻找环的入口</h2>
-<p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/linked-list-cycle-ii/">题目描述</a><br />
-设链头距离环的入口距离为<span class="math inline">\(L_1\)</span>，<strong>相遇点</strong>距离入口距离为<span class="math inline">\(L_3\)</span>，环的长度为<span class="math inline">\(L\)</span>：<br />
-<img src="https://img-blog.csdnimg.cn/20200309203553400.png" alt="在这里插入图片描述" /><br />
-证明的本质在于求出<span class="math inline">\(L_1\)</span>与<span class="math inline">\(L_3\)</span>的关系。<br />
-在（一）中我们已经证明了S从入口到相遇只走了<span class="math inline">\(L-L_2&lt;L\)</span>步，即小于1圈。<br />
-由于快指针走过的路程是慢指针的2倍： <span class="math display">\[L_1+L_2+nL+2(L-L_2)=2(L_1+L-L_2)\]</span> 即： <span class="math display">\[L_1=L_2+nL\]</span> 又<span class="math inline">\(L_3=L-(L-L_2)=L_2\)</span>，故有： <span class="math display">\[L_1=nL+L_3\]</span> n表示S第一次到达入口时，快指针已经绕了<span class="math inline">\(n\)</span>圈。<br />
-也就是说：设两个指针<span class="math inline">\(p_1, p_2\)</span>，<span class="math inline">\(p_1\)</span>指向链头，<span class="math inline">\(p_2\)</span>指向相遇点，每次都走一步，则两指针必在环的入口相遇。<br />
-通俗理解：<span class="math inline">\(p_1\)</span>指针先走<span class="math inline">\(L_3\)</span>步，此时<span class="math inline">\(p_1\)</span>距离环入口还有<span class="math inline">\(L_1-L_3=nL\)</span>步，同时<span class="math inline">\(p_2\)</span>也走了<span class="math inline">\(L_3\)</span>步，刚好到环入口。接着<span class="math inline">\(p_1\)</span>继续走<span class="math inline">\(nL\)</span>步，<span class="math inline">\(p_2\)</span>开始绕环<span class="math inline">\(n\)</span>圈，必相遇。</p>
+<p><a
+target="_blank" rel="noopener" href="https://leetcode.com/problems/linked-list-cycle-ii/">题目描述</a><br />
+设链头距离环的入口距离为<span
+class="math inline">\(L_1\)</span>，<strong>相遇点</strong>距离入口距离为<span
+class="math inline">\(L_3\)</span>，环的长度为<span
+class="math inline">\(L\)</span>：<br />
+<img src="https://img-blog.csdnimg.cn/20200309203553400.png"
+alt="在这里插入图片描述" /><br />
+证明的本质在于求出<span class="math inline">\(L_1\)</span>与<span
+class="math inline">\(L_3\)</span>的关系。<br />
+在（一）中我们已经证明了S从入口到相遇只走了<span
+class="math inline">\(L-L_2&lt;L\)</span>步，即小于1圈。<br />
+由于快指针走过的路程是慢指针的2倍： <span
+class="math display">\[L_1+L_2+nL+2(L-L_2)=2(L_1+L-L_2)\]</span> 即：
+<span class="math display">\[L_1=L_2+nL\]</span> 又<span
+class="math inline">\(L_3=L-(L-L_2)=L_2\)</span>，故有： <span
+class="math display">\[L_1=nL+L_3\]</span>
+n表示S第一次到达入口时，快指针已经绕了<span
+class="math inline">\(n\)</span>圈。<br />
+也就是说：设两个指针<span class="math inline">\(p_1, p_2\)</span>，<span
+class="math inline">\(p_1\)</span>指向链头，<span
+class="math inline">\(p_2\)</span>指向相遇点，每次都走一步，则两指针必在环的入口相遇。<br />
+通俗理解：<span class="math inline">\(p_1\)</span>指针先走<span
+class="math inline">\(L_3\)</span>步，此时<span
+class="math inline">\(p_1\)</span>距离环入口还有<span
+class="math inline">\(L_1-L_3=nL\)</span>步，同时<span
+class="math inline">\(p_2\)</span>也走了<span
+class="math inline">\(L_3\)</span>步，刚好到环入口。接着<span
+class="math inline">\(p_1\)</span>继续走<span
+class="math inline">\(nL\)</span>步，<span
+class="math inline">\(p_2\)</span>开始绕环<span
+class="math inline">\(n\)</span>圈，必相遇。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">//单链表定义</span><br><span class="line">struct ListNode&#123;</span><br><span class="line">    int val;</span><br><span class="line">    ListNode* next;</span><br><span class="line">    ListNode(int x):val(x),next(NULL) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class Solution&#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode* detectCycle(ListNode* head)</span><br><span class="line">    &#123;</span><br><span class="line">        auto fast = head;</span><br><span class="line">        auto slow = head;</span><br><span class="line">        while(fast &amp;&amp; fast-&gt;next)</span><br><span class="line">        &#123;</span><br><span class="line">            fast = fast-&gt;next-&gt;next;</span><br><span class="line">            slow = slow-&gt;next;</span><br><span class="line">            if(fast == slow)</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        if(!fast || !fast-&gt;next)   //无环,fast走到尽头</span><br><span class="line">            return nullptr;</span><br><span class="line"></span><br><span class="line">        slow = head;   //一个指向链头,另一个指向相遇点</span><br><span class="line">        while(slow != fast)</span><br><span class="line">        &#123;</span><br><span class="line">            fast = fast-&gt;next;</span><br><span class="line">            slow = slow-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        return slow;    //找到入口</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
     </div>
