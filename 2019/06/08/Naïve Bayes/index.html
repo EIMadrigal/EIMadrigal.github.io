@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="朴素贝叶斯">
@@ -28,7 +28,7 @@
 <meta property="og:description" content="朴素贝叶斯">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-06-08T15:11:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T16:17:11.000Z">
+<meta property="article:modified_time" content="2022-01-30T16:17:11.796Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Machine Learning">
 <meta name="twitter:card" content="summary">
@@ -266,28 +266,21 @@
 <p>NBC有坚实的数学基础，稳定的分类效率，超参数少（先验），对缺失数据不敏感，算法简单。<br />
 如果属性较多且相关性比较大，决策树优于NBC，否则NBC性能很好。</p>
 <p>垃圾邮件分类器<br />
-事先做一个vocabulary存放常用的单词，如果邮件中包含vocabulary的第j个单词，特征向量中<span
-class="math inline">\(x_j=1\)</span><br />
-朴素贝叶斯假设给定标签前提下各个属性是独立的（条件独立）： <span
-class="math inline">\(P(x_1,...,x_d|y)=P(x_1|y)P(x_2|y,x_1)...P(x_d|y,x_1,...,x_{d-1})=P(x_1|y)P(x_2|y)...P(x_d|y)\)</span><br />
-<span class="math inline">\(P(x_2|y,x_1)\)</span>表示在<span
-class="math inline">\((y,x_1)\)</span>的条件下<span
-class="math inline">\(x_2\)</span>发生的概率<br />
-<span
-class="math inline">\(P(junk|D)=\frac{P(junk)P(D|junk)}{P(D)},P(normal|D)=\frac{P(normal)P(D|normal)}{P(D)}\)</span><br />
+事先做一个vocabulary存放常用的单词，如果邮件中包含vocabulary的第j个单词，特征向量中<span class="math inline">\(x_j=1\)</span><br />
+朴素贝叶斯假设给定标签前提下各个属性是独立的（条件独立）： <span class="math inline">\(P(x_1,...,x_d|y)=P(x_1|y)P(x_2|y,x_1)...P(x_d|y,x_1,...,x_{d-1})=P(x_1|y)P(x_2|y)...P(x_d|y)\)</span><br />
+<span class="math inline">\(P(x_2|y,x_1)\)</span>表示在<span class="math inline">\((y,x_1)\)</span>的条件下<span class="math inline">\(x_2\)</span>发生的概率<br />
+<span class="math inline">\(P(junk|D)=\frac{P(junk)P(D|junk)}{P(D)},P(normal|D)=\frac{P(normal)P(D|normal)}{P(D)}\)</span><br />
 P(junk)/P(normal)根据邮件库的比例即可<br />
 P(D|junk)=P(word1,word2,...,wordn|junk)，联合概率分布的数据是稀疏的，在垃圾邮件集合中出现与当前邮件相同的邮件概率。<br />
 P(word1|junk)P(word2|word1,junk)P(word3|word2,word1,junk)...<br />
 如果条件独立假设成立，<br />
 P(word1|junk)P(word2|junk)P(word3|junk)...只要统计垃圾邮件中每个单词的频率</p>
 <p>拼写纠正<br />
-max P(猜测用户希望输入的单词|实际输入单词) <span
-class="math inline">\(P(h_1|D),P(h_2|D)\)</span><br />
+max P(猜测用户希望输入的单词|实际输入单词) <span class="math inline">\(P(h_1|D),P(h_2|D)\)</span><br />
 <span class="math inline">\(P(h|D)\propto P(h)P(D|h)\)</span><br />
 对给定的观测数据，一个猜测的好坏正比于先验和这个猜测生成观测数据的可能性大小（似然）</p>
 <p>假设实际输入D=thew,h1=the,h2=thaw<br />
-<span
-class="math inline">\(P(h_1|D)=\)</span>the本身在词典中的出现概率及输入the前提下输thew的可能</p>
+<span class="math inline">\(P(h_1|D)=\)</span>the本身在词典中的出现概率及输入the前提下输thew的可能</p>
 <p>ID3（Iterative Dichotomiser 3）迭代二叉树3代，启发式算法<br />
 以信息增益做属性选择，选择分裂后信息增益最大的属性进行分裂</p>
 <ol type="1">
@@ -301,18 +294,13 @@ class="math inline">\(P(h_1|D)=\)</span>the本身在词典中的出现概率及�
 信息增益即熵-条件熵，即某条件下信息不确定性减少的程度<br />
 举例来看：明天下雨的熵为2，阴天条件下下雨的熵是0.01（即阴天下雨的可能性很大，所以不确定性很小），信息增益=2-0.01=1.99，获知阴天后，下雨的不确定性减少了很多，信息增益很大，所以阴天对下雨这一推断很重要，意味着这个特征很关键。</p>
 <p>IG衡量给定属性区分训练样例的能力<br />
-<span
-class="math inline">\(Entropy(S)=\sum_{i=1}^{c}-p_ilog_2p_i\)</span>，c表示该属性有c个取值，Pi表示子集中样例占总数的比例。介于[0,1]之间，所有样例属于1类，最纯，熵为0；平分熵最大为1</p>
+<span class="math inline">\(Entropy(S)=\sum_{i=1}^{c}-p_ilog_2p_i\)</span>，c表示该属性有c个取值，Pi表示子集中样例占总数的比例。介于[0,1]之间，所有样例属于1类，最纯，熵为0；平分熵最大为1</p>
 <p>一个属性的IG意味着用该属性分割样例导致的熵减的期望，<br />
-<span
-class="math inline">\(IG(S,A)=E(S)-\sum_{i=1}^{c}\frac{|S_i|}{|S|}E(S_i)\)</span></p>
+<span class="math inline">\(IG(S,A)=E(S)-\sum_{i=1}^{c}\frac{|S_i|}{|S|}E(S_i)\)</span></p>
 <p>C4.5用信息增益率作为属性选择的依据，构造过程中会进行剪枝（不考虑只有几个元素的结点，避免过拟合）<br />
 率即用相对性衡量（10经过10s到20，1经过1s到2，虽然前者的增益大，但如果用速度增加率即加速度衡量是一样的）</p>
 <p>可以处理非离散数据和不完整数据</p>
-<p>当前数据集S，当前属性A有c个取值，S需要被分割为c个子集 <span
-class="math inline">\(GainRatio(S,A)=\frac{IG(S,A)}{SplitInfo(S,A)}\)</span>
-<span
-class="math inline">\(SplitInfo(S,A)=-\sum_{i=1}^{c}\frac{|S_i|}{|S|}log_2\frac{|S_i|}{|S|}\)</span><br />
+<p>当前数据集S，当前属性A有c个取值，S需要被分割为c个子集 <span class="math inline">\(GainRatio(S,A)=\frac{IG(S,A)}{SplitInfo(S,A)}\)</span> <span class="math inline">\(SplitInfo(S,A)=-\sum_{i=1}^{c}\frac{|S_i|}{|S|}log_2\frac{|S_i|}{|S|}\)</span><br />
 如果A能完全分割，那么splitinfo=0；如果对半分，那么=1，即splitinfo阻碍选择值均匀分布的属性<br />
 如果splitinfo=0，可以先计算每个属性的信息增益，选择增益&gt;平均值的属性再去应用增益比率，因为如果splitinfo=0，即A能完全分割，意味着信息增益=0，不可能&gt;平均值</p>
 <p>实际中决策树的过拟合是比较严重的，C4.5克服了ID3用IG选择属性时倾向选择取值多的属性的不足。</p>
@@ -320,12 +308,9 @@ class="math inline">\(SplitInfo(S,A)=-\sum_{i=1}^{c}\frac{|S_i|}{|S|}log_2\frac{
 s1：名词<br />
 s2：动词<br />
 s3：形容词<br />
-转移矩阵A=0.3 0.5 0.2;0.5 0.3 0.2;0.4 0.2
-0.4即A11表示s1后面跟着s1的概率</p>
+转移矩阵A=0.3 0.5 0.2;0.5 0.3 0.2;0.4 0.2 0.4即A11表示s1后面跟着s1的概率</p>
 <p>若某段话第一个词为名词s1，那么该句子是“名动形名”的概率是多少？<br />
-<span
-class="math inline">\(P(s1,s2,s3,s1|model)=P(s1)P(s2|s1)P(s3|s2)P(s1|s3)=1*A12*A23*A31=0.004\)</span>？？？
-马尔科夫链：转移弧上有概率的非确定有限状态自动机，圈代表状态，每个结点的出度加起来是1<br />
+<span class="math inline">\(P(s1,s2,s3,s1|model)=P(s1)P(s2|s1)P(s3|s2)P(s1|s3)=1*A12*A23*A31=0.004\)</span>？？？ 马尔科夫链：转移弧上有概率的非确定有限状态自动机，圈代表状态，每个结点的出度加起来是1<br />
 隐马尔可夫模型HMM：状态转换是不可观察的</p>
 <p>EM（expectation maximization）<br />
 假设数据点是围绕k个核心点的k个正态分布源产生，目标是根据已知点推断正态分布的核心及参数，这也是一个贝叶斯问题</p>
@@ -408,11 +393,24 @@ class="math inline">\(P(s1,s2,s3,s1|model)=P(s1)P(s2|s1)P(s3|s2)P(s1|s3)=1*A12*A
 
           </div>
           
-    
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+            <li class="tab"><a href="#comment-livere">livere</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
+            </div>
+            <div class="tab-pane livere" id="comment-livere">
+              
   <div class="comments">
     <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
   </div>
   
+            </div>
+        </div>
+      </div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -713,6 +711,26 @@ $(document).ready(function() {
     
 
   
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '285afe6e2d34f997b740',
+      clientSecret: 'f3e77970aacbc5a14421e48db34996ed8223f7e9',
+      repo        : 'EIMadrigal.github.io',
+      owner       : 'EIMadrigal',
+      admin       : ['EIMadrigal'],
+      id          : '00d8ed7db8c9e769e779250a3bbd4287',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 <script>
 NexT.utils.loadComments(document.querySelector('#lv-container'), () => {

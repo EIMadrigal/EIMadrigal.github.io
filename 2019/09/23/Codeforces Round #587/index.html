@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="CF">
@@ -28,7 +28,7 @@
 <meta property="og:description" content="CF">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-09-23T14:13:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T16:08:53.000Z">
+<meta property="article:modified_time" content="2022-01-30T16:08:53.691Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="Online Judge">
@@ -259,35 +259,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>题目链接：<a target="_blank" rel="noopener" href="https://codeforces.com/contest/1216">Round
-#587</a><br />
-题目答案：<a
-target="_blank" rel="noopener" href="https://codeforces.com/blog/entry/69954">官方Editorial</a>、<a
-target="_blank" rel="noopener" href="https://github.com/EIMadrigal/CF">My Solution</a></p>
+        <p>题目链接：<a target="_blank" rel="noopener" href="https://codeforces.com/contest/1216">Round #587</a><br />
+题目答案：<a target="_blank" rel="noopener" href="https://codeforces.com/blog/entry/69954">官方Editorial</a>、<a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/CF">My Solution</a></p>
 <h2 id="a.-prefixes">A. Prefixes</h2>
 <p>题意：给一字符串，只含有<code>'a'</code>或<code>'b'</code>，需要改变某些位置（<code>'a'</code>变<code>'b'</code>或<code>'b'</code>变<code>'a'</code>），使得该字符串任意偶数长度前缀中<code>'a'</code>和<code>'b'</code>个数相等，求改变的最少次数以及更改后的字符串。</p>
 <p>题解：遍历，判断<code>s[2i]</code>和<code>s[2i+1]</code>是否相等。如果相等，需要一次更改，并将其中一个改为不同字母。</p>
 <h2 id="b.-shooting">B. Shooting</h2>
-<p>题意：给<span class="math inline">\(n\)</span>个编号<span
-class="math inline">\(1\)</span>~<span
-class="math inline">\(n\)</span>的射击目标，每个目标有不同的耐久度，假设已经击倒了<span
-class="math inline">\(x\)</span>个目标，将要射击第<span
-class="math inline">\(i\)</span>个目标，那么需要<span
-class="math inline">\(a_i*x+1\)</span>次才可以击倒该目标，<span
-class="math inline">\(a_i\)</span>为第<span
-class="math inline">\(i\)</span>个目标的耐久度。求击倒所有目标的最少射击次数以及射击次序。</p>
+<p>题意：给<span class="math inline">\(n\)</span>个编号<span class="math inline">\(1\)</span>~<span class="math inline">\(n\)</span>的射击目标，每个目标有不同的耐久度，假设已经击倒了<span class="math inline">\(x\)</span>个目标，将要射击第<span class="math inline">\(i\)</span>个目标，那么需要<span class="math inline">\(a_i*x+1\)</span>次才可以击倒该目标，<span class="math inline">\(a_i\)</span>为第<span class="math inline">\(i\)</span>个目标的耐久度。求击倒所有目标的最少射击次数以及射击次序。</p>
 <p>题解：贪心。想要射击次数最少，就要先射击耐久度大的目标，所以按照耐久度由大到小排序，同时记录对应的目标序号。</p>
 <h2 id="c.-white-sheet">C. White Sheet</h2>
 <p>题意：给定三个矩形，两黑一白，判断两个黑色矩形是否可以完全覆盖白色矩形，不能完全覆盖输出<code>YES</code>。</p>
-<p>题解：分两种情况，记白色矩形面积为<span
-class="math inline">\(S_w\)</span>，一个黑色矩形与白色矩形交叉面积为<span
-class="math inline">\(S_{wb1}\)</span>，另一个黑色矩形与白色矩形交叉面积为<span
-class="math inline">\(S_{wb2}\)</span>，两黑色矩形交叉面积为<span
-class="math inline">\(S_{bb}\)</span>：<br />
-1、两黑色矩形无交叉：只要<span
-class="math inline">\(S_{wb1}+S_{wb2}&lt;S_w\)</span>，就可以看到白色矩形；<br />
-2、两黑色矩形有交叉：如果<span
-class="math inline">\(S_{wb1}+S_{wb2}-S_{bb}&lt;S_w\)</span>，可以看到白色矩形。</p>
+<p>题解：分两种情况，记白色矩形面积为<span class="math inline">\(S_w\)</span>，一个黑色矩形与白色矩形交叉面积为<span class="math inline">\(S_{wb1}\)</span>，另一个黑色矩形与白色矩形交叉面积为<span class="math inline">\(S_{wb2}\)</span>，两黑色矩形交叉面积为<span class="math inline">\(S_{bb}\)</span>：<br />
+1、两黑色矩形无交叉：只要<span class="math inline">\(S_{wb1}+S_{wb2}&lt;S_w\)</span>，就可以看到白色矩形；<br />
+2、两黑色矩形有交叉：如果<span class="math inline">\(S_{wb1}+S_{wb2}-S_{bb}&lt;S_w\)</span>，可以看到白色矩形。</p>
 
     </div>
 
@@ -364,11 +348,24 @@ class="math inline">\(S_{wb1}+S_{wb2}-S_{bb}&lt;S_w\)</span>，可以看到白�
 
           </div>
           
-    
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+            <li class="tab"><a href="#comment-livere">livere</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
+            </div>
+            <div class="tab-pane livere" id="comment-livere">
+              
   <div class="comments">
     <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
   </div>
   
+            </div>
+        </div>
+      </div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -669,6 +666,26 @@ $(document).ready(function() {
     
 
   
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '285afe6e2d34f997b740',
+      clientSecret: 'f3e77970aacbc5a14421e48db34996ed8223f7e9',
+      repo        : 'EIMadrigal.github.io',
+      owner       : 'EIMadrigal',
+      admin       : ['EIMadrigal'],
+      id          : 'd2bb420d32cdbbc9e20064b6dcad591c',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 <script>
 NexT.utils.loadComments(document.querySelector('#lv-container'), () => {

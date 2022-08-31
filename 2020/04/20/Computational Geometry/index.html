@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="计算几何摘录">
@@ -27,15 +27,21 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="计算几何摘录">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDIwLmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDIwMDQvMTI2MDU4MS0yMDIwMDQyMDA5Mjk1NTI0OS05MzA1Nzg4NjkucG5n?x-oss-process=image/format,png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200729213724839.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200729213754372.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200729213857178.png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDIwLmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDIwMDQvMTI2MDU4MS0yMDIwMDQyMDA5NDU1Mzg4My0xOTgxNzI0NjU3LnBuZw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDIwLmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDIwMDQvMTI2MDU4MS0yMDIwMDQyMDEwMTQxNjU5NC0xMjc1OTkyNDExLnBuZw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229164832081-268323827.jpg">
+<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229164921157-1565408775.png">
+<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229164931460-670765424.png">
 <meta property="article:published_time" content="2020-04-20T02:15:00.000Z">
 <meta property="article:modified_time" content="2022-04-19T14:04:46.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200729213724839.png">
+<meta name="twitter:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDIwLmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDIwMDQvMTI2MDU4MS0yMDIwMDQyMDA5Mjk1NTI0OS05MzA1Nzg4NjkucG5n?x-oss-process=image/format,png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2020/04/20/Computational%20Geometry/">
 
@@ -265,71 +271,40 @@
         <h2 id="线段重叠">线段重叠</h2>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">start1 &lt;= end2 &amp;&amp; end1 &gt;= start2</span><br></pre></td></tr></table></figure>
 <h2 id="矩形重叠">矩形重叠</h2>
-<p>看过某司一道笔试题：给<span
-class="math inline">\(n\)</span>个矩形左下和右上坐标（不能斜放），求重叠最多处矩形个数。<br />
+<p>看过某司一道笔试题：给<span class="math inline">\(n\)</span>个矩形左下和右上坐标（不能斜放），求重叠最多处矩形个数。<br />
 这道题本身不难：可以遍历所有矩形边界组成的点，计算<strong>该点被多少矩形包围</strong>，从而选出最大值。<br />
 由此引申出一个问题：<strong>判断两个矩形重叠</strong>。</p>
 <ul>
 <li>如果正向思考，会有很多种情况：包含、重叠某个角、交叉...</li>
 </ul>
-<p>那么如果逆向思考：什么情况两个矩形不重叠？无非就是<span
-class="math inline">\(A(p_1, p_2)\)</span>在<span
-class="math inline">\(B(p_3, p_4)\)</span>的上下左右： <span
-class="math display">\[(p_2.y&gt;=p_3.y)\vee(p_4.y&gt;=p_1.y)\vee(p_3.x&gt;=p_2.x)\vee(p_1.x&gt;=p_4.x)\]</span>
-取反后用De Morgan's law化简就是重叠的情况： <span
-class="math display">\[(p_2.y&lt;p_3.y)\wedge(p_4.y&lt;p_1.y)\wedge(p_3.x&lt;p_2.x)\wedge(p_1.x&lt;p_4.x)\]</span></p>
+<p>那么如果逆向思考：什么情况两个矩形不重叠？无非就是<span class="math inline">\(A(p_1, p_2)\)</span>在<span class="math inline">\(B(p_3, p_4)\)</span>的上下左右： <span class="math display">\[(p_2.y&gt;=p_3.y)\vee(p_4.y&gt;=p_1.y)\vee(p_3.x&gt;=p_2.x)\vee(p_1.x&gt;=p_4.x)\]</span> 取反后用De Morgan's law化简就是重叠的情况： <span class="math display">\[(p_2.y&lt;p_3.y)\wedge(p_4.y&lt;p_1.y)\wedge(p_3.x&lt;p_2.x)\wedge(p_1.x&lt;p_4.x)\]</span></p>
 <h2 id="线段交点">线段交点</h2>
 <p>联立方程组求解当然没问题，也可以用几何的方法解：<br />
-<img
-src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDIwLmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDIwMDQvMTI2MDU4MS0yMDIwMDQyMDA5Mjk1NTI0OS05MzA1Nzg4NjkucG5n?x-oss-process=image/format,png" /><br />
-易知，<span
-class="math inline">\(\frac{AO}{BO}=\frac{AE}{BF}=\frac{S_{ACD}}{S_{BCD}}\)</span>，两个三角形面积可以用叉积求得，又<span
-class="math inline">\(\vec{AO}=\frac{AO}{AB}\vec{AB}=\frac{AO}{AO+BO}\vec{AB}\)</span>，所以<span
-class="math inline">\(\vec{O&#39;O}=\vec{O&#39;A}+\vec{AO}\)</span>，即可求得<span
-class="math inline">\(O\)</span>点坐标。</p>
+<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDIwLmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDIwMDQvMTI2MDU4MS0yMDIwMDQyMDA5Mjk1NTI0OS05MzA1Nzg4NjkucG5n?x-oss-process=image/format,png" /><br />
+易知，<span class="math inline">\(\frac{AO}{BO}=\frac{AE}{BF}=\frac{S_{ACD}}{S_{BCD}}\)</span>，两个三角形面积可以用叉积求得，又<span class="math inline">\(\vec{AO}=\frac{AO}{AB}\vec{AB}=\frac{AO}{AO+BO}\vec{AB}\)</span>，所以<span class="math inline">\(\vec{O&#39;O}=\vec{O&#39;A}+\vec{AO}\)</span>，即可求得<span class="math inline">\(O\)</span>点坐标。</p>
 <h2 id="线段覆盖">线段覆盖</h2>
-<p>有若干线段<span
-class="math inline">\([l_i,r_i]\)</span>以及目标线段<span
-class="math inline">\([a,b]\)</span>，需要用尽可能多的线段去覆盖目标线段，且线段之间不相交，线段长度之和最小。<br />
+<p>有若干线段<span class="math inline">\([l_i,r_i]\)</span>以及目标线段<span class="math inline">\([a,b]\)</span>，需要用尽可能多的线段去覆盖目标线段，且线段之间不相交，线段长度之和最小。<br />
 直观上看：我们的策略首先以长度为准则：显然不妥，选了黑的就不是最优<br />
-<img src="https://img-blog.csdnimg.cn/20200729213724839.png"
-alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20200729213724839.png" alt="在这里插入图片描述" /><br />
 按照起始点：<br />
-<img src="https://img-blog.csdnimg.cn/20200729213754372.png"
-alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20200729213754372.png" alt="在这里插入图片描述" /><br />
 按照结束点：最优<br />
-<img src="https://img-blog.csdnimg.cn/20200729213857178.png"
-alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20200729213857178.png" alt="在这里插入图片描述" /><br />
 从前向后取区间，最小化对后面的影响，选择最早结束的区间。</p>
 <h2 id="向量旋转">向量旋转</h2>
-<p><img
-src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDIwLmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDIwMDQvMTI2MDU4MS0yMDIwMDQyMDA5NDU1Mzg4My0xOTgxNzI0NjU3LnBuZw?x-oss-process=image/format,png" /><br />
-三角变换可得： <span class="math display">\[\vec
-b=(xcos\alpha-ysin\alpha,ycos\alpha+xsin\alpha)\]</span></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDIwLmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDIwMDQvMTI2MDU4MS0yMDIwMDQyMDA5NDU1Mzg4My0xOTgxNzI0NjU3LnBuZw?x-oss-process=image/format,png" /><br />
+三角变换可得： <span class="math display">\[\vec b=(xcos\alpha-ysin\alpha,ycos\alpha+xsin\alpha)\]</span></p>
 <h2 id="多边形面积">多边形面积</h2>
-<p><img
-src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDIwLmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDIwMDQvMTI2MDU4MS0yMDIwMDQyMDEwMTQxNjU5NC0xMjc1OTkyNDExLnBuZw?x-oss-process=image/format,png" /><br />
-三角剖分： <span
-class="math display">\[S_{ABCDEF}=\frac{\vec{OA}\times\vec{OB}+\vec{OB}\times\vec{OC}+...+\vec{OF}\times\vec{OA}}{2}\]</span>
-即： <span class="math display">\[S=A_n\times
-A_1+\sum_{i=1}^{n-1}A_i\times
-A_{i+1}=x_ny_1-y_nx_1+\sum_{i=1}^{n-1}x_iy_{i+1}-y_ix_{i+1}\]</span></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDIwLmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDIwMDQvMTI2MDU4MS0yMDIwMDQyMDEwMTQxNjU5NC0xMjc1OTkyNDExLnBuZw?x-oss-process=image/format,png" /><br />
+三角剖分： <span class="math display">\[S_{ABCDEF}=\frac{\vec{OA}\times\vec{OB}+\vec{OB}\times\vec{OC}+...+\vec{OF}\times\vec{OA}}{2}\]</span> 即： <span class="math display">\[S=A_n\times A_1+\sum_{i=1}^{n-1}A_i\times A_{i+1}=x_ny_1-y_nx_1+\sum_{i=1}^{n-1}x_iy_{i+1}-y_ix_{i+1}\]</span></p>
 <h2 id="凸包">凸包</h2>
 <p>包围所有给定点并且周长最小的多边形。</p>
-<p><img
-src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229164832081-268323827.jpg"
-alt="image" /><br />
+<p><img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229164832081-268323827.jpg" alt="image" /><br />
 直接求不好算，需要旋转坐标轴：<br />
-<img
-src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229164921157-1565408775.png"
-alt="image" /><br />
-<img
-src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229164931460-670765424.png"
-alt="image" /> <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">cloest</span>(<span class="params">self, x, y, l, w, yaw</span>):</span></span><br><span class="line">        <span class="comment"># 原始坐标系逆时针旋转theta = yaw - 90得到坐标系(xx,yy)</span></span><br><span class="line">        theta = math.radians(yaw - <span class="number">90</span>)</span><br><span class="line">        xx = x * math.cos(theta) + y * math.sin(theta)</span><br><span class="line">        yy = -x * math.sin(theta) + y * math.cos(theta)</span><br><span class="line"></span><br><span class="line">        points = [(xx + w / <span class="number">2</span>, yy + l / <span class="number">2</span>), (xx - w / <span class="number">2</span>, yy - l / <span class="number">2</span>), (xx + w / <span class="number">2</span>, yy - l / <span class="number">2</span>), (xx - w / <span class="number">2</span>, yy + l / <span class="number">2</span>)]</span><br><span class="line">        dis = [a ** <span class="number">2</span> + b ** <span class="number">2</span> <span class="keyword">for</span> a, b <span class="keyword">in</span> points]</span><br><span class="line">        ans = points[dis.index(<span class="built_in">min</span>(dis))]</span><br><span class="line">        ans_x = ans[<span class="number">0</span>] * math.cos(theta) - ans[<span class="number">1</span>] * math.sin(theta)</span><br><span class="line">        ans_y = ans[<span class="number">0</span>] * math.sin(theta) + ans[<span class="number">1</span>] * math.cos(theta)</span><br><span class="line">        <span class="keyword">return</span> ans_x, ans_y</span><br></pre></td></tr></table></figure></p>
+<img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229164921157-1565408775.png" alt="image" /><br />
+<img src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229164931460-670765424.png" alt="image" /> <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">cloest</span>(<span class="params">self, x, y, l, w, yaw</span>):</span></span><br><span class="line">        <span class="comment"># 原始坐标系逆时针旋转theta = yaw - 90得到坐标系(xx,yy)</span></span><br><span class="line">        theta = math.radians(yaw - <span class="number">90</span>)</span><br><span class="line">        xx = x * math.cos(theta) + y * math.sin(theta)</span><br><span class="line">        yy = -x * math.sin(theta) + y * math.cos(theta)</span><br><span class="line"></span><br><span class="line">        points = [(xx + w / <span class="number">2</span>, yy + l / <span class="number">2</span>), (xx - w / <span class="number">2</span>, yy - l / <span class="number">2</span>), (xx + w / <span class="number">2</span>, yy - l / <span class="number">2</span>), (xx - w / <span class="number">2</span>, yy + l / <span class="number">2</span>)]</span><br><span class="line">        dis = [a ** <span class="number">2</span> + b ** <span class="number">2</span> <span class="keyword">for</span> a, b <span class="keyword">in</span> points]</span><br><span class="line">        ans = points[dis.index(<span class="built_in">min</span>(dis))]</span><br><span class="line">        ans_x = ans[<span class="number">0</span>] * math.cos(theta) - ans[<span class="number">1</span>] * math.sin(theta)</span><br><span class="line">        ans_y = ans[<span class="number">0</span>] * math.sin(theta) + ans[<span class="number">1</span>] * math.cos(theta)</span><br><span class="line">        <span class="keyword">return</span> ans_x, ans_y</span><br></pre></td></tr></table></figure></p>
 <hr />
-<p><em>reference</em> <em><a
-target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/68617952">洛谷日报#142
-计算几何初步</a></em></p>
+<p><em>reference</em> <em><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/68617952">洛谷日报#142 计算几何初步</a></em></p>
 
     </div>
 
@@ -405,11 +380,24 @@ target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/68617952">洛�
 
           </div>
           
-    
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+            <li class="tab"><a href="#comment-livere">livere</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
+            </div>
+            <div class="tab-pane livere" id="comment-livere">
+              
   <div class="comments">
     <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
   </div>
   
+            </div>
+        </div>
+      </div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -710,6 +698,26 @@ $(document).ready(function() {
     
 
   
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '285afe6e2d34f997b740',
+      clientSecret: 'f3e77970aacbc5a14421e48db34996ed8223f7e9',
+      repo        : 'EIMadrigal.github.io',
+      owner       : 'EIMadrigal',
+      admin       : ['EIMadrigal'],
+      id          : '4139948f3e3931d31a5691c84799750a',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 <script>
 NexT.utils.loadComments(document.querySelector('#lv-container'), () => {

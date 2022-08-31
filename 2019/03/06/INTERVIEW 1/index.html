@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="OPPO">
@@ -28,7 +28,7 @@
 <meta property="og:description" content="OPPO">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-03-06T08:54:00.000Z">
-<meta property="article:modified_time" content="2022-01-14T11:03:50.000Z">
+<meta property="article:modified_time" content="2022-01-14T11:03:50.667Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Interview">
 <meta name="twitter:card" content="summary">
@@ -259,29 +259,15 @@
 
       
         <h2 id="数据对齐存储">数据对齐存储</h2>
-<p>在32位系统中：int占4Bytes，short占2Bytes，char占1Byte，加起来应该是7Bytes，但是下面这段代码输出却是8。
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> x;</span><br><span class="line">    <span class="keyword">short</span> y;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, <span class="built_in"><span class="keyword">sizeof</span></span>(Node));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>计算机对于基本类型数据在内存中的存/储位置有些限制，即<strong>内存对齐</strong>。
-处理器取数据一般不按照单个字节，而是双字节、四字节等进行，假设这种存取粒度为4Bytes，也就是说处理器只能从首地址为4的倍数的地址读取数据。如果没有对齐存储，取数据会很麻烦，可能需要两次读取并且剔除掉无用的字节。
-每个编译器都有默认的对齐模数，那么<strong>有效对齐值=min{对齐模数，结构体中最长数据类型长度}。</strong>
-<strong>规则1：第一个成员offset为0，其后成员的offset=min{有效对齐值，该类型字节数}；</strong>
-<strong>规则2：结构体总大小必须为有效对齐值的整数倍，否则编译器会自动填充。</strong>
-再看前面的例子，int占0<sub>3，short占4</sub>5，char占6，总长度为7，不是4的整数倍，所以地址7是填充字节，共8Bytes。</p>
-<h2 id="栈-堆不是数据结构中的栈和堆">栈 &amp;
-堆（不是数据结构中的栈和堆）</h2>
+<p>在32位系统中：int占4Bytes，short占2Bytes，char占1Byte，加起来应该是7Bytes，但是下面这段代码输出却是8。 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> x;</span><br><span class="line">    <span class="keyword">short</span> y;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, <span class="built_in"><span class="keyword">sizeof</span></span>(Node));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>计算机对于基本类型数据在内存中的存/储位置有些限制，即<strong>内存对齐</strong>。 处理器取数据一般不按照单个字节，而是双字节、四字节等进行，假设这种存取粒度为4Bytes，也就是说处理器只能从首地址为4的倍数的地址读取数据。如果没有对齐存储，取数据会很麻烦，可能需要两次读取并且剔除掉无用的字节。 每个编译器都有默认的对齐模数，那么<strong>有效对齐值=min{对齐模数，结构体中最长数据类型长度}。</strong> <strong>规则1：第一个成员offset为0，其后成员的offset=min{有效对齐值，该类型字节数}；</strong> <strong>规则2：结构体总大小必须为有效对齐值的整数倍，否则编译器会自动填充。</strong> 再看前面的例子，int占0<sub>3，short占4</sub>5，char占6，总长度为7，不是4的整数倍，所以地址7是填充字节，共8Bytes。</p>
+<h2 id="栈-堆不是数据结构中的栈和堆">栈 &amp; 堆（不是数据结构中的栈和堆）</h2>
 <ol type="1">
-<li>内存栈区 编译器自动进行分配和释放，存放局部变量、函数的参数等。
-Windows下栈向低地址扩展，大小只有几MB，如果开一个很大的局部数组，就会提示stack
-overflow。</li>
-<li>内存堆区
-malloc或者new返回的内存区域，使用完需要用户free或delete，否则容易内存泄漏。如果程序员不释放，那么结束时由操作系统回收。
-堆向高地址扩展，由于系统采用空闲链表存储空闲内存，所以是不连续的。系统在收到内存申请的请求后，会由低地址向高地址遍历空闲链表，找到第一个满足的空闲块，删除该结点，并将该块的首地址返回。如果分配的空间大于申请的，会将剩余部分重新链接回空闲链表。
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在Heap中开辟10Bytes，同时在Stack中压入p，p的值为10Bytes的首地址</span></span><br><span class="line"><span class="keyword">char</span>* p = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">10</span>];</span><br></pre></td></tr></table></figure></li>
+<li>内存栈区 编译器自动进行分配和释放，存放局部变量、函数的参数等。 Windows下栈向低地址扩展，大小只有几MB，如果开一个很大的局部数组，就会提示stack overflow。</li>
+<li>内存堆区 malloc或者new返回的内存区域，使用完需要用户free或delete，否则容易内存泄漏。如果程序员不释放，那么结束时由操作系统回收。 堆向高地址扩展，由于系统采用空闲链表存储空闲内存，所以是不连续的。系统在收到内存申请的请求后，会由低地址向高地址遍历空闲链表，找到第一个满足的空闲块，删除该结点，并将该块的首地址返回。如果分配的空间大于申请的，会将剩余部分重新链接回空闲链表。 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在Heap中开辟10Bytes，同时在Stack中压入p，p的值为10Bytes的首地址</span></span><br><span class="line"><span class="keyword">char</span>* p = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">10</span>];</span><br></pre></td></tr></table></figure></li>
 <li>常数区 存放字符串常量等，程序结束由系统回收。</li>
-<li>静态区
-存放全局变量或者静态变量，初始化的和没有初始化的分别存放在不同的区域，程序结束后由系统释放。</li>
-<li>代码区 存放程序代码。 ## 其它
-排序复杂度、人工智能概念、模型的建立等。</li>
+<li>静态区 存放全局变量或者静态变量，初始化的和没有初始化的分别存放在不同的区域，程序结束后由系统释放。</li>
+<li>代码区 存放程序代码。 ## 其它 排序复杂度、人工智能概念、模型的建立等。</li>
 </ol>
 
     </div>
@@ -339,8 +325,8 @@ malloc或者new返回的内存区域，使用完需要用户free或delete，否�
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/03/04/C%20&%20C++%20FAQ/" rel="prev" title="C/C++ FAQ">
-      <i class="fa fa-chevron-left"></i> C/C++ FAQ
+    <a href="/2019/03/04/C++%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="prev" title="C++多线程编程">
+      <i class="fa fa-chevron-left"></i> C++多线程编程
     </a></div>
       <div class="post-nav-item">
     <a href="/2019/03/07/K-Nearest%20Neighbors/" rel="next" title="K-Nearest Neighbors">
@@ -358,11 +344,24 @@ malloc或者new返回的内存区域，使用完需要用户free或delete，否�
 
           </div>
           
-    
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+            <li class="tab"><a href="#comment-livere">livere</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
+            </div>
+            <div class="tab-pane livere" id="comment-livere">
+              
   <div class="comments">
     <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
   </div>
   
+            </div>
+        </div>
+      </div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -409,8 +408,7 @@ malloc或者new返回的内存区域，使用完需要用户free或delete，否�
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AF%B9%E9%BD%90%E5%AD%98%E5%82%A8"><span class="nav-number">1.</span> <span class="nav-text">数据对齐存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88-%E5%A0%86%E4%B8%8D%E6%98%AF%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%AD%E7%9A%84%E6%A0%88%E5%92%8C%E5%A0%86"><span class="nav-number">2.</span> <span class="nav-text">栈 &amp;
-堆（不是数据结构中的栈和堆）</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AF%B9%E9%BD%90%E5%AD%98%E5%82%A8"><span class="nav-number">1.</span> <span class="nav-text">数据对齐存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88-%E5%A0%86%E4%B8%8D%E6%98%AF%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%AD%E7%9A%84%E6%A0%88%E5%92%8C%E5%A0%86"><span class="nav-number">2.</span> <span class="nav-text">栈 &amp; 堆（不是数据结构中的栈和堆）</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -664,6 +662,26 @@ $(document).ready(function() {
     
 
   
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '285afe6e2d34f997b740',
+      clientSecret: 'f3e77970aacbc5a14421e48db34996ed8223f7e9',
+      repo        : 'EIMadrigal.github.io',
+      owner       : 'EIMadrigal',
+      admin       : ['EIMadrigal'],
+      id          : '8b6f90ac989217fa34967f254866cf4b',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 <script>
 NexT.utils.loadComments(document.querySelector('#lv-container'), () => {

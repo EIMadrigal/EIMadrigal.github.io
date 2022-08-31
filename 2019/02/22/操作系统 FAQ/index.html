@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="操作系统八股">
@@ -28,7 +28,7 @@
 <meta property="og:description" content="操作系统八股">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-02-22T12:15:32.000Z">
-<meta property="article:modified_time" content="2022-07-04T13:57:22.485Z">
+<meta property="article:modified_time" content="2022-08-31T02:16:23.629Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Interview">
 <meta property="article:tag" content="OS">
@@ -228,7 +228,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-07-04 21:57:22" itemprop="dateModified" datetime="2022-07-04T21:57:22+08:00">2022-07-04</time>
+                <time title="Modified: 2022-08-31 10:16:23" itemprop="dateModified" datetime="2022-08-31T10:16:23+08:00">2022-08-31</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -259,69 +259,40 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="进程线程协程">进程线程协程</h2>
+        <h2 id="进程">进程</h2>
+<h3 id="进程线程协程">进程线程协程</h3>
+<p>进程拥有一个完整的资源平台，而线程只独享必不可少的资源，如寄存器和栈；<br />
+线程同样具有就绪、阻塞、执行三种基本状态，同样具有状态之间的转换关系；<br />
+线程能减少并发执行的时间和空间开销；</p>
 <ol type="1">
-<li>联系: 线程存在于进程内部, 一个进程可以有多个线程,
-一个线程只能属于一个进程.</li>
-<li>区别: 进程是运行时程序的封装,
-是系统进行资源分配和资源调度的基本单位; 线程是进程的子任务,
-是CPU分配和调度的基本单位. 进程创建需要系统分配内存,
-CPU和文件句柄等资源, 销毁时要进行相应的回收, 因此进程的管理开销大;
-线程开销小. 进程间不会互相影响; 一个线程崩溃会导致进程崩溃,
-从而影响其他线程.</li>
+<li>联系: 线程存在于进程内部, 一个进程可以有多个线程, 一个线程只能属于一个进程.</li>
+<li>区别: 进程是运行时程序的封装, 是系统进行资源分配和资源调度（包括内存、打开的文件等）的基本单位; 线程是进程的子任务, 是CPU分配和调度的基本单位. 进程创建需要系统分配内存, CPU和文件句柄等资源, 销毁时要进行相应的回收, 因此进程的管理开销大; 线程开销小. 进程间不会互相影响; 一个线程崩溃会导致进程崩溃, 从而影响其他线程.</li>
 </ol>
-<p>协程即微线程
-协程就是子程序在执行时中断并转去执行别的子程序，在适当的时候又返回来执行。
-这种子程序间的跳转不是函数调用，也不是多线程执行，所以省去了线程切换的开销，效率很高，并且不需要多线程间的锁机制，不会发生变量写冲突。</p>
+<p>协程即微线程：协程就是子程序在执行时中断并转去执行别的子程序，在适当的时候又返回来执行。这种子程序间的跳转不是函数调用，也不是多线程执行，所以省去了线程切换的开销，效率很高，并且不需要多线程间的锁机制，不会发生变量写冲突。</p>
 <p>协程进行中断跳转时将函数的上下文存放在其他位置中，而不是存放在函数堆栈里，当处理完其他事情跳转回来的时候，取回上下文继续执行原来的函数。</p>
-<p>https://zhuanlan.zhihu.com/p/204965836
-https://www.zhihu.com/question/50185085/answer/183463734</p>
-<h2 id="进程调度算法">进程调度算法</h2>
-<ol type="1">
-<li>先来先服务(FCFS): 按照到达任务队列的顺序调度, 非抢占式, 易于实现,
-效率低性能差, 有利于CPU繁忙型作业(长作业)不利于IO繁忙型(短作业).</li>
-<li>短作业优先(SJF): 每次从任务队列选择预计时间最短的作业运行, 非抢占式,
-性能最优, 平均周转时间最低, 吞吐量大, 不利于长作业, 会出现饥饿现象,
-完全未考虑作业的优先级, 不能用于实时系统.</li>
-<li>最短剩余时间优先: 首先选择预计时间最短的作业运行,
-如果新作业服务时间小于当前作业的剩余时间, 抢占CPU.</li>
-<li>高响应比优先: 在后备作业队列中选择响应比最高的, 非抢占式,
-需要计算响应比耗费资源. <span
-class="math inline">\(响应比=1+\frac{等待时间}{服务时间}\)</span></li>
-<li>时间片轮转(RR): 可以响应所有用户的请求, 适于分时系统.</li>
-<li>多级反馈队列: UNIX使用的调度算法. 多个不同优先级的队列按照RR调度,
-如果未完成就进入下一优先级, 新来进程可以根据优先级抢占.</li>
-</ol>
-<h2 id="死锁">死锁</h2>
-<ol type="1">
-<li>原因: (1) 系统资源不足; (2) 进程推进顺序不当; (3) 资源分配不当.</li>
-<li>必要条件: (1) 互斥访问: 一个资源每次只能被一个进程访问; (2)
-占有并请求: 进程因请求资源阻塞时对已占有的资源保持不放; (3) 不可剥夺:
-进程已经获取的资源不能被强制剥夺; (4) 循环等待:
-多个进程间形成资源的循环等待关系.</li>
-</ol>
-<h2 id="文件系统">文件系统</h2>
-<p>https://zhuanlan.zhihu.com/p/183238194
-https://zhuanlan.zhihu.com/p/106459445
-https://zhuanlan.zhihu.com/p/27875337
-https://www.zhihu.com/question/284540952
-https://www.zhihu.com/question/51329419/answer/125389853</p>
-<p>ext4 https://zhuanlan.zhihu.com/p/27875337</p>
-<h1 id="数据库">数据库</h1>
-<p>事务：一组逻辑操作的集合，满足ACID特性。事务要么全部成功，要么全部失败。</p>
-<p>https://zhuanlan.zhihu.com/p/65281198 原子性：undo
-log记录事务修改前的数据信息，用来回滚 持久性：redo
-log记录已经成功提交的事务操作信息，用来恢复数据
-隔离性：依靠读写锁和MVCC（多版本并发控制）实现。读写锁包括共享锁和排他锁，MVCC通过为数据添加时间戳实现。</p>
-<p>数据库权限：GRANT REVOKE DENY</p>
-<p>索引最左匹配原则 https://juejin.cn/post/6844903966690508814</p>
-<p>关系型与非关系型 https://www.cnblogs.com/progor/p/8729798.html</p>
-<p>连接器 分析器 优化器 执行器</p>
-<p>数据库八股 https://zhuanlan.zhihu.com/p/403656116</p>
-<h2 id="分布式">分布式</h2>
-<p>云存储 https://www.zhihu.com/question/25834847/answer/348271275
-云计算 云网络 云操作系统</p>
-<h2 id="zombie-orphan-process">Zombie &amp; Orphan Process</h2>
+<p>线程：频繁创建销毁，需要大量计算，切换频繁，IO密集型<br />
+进程：稳定安全，CPU密集型</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/204965836">协程由来和概念</a><br />
+<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/50185085/answer/183463734">协程诞生</a><br />
+<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/169426477">线程和协程的区别</a></p>
+<h3 id="通信方式">通信方式</h3>
+<p>进程间通信：</p>
+<ul>
+<li>管道</li>
+<li>信号量</li>
+<li>消息队列</li>
+<li>信号</li>
+<li>共享内存</li>
+<li>套接字：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/vonyao/p/3614320.html">本地socket</a></li>
+</ul>
+<p>线程间通信：</p>
+<ul>
+<li>锁机制：互斥锁 + 条件变量，读写锁</li>
+<li>全局变量：在各线程共享的堆上，每个线程私有栈</li>
+<li>事件event：有信号和无信号两种状态</li>
+<li>Semaphore</li>
+</ul>
+<h3 id="zombie-orphan-process">Zombie &amp; Orphan Process</h3>
 <p>孤儿进程：父进程先于子进程结束，内核控制其被init进程收养。并不是一种单独的状态。<br />
 僵尸进程：子进程先结束但是父进程并未回收，使得残留资源PCB在内核中，不能用kill杀死，状态是Z。</p>
 <p>处理僵尸进程方法：</p>
@@ -329,10 +300,25 @@ log记录已经成功提交的事务操作信息，用来恢复数据
 <li>杀死其父进程，使其成为孤儿进程</li>
 <li>信号机制：子进程退出时向父进程发送SIGCHILD信号，父进程处理该信号，在处理函数中调用wait回收资源。</li>
 </ol>
-<h2 id="ref">Ref</h2>
-<p><a
-target="_blank" rel="noopener" href="https://www.scaler.com/topics/operating-system/zombie-and-orphan-process-in-os/">Zombie
-&amp; Orphan Process</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.scaler.com/topics/operating-system/zombie-and-orphan-process-in-os/">Zombie &amp; Orphan Process</a></p>
+<h3 id="进程调度算法">进程调度算法</h3>
+<ol type="1">
+<li>先来先服务(FCFS): 按照到达任务队列的顺序调度, 非抢占式, 易于实现, 效率低性能差, 有利于CPU繁忙型作业(长作业)不利于IO繁忙型(短作业).</li>
+<li>短作业优先(SJF): 每次从任务队列选择预计时间最短的作业运行, 非抢占式, 性能最优, 平均周转时间最低, 吞吐量大, 不利于长作业, 会出现饥饿现象, 完全未考虑作业的优先级, 不能用于实时系统.</li>
+<li>最短剩余时间优先: 首先选择预计时间最短的作业运行, 如果新作业服务时间小于当前作业的剩余时间, 抢占CPU.</li>
+<li>高响应比优先: 在后备作业队列中选择响应比最高的, 非抢占式, 需要计算响应比耗费资源. <span class="math inline">\(响应比=1+\frac{等待时间}{服务时间}\)</span></li>
+<li>时间片轮转(RR): 可以响应所有用户的请求, 适于分时系统.</li>
+<li>多级反馈队列: UNIX使用的调度算法. 多个不同优先级的队列按照RR调度, 如果未完成就进入下一优先级, 新来进程可以根据优先级抢占.</li>
+</ol>
+<h2 id="死锁">死锁</h2>
+<ol type="1">
+<li>原因: (1) 系统资源不足; (2) 进程推进顺序不当; (3) 资源分配不当.</li>
+<li>必要条件: (1) 互斥访问: 一个资源每次只能被一个进程访问; (2) 占有并请求: 进程因请求资源阻塞时对已占有的资源保持不放; (3) 不可剥夺: 进程已经获取的资源不能被强制剥夺; (4) 循环等待: 多个进程间形成资源的循环等待关系.</li>
+</ol>
+<h2 id="文件系统">文件系统</h2>
+<p>文件系统是操作系统中负责管理持久数据的子系统，说简单点，就是负责把用户的文件存到磁盘硬件中，因为即使计算机断电了，磁盘里的数据并不会丢失，所以可以持久化的保存文件。文件系统的种类众多，而操作系统希望对用户提供一个统一的接口，于是在用户层与文件系统层引入了中间层，这个中间层就称为虚拟文件系统（Virtual File System，VFS）。</p>
+<p>https://zhuanlan.zhihu.com/p/183238194 https://zhuanlan.zhihu.com/p/106459445 https://zhuanlan.zhihu.com/p/27875337 https://www.zhihu.com/question/284540952 https://www.zhihu.com/question/51329419/answer/125389853</p>
+<p>ext4 https://zhuanlan.zhihu.com/p/27875337</p>
 
     </div>
 
@@ -409,11 +395,24 @@ target="_blank" rel="noopener" href="https://www.scaler.com/topics/operating-sys
 
           </div>
           
-    
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
+            <li class="tab"><a href="#comment-livere">livere</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments" id="gitalk-container"></div>
+            </div>
+            <div class="tab-pane livere" id="comment-livere">
+              
   <div class="comments">
     <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
   </div>
   
+            </div>
+        </div>
+      </div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -460,7 +459,7 @@ target="_blank" rel="noopener" href="https://www.scaler.com/topics/operating-sys
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B%E5%8D%8F%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">进程线程协程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">进程调度算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%BB%E9%94%81"><span class="nav-number">3.</span> <span class="nav-text">死锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">4.</span> <span class="nav-text">文件系统</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number"></span> <span class="nav-text">数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">分布式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zombie-orphan-process"><span class="nav-number">2.</span> <span class="nav-text">Zombie &amp; Orphan Process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ref"><span class="nav-number">3.</span> <span class="nav-text">Ref</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B%E5%8D%8F%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">进程线程协程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">通信方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zombie-orphan-process"><span class="nav-number">1.3.</span> <span class="nav-text">Zombie &amp; Orphan Process</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95"><span class="nav-number">1.4.</span> <span class="nav-text">进程调度算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%BB%E9%94%81"><span class="nav-number">2.</span> <span class="nav-text">死锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">3.</span> <span class="nav-text">文件系统</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -714,6 +713,26 @@ $(document).ready(function() {
     
 
   
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '285afe6e2d34f997b740',
+      clientSecret: 'f3e77970aacbc5a14421e48db34996ed8223f7e9',
+      repo        : 'EIMadrigal.github.io',
+      owner       : 'EIMadrigal',
+      admin       : ['EIMadrigal'],
+      id          : '047bea394938e6236a3b32ca3eb4e8b3',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 <script>
 NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
