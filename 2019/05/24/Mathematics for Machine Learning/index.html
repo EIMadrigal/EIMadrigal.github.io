@@ -28,7 +28,7 @@
 <meta property="og:description" content="机器学习中的数学">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-05-24T09:11:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T16:26:36.639Z">
+<meta property="article:modified_time" content="2022-01-30T16:26:36.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Machine Learning">
 <meta property="article:tag" content="Probability &amp; Statistics">
@@ -260,7 +260,9 @@
 
       
         <h2 id="motivation">Motivation</h2>
-<p><span class="math inline">\(f(\mathbf{x}) = \boldsymbol{\beta}^\top\mathbf{x}\)</span> <span class="math display">\[\frac{df}{d\mathbf{x}} = \begin{bmatrix}
+<p><span class="math inline">\(f(\mathbf{x}) =
+\boldsymbol{\beta}^\top\mathbf{x}\)</span> <span
+class="math display">\[\frac{df}{d\mathbf{x}} = \begin{bmatrix}
 \frac{df}{dx_1} \\
 \vdots \\
 \frac{df}{dx_n}
@@ -269,7 +271,8 @@
 \vdots \\
 \beta_n
 \end{bmatrix} = \boldsymbol{\beta}\]</span></p>
-<p><span class="math inline">\(\frac{d}{d\mathbf{x}}(\mathbf{x}^\top A \mathbf{x}) = (\mathbf{A} + \mathbf{A}^\top)\mathbf{x}.\)</span></p>
+<p><span class="math inline">\(\frac{d}{d\mathbf{x}}(\mathbf{x}^\top A
+\mathbf{x}) = (\mathbf{A} + \mathbf{A}^\top)\mathbf{x}.\)</span></p>
 
     </div>
 
@@ -346,24 +349,7 @@
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -682,22 +668,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2021012815482635.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20210128161524948.png">
 <meta property="article:published_time" content="2021-01-28T14:05:00.000Z">
-<meta property="article:modified_time" content="2022-04-30T12:55:07.000Z">
+<meta property="article:modified_time" content="2022-04-30T12:55:07.264Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Paper">
 <meta property="article:tag" content="AutoML">
@@ -264,8 +264,10 @@
 
       
         <p>这篇文章主要还是在元模型上创新，采用基于链接预测的方式为新数据集推荐分类算法。基本框架如下：<br />
-<img src="https://img-blog.csdnimg.cn/20210127113628615.png" alt="在这里插入图片描述" /><br />
-用元学习做AutoML主要关注：元特征、元目标的表现形式、元模型。 ## 元特征 第一步包括提特征和识别可用算法。<br />
+<img src="https://img-blog.csdnimg.cn/20210127113628615.png"
+alt="在这里插入图片描述" /><br />
+用元学习做AutoML主要关注：元特征、元目标的表现形式、元模型。 ## 元特征
+第一步包括提特征和识别可用算法。<br />
 目前流行的元特征有5种：</p>
 <ul>
 <li>statistical and information-theory based</li>
@@ -274,8 +276,16 @@
 <li>problem-complexity</li>
 <li>structural information</li>
 </ul>
-<p>由于每个数据集可能有不定数目的可用算法，文章采用了multiple comparison procedure：如果我们用acc作为衡量标准（除此以外本文还用了ARR作为标准，将时间因素也考虑进去），这个程序能用统计检验的方法发现一系列与最佳算法相差不显著的候选算法。文中具体使用的统计检验方法是Friedman Test+Holm procedure test，即如果Friedman Test认为所有算法性能相差不显著，那么所有的算法都是meta target；否则以表现最佳的算法为参考，用Holm procedure test去识别和最佳算法没有显著差异的算法们作为meta target。<br />
-这样就得到了元数据<span class="math inline">\(M=\{m_1,...,m_n\},m_i=&lt;x_i,y_i&gt;\)</span>，其中<span class="math inline">\(x_i=(f_{i1},...,f_{ip})\)</span>是该数据集的p个元特征，<span class="math inline">\(y_i=(a_1,...,a_q)\)</span>是q个合适的算法。</p>
+<p>由于每个数据集可能有不定数目的可用算法，文章采用了multiple comparison
+procedure：如果我们用acc作为衡量标准（除此以外本文还用了ARR作为标准，将时间因素也考虑进去），这个程序能用统计检验的方法发现一系列与最佳算法相差不显著的候选算法。文中具体使用的统计检验方法是Friedman
+Test+Holm procedure test，即如果Friedman
+Test认为所有算法性能相差不显著，那么所有的算法都是meta
+target；否则以表现最佳的算法为参考，用Holm procedure
+test去识别和最佳算法没有显著差异的算法们作为meta target。<br />
+这样就得到了元数据<span
+class="math inline">\(M=\{m_1,...,m_n\},m_i=&lt;x_i,y_i&gt;\)</span>，其中<span
+class="math inline">\(x_i=(f_{i1},...,f_{ip})\)</span>是该数据集的p个元特征，<span
+class="math inline">\(y_i=(a_1,...,a_q)\)</span>是q个合适的算法。</p>
 <h2 id="元目标形式">元目标形式</h2>
 <p>有4种：</p>
 <ul>
@@ -291,13 +301,19 @@
 <li>ranking</li>
 </ul>
 <p>本文将问题看作多标签分类，并采用DAR图+链接预测作为分类模型。<br />
-建的是一个异构图，有数据集（元特征作为结点属性）和算法（算法名作为属性）两种结点，有d-d和d-a两种无向边，d-d边的构建通过数据集间的相似性（<strong>欧氏距离</strong>最近的k个邻居，需要将元特征标准化min-max scaling），d-a边就用每个数据集的候选算法构建。<br />
+建的是一个异构图，有数据集（元特征作为结点属性）和算法（算法名作为属性）两种结点，有d-d和d-a两种无向边，d-d边的构建通过数据集间的相似性（<strong>欧氏距离</strong>最近的k个邻居，需要将元特征标准化min-max
+scaling），d-a边就用每个数据集的候选算法构建。<br />
 建图的伪代码：<br />
-<img src="https://img-blog.csdnimg.cn/2021012815482635.png" alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/2021012815482635.png"
+alt="在这里插入图片描述" /><br />
 建好图后就可以推荐了，伪代码如下：<br />
-<img src="https://img-blog.csdnimg.cn/20210128161524948.png" alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20210128161524948.png"
+alt="在这里插入图片描述" /><br />
 文章里LPMethod有3种：Katz,LRW,SRW。<br />
-综上，预测时需要的参数有：训练集<span class="math inline">\(D=\{d_1,...,d_n\}\)</span>，候选算法集<span class="math inline">\(A=\{a_1,..,a_m\}\)</span>，推荐的算法数目，每个数据集结点的邻边数目<span class="math inline">\(k\)</span>。</p>
+综上，预测时需要的参数有：训练集<span
+class="math inline">\(D=\{d_1,...,d_n\}\)</span>，候选算法集<span
+class="math inline">\(A=\{a_1,..,a_m\}\)</span>，推荐的算法数目，每个数据集结点的邻边数目<span
+class="math inline">\(k\)</span>。</p>
 <h2 id="评估">评估</h2>
 <p>评估指标包括5个：Hamming损失、F值、acc、HitRatio、RA（推荐准确率）。<br />
 考虑DAR图的边的权重，类似概率图模型</p>
@@ -377,24 +393,7 @@
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -713,22 +712,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

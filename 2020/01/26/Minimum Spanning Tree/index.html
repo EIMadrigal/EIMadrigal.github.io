@@ -258,21 +258,49 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最小生成树算法用来在<strong>无向带权图</strong>中寻找一组边的集合, 该边集使得图中所有顶点连通, 没有环路并且权值和最小. 常见的MST算法包括Kruskal和Prim. <a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/Recap/blob/main/Templates/Basics/mst.cpp">实现在这里</a></p>
+        <p>最小生成树算法用来在<strong>无向带权图</strong>中寻找一组边的集合,
+该边集使得图中所有顶点连通, 没有环路并且权值和最小.
+常见的MST算法包括Kruskal和Prim. <a
+target="_blank" rel="noopener" href="https://github.com/EIMadrigal/Recap/blob/main/Templates/Basics/mst.cpp">实现在这里</a></p>
 <h2 id="kruskal">Kruskal</h2>
-<p>将所有边的权值递增排序, 如果选择权值最小的边加入后不构成回路, 则将该边加入MST, 直到MST中有<span class="math inline">\(n-1\)</span>条边或<span class="math inline">\(n\)</span>个顶点.</p>
-<p>那么如何判断加入边是否构成回路呢? 方法有很多啦, <strong>并查集</strong>是一个不错的选择. 每次加边时如果该边的两顶点<span class="math inline">\(u\)</span>和<span class="math inline">\(v\)</span>在同一个集合, 就判断下条边, 否则将该边加入答案并合并<span class="math inline">\(u\)</span>和<span class="math inline">\(v\)</span>.</p>
-<p>遍历完成后, 所有顶点都同属一个集合, 因此可以通过判断顶点<span class="math inline">\(i\)</span>和<span class="math inline">\(i+1\)</span>是否同属一个集合, 进而判断该图是否连通.</p>
-<p>用<strong>边集</strong>表示图比较方便, 复杂度<span class="math inline">\(O(ElogE)\)</span>, 适合边稀疏而顶点相对多的图.</p>
+<p>将所有边的权值递增排序, 如果选择权值最小的边加入后不构成回路,
+则将该边加入MST, 直到MST中有<span
+class="math inline">\(n-1\)</span>条边或<span
+class="math inline">\(n\)</span>个顶点.</p>
+<p>那么如何判断加入边是否构成回路呢? 方法有很多啦,
+<strong>并查集</strong>是一个不错的选择. 每次加边时如果该边的两顶点<span
+class="math inline">\(u\)</span>和<span
+class="math inline">\(v\)</span>在同一个集合, 就判断下条边,
+否则将该边加入答案并合并<span class="math inline">\(u\)</span>和<span
+class="math inline">\(v\)</span>.</p>
+<p>遍历完成后, 所有顶点都同属一个集合, 因此可以通过判断顶点<span
+class="math inline">\(i\)</span>和<span
+class="math inline">\(i+1\)</span>是否同属一个集合,
+进而判断该图是否连通.</p>
+<p>用<strong>边集</strong>表示图比较方便, 复杂度<span
+class="math inline">\(O(ElogE)\)</span>, 适合边稀疏而顶点相对多的图.</p>
 <h2 id="prim">Prim</h2>
 <p>Prim算法的思想是:</p>
 <ol type="1">
-<li>整个顶点集为<span class="math inline">\(V\)</span>，初始选一个起点<span class="math inline">\(s\)</span>，令集合<span class="math inline">\(U=\{s\}, V=\{\}\)</span>;</li>
-<li>在集合<span class="math inline">\(U\)</span>与集合<span class="math inline">\(V-U\)</span>中的点组成的边中，选一条权值最小的边<span class="math inline">\(u_0v_0\)</span>加入MST，并且将<span class="math inline">\(u_0\)</span>加入<span class="math inline">\(U\)</span>;</li>
-<li>重复直到MST有<span class="math inline">\(n-1\)</span>条边或<span class="math inline">\(n\)</span>个顶点为止.</li>
+<li>整个顶点集为<span
+class="math inline">\(V\)</span>，初始选一个起点<span
+class="math inline">\(s\)</span>，令集合<span
+class="math inline">\(U=\{s\}, V=\{\}\)</span>;</li>
+<li>在集合<span class="math inline">\(U\)</span>与集合<span
+class="math inline">\(V-U\)</span>中的点组成的边中，选一条权值最小的边<span
+class="math inline">\(u_0v_0\)</span>加入MST，并且将<span
+class="math inline">\(u_0\)</span>加入<span
+class="math inline">\(U\)</span>;</li>
+<li>重复直到MST有<span class="math inline">\(n-1\)</span>条边或<span
+class="math inline">\(n\)</span>个顶点为止.</li>
 </ol>
-<p>因此, 需要一个<code>unordered_set</code>表示已经访问过的顶点集合<span class="math inline">\(U\)</span>, 还需要一个<code>priority_queue</code>维护集合<span class="math inline">\(U\)</span>与集合<span class="math inline">\(V-U\)</span>之间的边权和dest.</p>
-<p>用<strong>邻接表</strong>表示图比较方便, 复杂度<span class="math inline">\(O(V^2)\)</span>, 适合边稠密的图.</p>
+<p>因此, 需要一个<code>unordered_set</code>表示已经访问过的顶点集合<span
+class="math inline">\(U\)</span>,
+还需要一个<code>priority_queue</code>维护集合<span
+class="math inline">\(U\)</span>与集合<span
+class="math inline">\(V-U\)</span>之间的边权和dest.</p>
+<p>用<strong>邻接表</strong>表示图比较方便, 复杂度<span
+class="math inline">\(O(V^2)\)</span>, 适合边稠密的图.</p>
 
     </div>
 
@@ -348,24 +376,7 @@
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -684,22 +695,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

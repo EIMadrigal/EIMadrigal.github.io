@@ -28,7 +28,7 @@
 <meta property="og:description" content="流传的谎言">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-08-31T13:04:00.000Z">
-<meta property="article:modified_time" content="2022-05-01T05:32:08.000Z">
+<meta property="article:modified_time" content="2022-05-01T05:32:08.998Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Literature">
 <meta name="twitter:card" content="summary">
@@ -265,7 +265,8 @@
 <p>孩子，我希望你自始至终都是一个理想主义者。</p>
 <p>你可以是农民，可以是工程师，可以是演员，可以是流浪汉，但你必须是个理想主义者。</p>
 <p>童年，我们讲英雄故事给你听，并不是一定要你成为英雄，而是希望你具有纯正的品格。</p>
-<p>少年，我们让你接触诗歌、绘画、音乐，是为了让你的心灵填满高尚的情趣。 这些高尚的情趣会支撑你的一生，使你在最严酷的冬天也不会忘记玫瑰的芳香。</p>
+<p>少年，我们让你接触诗歌、绘画、音乐，是为了让你的心灵填满高尚的情趣。
+这些高尚的情趣会支撑你的一生，使你在最严酷的冬天也不会忘记玫瑰的芳香。</p>
 <p>理想会使人出众。</p>
 <p>孩子，不要为自己的外形担忧。</p>
 <p>理想纯洁你的气质，而最美貌的女人也会因为庸俗而令人生厌。</p>
@@ -305,7 +306,8 @@
 <p>借他人的东西要还，不要随便接受别人的恩惠。</p>
 <p>要记住，别人的东西，再好也是别人的；自己的东西，再差也是自己的。</p>
 <p>孩子，还有一件事，虽然做起来很难，但相当重要，这就是要有勇气正视自己的缺点。</p>
-<p>你会一年年地长大，会渐渐遇到比你强、比你优秀的人，会发现自己身上有许多你所厌恶的缺点。 这会使你沮丧和自卑。</p>
+<p>你会一年年地长大，会渐渐遇到比你强、比你优秀的人，会发现自己身上有许多你所厌恶的缺点。
+这会使你沮丧和自卑。</p>
 <p>但你一定要正视它，不要躲避，要一点点地加以改正。</p>
 <p>战胜自己比征服他人还要艰巨和有意义。</p>
 <p>不管世界潮流如何变化，但人的优秀品质却是永恒的：正直、勇敢、独立。</p>
@@ -385,24 +387,7 @@
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -720,22 +705,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

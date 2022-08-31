@@ -28,7 +28,7 @@
 <meta property="og:description" content="Google Kick Start">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-04-22T01:33:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T10:40:03.819Z">
+<meta property="article:modified_time" content="2022-01-30T10:40:03.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta name="twitter:card" content="summary">
@@ -262,7 +262,13 @@
 <ol type="1">
 <li>题目大意：给定一堆人名，从上向下扫描，一旦当前值比前一个的字典序小，就将当前值移动到正确的位置，不论移动多远，代价都是1，求代价总和。</li>
 </ol>
-<p>和插入排序类似，如果当前值<span class="math inline">\(j\)</span>比<span class="math inline">\(j-1\)</span>小，将<span class="math inline">\(j\)</span>移到前面合适的位置，此时前<span class="math inline">\(j\)</span>个数是局部有序的。这道题只要求出代价和即可，不需要输出排序后的结果，不需要真正去移动，只要记录前<span class="math inline">\(j\)</span>个的最大值，如果<span class="math inline">\(j+1\)</span>比最大值小，那么必然触发一次移动。举例：<br />
+<p>和插入排序类似，如果当前值<span
+class="math inline">\(j\)</span>比<span
+class="math inline">\(j-1\)</span>小，将<span
+class="math inline">\(j\)</span>移到前面合适的位置，此时前<span
+class="math inline">\(j\)</span>个数是局部有序的。这道题只要求出代价和即可，不需要输出排序后的结果，不需要真正去移动，只要记录前<span
+class="math inline">\(j\)</span>个的最大值，如果<span
+class="math inline">\(j+1\)</span>比最大值小，那么必然触发一次移动。举例：<br />
 2 1 5 3 0 j=1, max=2, cost++<br />
 1 2 5 3 0 j=3, max=5, cost++<br />
 1 2 3 5 0 j=0, max=5, cost++<br />
@@ -347,24 +353,7 @@
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -683,22 +672,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

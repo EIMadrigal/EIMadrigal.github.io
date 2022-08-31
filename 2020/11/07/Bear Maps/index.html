@@ -40,7 +40,7 @@
 <meta property="og:image" content="https://eimadrigal.github.io/2020/11/07/Bear%20Maps/11.png">
 <meta property="og:image" content="https://eimadrigal.github.io/2020/11/07/Bear%20Maps/12.png">
 <meta property="article:published_time" content="2020-11-07T07:45:00.000Z">
-<meta property="article:modified_time" content="2022-07-28T14:44:44.000Z">
+<meta property="article:modified_time" content="2022-07-28T14:44:44.578Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Projects">
 <meta name="twitter:card" content="summary">
@@ -272,21 +272,33 @@
 
       
         <h2 id="introduction">Introduction</h2>
-<p>这是CS 61B的Project 3，也是最后一个Proj。刚好上完这门课出去旅个游，放松下心情开始15213。<br />
+<p>这是CS 61B的Project
+3，也是最后一个Proj。刚好上完这门课出去旅个游，放松下心情开始15213。<br />
 完成基本的要求花了5天时间，当然现在的版本还十分简陋，这个工程我是想做得比较大，后面还得抽时间消化理解、完善优化。</p>
-<p>SP18用了<a target="_blank" rel="noopener" href="https://maven.apache.org/">Apache Maven</a>做项目建构工具，<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41431457/article/details/102999439">折腾</a>了一天也没有配好，<del>不知道这么垃圾的工具有啥用</del> ，最后实在没辙就把该项目所有需要的jar包导进来，后来发现SP19就抛弃了maven。<br />
+<p>SP18用了<a target="_blank" rel="noopener" href="https://maven.apache.org/">Apache
+Maven</a>做项目建构工具，<a
+target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41431457/article/details/102999439">折腾</a>了一天也没有配好，<del>不知道这么垃圾的工具有啥用</del>
+，最后实在没辙就把该项目所有需要的jar包导进来，后来发现SP19就抛弃了maven。<br />
 <img src="1.png" alt="在这里插入图片描述" /><br />
-项目需要的地图集以及地图上的点/路信息都是Google采集好的，可在<a target="_blank" rel="noopener" href="https://github.com/Berkeley-CS61B">这里</a>下载，当然这个地图只是一小部分，后面想要扩展可以去下载需要的<a target="_blank" rel="noopener" href="https://www.openstreetmap.org/">数据集</a>，包括tile images和map feature data。</p>
-<p>整体需求是实现一个网页端地图，用户通过浏览器输入URL，Java程序接收，然后生成相应的地图结果并返回，在浏览器中显示。服务器框架用的是<a target="_blank" rel="noopener" href="http://sparkjava.com/documentation.html#getting-started">Spark</a>，前端以及前后端交互的部分已经写好了（TA真的太强了），其实我有时候觉得这些dirty的工作比较考验码力，这些代码写得漂亮说明System的能力是挺强的。</p>
+项目需要的地图集以及地图上的点/路信息都是Google采集好的，可在<a
+target="_blank" rel="noopener" href="https://github.com/Berkeley-CS61B">这里</a>下载，当然这个地图只是一小部分，后面想要扩展可以去下载需要的<a
+target="_blank" rel="noopener" href="https://www.openstreetmap.org/">数据集</a>，包括tile images和map
+feature data。</p>
+<p>整体需求是实现一个网页端地图，用户通过浏览器输入URL，Java程序接收，然后生成相应的地图结果并返回，在浏览器中显示。服务器框架用的是<a
+target="_blank" rel="noopener" href="http://sparkjava.com/documentation.html#getting-started">Spark</a>，前端以及前后端交互的部分已经写好了（TA真的太强了），其实我有时候觉得这些dirty的工作比较考验码力，这些代码写得漂亮说明System的能力是挺强的。</p>
 <p>后端至少需要实现3个类：</p>
 <ul>
 <li><code>Rasterer</code><br />
-输入upper left latitude and longitude, lower right latitude and longitude, a window width, and a window height.<br />
-输出2D array of filenames corresponding to the files to be rendered.</li>
+输入upper left latitude and longitude, lower right latitude and
+longitude, a window width, and a window height.<br />
+输出2D array of filenames corresponding to the files to be
+rendered.</li>
 <li><code>GraphDB</code><br />
-输入Open Street Map数据集，将其转为图存储起来：每个结点是a single intersection，每条边是一条路。</li>
+输入Open Street Map数据集，将其转为图存储起来：每个结点是a single
+intersection，每条边是一条路。</li>
 <li><code>Router</code><br />
-输入GraphDB, a starting latitude and longitude, and a destination latitude and longitude.<br />
+输入GraphDB, a starting latitude and longitude, and a destination
+latitude and longitude.<br />
 输出从起点到终点的一系列结点，以及路径导航信息。</li>
 </ul>
 <h2 id="map-rastering">Map Rastering</h2>
@@ -295,15 +307,21 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;lrlon=-<span class="number">122.2104604264636</span>, ullon=-<span class="number">122.30410170759153</span>, w=<span class="number">1085.0</span>, h=<span class="number">566.0</span>, ullat=<span class="number">37.870213571328854</span>, lrlat=<span class="number">37.8318576119893</span>&#125;</span><br></pre></td></tr></table></figure>
 <p>表示用户希望显示经度范围<code>lrlon</code>~<code>ullon</code>，纬度范围<code>ullat</code>~<code>lrlat</code>的区域，并且分辨率大概是<code>w*h</code>。</p>
 <p>街景图采用<strong>冗余存储</strong>，所有图片都是<code>256*256</code>：<code>d0_x0_y0.png</code>是整个区域的街景，但是分辨率最低，<code>d1_x0_y0.png/d1_x0_y1.png/d1_x1_y0.png/d1_x1_y1.png</code>分别代表西北/东北/西南/东南四个角的街景，但是分辨率加倍。</p>
-<p>更加规范的说：在第D个缩放级别，共有<span class="math inline">\(4^D\)</span>张图片，<code>dD_x0_y0.png</code>到<code>dD_xk_yk.png</code>，<span class="math inline">\(k=2^D-1\)</span>，随<code>x</code>增大向东移动，随<code>y</code>增大向南移动，我们需要返回<code>String[][]</code>代表用户请求区域的图片文件名矩阵，当然还有一些其他参数（查询是否成功等）：由于Java只能返回一个值，所以结果组装成<code>Map&lt;String, Object&gt;</code>返回。</p>
+<p>更加规范的说：在第D个缩放级别，共有<span
+class="math inline">\(4^D\)</span>张图片，<code>dD_x0_y0.png</code>到<code>dD_xk_yk.png</code>，<span
+class="math inline">\(k=2^D-1\)</span>，随<code>x</code>增大向东移动，随<code>y</code>增大向南移动，我们需要返回<code>String[][]</code>代表用户请求区域的图片文件名矩阵，当然还有一些其他参数（查询是否成功等）：由于Java只能返回一个值，所以结果组装成<code>Map&lt;String, Object&gt;</code>返回。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[[d2_x0_y1.png, d2_x1_y1.png, d2_x2_y1.png, d2_x3_y1.png],</span><br><span class="line">[d2_x0_y2.png, d2_x1_y2.png, d2_x2_y2.png, d2_x3_y2.png],</span><br><span class="line">[d2_x0_y3.png, d2_x1_y3.png, d2_x2_y3.png, d2_x3_y3.png]]</span><br></pre></td></tr></table></figure>
 <p>上述返回结果的分辨率为<code>1024*768</code>，几乎满足用户分辨率要求<code>1085*556</code>。</p>
 <p>这样对于同一个区域，可以有很多选择：可以用更多张高分辨率图片的组合，也可以用较少几张低分辨率的图片组合，只要满足用户要求，比如对于上述例子，<code>d2_x0_y1.png</code>可以采用<code>d3_x0_y2.png/d3_x1_y2.png/d3_x0_y3.png/d3_x1_y3.png</code>代替，这样返回的图片是<code>6*8</code>共48张，分辨率可达<code>2048*1536</code>。</p>
 <p>但这样做很可能overflow，远远超过用户要求，浪费时间和资源，因为分辨率高就意味着展示的空间小，并且前端是不会做缩放的，如果用很多高分辨率图片，浏览器会有太多太多照片加载显示，因为大家都是<code>256*256</code>的。</p>
-<p>所以定义单位像素的经度距离：<span class="math inline">\(\text{LonDPP} = \frac{\text{lower right longitude} - \text{upper left longitude}}{\text{width of the image (or box) in pixels}}\)</span>，我们要展示的是小于用户要求的LonDPP的最大值，比方说用户要求每个像素2度，如果我们大于2，那么分辨率低到不能满足要求，只有小于2才能满足要求。又不能太小，分辨率太高展示范围变小。当然如果用户要求的LonDPP很低，只能用现有的最低的LonDPP图片，即<code>d7</code>系列。<br />
+<p>所以定义单位像素的经度距离：<span class="math inline">\(\text{LonDPP}
+= \frac{\text{lower right longitude} - \text{upper left
+longitude}}{\text{width of the image (or box) in
+pixels}}\)</span>，我们要展示的是小于用户要求的LonDPP的最大值，比方说用户要求每个像素2度，如果我们大于2，那么分辨率低到不能满足要求，只有小于2才能满足要求。又不能太小，分辨率太高展示范围变小。当然如果用户要求的LonDPP很低，只能用现有的最低的LonDPP图片，即<code>d7</code>系列。<br />
 可以将LonDPP理解为模糊程度，LonDPP越大，显示的图片越模糊，比如<code>d0</code>系列就有最大的LonDPP。<br />
 纬度也要做类似处理。</p>
-<p>举例来看：<code>d2</code>系列共有16张图片，用户请求Query Box应该返回9张图片：<br />
+<p>举例来看：<code>d2</code>系列共有16张图片，用户请求Query
+Box应该返回9张图片：<br />
 <img src="2.png" alt="在这里插入图片描述" /><br />
 具体实现只有1个方法<code>public Map&lt;String, Object&gt; getMapRaster(Map&lt;String, Double&gt; params)</code>，分2步：</p>
 <ul>
@@ -318,8 +336,11 @@
 <p>Bug：读取图片文件时，总是<code>javax.imageio.IOException: Can't read input file!</code>。一般都是路径问题。</p>
 <h2 id="routing-location-data">Routing &amp; Location Data</h2>
 <p>明确了前端需要显示哪些图片后，接下来就是要建一个图，因为最后要路径规划嘛。<br />
-路由和位置数据是通过<code>berkeley-2018.osm.xml</code>文件给的，是整个<a target="_blank" rel="noopener" href="https://download.bbbike.org/osm/">地球数据</a>的一部分，文件格式是<a target="_blank" rel="noopener" href="https://wiki.openstreetmap.org/wiki/OSM_XML">OSM XML</a>。</p>
-<p>解析XML数据用的是SAX Parser，遍历每个element，在每个元素的开始和结束位置，调用<code>startElement</code>和<code>endElement</code>回调函数。</p>
+路由和位置数据是通过<code>berkeley-2018.osm.xml</code>文件给的，是整个<a
+target="_blank" rel="noopener" href="https://download.bbbike.org/osm/">地球数据</a>的一部分，文件格式是<a
+target="_blank" rel="noopener" href="https://wiki.openstreetmap.org/wiki/OSM_XML">OSM XML</a>。</p>
+<p>解析XML数据用的是SAX
+Parser，遍历每个element，在每个元素的开始和结束位置，调用<code>startElement</code>和<code>endElement</code>回调函数。</p>
 <p>先来熟悉下OSM XML文档：<br />
 <img src="3.png" alt="在这里插入图片描述" /><br />
 <code>node</code>元素是组成地图的主干，有id/lat/lon等属性。如果结点是一个位置，那么<code>tag</code>标签就会有<code>name</code>，如果是其他的，比如路上的一个点，那么就没有<code>tag</code>。<br />
@@ -333,14 +354,21 @@
 <p>每个<code>node</code>有一些属性（id/lat/lon），每条边也有一些属性（fromID/toID/name），所以首先要有<code>Node</code>类和<code>Edge</code>类。<br />
 邻接表的顶点表<code>Map&lt;Long, Node&gt; vertex</code>，边表<code>Map&lt;Long, Set&lt;Edge&gt;&gt; adj</code>。</p>
 <p>Bug：对<code>ArrayList</code>等在迭代时同时进行修改就会引发异常<code>ConcurrentModificationException</code>。</p>
-<p><code>long closest(double lon, double lat)</code>方法会被用来找最短路，需要返回最近的<strong>有邻居</strong>的<code>node</code>，一个点可能没有邻居，因为他是饭店啥的，不能用来找最短路。另外，这个方法复杂度要求<span class="math inline">\(O(lgn)\)</span>，先实现一个<span class="math inline">\(O(n)\)</span>的做法，后续有时间再去优化吧。</p>
+<p><code>long closest(double lon, double lat)</code>方法会被用来找最短路，需要返回最近的<strong>有邻居</strong>的<code>node</code>，一个点可能没有邻居，因为他是饭店啥的，不能用来找最短路。另外，这个方法复杂度要求<span
+class="math inline">\(O(lgn)\)</span>，先实现一个<span
+class="math inline">\(O(n)\)</span>的做法，后续有时间再去优化吧。</p>
 <h2 id="route-search">Route Search</h2>
 <p>建好地图后，就要做路由工作：给定起点和终点的经纬度，选一条距离最短的路径，需要在类<code>Router</code>中实现<code>shortestPath</code>方法。<br />
 应该从距起点最近的<code>node</code>开始导航到距终点最近的<code>node</code>结束，当然这些<code>node</code>必须是connected的。</p>
-<p>两个<code>node</code>间的距离采用<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Great-circle_distance">great-circle distance</a>，即当作球模型来计算弧长距离。整体距离就是计算1/2之间、2/3之间...的距离之和，还要考虑经度和纬度有不同的尺度，并且随着纬度变化，每度代表的实际距离也是不同的，还好计算距离的函数已经由🐂🍺的TA写好了。</p>
-<p>最好用A*而不是Dijkstra，启发函数h(n)用结点n到终点的great-circle distance就行，要注意目标不可达的情况。</p>
+<p>两个<code>node</code>间的距离采用<a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Great-circle_distance">great-circle
+distance</a>，即当作球模型来计算弧长距离。整体距离就是计算1/2之间、2/3之间...的距离之和，还要考虑经度和纬度有不同的尺度，并且随着纬度变化，每度代表的实际距离也是不同的，还好计算距离的函数已经由🐂🍺的TA写好了。</p>
+<p>最好用A*而不是Dijkstra，启发函数h(n)用结点n到终点的great-circle
+distance就行，要注意目标不可达的情况。</p>
 <p>开始只能在<code>berkeley-2018-small-osm.xml</code>上跑起来，我以为是笔记本配置太烂，跑大的数据集跑不动，只能用小的来测试，后来发现<code>GraphDB</code>里一行写错了。。。debug真痛苦啊！！</p>
-<p>找到最优路线后，这里有一个optional feature，就是显示方向导航信息Turn-by-turn Navigation，需要在类<code>Router</code>中实现<code>routeDirections</code>方法。导航方向的表示是在<code>Router</code>类中写了一个新类<code>NavigationDirection</code>，具体的导航信息格式如下：<br />
+<p>找到最优路线后，这里有一个optional
+feature，就是显示方向导航信息Turn-by-turn
+Navigation，需要在类<code>Router</code>中实现<code>routeDirections</code>方法。导航方向的表示是在<code>Router</code>类中写了一个新类<code>NavigationDirection</code>，具体的导航信息格式如下：<br />
 DIRECTION on WAY for DISTANCE miles<br />
 其中，DIRECTION有8种选择：</p>
 <ul>
@@ -350,27 +378,40 @@ DIRECTION on WAY for DISTANCE miles<br />
 <li>“Turn left/right”</li>
 <li>“Sharp left/right”</li>
 </ul>
-<p>所以我们需要确定正确的DIRECTION/WAY/DISTANCE，方向取决于当前结点和上一个节点间的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Bearing_(navigation)">relative bearing</a>：</p>
+<p>所以我们需要确定正确的DIRECTION/WAY/DISTANCE，方向取决于当前结点和上一个节点间的<a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Bearing_(navigation)">relative
+bearing</a>：</p>
 <ul>
-<li>Between -15 and 15 degrees the direction should be “Continue straight”.</li>
-<li>Beyond -15 and 15 degrees but between -30 and 30 degrees the direction should be “Slight left/right”.</li>
-<li>Beyond -30 and 30 degrees but between -100 and 100 degrees the direction should be “Turn left/right”.</li>
-<li>Beyond -100 and 100 degrees the direction should be “Sharp left/right”.</li>
+<li>Between -15 and 15 degrees the direction should be “Continue
+straight”.</li>
+<li>Beyond -15 and 15 degrees but between -30 and 30 degrees the
+direction should be “Slight left/right”.</li>
+<li>Beyond -30 and 30 degrees but between -100 and 100 degrees the
+direction should be “Turn left/right”.</li>
+<li>Beyond -100 and 100 degrees the direction should be “Sharp
+left/right”.</li>
 </ul>
-<p>难点在于：一条<code>way</code>上可能包含了若干<code>node</code>，如何在遍历<code>node</code>的过程中判断<code>way</code>是否发生了改变，只有<code>way</code>变化后才能产生一条新的导航信息。如果恰好来到了一条没有<code>name</code>的路，就将WAY设为“unknown road”。</p>
+<p>难点在于：一条<code>way</code>上可能包含了若干<code>node</code>，如何在遍历<code>node</code>的过程中判断<code>way</code>是否发生了改变，只有<code>way</code>变化后才能产生一条新的导航信息。如果恰好来到了一条没有<code>name</code>的路，就将WAY设为“unknown
+road”。</p>
 <p>举例来说：<br />
-假设出发的<code>node</code>在“Shattuck Avenue”这条路上，那么DIRECTION应该设为“Start”，遍历接下来的<code>node</code>时，需要累加在这条路上走过的距离，最终到达一个不在“Shattuck Avenue”的<code>node</code>时，设置WAY为“Shattuck Avenue”，DISTANCE为之前的累加值。接着，下一条导航信息的DIRECTION应该根据相对方位计算，WAY是当前<code>node</code>所在的路，DISTANCE重新累加。</p>
+假设出发的<code>node</code>在“Shattuck
+Avenue”这条路上，那么DIRECTION应该设为“Start”，遍历接下来的<code>node</code>时，需要累加在这条路上走过的距离，最终到达一个不在“Shattuck
+Avenue”的<code>node</code>时，设置WAY为“Shattuck
+Avenue”，DISTANCE为之前的累加值。接着，下一条导航信息的DIRECTION应该根据相对方位计算，WAY是当前<code>node</code>所在的路，DISTANCE重新累加。</p>
 <p>最终的效果：蓝色线表示最优路线：<br />
 <img src="5.png" alt="在这里插入图片描述" /><br />
 单元测试还是非常重要的，只有确保每一个函数都是正确的，最终组合的功能才可能正确。</p>
 <h2 id="autocomplete-and-search">Autocomplete and Search</h2>
 <p>作为一个很有用的Feature，自动补全还是很酷的：搜索地名时只输入一部分，就返回以它开头的所有地名。需要在<code>MapServer</code>类中实现<code>List&lt;String&gt; getLocationsByPrefix(String prefix)</code>方法。</p>
-<p>输入的参数<code>prefix</code>是clean后的字符串：除了大小写字母以及空格外，其它字符全部被移除，全部由小写字母组成。 需要返回所有locations（有<code>name</code>的<code>node</code>）的全名，前提是clean后的全名与<code>prefix</code>匹配。<br />
-复杂度要求<span class="math inline">\(O(k)\)</span>，k是共享同一前缀的所有地名。</p>
+<p>输入的参数<code>prefix</code>是clean后的字符串：除了大小写字母以及空格外，其它字符全部被移除，全部由小写字母组成。
+需要返回所有locations（有<code>name</code>的<code>node</code>）的全名，前提是clean后的全名与<code>prefix</code>匹配。<br />
+复杂度要求<span
+class="math inline">\(O(k)\)</span>，k是共享同一前缀的所有地名。</p>
 <p>比如这样：<br />
 <img src="6.png" alt="在这里插入图片描述" /><br />
 除了自动补全，还需要完成Search功能：clean后的用户输入与clean后的<code>locationName</code>完全匹配，同名的<code>location</code>都需要加入<code>List</code>。<br />
-复杂度要求<span class="math inline">\(O(k)\)</span>，k是匹配的地名个数。<br />
+复杂度要求<span
+class="math inline">\(O(k)\)</span>，k是匹配的地名个数。<br />
 需要在<code>MapServer</code>类中实现<code>List&lt;Map&lt;String, Object&gt;&gt; getLocations(String locationName)</code>方法，返回同名的所有地方的信息，如果正确实现，那么就会有一个mark标记在那个地方：<br />
 <img src="7.png" alt="在这里插入图片描述" /><br />
 具体实现一般用Trie，这里的难点在于输入是clean后的字符串，需要输出clean前的全名，所以我们的Trie结点除了有<code>children</code>和<code>isWord</code>外，还需要保存一些额外的信息（clean前的<code>name</code>/<code>id</code>/<code>lat</code>/<code>lon</code>），当然这些信息只有叶子结点才需要保存，用<code>List&lt;Map&lt;String, Object&gt;&gt; extraInfo</code>来存储。这样重名的地点虽然占用了相同的叶子，但是所有地点的信息都存在了该叶子的<code>extraInfo</code>当中，可以直接展示出来。</p>
@@ -378,17 +419,25 @@ DIRECTION on WAY for DISTANCE miles<br />
 <h2 id="extensions">Extensions</h2>
 <ul>
 <li>Front-end Integration<br />
-现在是每调用一次，就在后台raster the entire image，然后传到前端显示。实际中前端可以缓存用过的tiles以及路线，下次调用无需后台计算。</li>
+现在是每调用一次，就在后台raster the entire
+image，然后传到前端显示。实际中前端可以缓存用过的tiles以及路线，下次调用无需后台计算。</li>
 <li>Vectored Tiles<br />
-现在的数据是一张张图片，实际上这些图片是可以从roads, lines, filled areas, buildings等基础矢量几何图形提取，可以用OpenGL/WebGL将其全部绘制为三角形，这样非常同一的工作就可以用GPU去做，速度比CPU要快很多，这些矢量图形可以在<a target="_blank" rel="noopener" href="https://wiki.openstreetmap.org/wiki/Vector_tiles">这里</a>下载。</li>
-<li><a target="_blank" rel="noopener" href="https://sp19.datastructur.es/materials/proj/proj2c/heroku">Deploy on Heroku</a><br />
+现在的数据是一张张图片，实际上这些图片是可以从roads, lines, filled
+areas,
+buildings等基础矢量几何图形提取，可以用OpenGL/WebGL将其全部绘制为三角形，这样非常同一的工作就可以用GPU去做，速度比CPU要快很多，这些矢量图形可以在<a
+target="_blank" rel="noopener" href="https://wiki.openstreetmap.org/wiki/Vector_tiles">这里</a>下载。</li>
+<li><a
+target="_blank" rel="noopener" href="https://sp19.datastructur.es/materials/proj/proj2c/heroku">Deploy
+on Heroku</a><br />
 目前为止，我们的地图还只能在本地运行，下来就将它部署到服务器~<br />
-具体的部署过程可以参考上述链接，完成后APP就会部署到<a target="_blank" rel="noopener" href="http://bearmaps-fun.herokuapp.com/map.html">这里</a>。<br />
+具体的部署过程可以参考上述链接，完成后APP就会部署到<a
+target="_blank" rel="noopener" href="http://bearmaps-fun.herokuapp.com/map.html">这里</a>。<br />
 后续的代码更改需要rebuild jar包，然后redeploy。</li>
 </ul>
 <h2 id="todo">TODO</h2>
 <p>做工程真是长期的活，遇到bug每天能写50行就不错了。</p>
-<p>所有<a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/CS61B/tree/master/proj3">代码</a>均已通过AG的测试：<br />
+<p>所有<a
+target="_blank" rel="noopener" href="https://github.com/EIMadrigal/CS61B/tree/master/proj3">代码</a>均已通过AG的测试：<br />
 Part I：<br />
 <img src="8.png" alt="在这里插入图片描述" /><br />
 PART II &amp; III：<br />
@@ -401,9 +450,14 @@ PART II &amp; III：<br />
 <img src="12.png" alt="在这里插入图片描述" /><br />
 尽量少用<code>protected</code>修饰成员变量，写一个函数接口去访问。</p>
 <h2 id="reference">Reference</h2>
-<p><a target="_blank" rel="noopener" href="https://sp18.datastructur.es/materials/proj/proj3/proj3">Project 3: Bear Maps, version 3.0</a><br />
-<a target="_blank" rel="noopener" href="https://sp19.datastructur.es/materials/proj/proj2c/proj2c">Project 2C: Bear Maps, version 4.0</a><br />
-<a target="_blank" rel="noopener" href="https://www.redblobgames.com/pathfinding/a-star/introduction.html">a-star</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://sp18.datastructur.es/materials/proj/proj3/proj3">Project
+3: Bear Maps, version 3.0</a><br />
+<a
+target="_blank" rel="noopener" href="https://sp19.datastructur.es/materials/proj/proj2c/proj2c">Project
+2C: Bear Maps, version 4.0</a><br />
+<a
+target="_blank" rel="noopener" href="https://www.redblobgames.com/pathfinding/a-star/introduction.html">a-star</a></p>
 
     </div>
 
@@ -479,24 +533,7 @@ PART II &amp; III：<br />
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -815,22 +852,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

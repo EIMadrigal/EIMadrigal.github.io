@@ -27,13 +27,11 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="OneDrive文件打开问题">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108200433406-2018295429.png">
 <meta property="article:published_time" content="2018-08-16T15:00:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T16:43:00.137Z">
+<meta property="article:modified_time" content="2022-01-30T16:43:00.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Others">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108200433406-2018295429.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2018/08/16/Onedrive%20File%20Open%20Problem/">
 
@@ -260,15 +258,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>在用Onenote 2016写笔记时，同步到Onedrive后就变成了Internet快捷方式，而且直接打开时会出现提示：<br />
-<img src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108200433406-2018295429.png" alt="image" /></p>
+        <p>在用Onenote
+2016写笔记时，同步到Onedrive后就变成了Internet快捷方式，而且直接打开时会出现提示：<br />
+<img
+src="https://img2020.cnblogs.com/blog/1260581/202201/1260581-20220108200433406-2018295429.png"
+alt="image" /></p>
 <h2 id="原因">原因</h2>
 <p>用Onenote客户端在Onedrive上创建的笔记本是一种特殊文件，用Onedrive客户端将文件同步到本地的话，就会变成Internet快捷方式，不能直接打开；<br />
 但是如果用Onedrive网页版的话，就可以正常使用。</p>
 <h2 id="解决">解决</h2>
 <p>在Onenote客户端，“文件”-&gt;“打开”，找到你的笔记本，打开即可看到内容。</p>
 <h2 id="参考">参考</h2>
-<p><a target="_blank" rel="noopener" href="http://cn.onenotegem.com/24120352653838239064/-onedrive-onenote-internet-url">onedrive-onenote-internet-url</a></p>
+<p><a
+target="_blank" rel="noopener" href="http://cn.onenotegem.com/24120352653838239064/-onedrive-onenote-internet-url">onedrive-onenote-internet-url</a></p>
 
     </div>
 
@@ -344,24 +346,7 @@
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -680,22 +665,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

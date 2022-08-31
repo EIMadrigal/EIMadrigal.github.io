@@ -27,15 +27,11 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="周期信号的傅里叶变换">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/074ecf83ad964d0b869dceb72a65cf43.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/d580f672cc624a02bafc1cbcb8eaee2e.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/96285b7fb96e48c1891e4745de9e5256.png">
 <meta property="article:published_time" content="2018-05-06T14:15:32.000Z">
-<meta property="article:modified_time" content="2022-01-30T09:52:17.956Z">
+<meta property="article:modified_time" content="2022-01-30T09:52:17.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Information Engineering">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/074ecf83ad964d0b869dceb72a65cf43.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/2018/05/06/Fourier%20Transform/">
 
@@ -266,17 +262,49 @@
 有两种方法求周期信号的傅里叶变换：</p>
 <ol type="1">
 <li><p>利用傅里叶级数进行构造<br />
-对于周期信号<span class="math inline">\(x(t)\)</span>，其傅里叶级数展开式为： <span class="math display">\[x(t) = \sum_{k = -\infty}^{+\infty}a_ke^{jkw_0t}\]</span> 系数<span class="math inline">\(a_k\)</span>表示为：<br />
-<img src="https://img-blog.csdnimg.cn/074ecf83ad964d0b869dceb72a65cf43.png" alt="在这里插入图片描述" /><br />
-由于 <img src="https://img-blog.csdnimg.cn/d580f672cc624a02bafc1cbcb8eaee2e.png" alt="在这里插入图片描述" /><br />
-说明周期性复指数信号的频谱是一个冲激，那么我们推广这个关系，可得： <img src="https://img-blog.csdnimg.cn/96285b7fb96e48c1891e4745de9e5256.png" alt="在这里插入图片描述" /><br />
-表明：周期信号的傅里叶变换由一系列等间隔的冲激函数线性组合而成，每个冲激分别位于信号各次谐波的频率处，其强度是傅里叶级数系数的<span class="math inline">\(2\pi\)</span>倍。</p></li>
+对于周期信号<span
+class="math inline">\(x(t)\)</span>，其傅里叶级数展开式为： <span
+class="math display">\[x(t) = \sum_{k =
+-\infty}^{+\infty}a_ke^{jkw_0t}\]</span> 系数<span
+class="math inline">\(a_k\)</span>表示为：<br />
+<img
+src="https://img-blog.csdnimg.cn/074ecf83ad964d0b869dceb72a65cf43.png"
+alt="在这里插入图片描述" /><br />
+由于 <img
+src="https://img-blog.csdnimg.cn/d580f672cc624a02bafc1cbcb8eaee2e.png"
+alt="在这里插入图片描述" /><br />
+说明周期性复指数信号的频谱是一个冲激，那么我们推广这个关系，可得： <img
+src="https://img-blog.csdnimg.cn/96285b7fb96e48c1891e4745de9e5256.png"
+alt="在这里插入图片描述" /><br />
+表明：周期信号的傅里叶变换由一系列等间隔的冲激函数线性组合而成，每个冲激分别位于信号各次谐波的频率处，其强度是傅里叶级数系数的<span
+class="math inline">\(2\pi\)</span>倍。</p></li>
 <li><p>周期延拓<br />
-这种方法先将<span class="math inline">\(x(t)\)</span>在一个周期内截断，得信号<span class="math inline">\(x_T(t)\)</span>，求出<span class="math inline">\(x_T(t)\)</span>的傅里叶变换<span class="math inline">\(X_T(w)\)</span>，再对<span class="math inline">\(X_T(w)\)</span>周期延拓得<span class="math inline">\(X(w)\)</span>。<br />
+这种方法先将<span
+class="math inline">\(x(t)\)</span>在一个周期内截断，得信号<span
+class="math inline">\(x_T(t)\)</span>，求出<span
+class="math inline">\(x_T(t)\)</span>的傅里叶变换<span
+class="math inline">\(X_T(w)\)</span>，再对<span
+class="math inline">\(X_T(w)\)</span>周期延拓得<span
+class="math inline">\(X(w)\)</span>。<br />
 具体来说：<br />
-根据<span class="math inline">\(\delta\)</span>函数性质，有： <span class="math display">\[x(t) = x_T(t)*\sum_{k = -\infty}^{+\infty}\delta(t - kT)\]</span> 设周期冲激串<span class="math inline">\(\sum_{k = -\infty}^{+\infty}\delta(t - kT)\)</span>的傅里叶变换为<span class="math inline">\(F(w)\)</span>，<br />
-由时域卷积定理： <span class="math display">\[X(w) = X_T(w)F(w)\]</span> 又时域周期为T的周期冲激串的傅里叶变换在频域是一个周期为<span class="math inline">\(\frac{2\pi}{T}\)</span>的周期冲激串，即： <span class="math display">\[F(w) = \frac{2\pi}{T}\sum_{k = -\infty}^{+\infty}\delta(w - \frac{2\pi k}{T})\]</span> 故可得： <span class="math display">\[X(w) = \frac{2\pi}{T}X_T(w)\sum_{k = -\infty}^{+\infty}\delta(w - \frac{2\pi k}{T})\]</span> 也就是： <span class="math display">\[X(w) = w_0\sum_{k = -\infty}^{+\infty}X_T(kw_0)\delta(w - kw_0)\]</span> 我们对比两种方法得到的结果，可知：<br />
-周期信号傅里叶级数的系数<span class="math inline">\(a_k = \frac{1}{T}X_T(kw_0)\)</span></p></li>
+根据<span class="math inline">\(\delta\)</span>函数性质，有： <span
+class="math display">\[x(t) = x_T(t)*\sum_{k =
+-\infty}^{+\infty}\delta(t - kT)\]</span> 设周期冲激串<span
+class="math inline">\(\sum_{k = -\infty}^{+\infty}\delta(t -
+kT)\)</span>的傅里叶变换为<span
+class="math inline">\(F(w)\)</span>，<br />
+由时域卷积定理： <span class="math display">\[X(w) = X_T(w)F(w)\]</span>
+又时域周期为T的周期冲激串的傅里叶变换在频域是一个周期为<span
+class="math inline">\(\frac{2\pi}{T}\)</span>的周期冲激串，即： <span
+class="math display">\[F(w) = \frac{2\pi}{T}\sum_{k =
+-\infty}^{+\infty}\delta(w - \frac{2\pi k}{T})\]</span> 故可得： <span
+class="math display">\[X(w) = \frac{2\pi}{T}X_T(w)\sum_{k =
+-\infty}^{+\infty}\delta(w - \frac{2\pi k}{T})\]</span> 也就是： <span
+class="math display">\[X(w) = w_0\sum_{k =
+-\infty}^{+\infty}X_T(kw_0)\delta(w - kw_0)\]</span>
+我们对比两种方法得到的结果，可知：<br />
+周期信号傅里叶级数的系数<span class="math inline">\(a_k =
+\frac{1}{T}X_T(kw_0)\)</span></p></li>
 </ol>
 
     </div>
@@ -353,24 +381,7 @@
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -688,22 +699,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

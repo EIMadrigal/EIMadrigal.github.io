@@ -28,7 +28,7 @@
 <meta property="og:description" content="并查集">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-01-26T09:50:00.000Z">
-<meta property="article:modified_time" content="2022-08-30T01:25:47.000Z">
+<meta property="article:modified_time" content="2022-08-30T01:25:47.464Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Algorithm">
 <meta name="twitter:card" content="summary">
@@ -270,23 +270,35 @@
 <ul>
 <li>Find<br />
 查找某个元素属于哪个集合（如果单独成集就返回自己），返回该集合的代表元素（即parent为-1的那个元素/parent为自身的那个元素）。<br />
-查找的同时可以通过<strong>路径压缩</strong>来将均摊复杂度降低为<span class="math inline">\(O(1)\)</span>。查找某个结点时，将其经过的全部结点直接连到根结点，这样下次的查询次数就会急剧减小。</li>
+查找的同时可以通过<strong>路径压缩</strong>来将均摊复杂度降低为<span
+class="math inline">\(O(1)\)</span>。查找某个结点时，将其经过的全部结点直接连到根结点，这样下次的查询次数就会急剧减小。</li>
 <li>Union<br />
 合并时可以遵循<strong>按秩合并</strong>原则，将秩小的树合并到秩大的树，降低合并时路径压缩的开销。<br />
 将两个不同的集合合并，只要将其中一个集合的根结点的<code>parent</code>指向另一个集合的根结点即可。<br />
 对于属于同一个集合的两个元素的合并没有意义，所以我们一般只对两个不同的集合进行合并，这样避免同一个集合成环，因此并查集的每个集合都是一棵树。</li>
 </ul>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UnionFind</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; parents_;</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; ranks_;</span><br><span class="line">    <span class="keyword">int</span> setsCnt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">UnionFind</span>(<span class="keyword">int</span> n) : <span class="built_in">setsCnt</span>(n) &#123;</span><br><span class="line">        <span class="comment">// 是否等于n取决于index从0开始还是从1开始</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">            parents_.<span class="built_in">emplace_back</span>(i);</span><br><span class="line">            ranks_.<span class="built_in">emplace_back</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// get the root of x</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// path compression</span></span><br><span class="line">        <span class="keyword">if</span> (x != parents_[x]) &#123;</span><br><span class="line">            parents_[x] = <span class="built_in">find</span>(parents_[x]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> parents_[x];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// merge set u and v</span></span><br><span class="line">    <span class="comment">// false -&gt; u and v are already in one set</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> rootu = <span class="built_in">find</span>(u);</span><br><span class="line">        <span class="keyword">int</span> rootv = <span class="built_in">find</span>(v);</span><br><span class="line">        <span class="keyword">if</span> (rootu == rootv)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// merge low rank to high rank</span></span><br><span class="line">        <span class="keyword">if</span> (ranks_[rootu] &lt; ranks_[rootv]) &#123;</span><br><span class="line">            parents_[rootu] = rootv;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (ranks_[rootu] &gt; ranks_[rootv]) &#123;</span><br><span class="line">            parents_[rootv] = rootu;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            parents_[rootu] = rootv;</span><br><span class="line">            ++ranks_[rootv];</span><br><span class="line">        &#125;</span><br><span class="line">        setsCnt--;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getSetCnt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> setsCnt;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>并查集可以将均摊复杂度变为<span class="math inline">\(O(1)\)</span>，但如果涉及到删除元素、计算每个集合元素个数等操作时，实现会有些复杂；<br />
+<p>并查集可以将均摊复杂度变为<span
+class="math inline">\(O(1)\)</span>，但如果涉及到删除元素、计算每个集合元素个数等操作时，实现会有些复杂；<br />
 好吧！计算每个集合元素个数以及统计有多少个集合并不复杂，计算元素个数可以开一个数组cnt初始全为1，每次merge都更新cnt即可，cnt[i]即为根为i的集合包含的元素个数<br />
 统计多少个集合遍历所有元素，遇到不同的根结点就更新ans。</p>
-<p><a target="_blank" rel="noopener" href="https://www.zxpblog.cn/2020/02/17/%E9%AB%98%E7%BA%A7%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E5%AD%97%E5%85%B8%E6%A0%91%E5%92%8C%E5%B9%B6%E6%9F%A5%E9%9B%86%E5%92%8C%E7%BA%BF%E6%AE%B5%E6%A0%91/">最原始的并查集</a>虽然复杂度稍差，但是可以完成的功能比较多。<br />
-<a target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/12693959.html">原始并查集实现</a></p>
-<p>一道例题：<a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1551">亲戚</a><br />
-不做路径压缩可以求<a target="_blank" rel="noopener" href="https://www.nowcoder.com/profile/135924065/codeBookDetail?submissionId=83987857">最小环长</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://www.zxpblog.cn/2020/02/17/%E9%AB%98%E7%BA%A7%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E5%AD%97%E5%85%B8%E6%A0%91%E5%92%8C%E5%B9%B6%E6%9F%A5%E9%9B%86%E5%92%8C%E7%BA%BF%E6%AE%B5%E6%A0%91/">最原始的并查集</a>虽然复杂度稍差，但是可以完成的功能比较多。<br />
+<a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/EIMadrigal/p/12693959.html">原始并查集实现</a></p>
+<p>一道例题：<a
+target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1551">亲戚</a><br />
+不做路径压缩可以求<a
+target="_blank" rel="noopener" href="https://www.nowcoder.com/profile/135924065/codeBookDetail?submissionId=83987857">最小环长</a></p>
 <h2 id="无向图判环">无向图判环</h2>
 <p>并查集可以用来检测无向图是否有环.<br />
-初始时认为每个节点都是独立的集合, 如果在加入边<span class="math inline">\((i,j)\)</span>之前节点<span class="math inline">\(i\)</span>和节点<span class="math inline">\(j\)</span>已经同属一个集合, 意味着节点<span class="math inline">\(i\)</span>和节点<span class="math inline">\(j\)</span>必然有某条其他路径连通, 该路径和边<span class="math inline">\((i,j)\)</span>必然构成环. <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; g;  <span class="comment">// edge list</span></span><br><span class="line">g.<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(<span class="number">0</span>, <span class="number">1</span>));</span><br><span class="line">g.<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(<span class="number">0</span>, <span class="number">2</span>));</span><br><span class="line">g.<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">hasCycle</span><span class="params">(vector&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&amp; g)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; g.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> rootx = <span class="built_in">Find</span>(g[i].first);</span><br><span class="line">        <span class="keyword">int</span> rooty = <span class="built_in">Find</span>(g[i].second);</span><br><span class="line">        <span class="keyword">if</span> (rootx == rooty) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">Union</span>(rootx, rooty);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+初始时认为每个节点都是独立的集合, 如果在加入边<span
+class="math inline">\((i,j)\)</span>之前节点<span
+class="math inline">\(i\)</span>和节点<span
+class="math inline">\(j\)</span>已经同属一个集合, 意味着节点<span
+class="math inline">\(i\)</span>和节点<span
+class="math inline">\(j\)</span>必然有某条其他路径连通, 该路径和边<span
+class="math inline">\((i,j)\)</span>必然构成环. <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; g;  <span class="comment">// edge list</span></span><br><span class="line">g.<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(<span class="number">0</span>, <span class="number">1</span>));</span><br><span class="line">g.<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(<span class="number">0</span>, <span class="number">2</span>));</span><br><span class="line">g.<span class="built_in">push_back</span>(<span class="built_in">make_pair</span>(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">hasCycle</span><span class="params">(vector&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&amp; g)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; g.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> rootx = <span class="built_in">Find</span>(g[i].first);</span><br><span class="line">        <span class="keyword">int</span> rooty = <span class="built_in">Find</span>(g[i].second);</span><br><span class="line">        <span class="keyword">if</span> (rootx == rooty) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">Union</span>(rootx, rooty);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h2 id="种类并查集todo">种类并查集（TODO）</h2>
 <p>普通并查集的特点就是只有一个集合，比如上述例题只有亲戚一个集合。如果涉及到多个集合，就需要种类并查集。<br />
 假如有n个集合，常用的手法就是开一个n倍大小的并查集。<br />
@@ -367,24 +379,7 @@
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -703,22 +698,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

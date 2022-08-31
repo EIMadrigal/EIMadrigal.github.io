@@ -29,11 +29,10 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2020061309400433.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200613094728545.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20200613094740884.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200613110636913.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200613111558820.png">
 <meta property="article:published_time" content="2020-06-15T08:17:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T15:19:18.362Z">
+<meta property="article:modified_time" content="2022-01-30T15:19:18.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Projects">
 <meta name="twitter:card" content="summary">
@@ -265,41 +264,65 @@
 
       
         <h2 id="introduction">Introduction</h2>
-<p>这是CS 61B的HW2，具体实现<a target="_blank" rel="noopener" href="https://github.com/EIMadrigal/CS61B/tree/master/hw2">在这里</a>。这个项目是要模拟一个渗滤系统，最终目标是要通过蒙特卡洛方法计算出渗滤系统的阈值，主要会考察对并查集的使用而非实现。<br />
+<p>这是CS 61B的HW2，具体实现<a
+target="_blank" rel="noopener" href="https://github.com/EIMadrigal/CS61B/tree/master/hw2">在这里</a>。这个项目是要模拟一个渗滤系统，最终目标是要通过蒙特卡洛方法计算出渗滤系统的阈值，主要会考察对并查集的使用而非实现。<br />
 渗滤有很多应用，比较重要的就是复合导电材料：刚开始是绝缘体，将金属作为导电材料逐渐掺入，填充到某临界值后，金属会形成一条导电网格组成的路径，完成从绝缘体到半导体、导体的转变，该临界值就是所谓的<strong>渗滤阈值</strong>。<br />
-模型是一个<span class="math inline">\(N*N\)</span>的网格图，每个格子有打开和关闭两种状态。如果一个格子是打开的，并且可以通过相邻的某些打开的格子连接到第一行的打开格子，那么该格子的状态就是full。如果最后一行有格子是full，那么系统就会发生渗滤。对于前面的例子，如果金属材料能形成一条从上到下的导电路径，那么就发生渗滤：<br />
+模型是一个<span
+class="math inline">\(N*N\)</span>的网格图，每个格子有打开和关闭两种状态。如果一个格子是打开的，并且可以通过相邻的某些打开的格子连接到第一行的打开格子，那么该格子的状态就是full。如果最后一行有格子是full，那么系统就会发生渗滤。对于前面的例子，如果金属材料能形成一条从上到下的导电路径，那么就发生渗滤：<br />
 <img src="https://img-blog.csdnimg.cn/2020061309400433.png" /><br />
-我们感兴趣的是：如果<span class="math inline">\(N\)</span>足够大，每个格子独立，并且打开的概率是<span class="math inline">\(p\)</span>，那么会存在一个阈值<span class="math inline">\(p^*\)</span>，当<span class="math inline">\(p&lt;p^*\)</span>时，系统几乎不可能发生渗滤；当<span class="math inline">\(p&gt;p^*\)</span>时，系统几乎一定发生渗滤：<br />
-<img src="https://img-blog.csdnimg.cn/20200613094728545.png" alt="在这里插入图片描述" /><img src="https://img-blog.csdnimg.cn/20200613094740884.png" alt="在这里插入图片描述" /><br />
+我们感兴趣的是：如果<span
+class="math inline">\(N\)</span>足够大，每个格子独立，并且打开的概率是<span
+class="math inline">\(p\)</span>，那么会存在一个阈值<span
+class="math inline">\(p^*\)</span>，当<span
+class="math inline">\(p&lt;p^*\)</span>时，系统几乎不可能发生渗滤；当<span
+class="math inline">\(p&gt;p^*\)</span>时，系统几乎一定发生渗滤：<br />
+<img src="https://img-blog.csdnimg.cn/20200613094728545.png"
+alt="在这里插入图片描述" /><img
+src="https://img-blog.csdnimg.cn/20200613094740884.png"
+alt="在这里插入图片描述" /><br />
 我们的任务就是估算这个<span class="math inline">\(p^*\)</span>。</p>
 <h2 id="渗滤系统建模">渗滤系统建模</h2>
 <p>模型并不复杂，写一个类<code>Percolation.java</code>专门模拟该系统：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Percolation</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Percolation</span><span class="params">(<span class="keyword">int</span> N)</span>  <span class="comment">// create N-by-N grid, with all sites initially blocked</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> col)</span>  <span class="comment">// open the site (row, col) if it is not open already</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isOpen</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> col)</span>  <span class="comment">// is the site (row, col) open?</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isFull</span><span class="params">(<span class="keyword">int</span> row, <span class="keyword">int</span> col)</span>  <span class="comment">// is the site (row, col) full?</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numberOfOpenSites</span><span class="params">()</span>  <span class="comment">// number of open sites</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">percolates</span><span class="params">()</span>  <span class="comment">// does the system percolate?</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>难点在于要满足规定的时间复杂度：除了构造函数是<span class="math inline">\(O(N^2)\)</span>，其余方法都必须是<span class="math inline">\(O(1)\)</span>。<br />
-如果采用常规方法判断是否渗滤，那么至少也要遍历最后一行看看有没有full的格子，这样时间<span class="math inline">\(O(N)\)</span>无法满足要求。<br />
+<p>难点在于要满足规定的时间复杂度：除了构造函数是<span
+class="math inline">\(O(N^2)\)</span>，其余方法都必须是<span
+class="math inline">\(O(1)\)</span>。<br />
+如果采用常规方法判断是否渗滤，那么至少也要遍历最后一行看看有没有full的格子，这样时间<span
+class="math inline">\(O(N)\)</span>无法满足要求。<br />
 问题就在于第一行和最后一行的格子数太多，减慢了我们的判断效率。那么如果我们在最上面和最下面设置两个虚拟节点，事情就会变得OK：<br />
-<img src="https://img-blog.csdnimg.cn/20200613110636913.png" alt="在这里插入图片描述" /><br />
-virtualTop负责连接第一行所有打开的结点，virtualBottom负责连接最后一行所有打开的结点，这样我们就把<span class="math inline">\(N\)</span>个点浓缩成了一个点：</p>
+<img src="https://img-blog.csdnimg.cn/20200613110636913.png"
+alt="在这里插入图片描述" /><br />
+virtualTop负责连接第一行所有打开的结点，virtualBottom负责连接最后一行所有打开的结点，这样我们就把<span
+class="math inline">\(N\)</span>个点浓缩成了一个点：</p>
 <ul>
 <li>判断某点是否full时，只需要判断该点是否和virtualTop连接；</li>
 <li>判断是否渗滤时，只要判断virtualTop和virtualBottom是否连接。</li>
 </ul>
 <p>这种解决方案看似很完美，但是有一个问题Backwash：<br />
-<img src="https://img-blog.csdnimg.cn/20200613111558820.png" alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20200613111558820.png"
+alt="在这里插入图片描述" /><br />
 如果已经有一条从上到下的路，那么水流可以通过virtualBottom回流到最后一行已经打开的格子，而这些格子本不应该full。<br />
 这个问题的解决有点tricky，开始我是想通过周围格子的状态来判断是否full，即只有周围四个格子之一是full，当前格子才是full。但是如果要在<code>isFull()</code>里递归调用去判断周围格子，那么一定会爆栈；所以要判断周围格子只能通过是否和virtualTop连接，但是只要这个打开的格子在最后一行，就一定要和virtualBottom连接，如此一来只要有其他通路，那么该格子必然还是backwash，进而就会导致其它和该格子相连的也backwash。<br />
 举例来说：假如右边3个蓝色格子从上至下编号123，先打开3号，3号周围四个格子都没有和virtualTop连接，因此我们认为3号没有full，这没问题；但是接着打开2号，2号下面的格子（3号在最后一行且打开，必然和virtualBottom连接，即也和virtualTop连接）是和virtualTop连接的，因此我们判断2号是full，这显然错误。</p>
 <p>没法用逻辑优化的时候，就应该转向用空间去优化。我们可以在开一个并查集，这个集合最多只包含virtualTop和地图中的所有格子，而将virtualBottom排除在外。判断full时，只要当前格子在新并查集中与virtualTop连接，那么必然full。</p>
 <h2 id="monte-carlo-simulation">Monte Carlo Simulation</h2>
-<p>为了估算阈值，需要做<span class="math inline">\(T\)</span>次独立重复实验：</p>
+<p>为了估算阈值，需要做<span
+class="math inline">\(T\)</span>次独立重复实验：</p>
 <ul>
 <li>所有格子都设置为关闭；</li>
 <li>随机选取一个关闭的格子，打开它，重复直至系统渗滤。</li>
 </ul>
-<p>那么这次试验的<span class="math inline">\(p^*\)</span>就是打开格子数/总数。</p>
-<p>取<span class="math inline">\(T\)</span>次实验的平均值，可以得到更加精确的阈值；标准差<span class="math inline">\(\sigma\)</span>展示了结果的波动程度： <span class="math display">\[
-\mu = \frac{x_1 + x_2 + … + x_T}{T},\sigma^2 = \frac{(x_1 - \mu)^2 + (x_2 - \mu)^2 + … + (x_T - \mu)^2}{T-1}
-\]</span> 当<span class="math inline">\(T\)</span>足够大，<span class="math inline">\([\mu - \frac{1.96\sigma}{\sqrt{T}}, \mu + \frac{1.96\sigma}{\sqrt{T}}]\)</span>提供了95%的置信度。</p>
+<p>那么这次试验的<span
+class="math inline">\(p^*\)</span>就是打开格子数/总数。</p>
+<p>取<span
+class="math inline">\(T\)</span>次实验的平均值，可以得到更加精确的阈值；标准差<span
+class="math inline">\(\sigma\)</span>展示了结果的波动程度： <span
+class="math display">\[
+\mu = \frac{x_1 + x_2 + … + x_T}{T},\sigma^2 = \frac{(x_1 - \mu)^2 +
+(x_2 - \mu)^2 + … + (x_T - \mu)^2}{T-1}
+\]</span> 当<span class="math inline">\(T\)</span>足够大，<span
+class="math inline">\([\mu - \frac{1.96\sigma}{\sqrt{T}}, \mu +
+\frac{1.96\sigma}{\sqrt{T}}]\)</span>提供了95%的置信度。</p>
 <p>这部分的实现很简单：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PercolationStats</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">PercolationStats</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> T, PercolationFactory pf)</span>  <span class="comment">// perform T independent experiments on an N-by-N grid</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">double</span> <span class="title">mean</span><span class="params">()</span>  <span class="comment">// sample mean of percolation threshold</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">double</span> <span class="title">stddev</span><span class="params">()</span>  <span class="comment">// sample standard deviation of percolation threshold</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">double</span> <span class="title">confidenceLow</span><span class="params">()</span>  <span class="comment">// low endpoint of 95% confidence interval</span></span></span><br><span class="line"><span class="function">   <span class="keyword">public</span> <span class="keyword">double</span> <span class="title">confidenceHigh</span><span class="params">()</span>  <span class="comment">// high endpoint of 95% confidence interval</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
 
@@ -377,24 +400,7 @@ virtualTop负责连接第一行所有打开的结点，virtualBottom负责连接
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -713,22 +719,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

@@ -28,7 +28,7 @@
 <meta property="og:description" content="Basic formula of probability and statistics">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-01-11T01:24:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T11:30:30.054Z">
+<meta property="article:modified_time" content="2022-01-30T11:30:30.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Probability &amp; Statistics">
 <meta name="twitter:card" content="summary">
@@ -258,47 +258,128 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>联合概率<span class="math inline">\(P(A,B)\)</span>即两个事件同时发生的概率 条件概率（后验概率）<span class="math inline">\(P(A|B)P(B)=P(B|A)P(A)\)</span> 全概率公式 <span class="math display">\[
+        <p>联合概率<span
+class="math inline">\(P(A,B)\)</span>即两个事件同时发生的概率
+条件概率（后验概率）<span
+class="math inline">\(P(A|B)P(B)=P(B|A)P(A)\)</span> 全概率公式 <span
+class="math display">\[
 P(A)=\sum_nP(A,B_n)=\sum_nP(A|B_n)P(B_n)
 \]</span> 贝叶斯定理： <span class="math display">\[
 P(A|B)=\frac{P(B|A)P(A)}{P(B)}
-\]</span> <span class="math inline">\(A\)</span>的后验概率等于标准相似度乘以先验概率</p>
-<p>离散型随机变量概率分布（分布律）： |<span class="math inline">\(X\)</span>| <span class="math inline">\(x_1\)</span>|...|<span class="math inline">\(x_i\)</span>|... |--|--|--|--|--| | <span class="math inline">\(P\)</span>| <span class="math inline">\(p_1\)</span>|...|<span class="math inline">\(p_i\)</span>|... 满足<span class="math inline">\(p_i\geq0, \sum_{i=1}^{\infty}p_i=1\)</span></p>
-<p>0-1分布：<span class="math inline">\(X\sim B(1,p)\)</span> |<span class="math inline">\(X\)</span>| 0|1| |--|--|-- |<span class="math inline">\(P\)</span>|<span class="math inline">\(1-p\)</span>|<span class="math inline">\(p\)</span>| <span class="math display">\[
+\]</span> <span
+class="math inline">\(A\)</span>的后验概率等于标准相似度乘以先验概率</p>
+<p>离散型随机变量概率分布（分布律）： |<span
+class="math inline">\(X\)</span>| <span
+class="math inline">\(x_1\)</span>|...|<span
+class="math inline">\(x_i\)</span>|... |--|--|--|--|--| | <span
+class="math inline">\(P\)</span>| <span
+class="math inline">\(p_1\)</span>|...|<span
+class="math inline">\(p_i\)</span>|... 满足<span
+class="math inline">\(p_i\geq0, \sum_{i=1}^{\infty}p_i=1\)</span></p>
+<p>0-1分布：<span class="math inline">\(X\sim B(1,p)\)</span> |<span
+class="math inline">\(X\)</span>| 0|1| |--|--|-- |<span
+class="math inline">\(P\)</span>|<span
+class="math inline">\(1-p\)</span>|<span
+class="math inline">\(p\)</span>| <span class="math display">\[
 P(X=k)=p^k(1-p)^{1-k},k=0,1
 \]</span></p>
-<p>二项分布：<span class="math inline">\(X\sim B(n,p)\)</span> <span class="math inline">\(n\)</span>重伯努利试验 <span class="math display">\[
+<p>二项分布：<span class="math inline">\(X\sim B(n,p)\)</span> <span
+class="math inline">\(n\)</span>重伯努利试验 <span
+class="math display">\[
 P(X=k)=C_n^kp^k(1-p)^{n-k},k=0,1,...,n
 \]</span></p>
-<p>Poisson分布：<span class="math inline">\(X\sim P(\lambda)\)</span> <span class="math display">\[
+<p>Poisson分布：<span class="math inline">\(X\sim P(\lambda)\)</span>
+<span class="math display">\[
 P(X=k)=\frac{\lambda^ke^{-\lambda}}{k!},k=0,1,...,n,\lambda&gt;0
-\]</span> <span class="math inline">\(E(X)=\lambda,D(X)=\lambda\)</span> 可以证明：Poisson分布是二项分布在<span class="math inline">\(\lambda=np,n\to\infty\)</span>的极限分布。</p>
-<p>连续型随机变量概率分布函数：<span class="math inline">\(F(x)=\int_{-\infty}^{x}f(t)dt\)</span>，<span class="math inline">\(f(x)\)</span>称为概率密度函数。 均匀分布：<span class="math inline">\(X\sim U(a,b)\)</span> <span class="math display">\[
+\]</span> <span class="math inline">\(E(X)=\lambda,D(X)=\lambda\)</span>
+可以证明：Poisson分布是二项分布在<span
+class="math inline">\(\lambda=np,n\to\infty\)</span>的极限分布。</p>
+<p>连续型随机变量概率分布函数：<span
+class="math inline">\(F(x)=\int_{-\infty}^{x}f(t)dt\)</span>，<span
+class="math inline">\(f(x)\)</span>称为概率密度函数。 均匀分布：<span
+class="math inline">\(X\sim U(a,b)\)</span> <span
+class="math display">\[
 f(x)=
 \begin{cases}
 \cfrac{1}{b-a}, &amp;x\in(a,b)\\
 0, &amp;其它
 \end{cases}
-\]</span> 指数分布：<span class="math inline">\(X\sim E(\lambda)\)</span> <span class="math display">\[
+\]</span> 指数分布：<span class="math inline">\(X\sim
+E(\lambda)\)</span> <span class="math display">\[
 f(x)=
 \begin{cases}
 \lambda e^{-\lambda x}, &amp;x&gt;0\\
 0, &amp;x\leq0
 \end{cases}
-\]</span> 正态分布（高斯分布）：<span class="math inline">\(X\sim N(\mu,\sigma^2)\)</span> <span class="math display">\[
+\]</span> 正态分布（高斯分布）：<span class="math inline">\(X\sim
+N(\mu,\sigma^2)\)</span> <span class="math display">\[
 f(x)=\cfrac{1}{\sigma \sqrt{2\pi}}e^{-\cfrac{(x-\mu)^2}{2\sigma^2}}
-\]</span> <span class="math inline">\(\mu\)</span>是位置参数，决定对称轴位置；<span class="math inline">\(\sigma\)</span>是尺度参数，决定分布的幅度。 标准正态分布<span class="math inline">\(X\sim N(0,1)\)</span></p>
-<p>数学期望： 离散型：<span class="math inline">\(E(X)=\sum_ip_ix_i\)</span> 连续型：<span class="math inline">\(E(X)=\int_{-\infty}^{+\infty}xf(x)dx\)</span></p>
-<p>方差：随机变量的离散程度，距离期望的距离 <span class="math inline">\(D(X)=E[(X-E(X))^2]=E(X^2)-E(X)^2\)</span> <span class="math display">\[D(X)=\cfrac{1}{N}\sum_{i=1}^{N}(x_i-\mu)^2=\cfrac{1}{N}(\sum_{i=1}^{N}x_i^2-N\mu^2)\]</span> 离散型：<span class="math display">\[D(X)=\sum_{i=1}^{\infty}[x_i-E(X)]^2p_i\]</span> 连续型：<span class="math display">\[D(X)=\int_{-\infty}^{+\infty}[x-E(X)]^2f(x)dx\]</span></p>
+\]</span> <span
+class="math inline">\(\mu\)</span>是位置参数，决定对称轴位置；<span
+class="math inline">\(\sigma\)</span>是尺度参数，决定分布的幅度。
+标准正态分布<span class="math inline">\(X\sim N(0,1)\)</span></p>
+<p>数学期望： 离散型：<span
+class="math inline">\(E(X)=\sum_ip_ix_i\)</span> 连续型：<span
+class="math inline">\(E(X)=\int_{-\infty}^{+\infty}xf(x)dx\)</span></p>
+<p>方差：随机变量的离散程度，距离期望的距离 <span
+class="math inline">\(D(X)=E[(X-E(X))^2]=E(X^2)-E(X)^2\)</span> <span
+class="math display">\[D(X)=\cfrac{1}{N}\sum_{i=1}^{N}(x_i-\mu)^2=\cfrac{1}{N}(\sum_{i=1}^{N}x_i^2-N\mu^2)\]</span>
+离散型：<span
+class="math display">\[D(X)=\sum_{i=1}^{\infty}[x_i-E(X)]^2p_i\]</span>
+连续型：<span
+class="math display">\[D(X)=\int_{-\infty}^{+\infty}[x-E(X)]^2f(x)dx\]</span></p>
 <p>标准差（均方差）是方差的算术平方根</p>
-<p>样本标准差： <span class="math display">\[s=\sqrt{\cfrac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar x)^2}\]</span> 对于二维随机变量，协方差用来描述<span class="math inline">\(X\)</span>与<span class="math inline">\(Y\)</span>之间的相互关系： <span class="math display">\[Cov(X,Y)=E\{[X-E(x)][Y-E(Y)]\}\]</span></p>
+<p>样本标准差： <span
+class="math display">\[s=\sqrt{\cfrac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar
+x)^2}\]</span> 对于二维随机变量，协方差用来描述<span
+class="math inline">\(X\)</span>与<span
+class="math inline">\(Y\)</span>之间的相互关系： <span
+class="math display">\[Cov(X,Y)=E\{[X-E(x)][Y-E(Y)]\}\]</span></p>
 <p>相关系数： <span class="math display">\[
 \rho_{XY}=\cfrac{Cov(X,Y)}{\sqrt{D(X)D(Y)}}
 \]</span></p>
-<p>de Movire-Laplace中心极限定理： <span class="math inline">\(n_A\)</span>为<span class="math inline">\(n\)</span>重伯努利试验中<span class="math inline">\(A\)</span>发生的次数，<span class="math inline">\(P(A)=p\)</span>，对任意实数<span class="math inline">\(x\)</span>，有： <span class="math display">\[
-\lim\limits_{n\to+\infty}P(\cfrac{n_A-np}{\sqrt{np(1-p)}}\leq x)=\int_{-\infty}^{x}\cfrac{1}{\sqrt{2\pi}}e^{-\frac{t^2}{2}}dt=\Phi(x)
-\]</span> <span class="math inline">\(n\)</span>充分大时，<span class="math inline">\(n_A\sim N(np,np(1-p))\)</span>，故： <span class="math display">\[
-P(a&lt;n_a\leq \]</span>="" <span class="math inline">\(n\)</span>充分大时，<span class="math inline">\(\sum_{i=&quot;1}^{n}X_i\sim&quot; \cfrac{\sqrt{n}(\bar=&quot;&quot; \lim\limits_{n\to+\infty}p(|\cfrac{n_x}{n}-p|&lt;\epsilon)=&quot;1&quot; b)\approx\phi(\cfrac{b-n\mu}{\sqrt{n}\sigma})-\phi(\cfrac{a-n\mu}{\sqrt{n}\sigma})=&quot;&quot; b)\approx\phi(\cfrac{b-np}{\sqrt{np(1-p)}})-\phi(\cfrac{a-np}{\sqrt{np(1-p)}})=&quot;&quot; n(0,1)=&quot;&quot; n(0,1)\)</span>，即：="" n(0,1)<span class="math inline">\(，故：=&quot;&quot; n(n\mu,n\sigma^2)\)</span>，<span class="math inline">\(y_n\sim=&quot;&quot; p(a&lt;\sum_{i=&quot;1}^{n}X_i\leq&quot; x-\mu)}{\sigma}\sim=&quot;&quot; y_n=&quot;\cfrac{\sum_{i=1}^{n}X_i-n\mu}{\sqrt{n}\sigma}&quot; 中心极限定理表明：任意的一个概率分布中生成的随机变量，其序列和统一地归约到正态分布：\)</span>y_n="" 伯努利大数定律：事件<span class="math inline">\(x\)</span>在每次试验中发生概率是<span class="math inline">\(p\)</span>，<span class="math inline">\(n\)</span>次独立重复试验中，<span class="math inline">\(x\)</span>发生的次数为<span class="math inline">\(n_x\)</span>，则：="" 即事件的发生频率依概率收敛于事件的概率。="" 独立同分布中心极限定理：="" 辛钦大数定律：<span class="math inline">\(x_i\)</span>为独立同分布的随机变量序列，且期望<span class="math inline">\(\mu\)</span>存在，则对<span class="math inline">\(\forall\epsilon=&quot;&quot; 随机变量\)</span>x_1,x_2,...,x_n,...<span class="math inline">\(独立同分布，\)</span>e(x_i)=",D(X_i)=^2<span class="math inline">\(，前\)</span>n<span class="math inline">\(个变量和的标准化变量为：&quot;&gt;0\)</span>，有： <span class="math display">\[
+<p>de Movire-Laplace中心极限定理： <span
+class="math inline">\(n_A\)</span>为<span
+class="math inline">\(n\)</span>重伯努利试验中<span
+class="math inline">\(A\)</span>发生的次数，<span
+class="math inline">\(P(A)=p\)</span>，对任意实数<span
+class="math inline">\(x\)</span>，有： <span class="math display">\[
+\lim\limits_{n\to+\infty}P(\cfrac{n_A-np}{\sqrt{np(1-p)}}\leq
+x)=\int_{-\infty}^{x}\cfrac{1}{\sqrt{2\pi}}e^{-\frac{t^2}{2}}dt=\Phi(x)
+\]</span> <span class="math inline">\(n\)</span>充分大时，<span
+class="math inline">\(n_A\sim N(np,np(1-p))\)</span>，故： <span
+class="math display">\[
+P(a&lt;n_a\leq \]</span>="" <span
+class="math inline">\(n\)</span>充分大时，<span
+class="math inline">\(\sum_{i=&quot;1}^{n}X_i\sim&quot;
+\cfrac{\sqrt{n}(\bar=&quot;&quot;
+\lim\limits_{n\to+\infty}p(|\cfrac{n_x}{n}-p|&lt;\epsilon)=&quot;1&quot;
+b)\approx\phi(\cfrac{b-n\mu}{\sqrt{n}\sigma})-\phi(\cfrac{a-n\mu}{\sqrt{n}\sigma})=&quot;&quot;
+b)\approx\phi(\cfrac{b-np}{\sqrt{np(1-p)}})-\phi(\cfrac{a-np}{\sqrt{np(1-p)}})=&quot;&quot;
+n(0,1)=&quot;&quot; n(0,1)\)</span>，即：="" n(0,1)<span
+class="math inline">\(，故：=&quot;&quot;
+n(n\mu,n\sigma^2)\)</span>，<span
+class="math inline">\(y_n\sim=&quot;&quot;
+p(a&lt;\sum_{i=&quot;1}^{n}X_i\leq&quot;
+x-\mu)}{\sigma}\sim=&quot;&quot;
+y_n=&quot;\cfrac{\sum_{i=1}^{n}X_i-n\mu}{\sqrt{n}\sigma}&quot;
+中心极限定理表明：任意的一个概率分布中生成的随机变量，其序列和统一地归约到正态分布：\)</span>y_n=""
+伯努利大数定律：事件<span
+class="math inline">\(x\)</span>在每次试验中发生概率是<span
+class="math inline">\(p\)</span>，<span
+class="math inline">\(n\)</span>次独立重复试验中，<span
+class="math inline">\(x\)</span>发生的次数为<span
+class="math inline">\(n_x\)</span>，则：=""
+即事件的发生频率依概率收敛于事件的概率。="" 独立同分布中心极限定理：=""
+辛钦大数定律：<span
+class="math inline">\(x_i\)</span>为独立同分布的随机变量序列，且期望<span
+class="math inline">\(\mu\)</span>存在，则对<span
+class="math inline">\(\forall\epsilon=&quot;&quot;
+随机变量\)</span>x_1,x_2,...,x_n,...<span
+class="math inline">\(独立同分布，\)</span>e(x_i)=",D(X_i)=^2<span
+class="math inline">\(，前\)</span>n<span
+class="math inline">\(个变量和的标准化变量为：&quot;&gt;0\)</span>，有：
+<span class="math display">\[
 \lim\limits_{n\to+\infty}P(|\cfrac{1}{n}\sum_{i=1}^{n}X_i-\mu|\geq\epsilon)=0
 \]</span></p>
 <p>正太分布熵的大小，取决于方差的大小。&lt;/n_a&gt;</p>
@@ -377,24 +458,7 @@ P(a&lt;n_a\leq \]</span>="" <span class="math inline">\(n\)</span>充分大时�
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -712,22 +776,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

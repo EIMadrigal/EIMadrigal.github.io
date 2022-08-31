@@ -28,7 +28,7 @@
 <meta property="og:description" content="C&#x2F;C++常见问题">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-03-04T12:37:32.000Z">
-<meta property="article:modified_time" content="2022-08-25T06:26:43.000Z">
+<meta property="article:modified_time" content="2022-08-25T06:26:43.508Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Language">
 <meta property="article:tag" content="Interview">
@@ -259,33 +259,42 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>事情起源于做CS144 lab时，为了提升buffer的读写效率，将基于内存拷贝的方式改为基于内存所有权转移的方式大大提高了TCP的吞吐量，但自己一直对这些概念模棱两可，希望此文能做一些梳理。</p>
+        <p>事情起源于做CS144
+lab时，为了提升buffer的读写效率，将基于内存拷贝的方式改为基于内存所有权转移的方式大大提高了TCP的吞吐量，但自己一直对这些概念模棱两可，希望此文能做一些梳理。</p>
 <h2 id="左值和右值">左值和右值</h2>
 <p>顾名思义，左值指的是位于赋值号左侧，可以用<code>&amp;</code>取地址，表达式结束后依然存在的持久对象，在内存中占有确定位置的对象；右值位于赋值号右侧，无法取地址，表达式结束后不再存在的临时对象，不在内存中有确定位置。</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">5</span>;  <span class="comment">// a是左值，5是右值</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">A</span> &#123;</span></span><br><span class="line">    <span class="built_in">A</span>(<span class="keyword">int</span> a=<span class="number">5</span>) &#123;</span><br><span class="line">        a_ = a;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> a_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">A a = <span class="built_in">A</span>();</span><br></pre></td></tr></table></figure>
 <p>如果你试图<code>&amp;A()</code>，编译器会报错<code>error: taking address of temporary</code>。因为在该行直接用类生成的是一个临时对象，其生命周期在该行创建，在该行销毁，拿到该对象的地址没有意义。</p>
 <h2 id="左值引用和右值引用">左值引用和右值引用</h2>
 <p>引用是变量的别名，必须与某个变量绑定，传参时传递引用可以避免拷贝。</p>
-<p>普通的左值引用只能指向左值，不能指向右值： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">int</span>&amp; ref_a = a;  <span class="comment">// a是左值</span></span><br><span class="line"><span class="keyword">int</span>&amp; ref_aa = <span class="number">5</span>;  <span class="comment">// error: cannot bind non-const lvalue reference of type &#x27;int&amp;&#x27; to an rvalue of type &#x27;int&#x27;</span></span><br></pre></td></tr></table></figure> 引用可以直接修改原对象，右值无地址也无法被修改，故左值引用无法指向右值。</p>
+<p>普通的左值引用只能指向左值，不能指向右值： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">int</span>&amp; ref_a = a;  <span class="comment">// a是左值</span></span><br><span class="line"><span class="keyword">int</span>&amp; ref_aa = <span class="number">5</span>;  <span class="comment">// error: cannot bind non-const lvalue reference of type &#x27;int&amp;&#x27; to an rvalue of type &#x27;int&#x27;</span></span><br></pre></td></tr></table></figure>
+引用可以直接修改原对象，右值无地址也无法被修改，故左值引用无法指向右值。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const int&amp; ref_aa = 5;</span><br></pre></td></tr></table></figure>
 <p>const左值引用不会修改指向的右值，故可以指向右值。因此经常见到使用const引用作为函数参数，如<code>push_back(const int&amp; val)</code>，否则就无法<code>push_back(5)</code>。</p>
 <p>普通的右值引用只能指向右值，不能指向左值： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">int</span>&amp;&amp; ref_aa = a;  <span class="comment">// error: cannot bind rvalue reference of type &#x27;int&amp;&amp;&#x27; to lvalue of type &#x27;int&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span>&amp;&amp; ref_a = <span class="number">5</span>;  <span class="comment">// 5是右值</span></span><br><span class="line">ref_a = <span class="number">6</span>;</span><br></pre></td></tr></table></figure></p>
-<p>如果希望右值引用指向左值，需要通过<code>move</code>将左值转换为右值： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">int</span>&amp;&amp; ref_aa = <span class="built_in">move</span>(a);</span><br><span class="line">cout &lt;&lt; a;  <span class="comment">// 仍然打印5</span></span><br></pre></td></tr></table></figure></p>
+<p>如果希望右值引用指向左值，需要通过<code>move</code>将左值转换为右值：
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">int</span>&amp;&amp; ref_aa = <span class="built_in">move</span>(a);</span><br><span class="line">cout &lt;&lt; a;  <span class="comment">// 仍然打印5</span></span><br></pre></td></tr></table></figure></p>
 <p>好像与我们想象的<code>move</code>不太一样，本以为<code>move</code>可以将<code>a</code>中的值移动到<code>ref_aa</code>中，但是<code>a</code>的值却没有变化。所以可以看到<code>move</code>只是完成了强制类型转换<code>static_cast&lt;T&amp;&amp;&gt;(lvalue)</code>，使得右值引用可以指向左值，貌似与性能没什么关系。</p>
-<p>实质上，右值引用之所以能指向右值，其实也是将右值提升为了左值，再用<code>move</code>将左值强制转为右值： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>&amp;&amp; ref_a = <span class="number">5</span>;  <span class="comment">// 等价于下面代码</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> tmp = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">int</span>&amp;&amp; ref_a = <span class="built_in">move</span>(tmp); </span><br></pre></td></tr></table></figure></p>
+<p>实质上，右值引用之所以能指向右值，其实也是将右值提升为了左值，再用<code>move</code>将左值强制转为右值：
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>&amp;&amp; ref_a = <span class="number">5</span>;  <span class="comment">// 等价于下面代码</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> tmp = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">int</span>&amp;&amp; ref_a = <span class="built_in">move</span>(tmp); </span><br></pre></td></tr></table></figure></p>
 <p>直接声明出来的左值引用和右值引用都是左值，但是右值引用也可以是右值，如果有名字就是左值，否则是右值（比如函数返回值）。</p>
 <p>综上：右值引用既可以指向右值，也可以通过<code>move</code>指向左值，比较灵活；普通的左值引用只能指向左值，虽然const左值引用也可以指向右值，但是无法修改指向的变量，相比于右值引用也比较局限。</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">(<span class="keyword">const</span> <span class="keyword">int</span>&amp; n)</span> </span>&#123;++n;&#125;  <span class="comment">// 编译失败，const左值引用不能修改指向的变量</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f2</span><span class="params">(<span class="keyword">int</span>&amp;&amp; n)</span> </span>&#123;++n;&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">f1</span>(<span class="number">5</span>);</span><br><span class="line"><span class="built_in">f2</span>(<span class="number">5</span>);</span><br></pre></td></tr></table></figure>
 <h2 id="使用场景">使用场景</h2>
 <p>那么认知中的<code>move</code>可以提升性能又是咋回事呢？</p>
 <p>如果没有右值引用，通常一个类如下： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Array</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 构造函数</span></span><br><span class="line">    <span class="built_in">Array</span>(<span class="keyword">int</span> size) : <span class="built_in">size_</span>(size) &#123;</span><br><span class="line">        data_ = <span class="keyword">new</span> <span class="keyword">int</span>[size_];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 拷贝构造函数 深拷贝</span></span><br><span class="line">    <span class="built_in">Array</span>(<span class="keyword">const</span> Array&amp; tmp) &#123;</span><br><span class="line">        size_ = tmp.size_;</span><br><span class="line">        data_ = <span class="keyword">new</span> <span class="keyword">int</span>[size_];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size_; ++i) &#123;</span><br><span class="line">            data_[i] = tmp.data_[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 赋值运算符重载 深拷贝</span></span><br><span class="line">    Array&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Array&amp; tmp) &#123;</span><br><span class="line">        <span class="keyword">delete</span>[] data_;</span><br><span class="line"></span><br><span class="line">        size_ = tmp.size_;</span><br><span class="line">        data_ = <span class="keyword">new</span> <span class="keyword">int</span>[size_];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size_; ++i) &#123;</span><br><span class="line">            data_[i] = tmp.data_[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 析构函数</span></span><br><span class="line">    ~<span class="built_in">Array</span>() &#123;</span><br><span class="line">        <span class="keyword">delete</span>[] data_;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span>* data_;</span><br><span class="line">    <span class="keyword">int</span> size_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>传参时已经通过左值引用避免了一次拷贝，但是深拷贝仍然还需要一次拷贝。此时移动构造函数就出来了：将源数据移动到新指针，丢弃源指针。为了和拷贝构造函数区分开，需要多一个参数<code>move</code>： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Array</span>(<span class="keyword">const</span> Array&amp; tmp, <span class="keyword">bool</span> move) &#123;</span><br><span class="line">    size_ = tmp.size_;</span><br><span class="line">    data_ = tmp.data_;</span><br><span class="line">    tmp.data_ = <span class="literal">nullptr</span>;  <span class="comment">// 防止tmp析构时删除data_</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 但是const左值引用无法修改<code>tmp.data_</code>，如果改为非const，那么可以去掉参数<code>move</code>（只有引用传递和指针传递可以用是否加const重载，故可以和拷贝构造区分），但是<code>Array a = Array(rvalue)</code>就无法使用，因为左值引用无法指向右值，即无法用右值的Array来移动构造。</p>
-<p>所以右值引用就派上用场了： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Array</span>(Array&amp;&amp; tmp) &#123;</span><br><span class="line">    size_ = tmp.size_;</span><br><span class="line">    data_ = tmp.data_;</span><br><span class="line">    tmp.data_ = <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 即无需参数<code>move</code>，也可以使用右值来构造，也可以将左值用<code>std::move</code>转为右值再去构造。STL中的vector等均实现了以右值引用传参的移动构造函数和移动赋值重载函数，传递左值则拷贝，传递右值则移动。</p>
-<p>例如： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">push_back</span><span class="params">(<span class="keyword">const</span> <span class="keyword">int</span>&amp; val)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">push_back</span><span class="params">(<span class="keyword">int</span>&amp;&amp; val)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">emplace_back</span><span class="params">(Args&amp;&amp; args)</span></span>;</span><br></pre></td></tr></table></figure> 如果需要拷贝对象，但是拷贝后源不再需要，可以使用<code>std::move</code>触发移动语义，避免不必要的内存拷贝，将对象的所有权从一个对象转移到另一个对象，优化性能。</p>
+<p>传参时已经通过左值引用避免了一次拷贝，但是深拷贝仍然还需要一次拷贝。此时移动构造函数就出来了：将源数据移动到新指针，丢弃源指针。为了和拷贝构造函数区分开，需要多一个参数<code>move</code>：
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Array</span>(<span class="keyword">const</span> Array&amp; tmp, <span class="keyword">bool</span> move) &#123;</span><br><span class="line">    size_ = tmp.size_;</span><br><span class="line">    data_ = tmp.data_;</span><br><span class="line">    tmp.data_ = <span class="literal">nullptr</span>;  <span class="comment">// 防止tmp析构时删除data_</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+但是const左值引用无法修改<code>tmp.data_</code>，如果改为非const，那么可以去掉参数<code>move</code>（只有引用传递和指针传递可以用是否加const重载，故可以和拷贝构造区分），但是<code>Array a = Array(rvalue)</code>就无法使用，因为左值引用无法指向右值，即无法用右值的Array来移动构造。</p>
+<p>所以右值引用就派上用场了： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Array</span>(Array&amp;&amp; tmp) &#123;</span><br><span class="line">    size_ = tmp.size_;</span><br><span class="line">    data_ = tmp.data_;</span><br><span class="line">    tmp.data_ = <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+即无需参数<code>move</code>，也可以使用右值来构造，也可以将左值用<code>std::move</code>转为右值再去构造。STL中的vector等均实现了以右值引用传参的移动构造函数和移动赋值重载函数，传递左值则拷贝，传递右值则移动。</p>
+<p>例如： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">push_back</span><span class="params">(<span class="keyword">const</span> <span class="keyword">int</span>&amp; val)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">push_back</span><span class="params">(<span class="keyword">int</span>&amp;&amp; val)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">emplace_back</span><span class="params">(Args&amp;&amp; args)</span></span>;</span><br></pre></td></tr></table></figure>
+如果需要拷贝对象，但是拷贝后源不再需要，可以使用<code>std::move</code>触发移动语义，避免不必要的内存拷贝，将对象的所有权从一个对象转移到另一个对象，优化性能。</p>
 <h2 id="完美转发">完美转发</h2>
 <p><code>std::forward&lt;T&gt;(u)</code>：当T为左值引用时，u被转换为T类型的左值；否则u被转换为T类型右值。</p>
 <h2 id="reference">Reference</h2>
-<p><a href="zhuanlan.zhihu.com/p/335994370">一文读懂C++右值引用和std::move</a></p>
+<p><a
+href="zhuanlan.zhihu.com/p/335994370">一文读懂C++右值引用和std::move</a></p>
 
     </div>
 
@@ -347,8 +356,8 @@
       <i class="fa fa-chevron-left"></i> INTERVIEW 0
     </a></div>
       <div class="post-nav-item">
-    <a href="/2019/03/04/C%20&%20C++%20FAQ/" rel="next" title="C/C++ FAQ">
-      C/C++ FAQ <i class="fa fa-chevron-right"></i>
+    <a href="/2019/03/04/C++%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="next" title="C++多线程编程">
+      C++多线程编程 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -362,24 +371,7 @@
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -698,22 +690,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

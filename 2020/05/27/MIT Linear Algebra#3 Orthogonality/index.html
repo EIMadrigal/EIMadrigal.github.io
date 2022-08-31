@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200526221325518.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200527120631653.png">
 <meta property="article:published_time" content="2020-05-27T07:10:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T15:35:36.223Z">
+<meta property="article:modified_time" content="2022-01-30T15:35:36.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Linear Algebra">
 <meta name="twitter:card" content="summary">
@@ -263,15 +263,32 @@
 
       
         <h2 id="正交向量">正交向量</h2>
-<p>初中时候我们学过勾股定理，现在用<strong>向量</strong>的形式表示： <span class="math display">\[
+<p>初中时候我们学过勾股定理，现在用<strong>向量</strong>的形式表示：
+<span class="math display">\[
 |x|^2+|y|^2=|x+y|^2
-\]</span> 模长的平方也可以表示为<span class="math inline">\(x^Tx\)</span>，做一些计算，就有两个向量正交的判断条件<span class="math inline">\(x^Ty=0\)</span>。</p>
-<p>向量正交有些简单，让我们上升到子空间正交。一个比较直观的<strong>错误</strong>的例子就是地板和墙壁的关系，两者并<strong>不正交</strong>，因为子空间正交要求子空间<span class="math inline">\(S\)</span>中的每个向量都和子空间<span class="math inline">\(T\)</span>中每个向量正交。根据定义，任意两个子空间若相交于某非0向量，那么两者必然不正交。<br />
+\]</span> 模长的平方也可以表示为<span
+class="math inline">\(x^Tx\)</span>，做一些计算，就有两个向量正交的判断条件<span
+class="math inline">\(x^Ty=0\)</span>。</p>
+<p>向量正交有些简单，让我们上升到子空间正交。一个比较直观的<strong>错误</strong>的例子就是地板和墙壁的关系，两者并<strong>不正交</strong>，因为子空间正交要求子空间<span
+class="math inline">\(S\)</span>中的每个向量都和子空间<span
+class="math inline">\(T\)</span>中每个向量正交。根据定义，任意两个子空间若相交于某非0向量，那么两者必然不正交。<br />
 将正交的概念应用于前面学过的四个基本子空间：<br />
-对于零空间<span class="math inline">\(Ax=0\)</span>，我们有<span class="math inline">\(\begin{bmatrix}  row1\\  ...\\  rowm  \end{bmatrix}x=\begin{bmatrix}  0\\  ...\\  0  \end{bmatrix}\)</span>，<span class="math inline">\(x\)</span>和每一行都是正交的，那么<span class="math inline">\(x\)</span>和各行的线性组合也正交，由此可见<strong>零空间和行空间是正交的</strong>。<br />
-我们还知道：在<span class="math inline">\(R^n\)</span>中，需要<span class="math inline">\(n\)</span>个基向量张成整个空间，<span class="math inline">\(dim(C(A^T))=r,dim(N(A))=n-r\)</span>，这两个正交的子空间将<span class="math inline">\(R^n\)</span>一分为二，有个专门的术语<strong>正交补</strong>就描述了这种关系，意即零空间包含了所有垂直于行空间的向量。<br />
-类似地，可以证明<span class="math inline">\(C(A)\)</span>和<span class="math inline">\(N(A^T)\)</span>也是正交补的关系，将<span class="math inline">\(R^m\)</span>一分为二。<br />
-最后，我们为下一节留一个引子：考虑<span class="math inline">\(Ax=b\)</span>，当方程个数<span class="math inline">\(m\)</span>大于未知数个数<span class="math inline">\(n\)</span>，方程组很可能无解，那么怎么找到一个最为近似的解呢？听起来可能有些难理解，举个例子来看： <span class="math display">\[
+对于零空间<span class="math inline">\(Ax=0\)</span>，我们有<span
+class="math inline">\(\begin{bmatrix}  row1\\  ...\\  rowm  \end{bmatrix}x=\begin{bmatrix}  0\\  ...\\  0  \end{bmatrix}\)</span>，<span
+class="math inline">\(x\)</span>和每一行都是正交的，那么<span
+class="math inline">\(x\)</span>和各行的线性组合也正交，由此可见<strong>零空间和行空间是正交的</strong>。<br />
+我们还知道：在<span class="math inline">\(R^n\)</span>中，需要<span
+class="math inline">\(n\)</span>个基向量张成整个空间，<span
+class="math inline">\(dim(C(A^T))=r,dim(N(A))=n-r\)</span>，这两个正交的子空间将<span
+class="math inline">\(R^n\)</span>一分为二，有个专门的术语<strong>正交补</strong>就描述了这种关系，意即零空间包含了所有垂直于行空间的向量。<br />
+类似地，可以证明<span class="math inline">\(C(A)\)</span>和<span
+class="math inline">\(N(A^T)\)</span>也是正交补的关系，将<span
+class="math inline">\(R^m\)</span>一分为二。<br />
+最后，我们为下一节留一个引子：考虑<span
+class="math inline">\(Ax=b\)</span>，当方程个数<span
+class="math inline">\(m\)</span>大于未知数个数<span
+class="math inline">\(n\)</span>，方程组很可能无解，那么怎么找到一个最为近似的解呢？听起来可能有些难理解，举个例子来看：
+<span class="math display">\[
 \begin{bmatrix}
    1 &amp; 1\\
    1 &amp; 2\\
@@ -284,17 +301,58 @@
    b_2\\
      b_3\\
   \end{bmatrix}
-  \]</span> <span class="math inline">\(A\)</span>的列空间是<span class="math inline">\(R^3\)</span>中的一个平面，但是向量<span class="math inline">\(b\)</span>极有可能不在列空间中，此时方程组无解。但是我们想找到<span class="math inline">\(b\)</span>在列空间的<strong>投影</strong>，进而求出最为近似的解。<br />
-做法是在<span class="math inline">\(Ax=b\)</span>两边同乘<span class="math inline">\(A^T\)</span>，求解<span class="math inline">\(A^TA\hat x=A^Tb\)</span>，<span class="math inline">\(\hat x\)</span>即是要求的近似解。这里牵涉到一个非常重要的矩阵<span class="math inline">\(A^TA\)</span>，它是对称阵，并且<span class="math inline">\(N(A^TA)=N(A),r(A^TA)=r(A)\)</span>，如果<span class="math inline">\(A\)</span>的各列线性无关，那么<span class="math inline">\(A^TA\)</span>就是可逆的。这样做的原因后面会逐渐揭晓。</p>
+  \]</span> <span class="math inline">\(A\)</span>的列空间是<span
+class="math inline">\(R^3\)</span>中的一个平面，但是向量<span
+class="math inline">\(b\)</span>极有可能不在列空间中，此时方程组无解。但是我们想找到<span
+class="math inline">\(b\)</span>在列空间的<strong>投影</strong>，进而求出最为近似的解。<br />
+做法是在<span class="math inline">\(Ax=b\)</span>两边同乘<span
+class="math inline">\(A^T\)</span>，求解<span
+class="math inline">\(A^TA\hat x=A^Tb\)</span>，<span
+class="math inline">\(\hat
+x\)</span>即是要求的近似解。这里牵涉到一个非常重要的矩阵<span
+class="math inline">\(A^TA\)</span>，它是对称阵，并且<span
+class="math inline">\(N(A^TA)=N(A),r(A^TA)=r(A)\)</span>，如果<span
+class="math inline">\(A\)</span>的各列线性无关，那么<span
+class="math inline">\(A^TA\)</span>就是可逆的。这样做的原因后面会逐渐揭晓。</p>
 <h2 id="子空间投影">子空间投影</h2>
-<p>这一节非常重要。上一节的最后我们说到：在<span class="math inline">\(Ax=b\)</span>无解的情况下，我们要将<span class="math inline">\(b\)</span>微调成最靠近<span class="math inline">\(C(A)\)</span>的某个向量<span class="math inline">\(p\)</span>，从而求解<span class="math inline">\(A\hat x=p\)</span>，<span class="math inline">\(p\)</span>就是<span class="math inline">\(b\)</span>在列空间的<strong>投影</strong>。</p>
+<p>这一节非常重要。上一节的最后我们说到：在<span
+class="math inline">\(Ax=b\)</span>无解的情况下，我们要将<span
+class="math inline">\(b\)</span>微调成最靠近<span
+class="math inline">\(C(A)\)</span>的某个向量<span
+class="math inline">\(p\)</span>，从而求解<span
+class="math inline">\(A\hat x=p\)</span>，<span
+class="math inline">\(p\)</span>就是<span
+class="math inline">\(b\)</span>在列空间的<strong>投影</strong>。</p>
 <p>我们首先看看<span class="math inline">\(R^2\)</span>的情况：<br />
-<img src="https://img-blog.csdnimg.cn/20200526204930131.png" alt="平面上有向量a,b，" /><br />
-从图中可以看到：<span class="math inline">\(e=b-p=b-xa\)</span>，再由正交关系：<span class="math inline">\(a^Te=a^T(b-xa)=0\)</span>，可以计算出乘数<span class="math inline">\(x=\frac{a^Tb}{a^Ta}\)</span>，进而可以将投影<span class="math inline">\(p\)</span>表示为<span class="math inline">\(p=xa=\frac{aa^T}{a^Ta}b=Pb\)</span>，这里的<span class="math inline">\(P=\frac{aa^T}{a^Ta}\)</span>即投影矩阵。<br />
-<span class="math inline">\(r(P)=1\)</span>，<span class="math inline">\(P\)</span>的列空间即为过<span class="math inline">\(a\)</span>的直线。此外，投影矩阵还有两条性质：<span class="math inline">\(P^T=P,P^2=P\)</span>，从几何上解释即投影2次和投影1次效果完全一样。</p>
+<img src="https://img-blog.csdnimg.cn/20200526204930131.png"
+alt="平面上有向量a,b，" /><br />
+从图中可以看到：<span
+class="math inline">\(e=b-p=b-xa\)</span>，再由正交关系：<span
+class="math inline">\(a^Te=a^T(b-xa)=0\)</span>，可以计算出乘数<span
+class="math inline">\(x=\frac{a^Tb}{a^Ta}\)</span>，进而可以将投影<span
+class="math inline">\(p\)</span>表示为<span
+class="math inline">\(p=xa=\frac{aa^T}{a^Ta}b=Pb\)</span>，这里的<span
+class="math inline">\(P=\frac{aa^T}{a^Ta}\)</span>即投影矩阵。<br />
+<span class="math inline">\(r(P)=1\)</span>，<span
+class="math inline">\(P\)</span>的列空间即为过<span
+class="math inline">\(a\)</span>的直线。此外，投影矩阵还有两条性质：<span
+class="math inline">\(P^T=P,P^2=P\)</span>，从几何上解释即投影2次和投影1次效果完全一样。</p>
 <p>接着看看<span class="math inline">\(R^3\)</span>的情况：<br />
-两个<strong>线性无关</strong>的列向量<span class="math inline">\(a_1,a_2\)</span>生成的列空间是一个平面，令<span class="math inline">\(A=\begin{bmatrix}  a_1 &amp; a_2\\  \end{bmatrix}\)</span>。类似地，<span class="math inline">\(p\)</span>是向量<span class="math inline">\(b\)</span>在平面上的投影，<span class="math inline">\(e=b-p\)</span>垂直于平面。<strong>因为<span class="math inline">\(p\)</span>在<span class="math inline">\(A\)</span>的列空间中</strong>，所以可以表示为<span class="math inline">\(p=A\hat x=\hat x_1a_1+\hat x_2a_2\)</span>，我们就是要找到<span class="math inline">\(\hat x\)</span>。</p>
-<p>根据<span class="math inline">\(e\)</span>和平面的垂直关系，可以得到： <span class="math display">\[
+两个<strong>线性无关</strong>的列向量<span
+class="math inline">\(a_1,a_2\)</span>生成的列空间是一个平面，令<span
+class="math inline">\(A=\begin{bmatrix}  a_1 &amp;
+a_2\\  \end{bmatrix}\)</span>。类似地，<span
+class="math inline">\(p\)</span>是向量<span
+class="math inline">\(b\)</span>在平面上的投影，<span
+class="math inline">\(e=b-p\)</span>垂直于平面。<strong>因为<span
+class="math inline">\(p\)</span>在<span
+class="math inline">\(A\)</span>的列空间中</strong>，所以可以表示为<span
+class="math inline">\(p=A\hat x=\hat x_1a_1+\hat
+x_2a_2\)</span>，我们就是要找到<span class="math inline">\(\hat
+x\)</span>。</p>
+<p>根据<span
+class="math inline">\(e\)</span>和平面的垂直关系，可以得到： <span
+class="math display">\[
 \begin{cases}
 a_1^T(b-A\hat x)=0&amp; \text{}\\
 a_2^T(b-A\hat x)=0&amp; \text{}
@@ -308,19 +366,51 @@ a_2^T(b-A\hat x)=0&amp; \text{}
    0\\
    0\\
   \end{bmatrix}
-  \]</span> 即<span class="math inline">\(A^T(b-A\hat x)=0\)</span>，<strong>这里<span class="math inline">\(b-A\hat x=e\)</span>在<span class="math inline">\(N(A^T)\)</span>中</strong>，故<span class="math inline">\(e\)</span>垂直于<span class="math inline">\(C(A)\)</span>。<br />
-接着化简，我们<strong>得到了上一节中同乘<span class="math inline">\(A^T\)</span>的原因</strong>：<span class="math inline">\(A^TA\hat x=A^Tb\)</span>，继续：<span class="math inline">\(\hat x=(A^TA)^{-1}A^Tb\)</span>。这里注意不能继续化简，因为<span class="math inline">\(A\)</span>不是方阵，<span class="math inline">\(A^{-1}\)</span>不存在。<br />
-得到组合系数<span class="math inline">\(\hat x\)</span>后，就可以写出投影<span class="math inline">\(p=A\hat x=A(A^TA)^{-1}A^Tb\)</span>，同样地，投影矩阵<span class="math inline">\(P=A(A^TA)^{-1}A^T\)</span>，可以验证，<span class="math inline">\(P^T=P,P^2=P\)</span>仍然成立。</p>
+  \]</span> 即<span class="math inline">\(A^T(b-A\hat
+x)=0\)</span>，<strong>这里<span class="math inline">\(b-A\hat
+x=e\)</span>在<span
+class="math inline">\(N(A^T)\)</span>中</strong>，故<span
+class="math inline">\(e\)</span>垂直于<span
+class="math inline">\(C(A)\)</span>。<br />
+接着化简，我们<strong>得到了上一节中同乘<span
+class="math inline">\(A^T\)</span>的原因</strong>：<span
+class="math inline">\(A^TA\hat x=A^Tb\)</span>，继续：<span
+class="math inline">\(\hat
+x=(A^TA)^{-1}A^Tb\)</span>。这里注意不能继续化简，因为<span
+class="math inline">\(A\)</span>不是方阵，<span
+class="math inline">\(A^{-1}\)</span>不存在。<br />
+得到组合系数<span class="math inline">\(\hat
+x\)</span>后，就可以写出投影<span class="math inline">\(p=A\hat
+x=A(A^TA)^{-1}A^Tb\)</span>，同样地，投影矩阵<span
+class="math inline">\(P=A(A^TA)^{-1}A^T\)</span>，可以验证，<span
+class="math inline">\(P^T=P,P^2=P\)</span>仍然成立。</p>
 <p>最后我们考虑极端一些的情况：</p>
 <ul>
-<li>若<span class="math inline">\(b\)</span>在<span class="math inline">\(A\)</span>的列空间中，投影后仍然是<span class="math inline">\(b\)</span>自己：<span class="math inline">\(b=Ax-&gt;Pb=PAx=Ax=b\)</span>；</li>
-<li>若<span class="math inline">\(b\)</span>垂直于<span class="math inline">\(A\)</span>的列空间，投影后是<span class="math inline">\(0\)</span>：<span class="math inline">\(b\)</span>在<span class="math inline">\(N(A^T)\)</span>中，<span class="math inline">\(A^Tb=0-&gt;Pb=0\)</span>。</li>
+<li>若<span class="math inline">\(b\)</span>在<span
+class="math inline">\(A\)</span>的列空间中，投影后仍然是<span
+class="math inline">\(b\)</span>自己：<span
+class="math inline">\(b=Ax-&gt;Pb=PAx=Ax=b\)</span>；</li>
+<li>若<span class="math inline">\(b\)</span>垂直于<span
+class="math inline">\(A\)</span>的列空间，投影后是<span
+class="math inline">\(0\)</span>：<span
+class="math inline">\(b\)</span>在<span
+class="math inline">\(N(A^T)\)</span>中，<span
+class="math inline">\(A^Tb=0-&gt;Pb=0\)</span>。</li>
 </ul>
-<p>换句话说，<span class="math inline">\(b\)</span>被分解为<span class="math inline">\(p\)</span>和<span class="math inline">\(e\)</span>，<span class="math inline">\(p\)</span>在<span class="math inline">\(C(A)\)</span>中，<span class="math inline">\(e\)</span>在<span class="math inline">\(N(A^T)\)</span>中，并且<span class="math inline">\(b=p+e=Pb+(I-P)b\)</span>。</p>
+<p>换句话说，<span class="math inline">\(b\)</span>被分解为<span
+class="math inline">\(p\)</span>和<span
+class="math inline">\(e\)</span>，<span
+class="math inline">\(p\)</span>在<span
+class="math inline">\(C(A)\)</span>中，<span
+class="math inline">\(e\)</span>在<span
+class="math inline">\(N(A^T)\)</span>中，并且<span
+class="math inline">\(b=p+e=Pb+(I-P)b\)</span>。</p>
 <h2 id="最小二乘法">最小二乘法</h2>
 <p>这是投影的一个应用，主要用来拟合直线，举例来看：<br />
-<img src="https://img-blog.csdnimg.cn/20200526221325518.png" alt="在这里插入图片描述" /><br />
-有三个点，需要找到一条最佳拟合直线，方程组形式： <span class="math display">\[
+<img src="https://img-blog.csdnimg.cn/20200526221325518.png"
+alt="在这里插入图片描述" /><br />
+有三个点，需要找到一条最佳拟合直线，方程组形式： <span
+class="math display">\[
 \begin{cases}
 C+D=1&amp; \text{}\\
 C+2D=2&amp; \text{}\\
@@ -338,8 +428,19 @@ Ax=\begin{bmatrix}
    2\\
      2\\
   \end{bmatrix}=b
-  \]</span> 显然是无解的，要找到最优拟合系数<span class="math inline">\(CD\)</span>，就要用到投影： 清除outlier(离群值)后，定义每个点的误差：<span class="math inline">\(|e|^2=|Ax-b|^2\)</span>，那么优化目标变为最小化：<span class="math inline">\(e_1^2+e_2^2+e_3^2=(C+D-1)^2+(C+2D-2)^2+(C+3D-2)^2\)</span>，如何找到<span class="math inline">\(\hat x=\begin{bmatrix}  C\\  D\\  \end{bmatrix}\)</span>?<br />
-求偏导当然是一种方法，从线性代数的角度，回顾下上节中<span class="math inline">\(A^TA\hat x=A^Tb\)</span>，我们已经证明，<strong>这样解得的<span class="math inline">\(\hat x\)</span>可以微调<span class="math inline">\(b\)</span>使其最靠近<span class="math inline">\(C(A)\)</span></strong>，也就是我们要的最优估计。<br />
+  \]</span> 显然是无解的，要找到最优拟合系数<span
+class="math inline">\(CD\)</span>，就要用到投影：
+清除outlier(离群值)后，定义每个点的误差：<span
+class="math inline">\(|e|^2=|Ax-b|^2\)</span>，那么优化目标变为最小化：<span
+class="math inline">\(e_1^2+e_2^2+e_3^2=(C+D-1)^2+(C+2D-2)^2+(C+3D-2)^2\)</span>，如何找到<span
+class="math inline">\(\hat
+x=\begin{bmatrix}  C\\  D\\  \end{bmatrix}\)</span>?<br />
+求偏导当然是一种方法，从线性代数的角度，回顾下上节中<span
+class="math inline">\(A^TA\hat
+x=A^Tb\)</span>，我们已经证明，<strong>这样解得的<span
+class="math inline">\(\hat x\)</span>可以微调<span
+class="math inline">\(b\)</span>使其最靠近<span
+class="math inline">\(C(A)\)</span></strong>，也就是我们要的最优估计。<br />
 所以我们有： <span class="math display">\[
 A^TA\hat x=\begin{bmatrix}
    3 &amp; 6\\
@@ -351,22 +452,34 @@ A^TA\hat x=\begin{bmatrix}
    5\\
    11\\
   \end{bmatrix}=A^Tb
-  \]</span> 这样就得到了所谓的Normal Equation： <span class="math display">\[
+  \]</span> 这样就得到了所谓的Normal Equation： <span
+class="math display">\[
 \begin{cases}
 3C+6D=5&amp; \text{}\\
 6C+14D=11&amp; \text{}\\
-\end{cases}\]</span> 解得<span class="math inline">\(C=\frac{2}{3},D=\frac{1}{2}\)</span>，我们的最佳拟合直线即为<span class="math inline">\(b=\frac{2}{3}+\frac{1}{2}t\)</span>。</p>
-<p>最后要注意的一点：<span class="math inline">\(\hat x\)</span>可解的前提是<span class="math inline">\(A^TA\)</span>可逆，只要<span class="math inline">\(A\)</span>的各列线性无关，这点即可满足。<br />
+\end{cases}\]</span> 解得<span
+class="math inline">\(C=\frac{2}{3},D=\frac{1}{2}\)</span>，我们的最佳拟合直线即为<span
+class="math inline">\(b=\frac{2}{3}+\frac{1}{2}t\)</span>。</p>
+<p>最后要注意的一点：<span class="math inline">\(\hat
+x\)</span>可解的前提是<span
+class="math inline">\(A^TA\)</span>可逆，只要<span
+class="math inline">\(A\)</span>的各列线性无关，这点即可满足。<br />
 不妨做一些证明：<br />
-要证明<span class="math inline">\(A^TA\)</span>可逆即证明<span class="math inline">\(A^TAx=0\)</span>只有零解；<br />
-<span class="math inline">\(x^TA^TAx=0,(Ax)^TAx=0,Ax=0\)</span>，<span class="math inline">\(A\)</span>的各列线性无关意即<span class="math inline">\(Ax=0\)</span>只有零解，得证。</p>
+要证明<span class="math inline">\(A^TA\)</span>可逆即证明<span
+class="math inline">\(A^TAx=0\)</span>只有零解；<br />
+<span class="math inline">\(x^TA^TAx=0,(Ax)^TAx=0,Ax=0\)</span>，<span
+class="math inline">\(A\)</span>的各列线性无关意即<span
+class="math inline">\(Ax=0\)</span>只有零解，得证。</p>
 <h2 id="正交化">正交化</h2>
-<p>我们都知道，对于<strong>标准正交向量</strong>，有： <span class="math display">\[
+<p>我们都知道，对于<strong>标准正交向量</strong>，有： <span
+class="math display">\[
 q_i^Tq_j=\begin{cases}
 0&amp; \text{$i\neq j$}\\
 1&amp; \text{$i=j$}\\
 \end{cases}
-\]</span> 正交矩阵写作<span class="math inline">\(Q=\begin{bmatrix}  q_1 &amp; q_2 ... &amp; q_n\\  \end{bmatrix}\)</span>，很容易验证： <span class="math display">\[
+\]</span> 正交矩阵写作<span class="math inline">\(Q=\begin{bmatrix}  q_1
+&amp; q_2 ... &amp; q_n\\  \end{bmatrix}\)</span>，很容易验证： <span
+class="math display">\[
 Q^TQ=\begin{bmatrix}
    q_1^T\\
    ...\\
@@ -374,20 +487,71 @@ Q^TQ=\begin{bmatrix}
   \end{bmatrix}\begin{bmatrix}
    q_1 &amp; ... &amp; q_n\\
   \end{bmatrix}=I
-\]</span> 如果<span class="math inline">\(Q\)</span>是方阵，那么<span class="math inline">\(Q^T=Q^{-1}\)</span>。正交矩阵的例子有很多：以前学习过的置换矩阵、<span class="math inline">\(\begin{bmatrix}  cos\theta &amp; -sin\theta\\  sin\theta &amp; cos\theta\\  \end{bmatrix}\)</span>，还有一种叫做Adhemar的系列矩阵也是正交阵：<span class="math inline">\(\frac{1}{\sqrt{2}}\begin{bmatrix}  1 &amp; 1\\  1 &amp; -1\\  \end{bmatrix}\)</span>、<span class="math inline">\(\frac{1}{2}\begin{bmatrix}  1 &amp; 1 &amp; 1 &amp; 1\\  1 &amp; -1 &amp; 1 &amp; -1\\  1 &amp; 1 &amp; -1 &amp; -1\\  1 &amp; -1 &amp; -1 &amp; 1\\  \end{bmatrix}\)</span>...<br />
+\]</span> 如果<span class="math inline">\(Q\)</span>是方阵，那么<span
+class="math inline">\(Q^T=Q^{-1}\)</span>。正交矩阵的例子有很多：以前学习过的置换矩阵、<span
+class="math inline">\(\begin{bmatrix}  cos\theta &amp;
+-sin\theta\\  sin\theta &amp;
+cos\theta\\  \end{bmatrix}\)</span>，还有一种叫做Adhemar的系列矩阵也是正交阵：<span
+class="math inline">\(\frac{1}{\sqrt{2}}\begin{bmatrix}  1 &amp; 1\\  1
+&amp; -1\\  \end{bmatrix}\)</span>、<span
+class="math inline">\(\frac{1}{2}\begin{bmatrix}  1 &amp; 1 &amp; 1
+&amp; 1\\  1 &amp; -1 &amp; 1 &amp; -1\\  1 &amp; 1 &amp; -1 &amp;
+-1\\  1 &amp; -1 &amp; -1 &amp; 1\\  \end{bmatrix}\)</span>...<br />
 有了这些了解后，就可以解答为什么需要正交矩阵：<br />
-还记得上一节中的投影矩阵<span class="math inline">\(P\)</span>吗？将矩阵<span class="math inline">\(A\)</span>变为正交阵<span class="math inline">\(Q\)</span>后，这时再把<span class="math inline">\(b\)</span>投影到<span class="math inline">\(C(Q)\)</span>中，投影矩阵就变为了<span class="math inline">\(P=Q(Q^TQ)^{-1}Q^T=QQ^T\)</span>，如果<span class="math inline">\(Q\)</span>是方阵，那么<span class="math inline">\(P=QQ^T=I\)</span>，这也非常好解释：<span class="math inline">\(Q\)</span>是方阵必然可逆，<span class="math inline">\(C(Q)\)</span>就是整个空间，<span class="math inline">\(P=I\)</span>相当于没有进行投影。<br />
-还有我们在求最优估计时用到的<span class="math inline">\(A^TA\hat x=A^Tb\)</span>变为了<span class="math inline">\(Q^TQ\hat x=Q^Tb\)</span>，即<span class="math inline">\(\hat x=Q^Tb\)</span>，求解<span class="math inline">\(\hat x_i\)</span>就简化为了<span class="math inline">\(\hat x_i=q_i^Tb\)</span>。</p>
-<p>所以接下来的问题就是如何将各列线性无关的<span class="math inline">\(A\)</span>变为正交阵<span class="math inline">\(Q\)</span>，这项工作就是Gram-Schmidt正交化，先从两个向量的情况开始：<br />
-<img src="https://img-blog.csdnimg.cn/20200527120631653.png" alt="在这里插入图片描述" /><br />
+还记得上一节中的投影矩阵<span
+class="math inline">\(P\)</span>吗？将矩阵<span
+class="math inline">\(A\)</span>变为正交阵<span
+class="math inline">\(Q\)</span>后，这时再把<span
+class="math inline">\(b\)</span>投影到<span
+class="math inline">\(C(Q)\)</span>中，投影矩阵就变为了<span
+class="math inline">\(P=Q(Q^TQ)^{-1}Q^T=QQ^T\)</span>，如果<span
+class="math inline">\(Q\)</span>是方阵，那么<span
+class="math inline">\(P=QQ^T=I\)</span>，这也非常好解释：<span
+class="math inline">\(Q\)</span>是方阵必然可逆，<span
+class="math inline">\(C(Q)\)</span>就是整个空间，<span
+class="math inline">\(P=I\)</span>相当于没有进行投影。<br />
+还有我们在求最优估计时用到的<span class="math inline">\(A^TA\hat
+x=A^Tb\)</span>变为了<span class="math inline">\(Q^TQ\hat
+x=Q^Tb\)</span>，即<span class="math inline">\(\hat
+x=Q^Tb\)</span>，求解<span class="math inline">\(\hat
+x_i\)</span>就简化为了<span class="math inline">\(\hat
+x_i=q_i^Tb\)</span>。</p>
+<p>所以接下来的问题就是如何将各列线性无关的<span
+class="math inline">\(A\)</span>变为正交阵<span
+class="math inline">\(Q\)</span>，这项工作就是Gram-Schmidt正交化，先从两个向量的情况开始：<br />
+<img src="https://img-blog.csdnimg.cn/20200527120631653.png"
+alt="在这里插入图片描述" /><br />
 工作分2步进行：</p>
 <ul>
-<li>由线性无关的2个向量<span class="math inline">\(a,b\)</span>得到2个正交的向量<span class="math inline">\(A,B\)</span>： 这一步主要是改变方向，<span class="math inline">\(A=a\)</span>即可，<span class="math inline">\(B=e=b-p=b-\frac{A^Tb}{A^TA}A\)</span>。</li>
-<li>将<span class="math inline">\(A,B\)</span>变为标准正交向量<span class="math inline">\(q_1,q_2\)</span>： 这一步主要是改变长度，<span class="math inline">\(q_1=\frac{A}{|A|},q_2=\frac{B}{|B|}\)</span>。</li>
+<li>由线性无关的2个向量<span
+class="math inline">\(a,b\)</span>得到2个正交的向量<span
+class="math inline">\(A,B\)</span>： 这一步主要是改变方向，<span
+class="math inline">\(A=a\)</span>即可，<span
+class="math inline">\(B=e=b-p=b-\frac{A^Tb}{A^TA}A\)</span>。</li>
+<li>将<span class="math inline">\(A,B\)</span>变为标准正交向量<span
+class="math inline">\(q_1,q_2\)</span>： 这一步主要是改变长度，<span
+class="math inline">\(q_1=\frac{A}{|A|},q_2=\frac{B}{|B|}\)</span>。</li>
 </ul>
-<p>如果是3个线性无关的向量，必然生成整个三维空间，<span class="math inline">\(A,B\)</span>不会变，<span class="math inline">\(C\)</span>其实是垂直于<span class="math inline">\(AB\)</span>子空间的那个<span class="math inline">\(e\)</span>，即减去在<span class="math inline">\(A,B\)</span>两个方向的投影(可以用三支笔模拟)，故<span class="math inline">\(C=c-\frac{A^Tc}{A^TA}A-\frac{B^Tc}{B^TB}B\)</span>。<br />
+<p>如果是3个线性无关的向量，必然生成整个三维空间，<span
+class="math inline">\(A,B\)</span>不会变，<span
+class="math inline">\(C\)</span>其实是垂直于<span
+class="math inline">\(AB\)</span>子空间的那个<span
+class="math inline">\(e\)</span>，即减去在<span
+class="math inline">\(A,B\)</span>两个方向的投影(可以用三支笔模拟)，故<span
+class="math inline">\(C=c-\frac{A^Tc}{A^TA}A-\frac{B^Tc}{B^TB}B\)</span>。<br />
 观察上述工作，可以发现：我们所有的工作都是在<strong>同一个列空间</strong>中进行，只是开始的线性无关的基计算量太大，我们想要一组更加简化计算的互相垂直且长度为1的基。<br />
-正因为是在一个空间中进行，所以必然存在<span class="math inline">\(q\)</span>的线性组合可以得到<span class="math inline">\(a\)</span>，即<span class="math inline">\(A=QR\)</span>，并且<span class="math inline">\(a_1\)</span>只与<span class="math inline">\(q_1\)</span>有关、<span class="math inline">\(a_2\)</span>只与<span class="math inline">\(q_1,q_2\)</span>有关、<span class="math inline">\(a_3\)</span>只与<span class="math inline">\(q_1,q_2,q_3\)</span>有关，故<span class="math inline">\(R\)</span>必为<strong>上三角矩阵</strong>，也即： <span class="math display">\[
+正因为是在一个空间中进行，所以必然存在<span
+class="math inline">\(q\)</span>的线性组合可以得到<span
+class="math inline">\(a\)</span>，即<span
+class="math inline">\(A=QR\)</span>，并且<span
+class="math inline">\(a_1\)</span>只与<span
+class="math inline">\(q_1\)</span>有关、<span
+class="math inline">\(a_2\)</span>只与<span
+class="math inline">\(q_1,q_2\)</span>有关、<span
+class="math inline">\(a_3\)</span>只与<span
+class="math inline">\(q_1,q_2,q_3\)</span>有关，故<span
+class="math inline">\(R\)</span>必为<strong>上三角矩阵</strong>，也即：
+<span class="math display">\[
 \begin{bmatrix}
    a_1 &amp; a_2 &amp; a_3\\
   \end{bmatrix}=\begin{bmatrix}
@@ -399,8 +563,22 @@ Q^TQ=\begin{bmatrix}
   \end{bmatrix}
 \]</span> 这里<span class="math inline">\(R=Q^TA\)</span>。</p>
 <h2 id="作业">作业</h2>
-<p>Suppose a square <span class="math inline">\(A\)</span> has an LU factorization <span class="math inline">\(A=LU\)</span> where <span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span> are invertible. If <span class="math inline">\(A=QR\)</span>, what is <span class="math inline">\(r_{11}\)</span> in terms of possibly elements of <span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span>?<br />
-在QR分解中，<span class="math inline">\(r_{11}=q_1^Ta_1=\frac{a_1}{||a_1||}a_1=||a_1||\)</span>，即<span class="math inline">\(A\)</span>第一列的模；第一列即<span class="math inline">\(L\)</span>各列的线性组合，系数是<span class="math inline">\(U\)</span>的第一列(只有<span class="math inline">\(U_{11}\)</span>一个元素)，所以<span class="math inline">\(r_{11}=U_{11} \sqrt{\sum_i L_{i1}^2}\)</span>。</p>
+<p>Suppose a square <span class="math inline">\(A\)</span> has an LU
+factorization <span class="math inline">\(A=LU\)</span> where <span
+class="math inline">\(L\)</span> and <span
+class="math inline">\(U\)</span> are invertible. If <span
+class="math inline">\(A=QR\)</span>, what is <span
+class="math inline">\(r_{11}\)</span> in terms of possibly elements of
+<span class="math inline">\(L\)</span> and <span
+class="math inline">\(U\)</span>?<br />
+在QR分解中，<span
+class="math inline">\(r_{11}=q_1^Ta_1=\frac{a_1}{||a_1||}a_1=||a_1||\)</span>，即<span
+class="math inline">\(A\)</span>第一列的模；第一列即<span
+class="math inline">\(L\)</span>各列的线性组合，系数是<span
+class="math inline">\(U\)</span>的第一列(只有<span
+class="math inline">\(U_{11}\)</span>一个元素)，所以<span
+class="math inline">\(r_{11}=U_{11} \sqrt{\sum_i
+L_{i1}^2}\)</span>。</p>
 
     </div>
 
@@ -476,24 +654,7 @@ Q^TQ=\begin{bmatrix}
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -812,22 +973,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

@@ -28,7 +28,7 @@
 <meta property="og:description" content="算法还是开发">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-11-01T06:25:00.000Z">
-<meta property="article:modified_time" content="2022-05-10T15:06:58.000Z">
+<meta property="article:modified_time" content="2022-05-10T15:06:58.264Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Experience">
 <meta name="twitter:card" content="summary">
@@ -258,7 +258,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最近参加了一个<a target="_blank" rel="noopener" href="https://datafountain.cn/competitions/537/">AI比赛</a>，引起了我对机器学习以及自己未来职业方向的重新思索，我发现自己现在做决定更加在乎自身的兴趣而非舆论等其他因素，也算是一种进步了吧！</p>
+        <p>最近参加了一个<a
+target="_blank" rel="noopener" href="https://datafountain.cn/competitions/537/">AI比赛</a>，引起了我对机器学习以及自己未来职业方向的重新思索，我发现自己现在做决定更加在乎自身的兴趣而非舆论等其他因素，也算是一种进步了吧！</p>
 <p>比赛的过程我很难享受编程带来的乐趣，只有在看到AUC指标提升零点几个百分点时才会有一丝丝成就感，而在数据清洗、特征构建、魔改模型以及无脑调参这种占据算法工程师大量时间的环节感受到的只有繁琐和无聊，这不禁让我反思自己半年前的选择：如果将来步入互联网，到底是选择算法岗还是开发岗呢？</p>
 <p>从世俗的角度来看，算法岗毫无疑问有着更高的薪资甚至更光明的前途，我也坚信机器学习会持续改变人类生活并且在未来应用到方方面面，但是需要多久时间可能谁也说不准。</p>
 <p>从现阶段来看，AI的发展尤其是落地遇到了很多困难，突然想起了《智能计算》韩德强老师上课时指出的数据驱动的方法终究很难解释问题的本质，我当时嗤之以鼻，现在有些许赞同了。</p>
@@ -340,24 +341,7 @@
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -675,22 +659,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 

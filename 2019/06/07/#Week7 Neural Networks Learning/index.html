@@ -28,19 +28,13 @@
 <meta property="og:description" content="神经网络">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190520213954195.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190520215248992.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190520215514406.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190520215848578.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190520220141936.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2019052022020666.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190520220255255.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190520220307411.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190521193802355.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190521195045220.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190521195351245.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190521195432613.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70">
 <meta property="article:published_time" content="2019-06-07T15:09:00.000Z">
-<meta property="article:modified_time" content="2022-01-30T16:19:18.485Z">
+<meta property="article:modified_time" content="2022-01-30T16:19:18.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Machine Learning">
 <meta name="twitter:card" content="summary">
@@ -271,36 +265,81 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="一cost-function-and-backpropagation">一、Cost Function and Backpropagation</h2>
-<p>神经网络的损失函数： <span class="math display">\[J(\Theta) = - \frac{1}{m} \sum_{i=1}^m \sum_{k=1}^K \left[y^{(i)}_k \log ((h_\Theta (x^{(i)}))_k) + (1 - y^{(i)}_k)\log (1 - (h_\Theta(x^{(i)}))_k)\right] + \frac{\lambda}{2m}\sum_{l=1}^{L-1} \sum_{i=1}^{s_l} \sum_{j=1}^{s_{l+1}} ( \Theta_{j,i}^{(l)})^2\]</span><br />
-<img src="https://img-blog.csdnimg.cn/20190520213954195.png" alt="在这里插入图片描述" /><br />
-这个cost function是在logistic regression基础上演变而来，只是神经网络有很多输出结点，而logistic regression只有一个输出结点，所以这个cost function只是把所有的K个输出结点的损失函数进行累加。</p>
-<p>得到cost function后，为了寻找使得<span class="math inline">\(J(\theta)\)</span>最小的那组参数<span class="math inline">\(\theta\)</span>，我们需要知道<span class="math inline">\(J(\theta)\)</span>关于每个<span class="math inline">\(\theta\)</span>的偏导数，而后向传播算法可以帮助我们计算偏导数：<br />
-<img src="https://img-blog.csdnimg.cn/20190520215248992.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /><br />
-对于每个训练样本，先利用forward propagation计算每一层的<span class="math inline">\(a\)</span>：<br />
-<img src="https://img-blog.csdnimg.cn/20190520215514406.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /><br />
-接着利用样本真实标签<span class="math inline">\(y^{(t)}\)</span>计算最后一层的误差值；</p>
+        <h2 id="一cost-function-and-backpropagation">一、Cost Function and
+Backpropagation</h2>
+<p>神经网络的损失函数： <span class="math display">\[J(\Theta) = -
+\frac{1}{m} \sum_{i=1}^m \sum_{k=1}^K \left[y^{(i)}_k \log ((h_\Theta
+(x^{(i)}))_k) + (1 - y^{(i)}_k)\log (1 - (h_\Theta(x^{(i)}))_k)\right] +
+\frac{\lambda}{2m}\sum_{l=1}^{L-1} \sum_{i=1}^{s_l} \sum_{j=1}^{s_{l+1}}
+( \Theta_{j,i}^{(l)})^2\]</span><br />
+<img src="https://img-blog.csdnimg.cn/20190520213954195.png"
+alt="在这里插入图片描述" /><br />
+这个cost function是在logistic
+regression基础上演变而来，只是神经网络有很多输出结点，而logistic
+regression只有一个输出结点，所以这个cost
+function只是把所有的K个输出结点的损失函数进行累加。</p>
+<p>得到cost function后，为了寻找使得<span
+class="math inline">\(J(\theta)\)</span>最小的那组参数<span
+class="math inline">\(\theta\)</span>，我们需要知道<span
+class="math inline">\(J(\theta)\)</span>关于每个<span
+class="math inline">\(\theta\)</span>的偏导数，而后向传播算法可以帮助我们计算偏导数：<br />
+<img
+src="https://img-blog.csdnimg.cn/20190520215248992.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70"
+alt="在这里插入图片描述" /><br />
+对于每个训练样本，先利用forward propagation计算每一层的<span
+class="math inline">\(a\)</span>：<br />
+<img
+src="https://img-blog.csdnimg.cn/20190520215514406.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70"
+alt="在这里插入图片描述" /><br />
+接着利用样本真实标签<span
+class="math inline">\(y^{(t)}\)</span>计算最后一层的误差值；</p>
 <p>之后从右向左计算每一层（输入层除外）的误差：<br />
-<img src="https://img-blog.csdnimg.cn/20190520215848578.png" alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20190520215848578.png"
+alt="在这里插入图片描述" /><br />
 这样每个样本一次正向、一次反向来更新误差矩阵：<br />
-<img src="https://img-blog.csdnimg.cn/20190520220141936.png" alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20190520220141936.png"
+alt="在这里插入图片描述" /><br />
 向量化表示：<br />
-<img src="https://img-blog.csdnimg.cn/2019052022020666.png" alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/2019052022020666.png"
+alt="在这里插入图片描述" /><br />
 最后，就可以得到偏导数：<br />
-<img src="https://img-blog.csdnimg.cn/20190520220255255.png" alt="在这里插入图片描述" /><br />
-<img src="https://img-blog.csdnimg.cn/20190520220307411.png" alt="在这里插入图片描述" /></p>
-<h2 id="二backpropagation-in-pratice">二、Backpropagation in Pratice</h2>
-<p>为了使用<code>fminunc</code>等高级的优化方法来求得cost function的最小值，所以将<span class="math inline">\(\theta\)</span>这个矩阵展成向量传入<code>fminunc</code>，完成后可以通过<code>reshape</code>从向量中提取<span class="math inline">\(\theta^{(1)}、\theta^{(2)}\)</span>等：<br />
-<img src="https://img-blog.csdnimg.cn/20190521193802355.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
-<p>为了确保我们使用Backpropagation求得的偏导数的正确性，可以使用Gradient Checking（<strong>很慢</strong>）来检验：<br />
-根据偏导数定义： <span class="math display">\[\dfrac{\partial}{\partial\Theta_j}J(\Theta) \approx \dfrac{J(\Theta_1, \dots, \Theta_j + \epsilon, \dots, \Theta_n) - J(\Theta_1, \dots, \Theta_j - \epsilon, \dots, \Theta_n)}{2\epsilon}\]</span> <span class="math display">\[一般\epsilon=10^{-4}\]</span> 通过将这种方式计算的偏导数与之前Backpropagation求得的偏导数比较，即可得知Backpropagation的正确性。</p>
-<p>之前在Linear Regression和Logistic Regression，我们可以用全0来初始化<span class="math inline">\(\theta\)</span>，但在神经网络中，这样做会有问题，所以采用<strong>随机初始化</strong>：<br />
-<img src="https://img-blog.csdnimg.cn/20190521195045220.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20190520220255255.png"
+alt="在这里插入图片描述" /><br />
+<img src="https://img-blog.csdnimg.cn/20190520220307411.png"
+alt="在这里插入图片描述" /></p>
+<h2 id="二backpropagation-in-pratice">二、Backpropagation in
+Pratice</h2>
+<p>为了使用<code>fminunc</code>等高级的优化方法来求得cost
+function的最小值，所以将<span
+class="math inline">\(\theta\)</span>这个矩阵展成向量传入<code>fminunc</code>，完成后可以通过<code>reshape</code>从向量中提取<span
+class="math inline">\(\theta^{(1)}、\theta^{(2)}\)</span>等：<br />
+<img
+src="https://img-blog.csdnimg.cn/20190521193802355.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70"
+alt="在这里插入图片描述" /></p>
+<p>为了确保我们使用Backpropagation求得的偏导数的正确性，可以使用Gradient
+Checking（<strong>很慢</strong>）来检验：<br />
+根据偏导数定义： <span
+class="math display">\[\dfrac{\partial}{\partial\Theta_j}J(\Theta)
+\approx \dfrac{J(\Theta_1, \dots, \Theta_j + \epsilon, \dots, \Theta_n)
+- J(\Theta_1, \dots, \Theta_j - \epsilon, \dots,
+\Theta_n)}{2\epsilon}\]</span> <span
+class="math display">\[一般\epsilon=10^{-4}\]</span>
+通过将这种方式计算的偏导数与之前Backpropagation求得的偏导数比较，即可得知Backpropagation的正确性。</p>
+<p>之前在Linear Regression和Logistic
+Regression，我们可以用全0来初始化<span
+class="math inline">\(\theta\)</span>，但在神经网络中，这样做会有问题，所以采用<strong>随机初始化</strong>：<br />
+<img
+src="https://img-blog.csdnimg.cn/20190521195045220.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70"
+alt="在这里插入图片描述" /><br />
 最后，从整体捋一遍流程：<br />
-1、选择网络结构： <img src="https://img-blog.csdnimg.cn/20190521195351245.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /><br />
+1、选择网络结构： <img
+src="https://img-blog.csdnimg.cn/20190521195351245.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70"
+alt="在这里插入图片描述" /><br />
 2、训练神经网络：</p>
 <p>对每一个训练样本：<br />
-<img src="https://img-blog.csdnimg.cn/20190521195432613.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+<img
+src="https://img-blog.csdnimg.cn/20190521195432613.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0VJTWFkcmlnYWw=,size_16,color_FFFFFF,t_70"
+alt="在这里插入图片描述" /></p>
 
     </div>
 
@@ -376,24 +415,7 @@
 
           </div>
           
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-            <li class="tab"><a href="#comment-gitalk">gitalk</a></li>
-            <li class="tab"><a href="#comment-livere">livere</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane gitalk" id="comment-gitalk">
-              <div class="comments" id="gitalk-container"></div>
-            </div>
-            <div class="tab-pane livere" id="comment-livere">
-              
-  <div class="comments">
-    <div id="lv-container" data-id="city" data-uid="MTAyMC81NTEzOS8zMTYwNw=="></div>
-  </div>
-  
-            </div>
-        </div>
-      </div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -440,7 +462,9 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80cost-function-and-backpropagation"><span class="nav-number">1.</span> <span class="nav-text">一、Cost Function and Backpropagation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8Cbackpropagation-in-pratice"><span class="nav-number">2.</span> <span class="nav-text">二、Backpropagation in Pratice</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80cost-function-and-backpropagation"><span class="nav-number">1.</span> <span class="nav-text">一、Cost Function and
+Backpropagation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8Cbackpropagation-in-pratice"><span class="nav-number">2.</span> <span class="nav-text">二、Backpropagation in
+Pratice</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -712,22 +736,6 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
     });
     gitalk.render('gitalk-container');
   }, window.Gitalk);
-});
-</script>
-
-<script>
-NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
-  window.livereOptions = {
-    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
-  };
-  (function(d, s) {
-    var j, e = d.getElementsByTagName(s)[0];
-    if (typeof LivereTower === 'function') { return; }
-    j = d.createElement(s);
-    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-    j.async = true;
-    e.parentNode.insertBefore(j, e);
-  })(document, 'script');
 });
 </script>
 
