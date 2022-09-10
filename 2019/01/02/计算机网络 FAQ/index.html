@@ -28,7 +28,7 @@
 <meta property="og:description" content="计网八股文">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-01-02T14:19:00.000Z">
-<meta property="article:modified_time" content="2022-08-29T03:20:35.666Z">
+<meta property="article:modified_time" content="2022-09-10T07:15:28.585Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Interview">
 <meta property="article:tag" content="Network">
@@ -228,7 +228,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-08-29 11:20:35" itemprop="dateModified" datetime="2022-08-29T11:20:35+08:00">2022-08-29</time>
+                <time title="Modified: 2022-09-10 15:15:28" itemprop="dateModified" datetime="2022-09-10T15:15:28+08:00">2022-09-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -259,7 +259,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="tcp和udp区别">TCP和UDP区别</h2>
+        <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/501400192">限流器</a></p>
+<h2 id="tcp和udp区别">TCP和UDP区别</h2>
 <ul>
 <li>TCP面向连接，提供可靠传输，收发数据前要3次握手建立连接，使用ACK对收发数据进行确认；UDP是无连接协议，不管对方是否收到或收到的数据是否正确</li>
 <li>TCP提供流量控制和拥塞控制，UDP无</li>
@@ -267,20 +268,32 @@
 <li>TCP数据包没有边界，会出现粘包问题，UDP包是独立的，没有粘包问题</li>
 <li>应用时如果强调数据的完整性和正确性应用TCP，强调性能和速度时用UDP</li>
 </ul>
-<h2 id="tcp连接">TCP连接</h2>
-<p>建立TCP连接的过程需要使用一些系统调用</p>
+<h2 id="tcp握手与挥手">TCP握手与挥手</h2>
+<p>建立TCP连接的过程需要使用一些系统调用 <a
+target="_blank" rel="noopener" href="https://www.jianshu.com/p/f62390df9627">SYN攻击与预防</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/liwei0526vip/p/14587300.html">TCP握手</a></p>
+<p>攻击者截取服务器回复的SYN和ACK，伪装成原主机继续通信</p>
+<p>服务器超时重传，达到最大次数后发RST并关闭连接</p>
+<p>客户端处于time_wait状态，同时源端口不可用，端口号很快耗尽</p>
+<h3 id="time_wait状态">TIME_WAIT状态</h3>
+<ol type="1">
+<li>why
+2MSL：确保ACK报文能够到达服务端，使服务端正常关闭连接。防止已失效的报文出现在新的连接中，导致数据错乱。</li>
+<li></li>
+</ol>
+<p>双方的(IP, Socket)四元组不能被使用。</p>
 <h2 id="tcp可靠传输">TCP可靠传输</h2>
 <ul>
-<li>校验和：伪首部 + TCP header二进制相加取反</li>
+<li>16位校验和：伪首部 + TCP header二进制相加取反，丢弃</li>
 <li>seq + ack：接收方按序组织，避免重复，确保收到所有Segments</li>
 <li><a
 target="_blank" rel="noopener" href="https://stackoverflow.com/questions/12956685">超时重传</a>：发送方维护超时时间，没有收到ack就重传，即ARQ（包括停等，go
 back
 N，选择重传）。RTO时间采用指数回退，重传超过一定次数（比如8次）就断开连接。</li>
-<li>流量控制：可变大小的滑动窗宽recv_win</li>
-<li>拥塞控制：慢启动，拥塞避免，快速重传，快速恢复<br />
-发送方维持拥塞窗口cwnd记录网络链路的拥塞程度，发送窗口=min{recv_win,
-cwnd}</li>
+<li>流量控制：收方告诉发方接收缓冲区大小，通过可变大小的滑动窗宽recv_win控制发方的发送速率</li>
+<li>拥塞控制：发送方维持拥塞窗口cwnd记录网络链路的拥塞程度，发送窗口=min{recv_win,
+cwnd}。慢启动，拥塞避免，快速重传，快速恢复</li>
 </ul>
 <ol type="1">
 <li>慢启动<br />
@@ -304,7 +317,8 @@ Reno版本的区别：Reno版本在快重传之后采用快恢复算法而不是
 <li>网络非常可靠，不需要考虑UDP丢包的问题。</li>
 <li>NAT穿透只能用UDP</li>
 </ul>
-<h2 id="https">HTTPS</h2>
+<h2 id="https"><a
+target="_blank" rel="noopener" href="https://xiaolincoding.com/network/2_http/https_rsa.html#tls-%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B">HTTPS</a></h2>
 <p>HTTP协议存在安全问题：</p>
 <ul>
 <li>信息明文传输, 不提供数据加密, 可能被窃听</li>
@@ -338,16 +352,26 @@ target="_blank" rel="noopener" href="https://www.cnblogs.com/wqhwe/p/5407468.htm
 <p>客户端的对称加密密钥其实是三个随机数的哈希（1.
 客户端第一次给服务端发送请求时附带的随机数 2. 服务器返回时的随机数 3.
 客户端收到返回时的随机数）</p>
-<h2 id="tcp异常连接">TCP异常连接</h2>
+<h2 id="tcp异常连接"><a
+target="_blank" rel="noopener" href="https://xiaolincoding.com/network/3_tcp/tcp_down_and_crash.html">TCP异常连接</a></h2>
+<h3 id="什么情况发送rst包">什么情况发送RST包</h3>
+<p>重建连接标识。当RST=1时，表明TCP连接中出现严重错误（如由于主机崩溃或其他原因），必须释放连接，然后再重新建立连接。复位标志，用于非正常地关闭连接。它是TCP协议首部里的一个标志位。发送RST包关闭连接时，直接丢弃缓冲区的包发送RST包（这个和发FIN包不同）。而接收端收到RST包后，也不必发送ACK包来确认。</p>
+<p>客户端和服务器TCP连接正常，突然服务器掉电重启，与客户端的TCP连接状态由于掉电而完全消失。之后，客户端发给服务器任何消息，都会触发服务器发RST作为回应。服务器之所以发RST，是因为连接不存在，通过Reset状态位，间接告诉客户端异常情况的存在。如果Reset顺利到达客户端，客户端意识到异常发生了，会立马释放该TCP连接所占用的内存资源（状态、数据）、以及端口号，且不会回复ACK</p>
+<p>RST是客户端或服务器异常关闭tcp连接发的包，通常都是主机收到不存在的tcp通道的tcp报文，主机“被迫”回复RST告知对方tcp连接异常，收到RST的一方就会关闭这个socket，释放所有socket信息，且不会回复ACK</p>
 <ol type="1">
-<li>未开启TCP
-keepalive，双方一直没有数据交互，客户端<strong>主机崩溃</strong>：服务器无法感知客户端崩溃，其TCP连接会一直处于<code>ESTABLISHED</code>状态，直到服务端重启进程。</li>
-<li>未开启TCP
-keepalive，双方一直没有数据交互，客户端<strong>进程崩溃</strong>：客户端OS能够感知到进程崩溃，发送FIN报文，正常进行四次挥手。</li>
-<li>未开启TCP
-keepalive，有数据交互，客户端<strong>主机崩溃</strong>，迅速重启：服务端发送的报文无法得到响应，触发超时重传机制，客户端重启完成后接收重传报文。此时如果客户端没有进程监听该报文的目标端口，客户端回复RST报文，断开连接；如果有进程监听，但是之前的TCP连接的数据结构已经丢失，客户端内核协议栈会发现找不到该TCP连接的socket结构体，回复RST报文，断开连接。</li>
-<li>未开启TCP
-keepalive，有数据交互，客户端<strong>主机崩溃</strong>，一直没有重启：服务端超时重传达到最大次数后，内核判定该连接有问题，通过socket接口通知应用程序，断开连接。</li>
+<li><p>连接未监听的端口：连接一个未监听的端口，则被连接方会发送一个RST。也就是说主机传输层TCP程序接收到一个SYN包，而这个SYN包目的端口并没有socket监听，那么主机的协议栈会直接回复一个RST</p></li>
+<li><p>目的主机或网络路径中的防火墙拦截：</p></li>
+<li><p>socket接收缓冲区Recv-Q中的数据未完全被应用程序读取时关闭该socket：接收到的数据缓存在缓冲区Recv-Q，它们等待被上层应用取走，如果缓冲区Recv-Q有数据未被应用取走，而此时调用了socket.close()方法强行关闭TCP连接，那么TCP协议程序发送的就不是FIN，而是RST</p></li>
+<li><p>向已关闭的socket发送数据：主机传输层TCP协议程序接收到一条TCP数据报，而目的端口并没有socket监听，那么主机的协议栈会直接回复一个RST</p></li>
+<li><p>向已关闭的连接发送FIN：主机传输层TCP协议程序接收到一条FIN，而目的端口并没有socket监听，那么主机的协议栈会直接回复一个RST</p></li>
+<li><p>未开启TCP
+keepalive，双方一直没有数据交互，客户端<strong>主机崩溃</strong>：服务器无法感知客户端崩溃，其TCP连接会一直处于<code>ESTABLISHED</code>状态，直到服务端重启进程。</p></li>
+<li><p>未开启TCP
+keepalive，双方一直没有数据交互，客户端<strong>进程崩溃</strong>：客户端OS能够感知到进程崩溃，发送FIN报文，正常进行四次挥手。</p></li>
+<li><p>未开启TCP
+keepalive，有数据交互，客户端<strong>主机崩溃</strong>，迅速重启：服务端发送的报文无法得到响应，触发超时重传机制，客户端重启完成后接收重传报文。此时如果客户端没有进程监听该报文的目标端口，客户端回复RST报文，断开连接；如果有进程监听，但是之前的TCP连接的数据结构已经丢失，客户端内核协议栈会发现找不到该TCP连接的socket结构体，回复RST报文，断开连接。</p></li>
+<li><p>未开启TCP
+keepalive，有数据交互，客户端<strong>主机崩溃</strong>，一直没有重启：服务端超时重传达到最大次数后，内核判定该连接有问题，通过socket接口通知应用程序，断开连接。</p></li>
 </ol>
 <h2 id="url解析">URL解析</h2>
 <ol type="1">
@@ -379,6 +403,8 @@ of Service)攻击。</p>
 <li>发起HTTP请求；</li>
 <li>服务器响应，浏览器获得并解析HTML，请求图片等资源，向用户渲染页面。</li>
 </ol>
+<p><a
+target="_blank" rel="noopener" href="https://www.runoob.com/http/http-status-codes.html">状态码分类</a></p>
 <h2 id="条件变量">条件变量</h2>
 <p>用于多线程间状态的同步，控制其交替执行的先后顺序，条件不满足时相关线程阻塞，满足时唤醒，个人认为原理类似于线程间共享的全局变量，至于该变量如何工作还有待考究。</p>
 <p>锁是用来保护共享资源，但是这两究竟有什么区别，为什么要同时使用，待确定。</p>
@@ -510,7 +536,7 @@ lock</p>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%92%8Cudp%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">TCP和UDP区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E8%BF%9E%E6%8E%A5"><span class="nav-number">2.</span> <span class="nav-text">TCP连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93"><span class="nav-number">3.</span> <span class="nav-text">TCP可靠传输</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp"><span class="nav-number">4.</span> <span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#https"><span class="nav-number">5.</span> <span class="nav-text">HTTPS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%BC%82%E5%B8%B8%E8%BF%9E%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">TCP异常连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#url%E8%A7%A3%E6%9E%90"><span class="nav-number">7.</span> <span class="nav-text">URL解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http%E8%AF%B7%E6%B1%82"><span class="nav-number">8.</span> <span class="nav-text">HTTP请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F"><span class="nav-number">9.</span> <span class="nav-text">条件变量</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%92%8Cudp%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">TCP和UDP区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E6%8F%A1%E6%89%8B%E4%B8%8E%E6%8C%A5%E6%89%8B"><span class="nav-number">2.</span> <span class="nav-text">TCP握手与挥手</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#time_wait%E7%8A%B6%E6%80%81"><span class="nav-number">2.1.</span> <span class="nav-text">TIME_WAIT状态</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93"><span class="nav-number">3.</span> <span class="nav-text">TCP可靠传输</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp"><span class="nav-number">4.</span> <span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#https"><span class="nav-number">5.</span> <span class="nav-text">HTTPS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%BC%82%E5%B8%B8%E8%BF%9E%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">TCP异常连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E5%8F%91%E9%80%81rst%E5%8C%85"><span class="nav-number">6.1.</span> <span class="nav-text">什么情况发送RST包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#url%E8%A7%A3%E6%9E%90"><span class="nav-number">7.</span> <span class="nav-text">URL解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http%E8%AF%B7%E6%B1%82"><span class="nav-number">8.</span> <span class="nav-text">HTTP请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F"><span class="nav-number">9.</span> <span class="nav-text">条件变量</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
