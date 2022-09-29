@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20201014165121101.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2020111909030584.png">
 <meta property="article:published_time" content="2020-11-28T02:12:00.000Z">
-<meta property="article:modified_time" content="2022-07-22T13:08:04.185Z">
+<meta property="article:modified_time" content="2022-09-18T02:22:10.323Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Projects">
 <meta name="twitter:card" content="summary">
@@ -232,7 +232,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-07-22 21:08:04" itemprop="dateModified" datetime="2022-07-22T21:08:04+08:00">2022-07-22</time>
+                <time title="Modified: 2022-09-18 10:22:10" itemprop="dateModified" datetime="2022-09-18T10:22:10+08:00">2022-09-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -428,7 +428,7 @@ alt="在这里插入图片描述" />
 <code>place</code>的时候，如果申请块比较大，我们将其分配到后半部分，将前半部分切割为空闲：
 <img src="https://img-blog.csdnimg.cn/2020111909030584.png"
 alt="在这里插入图片描述" /> 之前class的划分是1，2-3，4-7，8-15...
-但是最小块是16B，所以16B以下的用不到，所以改为16-31，32-63，64-127，128-255...</p>
+但是最小块是16B，所以16B以下的用不到，所以改为0-16B，17-32，...，257-512MB</p>
 <p>这样优化后直接96： <img
 src="https://img-blog.csdnimg.cn/20201119092357832.png"
 alt="在这里插入图片描述" />

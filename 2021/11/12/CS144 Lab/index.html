@@ -59,7 +59,7 @@
 <meta property="og:image" content="https://eimadrigal.github.io/2021/11/12/CS144%20Lab/jiaohu1.png">
 <meta property="og:image" content="https://eimadrigal.github.io/2021/11/12/CS144%20Lab/jiaohu3.png">
 <meta property="article:published_time" content="2021-11-12T12:49:00.000Z">
-<meta property="article:modified_time" content="2022-08-24T03:35:30.379Z">
+<meta property="article:modified_time" content="2022-09-25T14:18:46.380Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="System">
 <meta property="article:tag" content="Projects">
@@ -261,7 +261,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-08-24 11:35:30" itemprop="dateModified" datetime="2022-08-24T11:35:30+08:00">2022-08-24</time>
+                <time title="Modified: 2022-09-25 22:18:46" itemprop="dateModified" datetime="2022-09-25T22:18:46+08:00">2022-09-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -677,13 +677,14 @@ target="_blank" rel="noopener" href="https://www.cnblogs.com/minglee/p/9016306.h
 <h2 id="lab-5">Lab 5</h2>
 <p>实现IP/Ethernet网络接口，也叫网络适配器/网卡，用于IP数据报和以太网帧的转换，可以作为主机的TCP/IP协议栈的一部分，也可以作为路由器的一部分。
 <img src="lab5-1.png" alt="image" /></p>
-<p>主机与peer之间TCP段的交互主要有以下几种方式： -
-TCP-in-UDP-in-IP：进程只需提供TCP段和目的地址，剩下的事情均由Linux的<code>UDPSocket</code>完成。内核负责构造UDP/IP/Ethernet
-header并发给下一跳，并确保每对socket的组合都是唯一的，保证不同进程间的隔离。
--
-TCP-in-IP：大部分情况下TCP段都是直接作为IP数据报的payload，需要向Linux的TUN接口提供IP数据报，内核负责构造Ethernet
-header并通过网卡发送，因此进程需要自行构造IP头。 -
-TCP-in-IP-in-Ethernet：网络接口<code>eth0/eth1/wlan0</code>负责网络层和链路层的转换，Linux提供了更低级的TAP接口负责交换以太网帧。</p>
+<p>主机与peer之间TCP段的交互主要有以下几种方式：</p>
+<ul>
+<li>TCP-in-UDP-in-IP：进程只需提供TCP段和目的地址，剩下的事情均由Linux的<code>UDPSocket</code>完成。内核负责构造UDP/IP/Ethernet
+header并发给下一跳，并确保每对socket的组合都是唯一的，保证不同进程间的隔离。</li>
+<li>TCP-in-IP：大部分情况下TCP段都是直接作为IP数据报的payload，需要向Linux的TUN接口提供IP数据报，内核负责构造Ethernet
+header并通过网卡发送，因此进程需要自行构造IP头。</li>
+<li>TCP-in-IP-in-Ethernet：网络接口<code>eth0/eth1/wlan0</code>负责网络层和链路层的转换，Linux提供了更低级的TAP接口负责交换以太网帧。</li>
+</ul>
 <p>大部分的工作都在ARP协议，有3个函数： <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">NetworkInterface::send_datagram</span><span class="params">(<span class="keyword">const</span> InternetDatagram &amp;dgram, <span class="keyword">const</span> Address &amp;next_hop)</span></span>;</span><br><span class="line"><span class="function">std::optional&lt;InternetDatagram&gt; <span class="title">NetworkInterface::recv_frame</span><span class="params">(<span class="keyword">const</span> EthernetFrame &amp;frame)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">NetworkInterface::tick</span><span class="params">(<span class="keyword">const</span> <span class="keyword">size_t</span> ms_since_last_tick)</span></span>;</span><br></pre></td></tr></table></figure>
 当<code>TCPConnection</code>或者路由器要发送IP数据报时，需要该函数转为以太网帧并发送。<br />
 如果下一跳的MAC地址已知，创建一个以太网帧<code>type = EthernetHeader::TYPE_IPv4</code>，将payload设置为序列化后的数据报；<br />
