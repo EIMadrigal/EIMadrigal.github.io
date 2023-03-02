@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Monaco:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Philosophy of Bayesian statistics">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MLE &amp; MAP">
+<meta property="og:url" content="https://eimadrigal.github.io/posts/mle-and-map/index.html">
+<meta property="og:site_name" content="EI Madrigal&#39;s Space">
+<meta property="og:description" content="Philosophy of Bayesian statistics">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-01-16T06:41:00.000Z">
+<meta property="article:modified_time" content="2023-03-02T08:15:09.810Z">
+<meta property="article:author" content="EIMadrigal">
+<meta property="article:tag" content="Probability &amp; Statistics">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://eimadrigal.github.io/posts/mle-and-map/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>MLE & MAP | EI Madrigal's Space</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EI Madrigal's Space</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/posts/mle-and-map/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MLE & MAP
+        </h1>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-01-16 14:41:00" itemprop="dateCreated datePublished" datetime="2021-01-16T14:41:00+08:00">2021-01-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-02 16:15:09" itemprop="dateModified" datetime="2023-03-02T16:15:09+08:00">2023-03-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <div class="post-description">Philosophy of Bayesian statistics</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>自从贝叶斯理论诞生以后，频率学派和贝叶斯学派的争论一直没有停歇，平时的学习太注重公式计算，故在此谈谈自己对贝叶斯理论的一些认识。</p>
+<p>频率学派认为概率是基于大量实验所得的定值（大数定理），比如抛掷一枚材质均匀的硬币10000次，出现正面的次数有4995次，反面的次数有5005次，大致认为出现正反面的概率都是50%。然而现实生活中很多事情是无法做大量实验的，比如某人得心脏病的概率是5%，显然我们无法通过多次实验来计算出这个概率值。回到硬币的例子，如果只允许你抛5次，5次的结果都是正面，那么出现正面的概率是100%了吗？显然这是存在弊端的。</p>
+<p>再来看一个非常经典的医学上的例子：有一种很稀有的病，得病的人检测结果呈阳性的概率是0.9，没得病的人检测结果呈阴性的概率也是0.9，人们患这种病的概率是0.01。如果某人的检测结果呈阳性，那么他患这种病的概率是多少？</p>
+<p>直观上看：患病的人检测呈阳性的概率是0.9，这个人被检测为阳性，那么有很大概率这个人是患病的。不妨试着算算：</p>
+<p>假设用A表示检测结果为阳性，B表示患病，那么可以很轻松的计算出： <span
+class="math display">\[
+P(B|A)=\frac{P(A|B)P(B)}{P(A)}=\frac{P(A|B)P(B)}{P(A|B)P(B)+P(A|\bar
+B)P(\bar B)}=\frac{0.9*0.01}{0.9*0.01+0.1*0.99}=0.083 \\
+P(\bar B|A)=1-P(B|A)=0.917
+\]</span>
+可以看到：即使检测结果呈阳性，患病的概率仍然只有8.3%，和我们的直观认识并不相同。</p>
+<p>上面的计算其实就用了贝叶斯公式：后验概率<span
+class="math inline">\(P(B|A)\)</span>等于条件概率<span
+class="math inline">\(P(A|B)\)</span>（似然函数）乘以先验概率<span
+class="math inline">\(P(B)\)</span>，再除以一个常数因子。我们在已知先验概率的前提下，通过新的观测值<span
+class="math inline">\(P(A|B)\)</span>（检测结果是否阳性）来预测患病的概率。</p>
+<p>关于常数因子<span
+class="math inline">\(P(A)\)</span>可以这样理解：分子<span
+class="math inline">\(P(A,B)\)</span>表示检测结果呈阳性并且患病的概率，那么还有一部分人<span
+class="math inline">\(P(A,\bar
+B)\)</span>检测结果呈阳性但是没有患病，<span
+class="math inline">\(P(A,B)+P(A,\bar B)=P(A)\)</span>，我们要求的<span
+class="math inline">\(P(B|A)\)</span>即检测呈阳性的人中患病的人所占的比例<span
+class="math inline">\(\frac{P(A,B)}{P(A)}\)</span>。</p>
+<p>更加一般的贝叶斯公式：</p>
+<p>如果参数<span class="math inline">\(\theta\)</span>的分布是离散的：
+<span class="math display">\[
+\pi(\theta_i|x)=\cfrac{\pi(\theta_i)f(x|\theta_i)}{\sum_{i}\pi(\theta_i)f(x|\theta_i)}
+\]</span> 如果参数<span
+class="math inline">\(\theta\)</span>的分布是连续的： <span
+class="math display">\[
+\pi(\theta|x)=\cfrac{\pi(\theta)f(x|\theta)}{\int_{\Theta}\pi(\theta)f(x|\theta)d\theta}
+\]</span> 后验概率密度表示在已知x的前提下关于参数<span
+class="math inline">\(\theta\)</span>的一个概率密度函数，即<span
+class="math inline">\(\theta\)</span>是一个分布，而不是一个固定的值，这是贝叶斯学派与传统学派最大的不同。</p>
+<p>似然函数<span
+class="math inline">\(f(x|\theta)\)</span>可以这么理解：每个事件的背后都有一个分布，这个分布里是含有参数的，并且传统学派认为这个参数<span
+class="math inline">\(\theta\)</span>是固定的，我们做了大量的实验，用很多样本x就是为了求出这个参数的值，观测到的样本x是以参数<span
+class="math inline">\(\theta\)</span>为前提的一个分布。为了估计<span
+class="math inline">\(\theta\)</span>，我们用到了<strong>矩估计</strong>和<strong>极大似然估计</strong>，本质上都是一样的，我们在参数<span
+class="math inline">\(\theta\)</span>的前提下，从总体X中采样n个样本，用样本的性质来大致替代总体的参数<span
+class="math inline">\(\theta\)</span>。具体到极大似然：通过找到使似然函数<span
+class="math inline">\(\prod_{i=1}^{n}f(x_i|\theta)\)</span>最大的参数当作<span
+class="math inline">\(\theta\)</span>，其实就是选择一个<span
+class="math inline">\(\theta\)</span>使得样本出现的概率最大，本质上仍然是在拟合样本数据。</p>
+<p>从上面的分析可以看出：我们的未知参数<span
+class="math inline">\(\theta\)</span>是从样本中计算得到的，必然和总体中原本的参数值存在误差，并且只能求得一个固定的参数值。贝叶斯理论认为：参数<span
+class="math inline">\(\theta\)</span>不应该是一个单独的值，更加合理的解释应该是参数<span
+class="math inline">\(\theta\)</span>有很多取值，并且每个取值都有相应的概率，即参数是服从某种分布的。概率最大的那个参数值即<strong>最大后验估计</strong>，参数取值的中位数即<strong>后验中位数估计</strong>，参数取值的均值即<strong>后验期望估计</strong>。为什么仍然叫估计呢？因为我们的后验分布是从似然计算得到的，我们无法采样所有的总体中的样本，所以也就无法计算出参数<span
+class="math inline">\(\theta\)</span>的精确分布。</p>
+<p>最后来看看先验分布<span
+class="math inline">\(\pi(\theta)\)</span>，即在获得实验观测值之前对未知参数分布的一个主观认识，这也是贝叶斯学派一直被攻击的一点，客观的统计学中竟然引入了主观的因素！比如对于材质均匀的硬币，在抛掷之前，我们脑海中就会认为出现正反面的概率各是0.5。</p>
+<p>但是很多时候先验分布是很难获得的，如果硬币材质不均匀，我们的先验又应当是什么分布呢？此时就引入了课程上讲的<strong>无信息先验</strong>，当我们对事件没有了解的时候，认为参数所有取值的概率都是相等的，在硬币实验中，我们认为<span
+class="math inline">\(\theta\)</span>是服从(0,1)的均匀分布。接着我们来做实验，看看后验分布会怎么变化（图源：Cameron
+Davidson-Pilon, Probabilistic Programming and Bayesian Methods for
+Hackers, 2016）：</p>
+<figure>
+<img
+src="https://img-blog.csdnimg.cn/img_convert/11e883581dd48f9c8442b8273371766d.png"
+alt="img" />
+<figcaption aria-hidden="true">img</figcaption>
+</figure>
+<figure>
+<img
+src="https://img-blog.csdnimg.cn/img_convert/3110af9ecffd601bb7acd89d86ad9784.png"
+alt="img" />
+<figcaption aria-hidden="true">img</figcaption>
+</figure>
+<p>从图中可以看出：起初是均匀分布，连续抛掷了2次正面，此时认为该硬币正面向上的概率为1的可能性是最大的，但注意：正面向上的概率取0.6,0.4的可能也不是没有，不过这种可能性更小罢了。如果我们用极大似然去估计，就会得到该硬币正面向上的概率是1，正面向上的概率取0.6,0.4的可能为0，这显然与现实不符！接着抛了一次反面，正面向上的概率分布又进行了修正，不断通过观测值修正我们的后验，最终得到一个稳定的后验分布。</p>
+<p>均匀分布<span
+class="math inline">\(U(a,b)\)</span>作为先验看起来很好用，但是他本质上还是有倾向性的，即认为在区间(a,b)内是有取值的，在区间外是没有取值的可能的，更加合理的无信息先验可以选取一个大方差的高斯分布。</p>
+<p>选择高斯分布作为先验带来的一个问题是计算上的复杂性骤然提高，所以引入了<strong>共轭先验分布</strong>：即后验分布<span
+class="math inline">\(\pi(\theta|x)\)</span>与先验分布<span
+class="math inline">\(\pi(\theta)\)</span>是同一种类型的分布，就称先验分布<span
+class="math inline">\(\pi(\theta)\)</span>是<span
+class="math inline">\(f(x|\theta)\)</span>的共轭先验分布。这样我们在计算后验分布时，就无需计算复杂的积分，只要调整先验分布的参数即可确定后验分布。可以证明：<span
+class="math inline">\(\beta\)</span>分布是二项分布<span
+class="math inline">\(B(n,p)\)</span>中参数<span
+class="math inline">\(p\)</span>的共轭先验分布。即如果总体<span
+class="math inline">\(X|\theta\sim
+B(N,\theta)\)</span>，从中采样n个样本，样本分布即似然函数<span
+class="math inline">\(f(x|\theta)\)</span>服从<span
+class="math inline">\(\beta\)</span>分布，假设先验<span
+class="math inline">\(\theta\sim\beta(a,b)\)</span>，那么后验分布<span
+class="math inline">\(\theta|x\sim\beta(a+\sum x_i,b+nN-\sum
+x_i)\)</span>。</p>
+<p>证明： 总体<span class="math inline">\(X|\theta\sim
+B(N,\theta)\)</span>，先验<span
+class="math inline">\(\theta\sim\beta(a,b)\)</span>，<span
+class="math inline">\(X=(X_1,...,X_n)^T\)</span>是来自总体的n个样本，则样本分布为：
+<span class="math display">\[
+p(x|\theta)=L(\theta)=\prod_{i=1}^{n}\tbinom{N}{x_i}\theta^{x_i}(1-\theta)^{N-x_i}\propto\theta^{\sum_{i=1}^{n}x_i}(1-\theta)^{nN-\sum_{i=1}^{n}x_i}
+\]</span> 可以看到：似然函数<span
+class="math inline">\(L(\theta)\)</span>具有<span
+class="math inline">\(\beta\)</span>分布的核，先验的核为<span
+class="math inline">\(\theta^{a-1}(1-\theta)^{b-1}\)</span>，所以后验为：
+<span class="math display">\[
+\pi(\theta|x)\propto\theta^{a-1+\sum_{i=1}^{n}x_i}(1-\theta)^{b-1+nN-\sum_{i=1}^{n}x_i},0&lt;\theta&lt;1
+\]</span> 显然后验分布的核与<span
+class="math inline">\(\beta\)</span>分布的核是同种类型，即<span
+class="math inline">\(\theta|x\sim\beta(a+\sum x_i,b+nN-\sum
+x_i)\)</span>，所以<span
+class="math inline">\(\beta\)</span>分布是二项分布<span
+class="math inline">\(B(n,p)\)</span>中参数<span
+class="math inline">\(p\)</span>的共轭先验分布。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="EIMadrigal WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="EIMadrigal Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>EIMadrigal
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://eimadrigal.github.io/posts/mle-and-map/" title="MLE &amp; MAP">https://eimadrigal.github.io/posts/mle-and-map/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Probability-Statistics/" rel="tag"><i class="fa fa-tag"></i> Probability & Statistics</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/probability-and-statistics-basics/" rel="prev" title="概率统计基础">
+      <i class="fa fa-chevron-left"></i> 概率统计基础
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/climbing-summary/" rel="next" title="Climbing Summary">
+      Climbing Summary <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="EIMadrigal"
+      src="/images/favicon.png">
+  <p class="site-author-name" itemprop="name">EIMadrigal</p>
+  <div class="site-description" itemprop="description">Hello World</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/EIMadrigal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jingtao.ren@outlook.com" title="E-Mail → mailto:jingtao.ren@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/jingtaoren/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;jingtaoren&#x2F;" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/EIMadrigal" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EIMadrigal</span>
+</div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">Total views: <span id="busuanzi_value_site_pv"></span></span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">Total visitors: <span id="busuanzi_value_site_uv"></span></span>
+    <span class="post-meta-divider">|</span>
+
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);
+    var countOffset = 20000;
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset);
+            clearInterval(int);
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '285afe6e2d34f997b740',
+      clientSecret: 'f3e77970aacbc5a14421e48db34996ed8223f7e9',
+      repo        : 'EIMadrigal.github.io',
+      owner       : 'EIMadrigal',
+      admin       : ['EIMadrigal'],
+      id          : '951a8475af318c5eea988598632c7b81',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

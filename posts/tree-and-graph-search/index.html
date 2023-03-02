@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Monaco:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="暴搜">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tree &amp; Graph Search">
+<meta property="og:url" content="https://eimadrigal.github.io/posts/tree-and-graph-search/index.html">
+<meta property="og:site_name" content="EI Madrigal&#39;s Space">
+<meta property="og:description" content="暴搜">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200218153739820.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200725135220669.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190414173437346.png">
+<meta property="article:published_time" content="2019-05-03T15:05:00.000Z">
+<meta property="article:modified_time" content="2023-03-02T08:31:43.966Z">
+<meta property="article:author" content="EIMadrigal">
+<meta property="article:tag" content="Algorithm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200218153739820.png">
+
+<link rel="canonical" href="https://eimadrigal.github.io/posts/tree-and-graph-search/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Tree & Graph Search | EI Madrigal's Space</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EI Madrigal's Space</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/posts/tree-and-graph-search/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Tree & Graph Search
+        </h1>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-05-03 23:05:00" itemprop="dateCreated datePublished" datetime="2019-05-03T23:05:00+08:00">2019-05-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-02 16:31:43" itemprop="dateModified" datetime="2023-03-02T16:31:43+08:00">2023-03-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <div class="post-description">暴搜</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="tree-search">Tree Search</h2>
+<h3 id="结点定义">结点定义</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 二叉树</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    Node *left, *right;</span><br><span class="line">    <span class="built_in">Node</span>(): <span class="built_in">val</span>(<span class="number">0</span>), <span class="built_in">left</span>(<span class="literal">nullptr</span>), <span class="built_in">right</span>(<span class="literal">nullptr</span>) &#123;&#125;</span><br><span class="line">    <span class="built_in">Node</span>(<span class="keyword">int</span> x): <span class="built_in">val</span>(x), <span class="built_in">left</span>(<span class="literal">nullptr</span>), <span class="built_in">right</span>(<span class="literal">nullptr</span>) &#123;&#125;</span><br><span class="line">    <span class="built_in">Node</span>(<span class="keyword">int</span> x, Node *left, Node *right): <span class="built_in">val</span>(x), <span class="built_in">left</span>(left), <span class="built_in">right</span>(right) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 多叉树</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    vector&lt;Node*&gt; children;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Node</span>() &#123;&#125;</span><br><span class="line">    <span class="built_in">Node</span>(<span class="keyword">int</span> _val) &#123;</span><br><span class="line">        val = _val;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Node</span>(<span class="keyword">int</span> _val, vector&lt;Node*&gt; _children) &#123;</span><br><span class="line">        val = _val;</span><br><span class="line">        children = _children;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="层序遍历">层序遍历</h3>
+<ol type="1">
+<li>二叉树的层序遍历</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 迭代</span></span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">travel</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; ans;</span><br><span class="line">    queue&lt;Node *&gt; q;</span><br><span class="line">    q.<span class="built_in">push</span>(root);</span><br><span class="line">    <span class="keyword">while</span> (!q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        Node *cur = q.<span class="built_in">front</span>(); q.<span class="built_in">pop</span>();</span><br><span class="line">        ans.<span class="built_in">push_back</span>(cur-&gt;val);</span><br><span class="line">        <span class="keyword">if</span> (cur-&gt;left) q.<span class="built_in">push</span>(cur-&gt;left);</span><br><span class="line">        <span class="keyword">if</span> (cur-&gt;right) q.<span class="built_in">push</span>(cur-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>多叉树的层序遍历</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">level_order</span>(Node* root) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">    vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; ans;</span><br><span class="line">    queue&lt;Node*&gt; q;</span><br><span class="line">    q.<span class="built_in">push</span>(root);</span><br><span class="line">    <span class="keyword">int</span> depth = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (!q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="keyword">int</span> size = q.<span class="built_in">size</span>();</span><br><span class="line">        ans.<span class="built_in">push_back</span>(&#123;&#125;);</span><br><span class="line">        <span class="keyword">while</span> (size--) &#123;</span><br><span class="line">            Node* cur = q.<span class="built_in">front</span>(); q.<span class="built_in">pop</span>();</span><br><span class="line">            ans[depth].<span class="built_in">emplace_back</span>(cur-&gt;val);</span><br><span class="line">            <span class="keyword">for</span> (Node* child : cur-&gt;children) &#123;</span><br><span class="line">                q.<span class="built_in">push</span>(child);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ++depth;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="二叉树先序中序后序morris">二叉树先序/中序/后序/Morris</h3>
+<ol type="1">
+<li><p>先序遍历 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 递归</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">travel</span><span class="params">(Node *root, vector&lt;<span class="keyword">int</span>&gt;&amp; vec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span>;</span><br><span class="line">    vec.<span class="built_in">push_back</span>(root-&gt;val);</span><br><span class="line">    <span class="built_in">travel</span>(root-&gt;left, vec);</span><br><span class="line">    <span class="built_in">travel</span>(root-&gt;right, vec);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 迭代</span></span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">preorder</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; ans;</span><br><span class="line">    stack&lt;Node*&gt; s;</span><br><span class="line">    s.<span class="built_in">push</span>(root);</span><br><span class="line">    <span class="keyword">while</span> (!s.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        Node *cur = s.<span class="built_in">top</span>(); s.<span class="built_in">pop</span>();</span><br><span class="line">        ans.<span class="built_in">emplace_back</span>(cur-&gt;val);</span><br><span class="line">        <span class="keyword">if</span> (cur-&gt;right) s.<span class="built_in">push</span>(cur-&gt;right);</span><br><span class="line">        <span class="keyword">if</span> (cur-&gt;left) s.<span class="built_in">push</span>(cur-&gt;left);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>中序遍历 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 递归</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">travel</span><span class="params">(Node *root, vector&lt;<span class="keyword">int</span>&gt;&amp; vec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">travel</span>(root-&gt;left, vec);</span><br><span class="line">    vec.<span class="built_in">push_back</span>(root-&gt;val);</span><br><span class="line">    <span class="built_in">travel</span>(root-&gt;right, vec);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 迭代</span></span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">travel</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; ans;</span><br><span class="line">    stack&lt;Node *&gt; s;</span><br><span class="line">    Node *cur = root;</span><br><span class="line">    <span class="keyword">while</span> (cur || !s.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="keyword">while</span> (cur) &#123;</span><br><span class="line">            s.<span class="built_in">push</span>(cur);</span><br><span class="line">            cur = cur-&gt;left;</span><br><span class="line">        &#125;</span><br><span class="line">        cur = s.<span class="built_in">top</span>(); s.<span class="built_in">pop</span>();</span><br><span class="line">        ans.<span class="built_in">push_back</span>(cur-&gt;val);</span><br><span class="line">        cur = cur-&gt;right;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>后序遍历 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 递归</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">travel</span><span class="params">(Node *root, vector&lt;<span class="keyword">int</span>&gt;&amp; vec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">travel</span>(root-&gt;left, vec);</span><br><span class="line">    <span class="built_in">travel</span>(root-&gt;right, vec);</span><br><span class="line">    vec.<span class="built_in">push_back</span>(root-&gt;val);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 迭代1</span></span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">travel</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; ans;</span><br><span class="line">    stack&lt;Node *&gt; s;</span><br><span class="line">    Node *cur = root;</span><br><span class="line">    Node *last_vis = <span class="literal">nullptr</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (cur &amp;&amp; last_vis != root) &#123;</span><br><span class="line">        <span class="keyword">while</span> (cur &amp;&amp; cur != last_vis) &#123;</span><br><span class="line">            s.<span class="built_in">push</span>(cur);</span><br><span class="line">            cur = cur-&gt;left;</span><br><span class="line">        &#125;</span><br><span class="line">        cur = s.<span class="built_in">top</span>(); s.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="keyword">if</span> (cur-&gt;right == <span class="literal">nullptr</span> || cur-&gt;right == last_vis) &#123;</span><br><span class="line">            ans.<span class="built_in">push_back</span>(cur-&gt;val);</span><br><span class="line">            last_vis = cur;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            s.<span class="built_in">push</span>(cur);</span><br><span class="line">            cur = cur-&gt;right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 迭代2</span></span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">postorderTraversal</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">    stack&lt;TreeNode*&gt; s;</span><br><span class="line">    deque&lt;<span class="keyword">int</span>&gt; res;</span><br><span class="line">    s.<span class="built_in">push</span>(root);</span><br><span class="line">    <span class="keyword">while</span> (!s.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        TreeNode *cur = s.<span class="built_in">top</span>(); s.<span class="built_in">pop</span>();</span><br><span class="line">        res.<span class="built_in">push_front</span>(cur-&gt;val);</span><br><span class="line">        <span class="keyword">if</span> (cur-&gt;left) s.<span class="built_in">push</span>(cur-&gt;left);</span><br><span class="line">        <span class="keyword">if</span> (cur-&gt;right) s.<span class="built_in">push</span>(cur-&gt;right);  </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> vector&lt;<span class="keyword">int</span>&gt;(res.<span class="built_in">begin</span>(), res.<span class="built_in">end</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1NU4y1M7rF?p=14">Morris遍历0:39:00开始</a></p></li>
+</ol>
+<p><img
+src="https://img-blog.csdnimg.cn/8138f0b04af941bc91e80728cdf8ea59.png"
+alt="在这里插入图片描述" /> <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">morris</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span>;</span><br><span class="line">    TreeNode* cur = root, *mostRight = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="keyword">while</span> (cur) &#123;</span><br><span class="line">        mostRight = cur-&gt;left;</span><br><span class="line">        <span class="keyword">if</span> (mostRight) &#123;</span><br><span class="line">            <span class="keyword">while</span> (mostRight-&gt;right &amp;&amp; mostRight-&gt;right != cur) &#123;</span><br><span class="line">                mostRight = mostRight-&gt;right;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// mostRight是cur左子树最右结点</span></span><br><span class="line">            <span class="keyword">if</span> (mostRight-&gt;right) &#123;  <span class="comment">// 第一次来到cur</span></span><br><span class="line">                mostRight-&gt;right = cur;</span><br><span class="line">                cur = cur-&gt;left;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;  <span class="comment">// mostRight-&gt;right == cur</span></span><br><span class="line">                mostRight-&gt;right = <span class="literal">nullptr</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cur = cur-&gt;right;      </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">morrisPreorder</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span>;</span><br><span class="line">    TreeNode* cur = root, *mostRight = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="keyword">while</span> (cur) &#123;</span><br><span class="line">        mostRight = cur-&gt;left;</span><br><span class="line">        <span class="keyword">if</span> (mostRight) &#123;</span><br><span class="line">            <span class="keyword">while</span> (mostRight-&gt;right &amp;&amp; mostRight-&gt;right != cur) &#123;</span><br><span class="line">                mostRight = mostRight-&gt;right;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// mostRight是cur左子树最右结点</span></span><br><span class="line">            <span class="keyword">if</span> (mostRight-&gt;right) &#123;  <span class="comment">// 第一次来到cur</span></span><br><span class="line">                cout &lt;&lt; cur-&gt;val &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">                mostRight-&gt;right = cur;</span><br><span class="line">                cur = cur-&gt;left;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;  <span class="comment">// mostRight-&gt;right == cur</span></span><br><span class="line">                mostRight-&gt;right = <span class="literal">nullptr</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            cout &lt;&lt; cur-&gt;val &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        cur = cur-&gt;right;      </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">morrisInorder</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span>;</span><br><span class="line">    TreeNode* cur = root, *mostRight = <span class="literal">nullptr</span>;</span><br><span class="line">    <span class="keyword">while</span> (cur) &#123;</span><br><span class="line">        mostRight = cur-&gt;left;</span><br><span class="line">        <span class="keyword">if</span> (mostRight) &#123;</span><br><span class="line">            <span class="keyword">while</span> (mostRight-&gt;right &amp;&amp; mostRight-&gt;right != cur) &#123;</span><br><span class="line">                mostRight = mostRight-&gt;right;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// mostRight是cur左子树最右结点</span></span><br><span class="line">            <span class="keyword">if</span> (mostRight-&gt;right) &#123;  <span class="comment">// 第一次来到cur</span></span><br><span class="line">                mostRight-&gt;right = cur;</span><br><span class="line">                cur = cur-&gt;left;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;  <span class="comment">// mostRight-&gt;right == cur</span></span><br><span class="line">                mostRight-&gt;right = <span class="literal">nullptr</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; cur-&gt;val &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        cur = cur-&gt;right;      </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">morrisPostorder</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="多叉树先根后根">多叉树先根/后根</h3>
+<ol type="1">
+<li>先根遍历</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 递归</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">preorder</span><span class="params">(Node* root, vector&lt;<span class="keyword">int</span>&gt;&amp; ans)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span>;</span><br><span class="line">    ans.<span class="built_in">emplace_back</span>(root-&gt;val);</span><br><span class="line">    <span class="keyword">for</span> (Node* child : root-&gt;children) &#123;</span><br><span class="line">        <span class="built_in">preorder</span>(child, ans);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 迭代</span></span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">preorder</span><span class="params">(Node* root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; ans;</span><br><span class="line">    stack&lt;Node*&gt; s;</span><br><span class="line">    s.<span class="built_in">push</span>(root);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (!s.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        Node* cur = s.<span class="built_in">top</span>();</span><br><span class="line">        s.<span class="built_in">pop</span>();</span><br><span class="line">        ans.<span class="built_in">emplace_back</span>(cur-&gt;val);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> it = cur-&gt;children.<span class="built_in">rbegin</span>(); it != cur-&gt;children.<span class="built_in">rend</span>(); ++it) &#123;</span><br><span class="line">            s.<span class="built_in">push</span>(*it);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>后根遍历</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 递归</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">postorder</span><span class="params">(Node *root, vector&lt;<span class="keyword">int</span>&gt;&amp; ans)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">for</span> (Node *child : root-&gt;children) &#123;</span><br><span class="line">        <span class="built_in">postorder</span>(child, ans);</span><br><span class="line">    &#125;</span><br><span class="line">    ans.<span class="built_in">emplace_back</span>(root-&gt;val);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 迭代</span></span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">postorder</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!root) <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt; ans;</span><br><span class="line">    stack&lt;Node*&gt; s;</span><br><span class="line">    s.<span class="built_in">push</span>(root);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (!s.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        Node *cur = s.<span class="built_in">top</span>();</span><br><span class="line">        s.<span class="built_in">pop</span>();</span><br><span class="line">        ans.<span class="built_in">emplace_back</span>(cur-&gt;val);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> it = cur-&gt;children.<span class="built_in">begin</span>(); it != cur-&gt;children.<span class="built_in">end</span>(); ++it) &#123;</span><br><span class="line">            s.<span class="built_in">push</span>(*it);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">reverse</span>(ans.<span class="built_in">begin</span>(), ans.<span class="built_in">end</span>());</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="graph-search">Graph Search</h2>
+<p>笔试一般化为平时擅长的图表示再去做算法。</p>
+<h3 id="图的表示及转换">图的表示及转换</h3>
+<figure>
+<img src="https://img-blog.csdnimg.cn/20200218153739820.png"
+alt="在这里插入图片描述" />
+<figcaption aria-hidden="true">在这里插入图片描述</figcaption>
+</figure>
+<ul>
+<li>邻接矩阵</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>i/j</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0</td>
+<td>-1</td>
+<td>4</td>
+<td><span class="math inline">\(\infty\)</span></td>
+<td><span class="math inline">\(\infty\)</span></td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td><span class="math inline">\(\infty\)</span></td>
+<td>0</td>
+<td>3</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td><span class="math inline">\(\infty\)</span></td>
+<td><span class="math inline">\(\infty\)</span></td>
+<td>0</td>
+<td><span class="math inline">\(\infty\)</span></td>
+<td><span class="math inline">\(\infty\)</span></td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td><span class="math inline">\(\infty\)</span></td>
+<td>1</td>
+<td>5</td>
+<td>0</td>
+<td><span class="math inline">\(\infty\)</span></td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td><span class="math inline">\(\infty\)</span></td>
+<td><span class="math inline">\(\infty\)</span></td>
+<td><span class="math inline">\(\infty\)</span></td>
+<td>-3</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>用<code>vector&lt;vector&lt;int&gt;&gt; g(n, vector&lt;int&gt;(n, INF))</code>表示，<code>g[i][j]</code>表示从顶点<span
+class="math inline">\(i\)</span>到顶点<span
+class="math inline">\(j\)</span>的权重，空间复杂度<span
+class="math inline">\(O(|V|^2)\)</span>，适用于稠密图，用的不多；</p>
+<ul>
+<li>邻接表：链表比较少用，基本都用动态数组。</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>0</th>
+<th>(1,-1)</th>
+<th>(2,4)</th>
+<th>-</th>
+<th>-</th>
+<th>-</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>(2,3)</td>
+<td>(3,2)</td>
+<td>(4,2)</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>(1,1)</td>
+<td>(2,5)</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>(3,-3)</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>用<code>vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; g</code>表示，<code>g[i][j].first</code>表示从顶点<span
+class="math inline">\(i\)</span>出发到达的顶点<span
+class="math inline">\(k\)</span>，<code>g[i][j].second</code>表示从顶点<span
+class="math inline">\(i\)</span>到顶点<span
+class="math inline">\(k\)</span>的权值，空间复杂度<span
+class="math inline">\(O(|V|+|E|)\)</span>。 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 邻接矩阵转邻接表</span></span><br><span class="line">vector&lt;vector&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&gt; <span class="built_in">to_adj_list</span>(vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt;&amp; adj_matrix) &#123;</span><br><span class="line">    <span class="keyword">int</span> n = adj_matrix.<span class="built_in">size</span>();</span><br><span class="line">    vector&lt;vector&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&gt; <span class="built_in">ans</span>(n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">        vector&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; tmp;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (adj_matrix[i][j] != INT_MAX)</span><br><span class="line">                tmp.<span class="built_in">emplace_back</span>(<span class="built_in">make_pair</span>(j, adj_matrix[i][j]));</span><br><span class="line">        &#125;</span><br><span class="line">        ans[i] = tmp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 邻接表转邻接矩阵</span></span><br><span class="line">vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">to_adj_matrix</span>(vector&lt;vector&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&gt;&amp; adj_list) &#123;</span><br><span class="line">    <span class="keyword">int</span> n = adj_list.<span class="built_in">size</span>();</span><br><span class="line">    vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="built_in">ans</span>(n, vector&lt;<span class="keyword">int</span>&gt;(n, INT_MAX));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&amp; p : adj_list[i]) &#123;</span><br><span class="line">            ans[i][p.first] = p.second;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><p>边表<br />
+每个三元组表示一条边，上图的所有边表示为：<span
+class="math inline">\((0,1,-1),(0,2,4),(1,2,3),(1,3,2),(1,4,2),(3,1,1),(3,2,5),(4,3,-3)\)</span>
+用<code>vector&lt;vector&lt;int&gt;&gt; e</code>表示，<code>e[i][0]</code>表示顶点<span
+class="math inline">\(u\)</span>，<code>e[i][1]</code>表示顶点<span
+class="math inline">\(v\)</span>，<code>e[i][2]</code>表示<span
+class="math inline">\(u\)</span>到<span
+class="math inline">\(v\)</span>的权值，空间复杂度<span
+class="math inline">\(O(|E|)\)</span>。</p></li>
+<li><p>链式前向星<br />
+空间复杂度<span
+class="math inline">\(O(n)\)</span>，结合了邻接表和边表，包括边表数组<code>edge</code>和头结点数组<code>head</code>，
+<img src="https://img-blog.csdnimg.cn/20200725135220669.png"
+alt="img" />
+从结点2出发的边有4条，第一条边<code>head[2]=8</code>意味着该边存在<code>edge[8]</code>，下一条边存在<code>edge[6]</code>，<code>next==-1</code>表示结束。
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">edge</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> to, next, w;  <span class="comment">// 边终点to 下一条边next 权值w</span></span><br><span class="line">&#125; edge[<span class="number">1000000</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> head[<span class="number">1000000</span>];  <span class="comment">// head[i]表示指向i的第一条边的存储位置</span></span><br><span class="line"><span class="keyword">int</span> cnt;  <span class="comment">// 记录edge的末尾位置</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000000</span>; ++i) &#123;</span><br><span class="line">        edge[i].next = <span class="number">-1</span>;</span><br><span class="line">        head[i] = <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    cnt = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v, <span class="keyword">int</span> w)</span> </span>&#123;</span><br><span class="line">    edge[cnt].to = v;</span><br><span class="line">    edge[cnt].w = w;</span><br><span class="line">    edge[cnt].next = head[u];</span><br><span class="line">    head[u] = cnt++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历结点i的所有邻接点</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = head[u]; i != <span class="number">-1</span>; i = edge[i].next) &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+</ul>
+<h3 id="bfs">BFS</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bfs</span>(<span class="params">g, s</span>):</span></span><br><span class="line">    queue = []</span><br><span class="line">    marked = <span class="built_in">set</span>()  <span class="comment"># 避免环造成死循环</span></span><br><span class="line">    parent = &#123;s : <span class="literal">None</span>&#125;  <span class="comment"># for shortest path</span></span><br><span class="line">    queue.append(s)</span><br><span class="line">    marked.add(s)</span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">len</span>(queue) &gt; <span class="number">0</span>):</span><br><span class="line">        cur = queue.pop(<span class="number">0</span>)</span><br><span class="line">        <span class="built_in">print</span>(cur)</span><br><span class="line">        <span class="keyword">for</span> adj <span class="keyword">in</span> g[cur]:</span><br><span class="line">            <span class="keyword">if</span> adj <span class="keyword">not</span> <span class="keyword">in</span> marked:</span><br><span class="line">                marked.add(adj)</span><br><span class="line">                queue.append(adj)</span><br><span class="line">                parent[adj] = cur</span><br><span class="line">    <span class="keyword">return</span> parent</span><br></pre></td></tr></table></figure>
+<p>双向BFS <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dbfs</span><span class="params">(<span class="keyword">int</span> s, <span class="keyword">int</span> e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == e) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    queue&lt;<span class="keyword">int</span>&gt; q1, q2;</span><br><span class="line">    q1.<span class="built_in">push</span>(s), q2.<span class="built_in">push</span>(e);</span><br><span class="line">    unordered_set&lt;<span class="keyword">int</span>&gt; vis1&#123;s&#125;, vis2&#123;e&#125;;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (!q1.<span class="built_in">empty</span>() &amp;&amp; !q2.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (q1.<span class="built_in">size</span>() &lt; q2.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            <span class="keyword">int</span> size = q1.<span class="built_in">size</span>();</span><br><span class="line">            <span class="keyword">while</span> (size--) &#123;</span><br><span class="line">                <span class="keyword">int</span> cur = q1.<span class="built_in">front</span>(); q1.<span class="built_in">pop</span>();</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> nei : cur.neighbors) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (vis1.<span class="built_in">count</span>(nei)) <span class="keyword">continue</span>;</span><br><span class="line">                    <span class="keyword">if</span> (vis2.<span class="built_in">count</span>(nei)) <span class="keyword">return</span> res;</span><br><span class="line">                    vis1.<span class="built_in">insert</span>(nei);</span><br><span class="line">                    q1.<span class="built_in">push</span>(nei);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> size = q2.<span class="built_in">size</span>();</span><br><span class="line">            <span class="keyword">while</span> (size--) &#123;</span><br><span class="line">                <span class="keyword">int</span> cur = q2.<span class="built_in">front</span>(); q2.<span class="built_in">pop</span>();</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> nei : cur.neighbors) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (vis2.<span class="built_in">count</span>(nei)) <span class="keyword">continue</span>;</span><br><span class="line">                    <span class="keyword">if</span> (vis1.<span class="built_in">count</span>(nei)) <span class="keyword">return</span> res;</span><br><span class="line">                    vis2.<span class="built_in">insert</span>(nei);</span><br><span class="line">                    q2.<span class="built_in">push</span>(nei);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ++res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="dfs">DFS</h3>
+<p>从起点出发，标记走过的点，如果发现没有走过的点，随便选一个向前走，无路可走就回退。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">g, s</span>):</span></span><br><span class="line">    stack = []</span><br><span class="line">    marked = <span class="built_in">set</span>()</span><br><span class="line">    stack.append(s)</span><br><span class="line">    marked.add(s)</span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">len</span>(stack) &gt; <span class="number">0</span>):</span><br><span class="line">        cur = stack.pop()</span><br><span class="line">        <span class="built_in">print</span>(cur)</span><br><span class="line">        <span class="keyword">for</span> adj <span class="keyword">in</span> g[cur]:</span><br><span class="line">            <span class="keyword">if</span> adj <span class="keyword">not</span> <span class="keyword">in</span> marked:</span><br><span class="line">                marked.add(adj)</span><br><span class="line">                stack.append(adj)</span><br></pre></td></tr></table></figure>
+<p>很不幸的是：上面的代码是错的。举个例子：g有ABCDEF6个结点，边为AB AC
+BC BD CD CE DE
+DF，如果走ABDE的话，最终答案应该是ABDECF，但是上述代码的结果是ABDEFC，显然不是合法的DFS结果。</p>
+<p>问题在于标记结点是否访问的时机不对，在D弹出后，直接把EF入栈并标记为已访问，下次到E时发现C已被标记，但此时C很明显并未访问。<br />
+不应在入栈时标记，而应该在弹出时标记。因为入栈时并没有真正地访问该节点，出栈时才真正访问。<br />
+可以参考<a
+target="_blank" rel="noopener" href="https://github.com/joepachou/NoteBook/issues/116">CS61B</a>，正确的代码如下，可能会导致重复入栈（有方法避免）：
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">g, s</span>):</span></span><br><span class="line">    stack = []</span><br><span class="line">    marked = <span class="built_in">set</span>()</span><br><span class="line">    stack.append(s)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">len</span>(stack) &gt; <span class="number">0</span>):</span><br><span class="line">        cur = stack.pop()</span><br><span class="line">        <span class="keyword">if</span> cur <span class="keyword">not</span> <span class="keyword">in</span> marked:</span><br><span class="line">            marked.add(cur)</span><br><span class="line">            <span class="built_in">print</span>(cur)</span><br><span class="line">            <span class="keyword">for</span> adj <span class="keyword">in</span> g[cur]:</span><br><span class="line">                <span class="keyword">if</span> adj <span class="keyword">not</span> <span class="keyword">in</span> marked:</span><br><span class="line">                    stack.append(adj)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dfs</span>(<span class="params">g, s</span>):</span></span><br><span class="line">    <span class="keyword">global</span> marked</span><br><span class="line">    marked = <span class="built_in">set</span>()</span><br><span class="line">    marked.add(s)</span><br><span class="line">    <span class="built_in">print</span>(s)</span><br><span class="line">    <span class="keyword">for</span> adj <span class="keyword">in</span> g[s]:</span><br><span class="line">        <span class="keyword">if</span> adj <span class="keyword">not</span> <span class="keyword">in</span> marked:</span><br><span class="line">            dfs(g, adj)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><p>判断从V出发能否走到终点 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">bool</span> dfs(v) &#123;</span><br><span class="line">    <span class="keyword">if</span> (v <span class="keyword">is</span> terminal) <span class="keyword">return</span> true;</span><br><span class="line">    <span class="keyword">if</span> (vis[v]) <span class="keyword">return</span> false;</span><br><span class="line">    vis[v] = true;</span><br><span class="line">    <span class="keyword">for</span> (u <span class="keyword">in</span> adj(v)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (dfs(u)) <span class="keyword">return</span> true;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>判断从V出发能否走到终点，若能，记录路径</p></li>
+</ul>
+<p>栈的作用就是在走投无路之时留给你的退路。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">Node path[MAX_LEN];  <span class="comment">// MAX_LEN取节点总数即可</span></span><br><span class="line"><span class="keyword">int</span> depth;  <span class="comment">// 当前点的深度</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dfs</span><span class="params">(V)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (V为终点) &#123;</span><br><span class="line">        path[depth] = V;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (V为旧点) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    将V标记为旧点;</span><br><span class="line">    path[depth++] = V;</span><br><span class="line"></span><br><span class="line">    对和V相邻的每个节点U &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">Dfs</span>(U))</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    --depth;   <span class="comment">//从V走不到终点，把V排除出数组,回退到V的父节点</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    所有点标记为新点;</span><br><span class="line">    depth = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">Dfs</span>(起点)) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= depth; i++) &#123;</span><br><span class="line">            cout &lt;&lt; path[i] &lt;&lt; endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>遍历图上所有节点 <img
+src="https://img-blog.csdnimg.cn/20190409225110387.png"
+alt="在这里插入图片描述" /></li>
+</ul>
+<p>邻接矩阵存储遍历复杂度<span
+class="math inline">\(O(n^2)\)</span>，因为对每个节点，都要判断其它所有节点是否相邻。
+邻接表遍历复杂度<span class="math inline">\(O(n+e)\)</span>。</p>
+<p>1、<a target="_blank" rel="noopener" href="http://poj.org/problem?id=1164">城堡问题</a>
+给一个地图以及每个格子周围的墙所代表数字之和，求该地图有多少房间，最大房间的面积。</p>
+<p>分析：
+要先判断每个格子周围有什么墙，注意到1，2，4，8的二进制形式<code>0001</code>、<code>0010</code>、<code>0100</code>、<code>1000</code>，所以只要将输入数字与1，2，4，8相与，就能知道该方块周围有什么墙。
+把方块看作节点，相邻两个方块如果没有墙，就在这两节点之间连一条边，转换为图。
+房间个数：图中的极大连通子图个数
+<strong>极大连通子图：一个连通子图，加任意一个图中的其他点就不连通，这个子图就是极大连通子图。</strong></p>
+<p>具体：
+对每个房间进行DFS，得到该房间所在的极大连通子图，染色所有能够到达的房间，最后统计共用了几种颜色以及每种颜色的数量。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> room[<span class="number">50</span>][<span class="number">50</span>];</span><br><span class="line"><span class="keyword">int</span> color[<span class="number">50</span>][<span class="number">50</span>] = &#123; <span class="number">0</span> &#125;;   <span class="comment">//标记方块是否染色,初始都未被访问</span></span><br><span class="line"><span class="keyword">int</span> maxRoomArea = <span class="number">0</span>, roomNum = <span class="number">0</span>, curRoomArea = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Dfs</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span>   <span class="comment">//从i,j出发遍历极大连通子图</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (color[i][j])</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    color[i][j] = roomNum;   <span class="comment">//该方块染色</span></span><br><span class="line">    curRoomArea++;</span><br><span class="line">    <span class="keyword">if</span> ((room[i][j] &amp; <span class="number">1</span>) == <span class="number">0</span>) <span class="built_in">Dfs</span>(i, j - <span class="number">1</span>);  <span class="comment">//没有西墙，向西走</span></span><br><span class="line">    <span class="keyword">if</span> ((room[i][j] &amp; <span class="number">2</span>) == <span class="number">0</span>) <span class="built_in">Dfs</span>(i - <span class="number">1</span>, j);</span><br><span class="line">    <span class="keyword">if</span> ((room[i][j] &amp; <span class="number">4</span>) == <span class="number">0</span>) <span class="built_in">Dfs</span>(i, j + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> ((room[i][j] &amp; <span class="number">8</span>) == <span class="number">0</span>) <span class="built_in">Dfs</span>(i + <span class="number">1</span>, j);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> row, column;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;row, &amp;column);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; row; i++)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; column; j++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;room[i][j]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; row; i++)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; column; j++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (!color[i][j])   <span class="comment">//找到一个新的房间</span></span><br><span class="line">            &#123;</span><br><span class="line">                roomNum++;</span><br><span class="line">                curRoomArea = <span class="number">0</span>;</span><br><span class="line">                <span class="built_in">Dfs</span>(i, j);          <span class="comment">//探索该房间（极大连通子图）</span></span><br><span class="line">            &#125;</span><br><span class="line">            maxRoomArea = <span class="built_in">max</span>(curRoomArea, maxRoomArea);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n%d&quot;</span>, roomNum, maxRoomArea);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2、<a target="_blank" rel="noopener" href="http://bailian.openjudge.cn/practice/4103">踩方格</a>
+递归，从<span
+class="math inline">\((i,j)\)</span>出发走n步的方案数就等于先走一步，从其它三个格子走n-1步的方案数之和。
+前提就是该方块没走过。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> isVisited[<span class="number">20</span>][<span class="number">20</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Dfs</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//访问过直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (isVisited[i][j])</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//递归边界</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="number">0</span> == n)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    isVisited[i][j] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//可以走三个方向</span></span><br><span class="line">    ans += <span class="built_in">Dfs</span>(i - <span class="number">1</span>, j, n - <span class="number">1</span>);</span><br><span class="line">    ans += <span class="built_in">Dfs</span>(i, j - <span class="number">1</span>, n - <span class="number">1</span>);</span><br><span class="line">    ans += <span class="built_in">Dfs</span>(i, j + <span class="number">1</span>, n - <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//返回前表示当前格子可以重新被访问，以后的走法可能会访问到</span></span><br><span class="line">    isVisited[i][j] = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, <span class="built_in">Dfs</span>(<span class="number">20</span>, <span class="number">20</span>, n));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>3、<a target="_blank" rel="noopener" href="http://poj.org/problem?id=1724">ROADS</a>
+很多时候，并不需要一条路走到黑，这就是深搜中的<strong>剪枝</strong>。
+<img src="https://img-blog.csdnimg.cn/20190414173437346.png"
+alt="在这里插入图片描述" /></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _CRT_SECURE_NO_WARNINGS</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*存储边,不需要起点,G(i)表示从i出发*/</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Road</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> destination, len, toll;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*邻接表存储图*/</span></span><br><span class="line">vector&lt;vector&lt;Road&gt;&gt; <span class="built_in">G</span>(<span class="number">110</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> k, n, r;</span><br><span class="line"><span class="keyword">int</span> minLen;   <span class="comment">//探索过的最短的路径</span></span><br><span class="line"><span class="keyword">int</span> totalLen;   <span class="comment">//正在探索的最短路径</span></span><br><span class="line"><span class="keyword">int</span> totalCost;   <span class="comment">//正在探索的花费</span></span><br><span class="line"><span class="keyword">int</span> visited[<span class="number">110</span>];</span><br><span class="line"><span class="keyword">int</span> minL[<span class="number">110</span>][<span class="number">10010</span>]; <span class="comment">//minL[i][j]:从1走到城市i，且花了j块钱的最优路径长度</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == n)   <span class="comment">//找到了路径</span></span><br><span class="line">    &#123;</span><br><span class="line">        minLen = <span class="built_in">min</span>(minLen, totalLen);</span><br><span class="line">        <span class="keyword">return</span>;   <span class="comment">//强制结束函数</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> len = G[s].<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        Road r = G[s][i];</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*判断有没有足够的钱走到r.destination*/</span></span><br><span class="line">        <span class="keyword">if</span> (totalCost + r.toll &gt; k) <span class="comment">//钱不够，试下一条边</span></span><br><span class="line">            <span class="keyword">continue</span>;     <span class="comment">//可行性剪枝</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!visited[r.destination])</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">/*最优性剪枝*/</span></span><br><span class="line">            <span class="comment">//当前走过的路长度已经大于之前的minLen，就没必要走下去</span></span><br><span class="line">            <span class="keyword">if</span> (totalLen + r.len &gt;= minLen)</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//走到r.d时花费同样的钱走过的路长度大于之前相同花费的路长度</span></span><br><span class="line">            <span class="keyword">if</span> (totalLen + r.len &gt;= minL[r.destination][totalCost + r.toll])</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            minL[r.destination][totalCost + r.toll] = totalLen + r.len;</span><br><span class="line"></span><br><span class="line">            totalLen += r.len;</span><br><span class="line">            totalCost += r.toll;</span><br><span class="line">            visited[r.destination] = <span class="number">1</span>;</span><br><span class="line">            <span class="built_in">dfs</span>(r.destination);</span><br><span class="line"></span><br><span class="line">            <span class="comment">/*不走r.destination*/</span></span><br><span class="line">            visited[r.destination] = <span class="number">0</span>; <span class="comment">//换下条边之前将访问标志清0</span></span><br><span class="line">            totalLen -= r.len;</span><br><span class="line">            totalCost -= r.toll;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*从城市1开始深搜整个图，找到所有能到达n的，选最优的*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d%d&quot;</span>, &amp;k, &amp;n, &amp;r);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; r; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> source;</span><br><span class="line">        Road r;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d%d%d&quot;</span>, &amp;source, &amp;r.destination, &amp;r.len, &amp;r.toll);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (source != r.destination)</span><br><span class="line">        &#123;</span><br><span class="line">            G[source].<span class="built_in">push_back</span>(r);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(visited, <span class="number">0</span>, <span class="built_in"><span class="keyword">sizeof</span></span>(visited));</span><br><span class="line">    totalLen = <span class="number">0</span>, totalLen = <span class="number">0</span>;</span><br><span class="line">    minLen = <span class="number">1</span> &lt;&lt; <span class="number">30</span>;   <span class="comment">//置为无穷大</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">110</span>; i++)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">10010</span>; j++)</span><br><span class="line">            minL[i][j] = <span class="number">1</span> &lt;&lt; <span class="number">30</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    visited[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">dfs</span>(<span class="number">1</span>);  <span class="comment">//走完了所有路</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (minLen &lt; (<span class="number">1</span> &lt;&lt; <span class="number">30</span>))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, minLen);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;-1\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>4、<a target="_blank" rel="noopener" href="http://poj.org/problem?id=1190">生日蛋糕</a> <img
+src="https://img-blog.csdnimg.cn/20190414175732766.png"
+alt="在这里插入图片描述" /><img
+src="https://img-blog.csdnimg.cn/20190414182524737.png"
+alt="在这里插入图片描述" /> <a
+target="_blank" rel="noopener" href="http://bailian.openjudge.cn/practice/2816/">练习1</a><br />
+<a target="_blank" rel="noopener" href="http://bailian.openjudge.cn/practice/2488/">练习2</a><br />
+<a target="_blank" rel="noopener" href="http://bailian.openjudge.cn/practice/1321/">练习3</a></p>
+<h2 id="refs">Refs</h2>
+<p><a
+target="_blank" rel="noopener" href="https://www.icourse163.org/learn/PKU-1001894005?tid=1205957211#/learn/content?type=detail&amp;id=1210422520">郭炜老师MOOC</a><br />
+<a
+target="_blank" rel="noopener" href="http://faculty.cs.niu.edu/~mcmahon/CS241/Notes/Data_Structures/binary_tree_traversals.html">Binary
+Tree Traversals</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="EIMadrigal WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="EIMadrigal Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>EIMadrigal
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://eimadrigal.github.io/posts/tree-and-graph-search/" title="Tree &amp; Graph Search">https://eimadrigal.github.io/posts/tree-and-graph-search/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"><i class="fa fa-tag"></i> Algorithm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/char-array-and-pointer/" rel="prev" title="Character Array and Character Pointer">
+      <i class="fa fa-chevron-left"></i> Character Array and Character Pointer
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/maximum-subarray/" rel="next" title="Maximum Subarray">
+      Maximum Subarray <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tree-search"><span class="nav-text">Tree Search</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E7%82%B9%E5%AE%9A%E4%B9%89"><span class="nav-text">结点定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86"><span class="nav-text">层序遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E5%85%88%E5%BA%8F%E4%B8%AD%E5%BA%8F%E5%90%8E%E5%BA%8Fmorris"><span class="nav-text">二叉树先序&#x2F;中序&#x2F;后序&#x2F;Morris</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%8F%89%E6%A0%91%E5%85%88%E6%A0%B9%E5%90%8E%E6%A0%B9"><span class="nav-text">多叉树先根&#x2F;后根</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#graph-search"><span class="nav-text">Graph Search</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%8F%8A%E8%BD%AC%E6%8D%A2"><span class="nav-text">图的表示及转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bfs"><span class="nav-text">BFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dfs"><span class="nav-text">DFS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#refs"><span class="nav-text">Refs</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="EIMadrigal"
+      src="/images/favicon.png">
+  <p class="site-author-name" itemprop="name">EIMadrigal</p>
+  <div class="site-description" itemprop="description">Hello World</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/EIMadrigal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jingtao.ren@outlook.com" title="E-Mail → mailto:jingtao.ren@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/jingtaoren/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;jingtaoren&#x2F;" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/EIMadrigal" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EIMadrigal</span>
+</div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">Total views: <span id="busuanzi_value_site_pv"></span></span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">Total visitors: <span id="busuanzi_value_site_uv"></span></span>
+    <span class="post-meta-divider">|</span>
+
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);
+    var countOffset = 20000;
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset);
+            clearInterval(int);
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '285afe6e2d34f997b740',
+      clientSecret: 'f3e77970aacbc5a14421e48db34996ed8223f7e9',
+      repo        : 'EIMadrigal.github.io',
+      owner       : 'EIMadrigal',
+      admin       : ['EIMadrigal'],
+      id          : '14c9cae3af5cc497e3ecafdb9e52a417',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
