@@ -27,13 +27,15 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="贝叶斯优化">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20210404155244142.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/bayesian-optimization/1.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/bayesian-optimization/2.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/bayesian-optimization/3.png">
 <meta property="article:published_time" content="2021-04-06T14:18:00.000Z">
-<meta property="article:modified_time" content="2023-03-02T07:52:58.840Z">
+<meta property="article:modified_time" content="2023-03-11T06:22:20.268Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="AutoML">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210404155244142.png">
+<meta name="twitter:image" content="https://eimadrigal.github.io/posts/bayesian-optimization/1.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/posts/bayesian-optimization/">
 
@@ -229,7 +231,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-02 15:52:58" itemprop="dateModified" datetime="2023-03-02T15:52:58+08:00">2023-03-02</time>
+                <time title="Modified: 2023-03-11 14:22:20" itemprop="dateModified" datetime="2023-03-11T14:22:20+08:00">2023-03-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -278,8 +280,7 @@ Hyper-parameters. For this reason, we usually find a
 <strong>surrogate</strong> function to approximate the original function
 <span class="math inline">\(f\)</span>. In the field of AutoML, we often
 use Gaussian Process, Random Forest or deep network as the surrogate
-model. The simplest form of BO is as follows: <img
-src="https://img-blog.csdnimg.cn/20210401193953429.png"
+model. The simplest form of BO is as follows: <img src="1.png"
 alt="在这里插入图片描述" /> <span class="math inline">\(f\)</span>
 represents the black-box function that we want to optimize (black-box
 means that the function transforms a configuration <span
@@ -313,10 +314,11 @@ which has a great <span class="math inline">\(f(x)\)</span>
 (exploitation).</p>
 <p>Finally use the promising <span class="math inline">\(x_i\)</span> to
 get corresponding performance <span class="math inline">\(y_i\)</span>
-and join the pair into <span class="math inline">\(D\)</span>. ##
-Gaussian Process If we assume <span class="math inline">\(x_i\)</span>
-is independent with each other, the Multivariant Gaussian Distribution's
-probability density is as follows: <span class="math display">\[
+and join the pair into <span class="math inline">\(D\)</span>.</p>
+<h2 id="gaussian-process">Gaussian Process</h2>
+<p>If we assume <span class="math inline">\(x_i\)</span> is independent
+with each other, the Multivariant Gaussian Distribution's probability
+density is as follows: <span class="math display">\[
 p(x_1,...,x_n)=\frac{1}{(2\pi)^{\frac{n}{2}}\sigma_1...\sigma_n}exp(-\frac{1}{2}[\frac{(x_1-\mu_1)^2}{\sigma_1^2}+...+\frac{(x_n-\mu_n)^2}{\sigma_n^2}])
 \]</span> We can rewrite the formula to the vectorized version: <span
 class="math display">\[
@@ -349,8 +351,7 @@ class="math inline">\({\xi_t}\)</span> is a GP.</p>
 life time, at every moment <span class="math inline">\(t\)</span> the
 energy of the population forms a Gaussian Distribution but different
 moments have different <span class="math inline">\(\mu\)</span> and
-<span class="math inline">\(\sigma\)</span>: <img
-src="https://img-blog.csdnimg.cn/20210404141525979.png"
+<span class="math inline">\(\sigma\)</span>: <img src="2.png"
 alt="在这里插入图片描述" /> If we take 5 moments during a population's
 life time, then <span class="math inline">\(\xi_1-\xi_5\)</span> all
 forms Gaussian Distribution but they have different <span
@@ -421,12 +422,12 @@ want to know the rest of the points based on the observed points: <span
 class="math inline">\(f(X^*)|Y\sim N(\mu^*,k^*)\)</span>. <span
 class="math display">\[\mu^*=\mu(X^*)+k(X^*,X)k(X,X)^{-1}(Y-\mu(X))\\
 k^*=k(X^*,X^*)-k(X^*,X)k(X,X)^{-1}k(X,X^*)\]</span> Here is an example:
-<img src="https://img-blog.csdnimg.cn/20210404155244142.png"
-alt="在这里插入图片描述" /> Finally let's return back to our BO's <span
-class="math inline">\(M\)</span>. We first assume our prior: <span
-class="math inline">\(\mu(X)=0,k(X,X^*)=RBF\)</span>. Plus the observed
-and evaluated <span class="math inline">\(D=\{x_i,y_i\}\)</span> we can
-get <span class="math inline">\(\hat \mu\)</span> and <span
+<img src="3.png" alt="在这里插入图片描述" /> Finally let's return back
+to our BO's <span class="math inline">\(M\)</span>. We first assume our
+prior: <span class="math inline">\(\mu(X)=0,k(X,X^*)=RBF\)</span>. Plus
+the observed and evaluated <span
+class="math inline">\(D=\{x_i,y_i\}\)</span> we can get <span
+class="math inline">\(\hat \mu\)</span> and <span
 class="math inline">\(\hat{\sigma}^{2}\)</span>, then the posterior
 prediction is <span class="math inline">\(p(y|x,D)\)</span>, which is
 still a Gaussian Distribution. The calculation process is as follows:
@@ -437,8 +438,9 @@ y=(y_1,...,y_i)^T \\
 \]</span> Once we get the posterior prediction <span
 class="math inline">\(p(y|x,D)\)</span>, we can feed them to the
 Acquisition Function to get next <span
-class="math inline">\(x_t\)</span>. ## Acquisition Function There are
-some popular Acquisition Functions:</p>
+class="math inline">\(x_t\)</span>.</p>
+<h2 id="acquisition-function">Acquisition Function</h2>
+<p>There are some popular Acquisition Functions:</p>
 <ol type="1">
 <li>Upper Confidence Bound (UCB) <span
 class="math inline">\(x_{t+1}=\underset{x\in X}{\operatorname{arg\
@@ -595,7 +597,7 @@ Bayesian Optimization</a></p>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-text">Reference</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gaussian-process"><span class="nav-text">Gaussian Process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#acquisition-function"><span class="nav-text">Acquisition Function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-text">Reference</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
