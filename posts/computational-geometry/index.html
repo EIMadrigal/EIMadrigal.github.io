@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Monaco:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="计算几何摘录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Computational Geometry">
+<meta property="og:url" content="https://eimadrigal.github.io/posts/computational-geometry/index.html">
+<meta property="og:site_name" content="EI Madrigal&#39;s Space">
+<meta property="og:description" content="计算几何摘录">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200729213724839.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200729213754372.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200729213857178.png">
+<meta property="article:published_time" content="2020-04-20T02:15:00.000Z">
+<meta property="article:modified_time" content="2023-03-02T07:59:06.266Z">
+<meta property="article:author" content="EIMadrigal">
+<meta property="article:tag" content="Algorithm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200729213724839.png">
+
+<link rel="canonical" href="https://eimadrigal.github.io/posts/computational-geometry/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Computational Geometry | EI Madrigal's Space</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EI Madrigal's Space</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/posts/computational-geometry/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Computational Geometry
+        </h1>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-20 10:15:00" itemprop="dateCreated datePublished" datetime="2020-04-20T10:15:00+08:00">2020-04-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-02 15:59:06" itemprop="dateModified" datetime="2023-03-02T15:59:06+08:00">2023-03-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <div class="post-description">计算几何摘录</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="线段重叠">线段重叠</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">start1 &lt;= end2 &amp;&amp; end1 &gt;= start2</span><br></pre></td></tr></table></figure>
+<h2 id="矩形重叠面积">矩形重叠面积</h2>
+<p>看过某司一道笔试题：给<span
+class="math inline">\(n\)</span>个矩形左下和右上坐标（不能斜放），求重叠最多处矩形个数。<br />
+这道题本身不难：可以遍历所有矩形边界组成的点，计算<strong>该点被多少矩形包围</strong>，从而选出最大值。<br />
+由此引申出一个问题：<strong>判断两个矩形重叠</strong>。</p>
+<ul>
+<li>如果正向思考，会有很多种情况：包含、重叠某个角、交叉...</li>
+</ul>
+<p>那么如果逆向思考：什么情况两个矩形不重叠？无非就是<span
+class="math inline">\(A(p_1, p_2)\)</span>在<span
+class="math inline">\(B(p_3, p_4)\)</span>的上下左右： <span
+class="math display">\[(p_1.y&gt;=p_4.y)\vee(p_3.y&gt;=p_2.y)\vee(p_3.x&gt;=p_2.x)\vee(p_1.x&gt;=p_4.x)\]</span>
+取反后用De Morgan's law化简就是重叠的情况： <span
+class="math display">\[(p_1.y&lt;p_4.y)\wedge(p_3.y&lt;p_2.y)\wedge(p_3.x&lt;p_2.x)\wedge(p_1.x&lt;p_4.x)\]</span></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">point</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> x, y;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">crossArea</span><span class="params">(point p1, point p2, point p3, point p4)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 不重叠</span></span><br><span class="line">    <span class="keyword">if</span> (p1.y &gt;= p4.y || p3.y &gt;= p2.y || p3.x &gt;= p2.x || p1.x &gt;= p4.x) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 左右上下边界</span></span><br><span class="line">    <span class="keyword">int</span> x1 = <span class="built_in">max</span>(p1.x, p3.x);</span><br><span class="line">    <span class="keyword">int</span> x2 = <span class="built_in">min</span>(p2.x, p4.x);</span><br><span class="line">    <span class="keyword">int</span> y1 = <span class="built_in">min</span>(p2.y, p4.y);</span><br><span class="line">    <span class="keyword">int</span> y2 = <span class="built_in">max</span>(p1.y, p3.y);</span><br><span class="line">    <span class="keyword">return</span> (x2 - x1) * (y1 - y2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="线段交点">线段交点</h2>
+<p>联立方程组求解当然没问题，也可以用几何的方法解：<br />
+<img
+src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDIwLmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDIwMDQvMTI2MDU4MS0yMDIwMDQyMDA5Mjk1NTI0OS05MzA1Nzg4NjkucG5n?x-oss-process=image/format,png" /><br />
+易知，<span
+class="math inline">\(\frac{AO}{BO}=\frac{AE}{BF}=\frac{S_{ACD}}{S_{BCD}}\)</span>，两个三角形面积可以用叉积求得，又<span
+class="math inline">\(\vec{AO}=\frac{AO}{AB}\vec{AB}=\frac{AO}{AO+BO}\vec{AB}\)</span>，所以<span
+class="math inline">\(\vec{O&#39;O}=\vec{O&#39;A}+\vec{AO}\)</span>，即可求得<span
+class="math inline">\(O\)</span>点坐标。</p>
+<h2 id="线段覆盖">线段覆盖</h2>
+<p>有若干线段<span
+class="math inline">\([l_i,r_i]\)</span>以及目标线段<span
+class="math inline">\([a,b]\)</span>，需要用尽可能多的线段去覆盖目标线段，且线段之间不相交，线段长度之和最小。<br />
+直观上看：我们的策略首先以长度为准则：显然不妥，选了黑的就不是最优<br />
+<img src="https://img-blog.csdnimg.cn/20200729213724839.png"
+alt="在这里插入图片描述" /><br />
+按照起始点：<br />
+<img src="https://img-blog.csdnimg.cn/20200729213754372.png"
+alt="在这里插入图片描述" /><br />
+按照结束点：最优<br />
+<img src="https://img-blog.csdnimg.cn/20200729213857178.png"
+alt="在这里插入图片描述" /><br />
+从前向后取区间，最小化对后面的影响，选择最早结束的区间。</p>
+<h2 id="向量旋转">向量旋转</h2>
+<p><img
+src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDIwLmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDIwMDQvMTI2MDU4MS0yMDIwMDQyMDA5NDU1Mzg4My0xOTgxNzI0NjU3LnBuZw?x-oss-process=image/format,png" /><br />
+三角变换可得： <span class="math display">\[\vec
+b=(xcos\alpha-ysin\alpha,ycos\alpha+xsin\alpha)\]</span></p>
+<h2 id="多边形面积">多边形面积</h2>
+<p><img
+src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWcyMDIwLmNuYmxvZ3MuY29tL2Jsb2cvMTI2MDU4MS8yMDIwMDQvMTI2MDU4MS0yMDIwMDQyMDEwMTQxNjU5NC0xMjc1OTkyNDExLnBuZw?x-oss-process=image/format,png" /><br />
+三角剖分： <span
+class="math display">\[S_{ABCDEF}=\frac{\vec{OA}\times\vec{OB}+\vec{OB}\times\vec{OC}+...+\vec{OF}\times\vec{OA}}{2}\]</span>
+即： <span class="math display">\[S=A_n\times
+A_1+\sum_{i=1}^{n-1}A_i\times
+A_{i+1}=x_ny_1-y_nx_1+\sum_{i=1}^{n-1}x_iy_{i+1}-y_ix_{i+1}\]</span></p>
+<h2 id="凸包">凸包</h2>
+<p>包围所有给定点并且周长最小的多边形。</p>
+<p><img
+src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229164832081-268323827.jpg"
+alt="image" /><br />
+直接求不好算，需要旋转坐标轴：<br />
+<img
+src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229164921157-1565408775.png"
+alt="image" /><br />
+<img
+src="https://img2020.cnblogs.com/blog/1260581/202112/1260581-20211229164931460-670765424.png"
+alt="image" /> <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">cloest</span>(<span class="params">self, x, y, l, w, yaw</span>):</span></span><br><span class="line">        <span class="comment"># 原始坐标系逆时针旋转theta = yaw - 90得到坐标系(xx,yy)</span></span><br><span class="line">        theta = math.radians(yaw - <span class="number">90</span>)</span><br><span class="line">        xx = x * math.cos(theta) + y * math.sin(theta)</span><br><span class="line">        yy = -x * math.sin(theta) + y * math.cos(theta)</span><br><span class="line"></span><br><span class="line">        points = [(xx + w / <span class="number">2</span>, yy + l / <span class="number">2</span>), (xx - w / <span class="number">2</span>, yy - l / <span class="number">2</span>), (xx + w / <span class="number">2</span>, yy - l / <span class="number">2</span>), (xx - w / <span class="number">2</span>, yy + l / <span class="number">2</span>)]</span><br><span class="line">        dis = [a ** <span class="number">2</span> + b ** <span class="number">2</span> <span class="keyword">for</span> a, b <span class="keyword">in</span> points]</span><br><span class="line">        ans = points[dis.index(<span class="built_in">min</span>(dis))]</span><br><span class="line">        ans_x = ans[<span class="number">0</span>] * math.cos(theta) - ans[<span class="number">1</span>] * math.sin(theta)</span><br><span class="line">        ans_y = ans[<span class="number">0</span>] * math.sin(theta) + ans[<span class="number">1</span>] * math.cos(theta)</span><br><span class="line">        <span class="keyword">return</span> ans_x, ans_y</span><br></pre></td></tr></table></figure></p>
+<hr />
+<p><em>reference</em> <em><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/68617952">洛谷日报#142
+计算几何初步</a></em></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="EIMadrigal WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="EIMadrigal Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>EIMadrigal
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://eimadrigal.github.io/posts/computational-geometry/" title="Computational Geometry">https://eimadrigal.github.io/posts/computational-geometry/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"><i class="fa fa-tag"></i> Algorithm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/interview-5/" rel="prev" title="INTERVIEW 5">
+      <i class="fa fa-chevron-left"></i> INTERVIEW 5
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/image-filter-and-recover/" rel="next" title="Image Filter and Recover">
+      Image Filter and Recover <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%AE%B5%E9%87%8D%E5%8F%A0"><span class="nav-text">线段重叠</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E5%BD%A2%E9%87%8D%E5%8F%A0%E9%9D%A2%E7%A7%AF"><span class="nav-text">矩形重叠面积</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%AE%B5%E4%BA%A4%E7%82%B9"><span class="nav-text">线段交点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%AE%B5%E8%A6%86%E7%9B%96"><span class="nav-text">线段覆盖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%91%E9%87%8F%E6%97%8B%E8%BD%AC"><span class="nav-text">向量旋转</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E8%BE%B9%E5%BD%A2%E9%9D%A2%E7%A7%AF"><span class="nav-text">多边形面积</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%B8%E5%8C%85"><span class="nav-text">凸包</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="EIMadrigal"
+      src="/images/favicon.png">
+  <p class="site-author-name" itemprop="name">EIMadrigal</p>
+  <div class="site-description" itemprop="description">Hello World</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">186</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/EIMadrigal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jingtao.ren@outlook.com" title="E-Mail → mailto:jingtao.ren@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/jingtaoren/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;jingtaoren&#x2F;" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/EIMadrigal" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EIMadrigal</span>
+</div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">Total views: <span id="busuanzi_value_site_pv"></span></span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">Total visitors: <span id="busuanzi_value_site_uv"></span></span>
+    <span class="post-meta-divider">|</span>
+
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);
+    var countOffset = 20000;
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset);
+            clearInterval(int);
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '285afe6e2d34f997b740',
+      clientSecret: 'f3e77970aacbc5a14421e48db34996ed8223f7e9',
+      repo        : 'EIMadrigal.github.io',
+      owner       : 'EIMadrigal',
+      admin       : ['EIMadrigal'],
+      id          : '9c2ff340f9e4593418f5a6c997906161',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

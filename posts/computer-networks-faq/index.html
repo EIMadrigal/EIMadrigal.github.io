@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Monaco:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="计网八股文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络FAQ">
+<meta property="og:url" content="https://eimadrigal.github.io/posts/computer-networks-faq/index.html">
+<meta property="og:site_name" content="EI Madrigal&#39;s Space">
+<meta property="og:description" content="计网八股文">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-01-02T14:19:00.000Z">
+<meta property="article:modified_time" content="2023-04-28T07:04:35.090Z">
+<meta property="article:author" content="EIMadrigal">
+<meta property="article:tag" content="Interview">
+<meta property="article:tag" content="Network">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://eimadrigal.github.io/posts/computer-networks-faq/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>计算机网络FAQ | EI Madrigal's Space</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EI Madrigal's Space</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/posts/computer-networks-faq/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          计算机网络FAQ
+        </h1>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-01-02 22:19:00" itemprop="dateCreated datePublished" datetime="2019-01-02T22:19:00+08:00">2019-01-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-04-28 15:04:35" itemprop="dateModified" datetime="2023-04-28T15:04:35+08:00">2023-04-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <div class="post-description">计网八股文</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="tcp和udp区别">TCP和UDP区别</h2>
+<ul>
+<li>TCP面向连接，提供可靠传输，收发数据前要3次握手建立连接，使用ACK对收发数据进行确认；UDP是无连接协议，不管对方是否收到或收到的数据是否正确</li>
+<li>TCP提供流量控制和拥塞控制，UDP无</li>
+<li>TCP对系统资源的要求高于UDP，因此速度稍慢</li>
+<li>TCP数据包没有边界，会出现粘包问题，UDP包是独立的，没有粘包问题</li>
+<li>应用时如果强调数据的完整性和正确性应用TCP，强调性能和速度时用UDP</li>
+</ul>
+<h2 id="tcp握手与挥手">TCP握手与挥手</h2>
+<p>建立TCP连接的过程需要使用一些系统调用 <a
+target="_blank" rel="noopener" href="https://www.jianshu.com/p/f62390df9627">SYN攻击与预防</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/liwei0526vip/p/14587300.html">TCP握手</a></p>
+<p>攻击者截取服务器回复的SYN和ACK，伪装成原主机继续通信</p>
+<p>服务器超时重传，达到最大次数后发RST并关闭连接</p>
+<p>客户端处于time_wait状态，同时源端口不可用，端口号很快耗尽</p>
+<h3 id="time_wait状态">TIME_WAIT状态</h3>
+<ol type="1">
+<li>why
+2MSL：确保ACK报文能够到达服务端，使服务端正常关闭连接。防止已失效的报文出现在新的连接中，导致数据错乱。</li>
+<li></li>
+</ol>
+<p>双方的(IP, Socket)四元组不能被使用。</p>
+<h2 id="tcp可靠传输">TCP可靠传输</h2>
+<ul>
+<li>16位校验和：伪首部 + TCP header二进制相加取反，丢弃</li>
+<li>seq + ack：接收方按序组织，避免重复，确保收到所有Segments</li>
+<li><a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/12956685">超时重传</a>：发送方维护超时时间，没有收到ack就重传，即ARQ（包括停等，go
+back
+N，选择重传）。RTO时间采用指数回退，重传超过一定次数（比如8次）就断开连接。</li>
+<li>流量控制：收方告诉发方接收缓冲区大小，通过可变大小的滑动窗宽recv_win控制发方的发送速率</li>
+<li>拥塞控制：发送方维持拥塞窗口cwnd记录网络链路的拥塞程度，发送窗口=min{recv_win,
+cwnd}。慢启动，拥塞避免，快速重传，快速恢复</li>
+</ul>
+<ol type="1">
+<li>慢启动<br />
+cwnd指数增加{1, 2, 4, 8, 16, ...}，超过阈值时开始拥塞避免算法</li>
+<li>拥塞避免<br />
+cwnd线性增加</li>
+<li>快速重传<br />
+要求接收方每收到一个失序的报文段后就立即发出重复确认而不是等待自己发送数据时才捎带确认
+发送方只要一连收到三个重复确认就立即重传对方尚未收到的报文段，而不必等待设置的重传计时器到期</li>
+<li>快速恢复<br />
+当发送方连续收到三个重复确认时，就执行“乘法减小”算法，把慢开始门限ssthresh减半，为了预防网络拥塞
+将拥塞窗口cwnd值设置为慢开始门限ssthresh减半后的数值，然后开始执行拥塞避免算法
+TCP Tahoe版本与TCP
+Reno版本的区别：Reno版本在快重传之后采用快恢复算法而不是采用慢开始算法</li>
+</ol>
+<h2 id="udp">UDP</h2>
+<p>UDP对实时性要求高，数据准确性要求不是太高的场合、视频通话、QQ主要UDP为主，TCP为辅
+应用场景：实时音视频传输，DNS协议</p>
+<ul>
+<li>对延迟要求高，可靠性要求低，无法忍受重传，需要看到实时的图像和声音，中间丢一帧完全没事。</li>
+<li>网络非常可靠，不需要考虑UDP丢包的问题。</li>
+<li>NAT穿透只能用UDP</li>
+</ul>
+<h2 id="https"><a
+target="_blank" rel="noopener" href="https://xiaolincoding.com/network/2_http/https_rsa.html#tls-%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B">HTTPS</a></h2>
+<p>HTTP协议存在安全问题：</p>
+<ul>
+<li>信息明文传输, 不提供数据加密, 可能被窃听</li>
+<li>未验证通信双方身份, 可能伪装</li>
+<li>未验证报文完整性, 可能篡改</li>
+</ul>
+<p>为了解决上述问题, HTTPS在HTTP的基础上增加了SSL/TLS传输层,
+进行安全传输.</p>
+<ul>
+<li>加密: 混合加密方式. 非对称加密传输session key, 对称加密传输信息.
+非对称加密需要公钥和私钥，公钥用来加密，私钥用来解密. 安全，不怕泄漏,
+速度慢. 常用算法包括RSA，ECC，DSA.
+对称加密计算量小，算法速度快，加密效率高,
+密钥容易泄漏。不同的会话需要不同的密钥，管理起来很费劲,
+常用算法：DES，3DES，IDEA，CR4，CR5，CR6，AES.</li>
+<li>认证: 数字证书验证双方身份.
+权威CA使用私钥将网站A的信息和消息摘要（签名S）进行加密打包形成数字证书。网站A将自己的信息和数字证书发给客户端，客户端用CA的公钥对数字证书进行解密，得到签名S，与手动将网站的信息进行消息摘要得到的结果S*进行对比，如果签名一致就证明网站A可以信任。</li>
+<li>完整性保护:</li>
+</ul>
+<p>具体细节可以参考<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/43789231">彻底搞懂HTTPS的加密原理</a>和<a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/wqhwe/p/5407468.html">HTTP与HTTPS的区别</a>.</p>
+<p>https包括非对称加密和对称加密两个阶段，在客户端与服务器建立连接的时候使用非对称加密，连接建立以后使用的是对称加密。</p>
+<ol type="1">
+<li>客户使用https的URL访问Web服务器，要求与Web服务器建立SSL连接</li>
+<li>Web服务器收到客户端请求后，会将网站的公钥传送一份给客户端，私钥自己保存。服务器第一次传给客户端的公钥其实包含在CA对网站信息进行加密的数字证书中</li>
+<li>客户端的浏览器根据双方同意的安全等级，生成对称加密使用的密钥，称为会话密钥，然后利用网站的公钥将会话密钥加密，并传送给网站</li>
+<li>Web服务器利用自己的私钥解密出会话密钥。</li>
+<li>Web服务器利用会话密钥加密与客户端之间的通信，这个过程是对称加密的过程。</li>
+</ol>
+<p>客户端的对称加密密钥其实是三个随机数的哈希（1.
+客户端第一次给服务端发送请求时附带的随机数 2. 服务器返回时的随机数 3.
+客户端收到返回时的随机数）</p>
+<h2 id="tcp异常连接"><a
+target="_blank" rel="noopener" href="https://xiaolincoding.com/network/3_tcp/tcp_down_and_crash.html">TCP异常连接</a></h2>
+<h3 id="什么情况发送rst包">什么情况发送RST包</h3>
+<p>重建连接标识。当RST=1时，表明TCP连接中出现严重错误（如由于主机崩溃或其他原因），必须释放连接，然后再重新建立连接。复位标志，用于非正常地关闭连接。它是TCP协议首部里的一个标志位。发送RST包关闭连接时，直接丢弃缓冲区的包发送RST包（这个和发FIN包不同）。而接收端收到RST包后，也不必发送ACK包来确认。</p>
+<p>客户端和服务器TCP连接正常，突然服务器掉电重启，与客户端的TCP连接状态由于掉电而完全消失。之后，客户端发给服务器任何消息，都会触发服务器发RST作为回应。服务器之所以发RST，是因为连接不存在，通过Reset状态位，间接告诉客户端异常情况的存在。如果Reset顺利到达客户端，客户端意识到异常发生了，会立马释放该TCP连接所占用的内存资源（状态、数据）、以及端口号，且不会回复ACK</p>
+<p>RST是客户端或服务器异常关闭tcp连接发的包，通常都是主机收到不存在的tcp通道的tcp报文，主机“被迫”回复RST告知对方tcp连接异常，收到RST的一方就会关闭这个socket，释放所有socket信息，且不会回复ACK</p>
+<ol type="1">
+<li><p>连接未监听的端口：连接一个未监听的端口，则被连接方会发送一个RST。也就是说主机传输层TCP程序接收到一个SYN包，而这个SYN包目的端口并没有socket监听，那么主机的协议栈会直接回复一个RST</p></li>
+<li><p>目的主机或网络路径中的防火墙拦截：</p></li>
+<li><p>socket接收缓冲区Recv-Q中的数据未完全被应用程序读取时关闭该socket：接收到的数据缓存在缓冲区Recv-Q，它们等待被上层应用取走，如果缓冲区Recv-Q有数据未被应用取走，而此时调用了socket.close()方法强行关闭TCP连接，那么TCP协议程序发送的就不是FIN，而是RST</p></li>
+<li><p>向已关闭的socket发送数据：主机传输层TCP协议程序接收到一条TCP数据报，而目的端口并没有socket监听，那么主机的协议栈会直接回复一个RST</p></li>
+<li><p>向已关闭的连接发送FIN：主机传输层TCP协议程序接收到一条FIN，而目的端口并没有socket监听，那么主机的协议栈会直接回复一个RST</p></li>
+<li><p>未开启TCP
+keepalive，双方一直没有数据交互，客户端<strong>主机崩溃</strong>：服务器无法感知客户端崩溃，其TCP连接会一直处于<code>ESTABLISHED</code>状态，直到服务端重启进程。</p></li>
+<li><p>未开启TCP
+keepalive，双方一直没有数据交互，客户端<strong>进程崩溃</strong>：客户端OS能够感知到进程崩溃，发送FIN报文，正常进行四次挥手。</p></li>
+<li><p>未开启TCP
+keepalive，有数据交互，客户端<strong>主机崩溃</strong>，迅速重启：服务端发送的报文无法得到响应，触发超时重传机制，客户端重启完成后接收重传报文。此时如果客户端没有进程监听该报文的目标端口，客户端回复RST报文，断开连接；如果有进程监听，但是之前的TCP连接的数据结构已经丢失，客户端内核协议栈会发现找不到该TCP连接的socket结构体，回复RST报文，断开连接。</p></li>
+<li><p>未开启TCP
+keepalive，有数据交互，客户端<strong>主机崩溃</strong>，一直没有重启：服务端超时重传达到最大次数后，内核判定该连接有问题，通过socket接口通知应用程序，断开连接。</p></li>
+</ol>
+<h2 id="url解析">URL解析</h2>
+<ol type="1">
+<li>域名解析，host使用DNS协议将URL解析为相应的IP</li>
+<li>host与server通过三次握手建立TCP连接</li>
+<li>浏览器发送HTTP请求</li>
+<li>服务器响应请求</li>
+<li>host接收响应并渲染</li>
+</ol>
+<p>子网中第一个地址是网络地址，最后一个地址是广播地址</p>
+<p>RST 1. 直接丢弃缓冲区中的包发送RST 2. 收到RST包不必回复ACK包</p>
+<p>常见的发RST的情况：https://zhuanlan.zhihu.com/p/30791159 1.
+SYN包试图连接一个没有任何服务监听的端口 2.
+收到了之前连接的包，但是该连接已经关闭</p>
+<p>SYN泛洪攻击</p>
+<p>服务器收到SYN连接请求后，分配缓冲区等资源，初始化连接变量。
+如果客户端的第三次ACK没有收到，服务器首先会重传SYNACK，多次重传后服务器通常会在1min后终止半连接状态并且回收资源。</p>
+<p>客户端可以发送大量的SYN段耗尽服务器的资源，合法的请求得不到响应，就是一种典型的DoS(Denial
+of Service)攻击。</p>
+<p>一般通过SYN cookies预防：对比第一次和第三次握手hash值是否相同</p>
+<p>HTTP状态码<br />
+200 - 请求成功 301 - 资源（网页等）被永久转移到其它URL 400 - 请求无效
+403 - 禁止访问 404 - 请求的资源（网页等）不存在 500 - 内部服务器错误</p>
+<p>https://networkengineering.stackexchange.com/questions/24068/why-do-we-need-a-3-way-handshake-why-not-just-2-way</p>
+<h2 id="http请求">HTTP请求</h2>
+<ol type="1">
+<li>域名解析：首先在浏览器和OS的DNS缓存中查找，如果没有，向DNS服务器发起域名解析请求；</li>
+<li>建立TCP连接；</li>
+<li>发起HTTP请求；</li>
+<li>服务器响应，浏览器获得并解析HTML，请求图片等资源，向用户渲染页面。</li>
+</ol>
+<p><a
+target="_blank" rel="noopener" href="https://www.runoob.com/http/http-status-codes.html">状态码分类</a></p>
+<h2 id="icmp">ICMP</h2>
+<p>验证网络是否畅通以及轨迹追踪，因为IP协议不提供可靠传输，如果丢包，IP并不能通知传输层是否丢包以及为何丢包，因此需要ICMP，网络层协议。</p>
+<p>确认IP包是否成功到达目的地址<br />
+通知在发送过程中IP包被丢弃的原因：目标不可达、源抑制、超时</p>
+<p>ping traceroute</p>
+<h2 id="条件变量">条件变量</h2>
+<p>用于多线程间状态的同步，控制其交替执行的先后顺序，条件不满足时相关线程阻塞，满足时唤醒，个人认为原理类似于线程间共享的全局变量，至于该变量如何工作还有待考究。</p>
+<p>锁是用来保护共享资源，但是这两究竟有什么区别，为什么要同时使用，待确定。</p>
+<p>lock
+guard构造时加锁，局部作用域结束析构释放锁，不够灵活。因此用unique
+lock</p>
+<p>shared和weak区别 循环引用导致内存泄漏</p>
+<p>GET：完整请求一个资源，没有请求数据 POST：提交表单，文件等</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/501400192">限流器</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="EIMadrigal WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="EIMadrigal Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>EIMadrigal
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://eimadrigal.github.io/posts/computer-networks-faq/" title="计算机网络FAQ">https://eimadrigal.github.io/posts/computer-networks-faq/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Interview/" rel="tag"><i class="fa fa-tag"></i> Interview</a>
+              <a href="/tags/Network/" rel="tag"><i class="fa fa-tag"></i> Network</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/complexity-notations/" rel="prev" title="Notations">
+      <i class="fa fa-chevron-left"></i> Notations
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/monotonous-stack-and-queue/" rel="next" title="单调栈与单调队列">
+      单调栈与单调队列 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%92%8Cudp%E5%8C%BA%E5%88%AB"><span class="nav-text">TCP和UDP区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E6%8F%A1%E6%89%8B%E4%B8%8E%E6%8C%A5%E6%89%8B"><span class="nav-text">TCP握手与挥手</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#time_wait%E7%8A%B6%E6%80%81"><span class="nav-text">TIME_WAIT状态</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93"><span class="nav-text">TCP可靠传输</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#udp"><span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#https"><span class="nav-text">HTTPS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp%E5%BC%82%E5%B8%B8%E8%BF%9E%E6%8E%A5"><span class="nav-text">TCP异常连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E5%8F%91%E9%80%81rst%E5%8C%85"><span class="nav-text">什么情况发送RST包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#url%E8%A7%A3%E6%9E%90"><span class="nav-text">URL解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http%E8%AF%B7%E6%B1%82"><span class="nav-text">HTTP请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#icmp"><span class="nav-text">ICMP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F"><span class="nav-text">条件变量</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="EIMadrigal"
+      src="/images/favicon.png">
+  <p class="site-author-name" itemprop="name">EIMadrigal</p>
+  <div class="site-description" itemprop="description">Hello World</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">186</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/EIMadrigal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jingtao.ren@outlook.com" title="E-Mail → mailto:jingtao.ren@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/jingtaoren/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;jingtaoren&#x2F;" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/EIMadrigal" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EIMadrigal</span>
+</div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">Total views: <span id="busuanzi_value_site_pv"></span></span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">Total visitors: <span id="busuanzi_value_site_uv"></span></span>
+    <span class="post-meta-divider">|</span>
+
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);
+    var countOffset = 20000;
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset);
+            clearInterval(int);
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '285afe6e2d34f997b740',
+      clientSecret: 'f3e77970aacbc5a14421e48db34996ed8223f7e9',
+      repo        : 'EIMadrigal.github.io',
+      owner       : 'EIMadrigal',
+      admin       : ['EIMadrigal'],
+      id          : '8e64a65d02764f58f38ec338119d2cf7',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

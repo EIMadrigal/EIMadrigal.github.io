@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Monaco:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="cloud">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云">
+<meta property="og:url" content="https://eimadrigal.github.io/posts/cloud/index.html">
+<meta property="og:site_name" content="EI Madrigal&#39;s Space">
+<meta property="og:description" content="cloud">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-03-11T02:12:00.000Z">
+<meta property="article:modified_time" content="2023-03-02T08:33:26.264Z">
+<meta property="article:author" content="EIMadrigal">
+<meta property="article:tag" content="System">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://eimadrigal.github.io/posts/cloud/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>云 | EI Madrigal's Space</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EI Madrigal's Space</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/posts/cloud/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          云
+        </h1>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-03-11 10:12:00" itemprop="dateCreated datePublished" datetime="2022-03-11T10:12:00+08:00">2022-03-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-02 16:33:26" itemprop="dateModified" datetime="2023-03-02T16:33:26+08:00">2023-03-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <div class="post-description">cloud</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="f35de2c2e3d9f604081206983c3ee1b81b1b261a4d0811a1af41af7149fd5f6c">418fac4f173397084caccc18ab9f089e707caf583bd354c6ef7976737c697a3f3b9a8cb267430489472d32a541523ccda228af51cff66f4307241ee65cc0ce480cfc012e360f7934ea080ddfd65126c083ac1847b9e9928e0c5dd43e0e384be72f2ae72b2a910da86d76684e1d84b71f3e6224c33c98260a618ad076cc023d5296fd3bd591a62daaa8a0fcac4a850a7093b368f1c7512730486d4a6441c28eff76c5f7fb0b5144f4934bef4d715ab8fa59ae2f2c4ccda977fc76b20c630b1f694cb8d8e1349d399e46362790e274b50f7b7c8b4a7d412bf7b90df9e3e2588ac75737a8eb5763c27d6712ecfcb887be404bbb0c07122d16d25a137c55775fe7b154eb320f857321218a0f1a797a7259b998a319f825688f32f0eef6c5ff1fd7c3524029bf3455097d57742442fb200470a4c8b9f28ec2fe297874b74826eb716fcd74b92342c524f51d6fc17939edc1e17b615749bd5af67e29012895f22c9c28d8526681a8a309ea1f5d1665365df000a80946267099b5086f0b22a3e97bcd519290f523102b6c5f192edef4af202e9acdf601836dcff42b1791aca12be9eb61149bee1083d54ebcc75a43818637591a7979a3f9b260a4b518b72d6d2f539317ec7bc2be887a92fb443b497c5778cc92e123df6602523b71f7e8bdca37cea64c0617aa59669c8051cbd88442ec633a011c1ffa4cb1b121adc17cd069ff98c6e8cfbf5b4219855abb32f371a14ed8d6668a648979431a854264e6b771a96b9755355c8bc4c09fd599b97ea3f5c8611efe627396350233a24a33f9760723b59c800d836af7a72252eab0664ec1ef180f7356de637594d9aca3cc8ebab95d0b04f0f426f9d62318ad9247ce842bcd7f087358ba53e952c4d98f48bad96f89ef182f771c6369979e8a6bfe18d8989b0e6fa0555a599448f53c3dd6086db3691014fe8ae20e00e0667c7615ed289a43cf99213011b3eb98749e0411074a71c5730d589ed4567379e7372f177a716b365c76be0b56e57dc2dda1b84f31664aebbc160a8f1367ee07e121ea65af4c1f50c5232f2126b6a6d57d851e4e382c783ae24a66c2f7d2214e436084f7118b4ca6a69b6b7d44319c40d8dd233800b431d1253085efada71e53bc1dca1ad821f57db5df1480371e315304b90b26cf9406ed307059514fbc1c1d6830098154be2a709550e1b7452c4fc4c41a7cbc44e3a93ed4687775a2b7692aabf3e803f4cc6708ca2c683c657f189c6eb1f1ceaeea364c2bb82ec1b2e9c077929b505ef5c0c01660ac227c3af703de92be7066c3e7cfc29ba258aef05de33b7e57c8531561f704da9cca42e3f387c9b25416966efc3283ed6915ab25722976dcb3e7d493b4591d7026f7b296dcd6f6ee27d9026d4a4701e5f690701f100bc2e4f10ee6d97397f63c59db97bb118b9819bfa6ed945b8743817fb2dcd4c0f9ea130944856817f7b2977b1929da1fbeca5d64ad97117be8c39d6114bbb6af55a0a4e25e7be093e3194df253430fef9c8eb8634a2811618a50cf695ef7b5e275ec8258ec338c202dcb4a19c2aba8c3fdf381ec8d27d30ecb365014cd1360b2fa0d953dccb7a217ed133cec29c1fe92cec305e9a897bbf56886af0ff8d9095384e3b80ddef86be652bbfc372c3d6cca28819da71b86546004622663bfa98e0c08a8909f2b69e683309ef6ced7b4951bfcc3788f18fc1b67266fe82f730acafef20da520a886094a16646b2d3ca8afe7af7b276e730e42d0a3d200919016a83ecf173b397b3a4dd57b4f4c1a6a5d32918af43d95fc66521bbf6f3412dc5b3a3c5d6806e92c4b39e57098dbefbdbfbc95fb55f2ae0a68765ccb5d96eb4a7724acd2ee6fc594afa9c2bd6d4419a26a7a8fef9bf10867e086877ecfb3742a534c2d940c4dbaf7a60b9837cf5fedc05ef0d345cc03d301c68077143510aec2cfb6030c6af5590e7fef17916f7cc8a9ff3fa1d522b2b6341ae7ef8d2aede3590a713e0519b9854a0c18dc6fd165bdc26e5d805fb82a1430bc3a677c72529d25ea79caf39cf18ee62913a2af4851a1a6500a65814917865483487eb95d2ab233767c985a221e38c43f205abc63b3b80cb3dae71add6f68983df0c73552098db28f3a80756e19f3a39980923252c91a6d99556c6f787a734db2e8e83e5ee857e52192f1373e6234fed33add4571c87ba134e6b7ebb4cae388099cf6ee3bb506fb0e8f7f4a66981b156a0e63f6704dec8756835243b07145722c627b887dfb5e492564b4273cd27193009b7ee834d0da9ec9b3ea8b3614f484c7346b5a2369c06cb0bfda4c41805112c6e6a9ff9ad56f22584e530fdcdd0c6efc6f531654429f170bac534d502cd2760daeada301e0ac81f923ceccecfb39c38be6de45788aab6379b9d45eb65af30c0ae596d4be65b64a4569a5aa84dd61fc735b41da1e2fa24729a44ecd4bfac4cc94cc6dfb00c69c59640d8fd27b4ff3ba97c1d6881c699b64ebe6ad95e9a49a728d0a336de2726b7498cee5f01a5168aa056039eeaf0b9039499af03b6f00f598ffd4e859bc17b5697cd54b0497cc68a19cb579ff0ee564733b365a8d9dc5776add6f0432de780f0c2d850475e507b8b68f3181f2bacd275985543a928e1b740e68a564353fd59de0a02a881fdf67d18dcc597dd289af84a4c06b651c1216c9249dc3cdfdeaf3052fff1b69e1a1b83b8e3347d66b79cfc1e29ff0ccb65d7ded222bbbdf09e47cd4730b6811f2ef74c1dcb32dd5cffab5983d09169a6c778ad9ca231197b8cf4c36f08a4ed5dd4b6d34b44ce3c84f0add78f4f5be885d5dfa15d3588f255b9c6e5f9e418147bfe0989a089d67d9595f7f3330b4df55f349d8937f5347eeaaa672fc1d31fba725ce521e593d6c18643b1e251febbe01971fcddca5ec2c04d843721265bc6c1cb05261715a692a5cd80d97eff55c4cc2b9c6cabe3954b8afc2ecbe2ec90899afbb7f5062c9d53abec56e68ee211b22b492e32ad1fbeefaa16cbf73233f2e75bcc400aa4b0eed2ec4dd57c26fa06ac5cfe89d7cf645fb0435097b99958a13c2cb02bd4dd82a89d514499ba2f81fca5864f16471daeb7288d768c7ecff5290f2d1fa31ee9b77d2e25052e51d257b61bd981661d89ac5b8027fca4c50a1ba610bff79a08538981c215f8396573c9f10531d5c1f90150a5465d2c6ddf1603783b24745b4d72b8d1a45d07a39df900bd5635bec09aa69470f5fa62787749ff6e1254244742918cce0764842fe3100fde58b65e9a1ef8c288145ef570635c5a8abf4910e48aff0bd6907067e501cf2e1275af70b63f969879f03ed8fdb72741c31496921922fdc7b1d641bb7eefd41dbab258cb712d64f74334ebd150cf0a1e4a6f9deedfb9c1582fb8e5265c4890af34e61cc74d97a4248a6a5146dd30f0e633eb4e1f2d36bf3a1c0ca172b7d15c74f55eddba457ec8671bfafa9625fadfe2277a1c3f587f370c10cedd4a8a350eb44d5ebfe7506812f834536b4c1d6009c8bb73ee99375b44add6156dd3c5c9a6adf7da0a5657d2a21e388e6e7ccbada24302ee5b8203de8df8ec046ec06b934d693d72dafb1a7982bbe2f4c51cdd237f9ea30012fa539fc2f4083a0977325874fadf64dc07a0463701ccec651c0ab32a20c8a3e762314fe4c1e04de536b448a626eb94a3167a08860298e5dbc2dd86cb82f085c96dd1b40f1ca313eb24a4d1bc0fcc99af63724213d670979db234f4f489558f95b93925468248ece2e4de0a959e3d8fe489f5200b51fc7b8316dad9d01b39de6b67369713e095a10eae9047a1179410b526535a2ccce8b11aff08a7430be5b848086a1fc7d4ed4d3160fe91fe5affa7762e2357ca21100b9db077fe53f7e6de1e2a138621eb6cac0862d7dfa15b0c399b97371c0942f688871af69533180491ac94cae8956e8405a1711a7ff95e2b8a3262ebc3ba34cc90bb5798edfe569bb2238f12c91675909e8d19e352ae2384df389be800c41ef3e80f51998429fd8a2ab2a238c3352323004c4dcb33ae6a84f2fd43bd202de32a7d37c6a90eb78c04484d5659e56dee4ffd7b7de6293c9f2d81acc69b39cb49bacb200e9422f30da452b1f200ea67c3ee40bc3be26fa329d58bc7ec33221fe87298c9352aad816910536c461c5004185f6d662c04a66df362c94216968c7a553819d9e6b65e20c000e5b52a6baf1c21ce01c7078d645c91f8e423ef40f62f8a83174a5b7936b9c9298e76b0ebff7b68c6aa206c151c7876a39034b392d3d54e7aa3bb99a4cda8b62110de0e40d3417db76e6180ef555f47c49af25b60f012744e29bd78b653fa0d1b171badf6c9c5d76cba250a2038f027020ab2c4dc11fb0b3204e0e0961928c1e79689536c152fc521eefa8176bd3f3a3480e363e73a58b548cc5ac3b78200410e6dbd3a87c4b4c4520b6594beadcf14de3324710bc8d3661cd389f298ec4f058079ab70e3003ce7a32219c8097aa20e906da5af51c2949d49c34d2c6c9168f990c9eba4c9eed410a016206248664190d1cddab512eb2ba8846598cf5525388389893bd8818890b474727d5b11876ab1d1425a2d6697865b813681eccbf18538a4b129c2249862be6509739132e24c088875e7afe08215b1ca944c3f472ccc58daf4a7858f1da9d66499b0ee912f28d7df5f692217fe1290cf868e57d9be33261bb9ac941045fa734c9d777e3120c1c1eb7793b4634bfe79aa6478b478d4301c8e672e683797b3930e3cef25db7ba9215d77129a9bfd9eb8880e707c84845a573867647f3fa39deadff0aba401d2368fe6a8cd511bf0e8d645b4a77e011a4d282c76b57d96a9558d9d74ee389ecf6cb3b69197c81f9318011a0ee539444866f40187666e9fe082b44d02e38b0ccacfa1935de4ce9fd797042bca4b85bf8a4286168cfd9a673bd04799bc4372b3d99ca986e70592d111ffdeb87543dd785869adc4eb6fb41f7e91185bb4495a692a0b7b64db11444148297a0b5550ec01df7f53036fd3676fb9b7be0f838eb851f074aca8e39f3d37bd7fef30930a4ef03a47811e0d668ee85cfb193e2ba9d8e6be8903d2a0c762317203da2ab1e89b93ae9eaa9aaca5230c79f6f1714b8723c8a3eab184c3e8d37b4cd09edfdea6951bc9fe87b7fbf6f61a32243dc6c7b98be556e9d2adad6b28cfda661186a5f2b11f60015d567b8b18149d292ad47e424fe68a7031fbeabf4b5d28b28d6d179f5f8b47608e58c3aa7cf5f681f705817464248c7c9c1b3bab2b9127602d0c84bda416c93aa36</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="EIMadrigal WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="EIMadrigal Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>EIMadrigal
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://eimadrigal.github.io/posts/cloud/" title="云">https://eimadrigal.github.io/posts/cloud/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/System/" rel="tag"><i class="fa fa-tag"></i> System</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/hard-adults/" rel="prev" title="成年人呐">
+      <i class="fa fa-chevron-left"></i> 成年人呐
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/finite-state-machine/" rel="next" title="Finite State Machine">
+      Finite State Machine <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="EIMadrigal"
+      src="/images/favicon.png">
+  <p class="site-author-name" itemprop="name">EIMadrigal</p>
+  <div class="site-description" itemprop="description">Hello World</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">186</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/EIMadrigal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jingtao.ren@outlook.com" title="E-Mail → mailto:jingtao.ren@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/jingtaoren/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;jingtaoren&#x2F;" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/EIMadrigal" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EIMadrigal</span>
+</div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">Total views: <span id="busuanzi_value_site_pv"></span></span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">Total visitors: <span id="busuanzi_value_site_uv"></span></span>
+    <span class="post-meta-divider">|</span>
+
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);
+    var countOffset = 20000;
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset);
+            clearInterval(int);
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '285afe6e2d34f997b740',
+      clientSecret: 'f3e77970aacbc5a14421e48db34996ed8223f7e9',
+      repo        : 'EIMadrigal.github.io',
+      owner       : 'EIMadrigal',
+      admin       : ['EIMadrigal'],
+      id          : '4a8b92b1c44d6b9e8aaec1f89f992798',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

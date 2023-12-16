@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Monaco:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eimadrigal.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="TODO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="贝叶斯学习">
+<meta property="og:url" content="https://eimadrigal.github.io/posts/bayesian-learning/index.html">
+<meta property="og:site_name" content="EI Madrigal&#39;s Space">
+<meta property="og:description" content="TODO">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-01-18T05:09:32.000Z">
+<meta property="article:modified_time" content="2023-03-02T07:35:40.691Z">
+<meta property="article:author" content="EIMadrigal">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://eimadrigal.github.io/posts/bayesian-learning/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>贝叶斯学习 | EI Madrigal's Space</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">EI Madrigal's Space</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://eimadrigal.github.io/posts/bayesian-learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/favicon.png">
+      <meta itemprop="name" content="EIMadrigal">
+      <meta itemprop="description" content="Hello World">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EI Madrigal's Space">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          贝叶斯学习
+        </h1>
+
+        <div class="post-meta">
+
+		  
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-01-18 13:09:32" itemprop="dateCreated datePublished" datetime="2020-01-18T13:09:32+08:00">2020-01-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-02 15:35:40" itemprop="dateModified" datetime="2023-03-02T15:35:40+08:00">2023-03-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <div class="post-description">TODO</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="简介">简介</h2>
+<p>贝叶斯概率理论是由Thomas
+Bayes在1764年提出，采用一种概率的方式进行推理。贝叶斯学习有2个假设： -
+观察到的样本实例并非确定性事件，而是随机的，服从某种概率分布； -
+通过对观测数据样本和相关的概率特性进行推理学习能够得到最优的决策或分类。</p>
+<p>贝叶斯学习为衡量多个假设的置信度提供了定量的方法，其依赖于贝叶斯决策理论（Bayesian
+Decision
+Theory）。贝叶斯决策理论是一种统计学上的方法，用来定量化地描述使用概率做出的不同决策以及这些决策付出的代价之间的权衡。首先假设一些概率值是已知的，然后根据这些已知概率推理一些未知情况下的概率值，最终利用这些推理的概率值进行决策。</p>
+<p>以分类问题为例，假设有2种鱼分别是鲑鱼和鲈鱼，将w定义为观测到的鱼的类型，令<span
+class="math inline">\(w=w_1\)</span>代表鲈鱼，<span
+class="math inline">\(w=w_2\)</span>代表鲑鱼，定义<span
+class="math inline">\(P(w_1)\)</span>表示下一条鱼是鲈鱼的先验概率，<span
+class="math inline">\(P(w_2)\)</span>表示下一条鱼是鲑鱼的先验概率。先验概率反映了人们根据经验和背景知识对事物的判断，即在看到下一条鱼之前对于<span
+class="math inline">\(P(w_1)\)</span>和<span
+class="math inline">\(P(w_2)\)</span>的判断。如果没有经验上的偏好，就可以设置为均匀先验<span
+class="math inline">\(P(w_1)=P(w_2)\)</span>；如果有诸如海域因素、时间等背景，便可以为<span
+class="math inline">\(P(w_1)\)</span>和<span
+class="math inline">\(P(w_2)\)</span>设置不同的先验概率。另外假设只有这2种鱼，即<span
+class="math inline">\(P(w_1)+P(w_2)=1\)</span>。在仅有先验概率的情况下，选择先验概率大的作为最终决策，这种情况下决策错误的概率为<span
+class="math inline">\(min\{P(w_1),P(w_2)\}\)</span>。</p>
+<p>贝叶斯决策理论是很多重要的学习算法的基础，例如朴素贝叶斯分类器、贝叶斯信念网络以及EM算法等。另外，贝叶斯决策理论为许多非贝叶斯的学习算法提供了很好的数学和框架性理论基础，对某些学习任务而言，贝叶斯学习是最实用的方法之一。</p>
+<p>贝叶斯学习有以下特点： -
+每个观测到的训练样本都可以很小程度上增大或减小某个假设正确的概率； -
+先验知识可以和观测数据结合起来决定某个假设的最终概率，可以计算显式的假设概率；
+- 新实例的预测可以结合多个假设输出概率的加权值； -
+通常需要一些背景知识或先前经验来确定先验概率，选出贝叶斯最优分类器计算代价比较大。</p>
+<h2 id="贝叶斯定理">贝叶斯定理</h2>
+<p>贝叶斯定理是贝叶斯学习的基石，给定训练数据集D，在假设空间H中寻找最优的假设h，最优假设可以定义为给定数据集D以及H中不同假设的先验概率条件下的最可能的假设。
+利用贝叶斯定理，在已知假设的先验概率、观测数据以及给定假设下观测到特定数据的概率就可以计算出最有可能的假设。</p>
+<p>给定数据集D以及假设空间H，定义如下记号： -
+先验概率P(h)：没有训练数据前假设h的初始概率，反映了根据人们的相关认知背景，假设h成为正确假设的概率，如果没有先验知识，可以将每一个候选假设的先验概率设置为相同的。
+-
+先验概率P(D)：训练数据D的先验概率，即不知道哪个假设成立的前提下观测到D的概率。
+- 观测数据的条件概率P(D|h)：在假设h成立的条件下观测到数据集D的概率。 -
+后验概率P(h|D)：给定观测到的训练数据集D时假设h成立的概率，反映了观测到的训练数据是D时h成立的置信度。</p>
+<p>利用贝叶斯定理可以计算给定训练数据集D下任一假设的后验概率： <span
+class="math display">\[P(h|D)=\frac{P(D|h)P(h)}{P(D)}\]</span></p>
+<p>贝叶斯推理得到的结果很大程度上依赖于先验概率，并且不是完全接受或拒绝假设h，而是给出假设为真的可能性。因此可以计算每个假设的概率，输出其中概率最大的，称为最大后验概率准则（Maximum
+A Posteriori）。</p>
+<p><span class="math display">\[
+h_{MAP}=\underset{h\in H}{\operatorname{\argmax}}\ P(h|D) \\
+=\underset{h\in H}{\operatorname{\argmax}}\ \frac{P(D|h)P(h)}{P(D)} \\
+=\underset{h\in H}{\operatorname{\argmax}}\ P(D|h)P(h)
+\]</span></p>
+<p>如果假设空间中每个假设的先验概率都是相同的，即<span
+class="math inline">\(P(h_i)=P(h_j),\forall h_i\in H \wedge \forall
+h_j\in
+H\)</span>，那么只需要考虑给定假设h下数据D的似然P(D|h)，这样最大后验概率准则就变为了最大似然估计（Maximum
+Likelihood）： <span class="math display">\[
+h_{ML}=\underset{h\in H}{\operatorname{\argmax}}\ P(D|h)
+\]</span></p>
+<h2 id="最小描述长度原则">最小描述长度原则</h2>
+<p>根据奥卡姆剃刀原则，其它条件相同时选择最简单的假设，最简单的假设可以定义为描述长度最小的假设，即给定假设空间H和数据集D，应该寻找一个假设或者假设组合使得D被最大程度地压缩。定义<span
+class="math inline">\(L_{C}(x)\)</span>表示在编码机制C下编码x需要的最少的比特数为编码机制C下的x的描述长度。
+<span class="math display">\[
+h_{MDL}=\underset{h\in H}{\operatorname{\argmin}}\
+L_{C_1}(h)+L_{C_2}(D|h)
+\]</span></p>
+<p><span
+class="math inline">\(L_{C_1}(h)\)</span>是假设的描述长度即比特数，反映了模型的复杂程度；<span
+class="math inline">\(L_{C_2}(D|h)\)</span>是当采用假设h编码后数据的描述长度，反映了错误的数目。通常会发现：一个非常复杂的假设（<span
+class="math inline">\(L_{C_1}(h)\)</span>大）会有一个比较好的拟合（<span
+class="math inline">\(L_{C_2}(D|h)\)</span>小），反之一个非常简单的假设（<span
+class="math inline">\(L_{C_1}(h)\)</span>小）会有比较差的拟合（<span
+class="math inline">\(L_{C_2}(D|h)\)</span>大）。因此希望寻找一个假设：既不会过于复杂同时还可以对数据有比较好的拟合。</p>
+<p>如果对MAP的公式进行变形： <span class="math display">\[
+h_{MAP}=\underset{h\in H}{\operatorname{\argmax}}\ P(D|h)P(h) \\
+=\underset{h\in H}{\operatorname{\argmax}}\ log_2P(D|h)+log_2P(h) \\
+=\underset{h\in H}{\operatorname{\argmin}}\ -log_2P(h)-log_2P(D|h) \\
+\]</span></p>
+<p>可以看到：第一项<span
+class="math inline">\(-log_2P(h)\)</span>对应了最优编码机制<span
+class="math inline">\(C_1\)</span>下h的描述长度<span
+class="math inline">\(L_{C_1}(h)\)</span>，第二项<span
+class="math inline">\(-log_2P(D|h)\)</span>对应了最优编码机制<span
+class="math inline">\(C_2\)</span>下数据的描述长度<span
+class="math inline">\(L_{C_2}(D|h)\)</span>。两者的优化目标是一致的。</p>
+<h2 id="贝叶斯最优分类器">贝叶斯最优分类器</h2>
+<p>通过MAP准则可以求出在给定训练数据下的最有可能的假设，那么如何求出给定训练集下一个新实例的最优预测呢？可以对新实例使用MAP准则，求得最大的假设然后进行分类。</p>
+<p>但是最优的结果应该是结合所有假设的预测结果对新实例进行分类，结合的方法是通过后验概率加权：
+<span class="math display">\[
+\underset{v_j\in V}{\operatorname{\argmax}}\ \sum_{h_i\in
+H}P(v_j|h_i)P(h_i|D)
+\]</span></p>
+<p>V表示所有可能的预测结果，<span
+class="math inline">\(v_j\)</span>是其中一种预测分类。<span
+class="math inline">\(P(v_j|h_i)\)</span>表示假设<span
+class="math inline">\(h_i\)</span>将新实例预测为<span
+class="math inline">\(v_j\)</span>的概率大小，<span
+class="math inline">\(P(h_i|D)\)</span>表示假设<span
+class="math inline">\(h_i\)</span>的后验概率。</p>
+<p>例如假设空间<span
+class="math inline">\(H=\{h_1,h_2,h_3\}\)</span>，可能的预测结果<span
+class="math inline">\(V=\{+,-\}\)</span>，对于一个新实例假设有： <span
+class="math display">\[
+P(h_1|D)=0.4, P(-|h_1)=0, P(+|h_1)=1 \\
+P(h_2|D)=0.3, P(-|h_2)=1, P(+|h_2)=0 \\
+P(h_3|D)=0.3, P(-|h_3)=1, P(+|h_3)=0 \\
+\]</span></p>
+<p>那么有： <span class="math display">\[
+\sum_{h_i\in H}P(+|h_i)P(h_i|D)=0.4 \\
+\sum_{h_i\in H}P(-|h_i)P(h_i|D)=0.6 \\
+\]</span> 因此最终选择将新实例分类为-。</p>
+<p>可以看到：贝叶斯最优分类器最大化了新实例被正确分类的概率，在使用相同假设空间和先验知识的条件下，没有其他方法比贝叶斯最优分类器的平均效果好，最终的预测结果可能对应一个不包含于<span
+class="math inline">\(H\)</span>的假设。</p>
+<p>虽然效果很好，但是贝叶斯最优分类器计算代价非常大： -
+需要遍历假设空间中的所有假设； -
+当假设空间非常大时这种方式是不可行的。</p>
+<p>因此可以通过吉布斯算法（Gibbs）解决。吉布斯算法根据假设的后验概率分布随机选取一个假设对新实例进行分类。可以证明：在特定条件下，该方法的期望误差最多是贝叶斯最优分类器的两倍。还可以通过采样多个假设并求其预测结果的平均值来提高吉布斯算法的性能，例如可以使用马尔科夫蒙特卡洛采样（MCMC）。</p>
+<h2 id="bagging分类器">Bagging分类器</h2>
+<p>虽然可以使用吉布斯算法来降低计算代价，但是从后验概率分布P(h|D)采样是比较困难的：
+- P(h|D)的计算本身就比较困难 -
+对于不是基于概率的分类器例如SVM等P(h|D)是无法计算的 -
+当假设空间很大时P(h|D)计算结果会很小</p>
+<p>为了解决上述问题，引入Bagging的思想，通过对训练样本的采样实现对后验分布P(h|D)的采样。假设给定的数据集D包含m个样本，自助采样法（Bootstrap
+sampling）步骤如下： - 从D中有放回地采样m个样本构成数据集<span
+class="math inline">\(D^i\)</span> - D中大约有37%的样本不会被采样到</p>
+<p>Bagging算法步骤如下： - 创建k个自助采样的数据集<span
+class="math inline">\(D^1,D^2,...,D^k\)</span> - 在每个数据集<span
+class="math inline">\(D^i\)</span>独立训练分类器<span
+class="math inline">\(h_i\)</span> -
+通过相等权重的投票法来对新实例进行分类：</p>
+<p><span class="math display">\[
+c^*(x)=\underset{c}{\operatorname{\argmax}}\ \sum_{i=1}^{k}P(c|h_i,x)
+\]</span>
+由于自助采样法几乎和直接从后验概率分布P(h|D)采样相同，因此Bagging产生的分类器也近似于贝叶斯最优分类器。通常Bagging产生的分类器效果要优于单独的分类器，因为其有效地降低了模型的方差。</p>
+<h2 id="朴素贝叶斯分类器">朴素贝叶斯分类器</h2>
+<p>假设训练集D中的每条实例x均可以被n个属性的组合<span
+class="math inline">\(&lt;a_1,a_2,...,a_n&gt;\)</span>描述，并且<span
+class="math inline">\(v(x)\in
+V\)</span>是一个有限的集合。那么贝叶斯方法对于新实例的分类是选择一个最有可能的目标值：
+<span class="math display">\[
+v_{MAP}=\underset{v_j\in V}{\operatorname{\argmax}}\
+P(v_j|a_1,a_2,...,a_n)
+\]</span></p>
+<p>通过贝叶斯定理进行变形： <span class="math display">\[
+v_{MAP}=\underset{v_j\in V}{\operatorname{\argmax}}\
+\frac{P(a_1,a_2,...,a_n|v_j)P(v_j)}{P(a_1,a_2,...,a_n)}
+\]</span></p>
+<p>那么要如何计算<span class="math inline">\(P(v_j)\)</span>和<span
+class="math inline">\(P(a_1,a_2,...,a_n|v_j)\)</span>呢？ - <span
+class="math inline">\(P(v_j)\)</span>可以通过每个目标值<span
+class="math inline">\(v_j\)</span>在训练数据中出现的频率来估算 -
+在训练数据集很小的情况下，<span
+class="math inline">\(P(a_1,a_2,...,a_n|v_j)\)</span>的估算是不可能的，不同的<span
+class="math inline">\(P(a_1,a_2,...,a_n|v_j)\)</span>的数目等于所有可能的目标值的数量与所有可能的样本数目的乘积。</p>
+<p>为了解决上述问题，提出了朴素贝叶斯假设，即在给定目标值下样本属性之间是条件独立的：
+<span class="math display">\[
+P(a_1,a_2,...,a_n|v_j)=\prod_{i}P(a_i|v_j)
+\]</span></p>
+<p>因此朴素贝叶斯分类器即为： <span class="math display">\[
+v_{NB}=\underset{v_j\in V}{\operatorname{\argmax}}\
+P(v_j)\prod_{i}P(a_i|v_j)
+\]</span></p>
+<p>其中，<span
+class="math inline">\(v_{NB}\)</span>是朴素贝叶斯分类器的预测输出，<span
+class="math inline">\(P(a_i|v_j)\)</span>是训练数据中目标值<span
+class="math inline">\(v_j\)</span>时属性<span
+class="math inline">\(a_i\)</span>的频率。不同的<span
+class="math inline">\(P(a_i|v_j)\)</span>的数目等于不同的目标值数量与属性数量的乘积，该数值远小于不同的<span
+class="math inline">\(P(a_1,a_2,...,a_n|v_j)\)</span>的数目。</p>
+<p>下面举一个朴素贝叶斯分类器的例子，假设训练数据如下： <img
+src="https://img-blog.csdnimg.cn/286e8b45687d4d259b1ef6ba87433c2f.png"
+alt="在这里插入图片描述" /></p>
+<p>需要对于一个新实例{Outlook=sunny, Temperature=cool, Humidity=high,
+Wind=strong}进行分类，所有可能的目标值是{yes, no}。因此分类器为： <span
+class="math display">\[
+v_{NB}=\underset{v_j\in \{yes,no\}}{\operatorname{\argmax}}\
+P(v_j)\prod_{i}P(a_i|v_j)
+\]</span></p>
+<p>从训练数据可知，<span
+class="math inline">\(P(v_j)\)</span>即不同目标值的概率为： <span
+class="math display">\[
+P(yes)=9/14=0.64, P(no)=5/14=0.36
+\]</span></p>
+<p>条件概率<span class="math inline">\(P(a_i|v_j)\)</span>为： <span
+class="math display">\[
+P(Wind=strong|yes)=3/9=0.33 \\
+P(Wind=strong|no)=3/5=0.60 \\
+...
+\]</span></p>
+<p>因此可以计算： <span class="math display">\[
+P(yes)P(sunny|yes)P(cool|yes)P(high|yes)P(strong|yes)=0.0053 \\
+P(no)P(sunny|no)P(cool|no)P(high|no)P(strong|no)=0.0206 \\
+\]</span></p>
+<p>故最终的预测结果为no。</p>
+<h2 id="贝叶斯信念网络">贝叶斯信念网络</h2>
+<p>贝叶斯最优分类器应用起来代价太大，朴素贝叶斯分类器虽然使用条件独立假设降低了代价，但是很多情况下条件独立假设都难以满足。因此，贝叶斯信念网络做了一个折衷，允许对属性集合的子集应用条件独立假设。</p>
+<p>贝叶斯信念网络是一种概率图模型，通过有向无环图（DAG）来表示一系列变量及它们的条件依赖关系和变量集合的联合概率分布。通常用结点表示变量，可以是观测变量、隐藏变量、未知参数和假设等等；用边表示结点间的依赖关系；条件概率表的每个元素对应图中唯一的结点，存储该结点对于其所有直接前驱结点的联合条件概率。</p>
+<p>贝叶斯信念网络一条非常重要的性质是：每个结点在其直接前驱结点的值给定后，该结点条件独立于其所有非直接前驱结点。条件独立的定义是：在给定Z的条件下X的概率分布与Y的取值无关，即：
+<span class="math display">\[
+\forall x_i,y_j,z_k\ P(X=x_i|Y=y_j,Z=z_k)=P(X=x_i|Z=z_k)
+\]</span></p>
+<p>条件独立的定义可以扩展到多个变量的情形：即在给定变量<span
+class="math inline">\(Z_1,...,Z_n\)</span>的条件下，变量集合<span
+class="math inline">\(X_1,...,X_l\)</span>的概率分布与变量集合<span
+class="math inline">\(Y_1,...,Y_m\)</span>的取值无关： <span
+class="math display">\[
+P(X_1,...,X_l|Y_1,...,Y_m,Z_1,...,Z_n)=P(X_1,...,X_l|Z_1,...,Z_n)
+\]</span></p>
+<p>朴素贝叶斯分类器即使用了条件独立假设使得<span
+class="math inline">\(P(X,Y|Z)=P(X|Y,Z)P(Y|Z)=P(X|Z)P(Y|Z)\)</span>。</p>
+<p>贝叶斯网络也可以看作是表示变量之间因果性的因果图，可以进行原因推理或结果预测。例如，假设草坪是湿的记作变量W，那么有多大概率是因为下雨（记作变量R）造成的？那么可以利用贝叶斯网络进行原因推理：
+<span class="math display">\[
+P(R|W)=\frac{P(W|R)P(R)}{P(W)}=\frac{P(W|R)P(R)}{P(W|R)P(R)+P(W|\sim
+R)P(\sim R)}
+\]</span></p>
+<p>同样可以进行结果的预测，假设洒水器打开记作事件S，那么有多大概率草坪是湿的是因为S导致的？即洒水器和下雨都可能导致草坪是湿的：
+<span class="math display">\[
+P(W|S)=P(W|R,S)P(R|S)+P(W|\sim R,S)P(\sim R|S) \\
+=P(W|R,S)P(R)+P(W|\sim R,S)P(\sim R)
+\]</span></p>
+<p>随着贝叶斯网络的结点与边的增加，可以进行更加复杂的因果推断。</p>
+<h2 id="总结">总结</h2>
+<p>贝叶斯学习为基于先验知识的概率学习方法提供了理论基础，在先验知识的基础上，根据观测数据修正先验知识，计算出每个假设的后验概率进而进行预测。可以选择出在给定观测数据下的最有可能的假设即MAP假设，贝叶斯最优分类器通过后验概率的加权结合了所有可能假设的预测结果去得到新实例的最有可能的预测结果。朴素贝叶斯分类器通过条件独立假设增强了其实用性，在很多实际应用中表现很好。贝叶斯信念网络提供了一种条件独立的变量之间更强大的表示方法，使得其可以有更加广泛的应用场景。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="EIMadrigal WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="EIMadrigal Alipay">
+        <p>Alipay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>EIMadrigal
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://eimadrigal.github.io/posts/bayesian-learning/" title="贝叶斯学习">https://eimadrigal.github.io/posts/bayesian-learning/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Machine-Learning/" rel="tag"><i class="fa fa-tag"></i> Machine Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/segment-tree/" rel="prev" title="Segment Tree">
+      <i class="fa fa-chevron-left"></i> Segment Tree
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/minimum-spanning-tree/" rel="next" title="Minimum Spanning Tree">
+      Minimum Spanning Tree <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AE%9A%E7%90%86"><span class="nav-text">贝叶斯定理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E6%8F%8F%E8%BF%B0%E9%95%BF%E5%BA%A6%E5%8E%9F%E5%88%99"><span class="nav-text">最小描述长度原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%9C%80%E4%BC%98%E5%88%86%E7%B1%BB%E5%99%A8"><span class="nav-text">贝叶斯最优分类器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bagging%E5%88%86%E7%B1%BB%E5%99%A8"><span class="nav-text">Bagging分类器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8"><span class="nav-text">朴素贝叶斯分类器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BF%A1%E5%BF%B5%E7%BD%91%E7%BB%9C"><span class="nav-text">贝叶斯信念网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="EIMadrigal"
+      src="/images/favicon.png">
+  <p class="site-author-name" itemprop="name">EIMadrigal</p>
+  <div class="site-description" itemprop="description">Hello World</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">186</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/EIMadrigal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:jingtao.ren@outlook.com" title="E-Mail → mailto:jingtao.ren@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/jingtaoren/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;jingtaoren&#x2F;" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/EIMadrigal" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;EIMadrigal" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EIMadrigal</span>
+</div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">Total views: <span id="busuanzi_value_site_pv"></span></span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">Total visitors: <span id="busuanzi_value_site_uv"></span></span>
+    <span class="post-meta-divider">|</span>
+
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);
+    var countOffset = 20000;
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset);
+            clearInterval(int);
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '285afe6e2d34f997b740',
+      clientSecret: 'f3e77970aacbc5a14421e48db34996ed8223f7e9',
+      repo        : 'EIMadrigal.github.io',
+      owner       : 'EIMadrigal',
+      admin       : ['EIMadrigal'],
+      id          : '08f446d77090355c6bbec08bf2b33d17',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
