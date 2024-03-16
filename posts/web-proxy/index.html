@@ -27,15 +27,24 @@
 <meta property="og:site_name" content="EI Madrigal&#39;s Space">
 <meta property="og:description" content="A Simple Web Proxy">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20200811194820393.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20200824160910224.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20200819212506210.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/web-proxy/1.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/web-proxy/2.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/web-proxy/3.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/web-proxy/4.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/web-proxy/5.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/web-proxy/6.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/web-proxy/7.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/web-proxy/8.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/web-proxy/9.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/web-proxy/10.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/web-proxy/11.png">
+<meta property="og:image" content="https://eimadrigal.github.io/posts/web-proxy/13.png">
 <meta property="article:published_time" content="2020-09-04T14:26:00.000Z">
-<meta property="article:modified_time" content="2024-02-25T09:02:32.782Z">
+<meta property="article:modified_time" content="2024-03-16T04:58:43.755Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Network">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200811194820393.png">
+<meta name="twitter:image" content="https://eimadrigal.github.io/posts/web-proxy/1.png">
 
 <link rel="canonical" href="https://eimadrigal.github.io/posts/web-proxy/">
 
@@ -231,7 +240,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-02-25 17:02:32" itemprop="dateModified" datetime="2024-02-25T17:02:32+08:00">2024-02-25</time>
+                <time title="Modified: 2024-03-16 12:58:43" itemprop="dateModified" datetime="2024-03-16T12:58:43+08:00">2024-03-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -283,13 +292,13 @@ Proxy是浏览器和服务器的中间人：浏览器访问网页时，将请求
 <h2 id="background-knowledge">Background Knowledge</h2>
 <ul>
 <li>HTTP/1.0 GET<br />
-当用户在浏览器输入URL<code>http://www.cnblogs.com/EIMadrigal</code>并按下回车后，浏览器会向代理发送HTTP请求，请求行可能如下：
+当用户在浏览器输入URL<code>http://www.cnblogs.com/EIMadrigal</code>并按下回车后，浏览器会向代理发送HTTP请求，请求行可能如下：</li>
+</ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET http://www.cnblogs.com:8080/EIMadrigal HTTP/1.1</span><br></pre></td></tr></table></figure>
-代理要将这个请求解析为主机名<code>www.cnblogs.com</code>、端口<code>8080</code>和路径<code>/EIMadrigal</code>，之后代理可以尝试连接<code>www.cnblogs.com</code>并且向服务器发送新的HTTP请求，请求行如下：
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /EIMadrigal HTTP/1.0</span><br></pre></td></tr></table></figure></li>
-<li>Request Header <img
-src="https://img-blog.csdnimg.cn/20200726153711559.png"
-alt="在这里插入图片描述" /><br />
+<p>代理要将这个请求解析为主机名<code>www.cnblogs.com</code>、端口<code>8080</code>和路径<code>/EIMadrigal</code>，之后代理可以尝试连接<code>www.cnblogs.com</code>并且向服务器发送新的HTTP请求，请求行如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /EIMadrigal HTTP/1.0</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Request Header <img src="1.png" alt="在这里插入图片描述" /><br />
 请求头可能有多行，每行的基本组成就是头部字段名和值，需要注意的是：HTTP请求的每一行都以<code>\r\n</code>结束，并且整个请求是以空行<code>\r\n</code>结束。<br />
 项目要求：<strong>对于浏览器自带的request
 header，代理应该原封不动地转发</strong>。但必须将以下4项补齐，即如果自带的请求头包含以下4项之一，就按照自带请求头转发；否则按照下面的默认值转发。对于自带的其它请求头，直接转发即可：</li>
@@ -297,7 +306,8 @@ header，代理应该原封不动地转发</strong>。但必须将以下4项补�
 <p>Host：服务器主机名，如果浏览器自带，直接转发；否则使用请求行里解析出的hostname。<br />
 User-Agent：用户的操作系统/浏览器等信息。<br />
 Connection：第一次请求/响应完成后，当前连接是否keep alive。<br />
-Proxy-Connection：同上。 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Host: www.cnblogs.com</span><br><span class="line">User-Agent: Mozilla/<span class="number">5.0</span> (X11; Linux x86_64; rv:<span class="number">10.0</span><span class="number">.3</span>) Gecko/<span class="number">20120305</span> Firefox/<span class="number">10.0</span><span class="number">.3</span></span><br><span class="line">Connection: close</span><br><span class="line">Proxy-Connection: close</span><br></pre></td></tr></table></figure></p>
+Proxy-Connection：同上。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Host: www.cnblogs.com</span><br><span class="line">User-Agent: Mozilla/<span class="number">5.0</span> (X11; Linux x86_64; rv:<span class="number">10.0</span><span class="number">.3</span>) Gecko/<span class="number">20120305</span> Firefox/<span class="number">10.0</span><span class="number">.3</span></span><br><span class="line">Connection: close</span><br><span class="line">Proxy-Connection: close</span><br></pre></td></tr></table></figure>
 <ul>
 <li>端口<br />
 请求端口：URL中的可选字段，如果用户输入时指定，代理应该连接指定端口，否则使用默认端口80。<br />
@@ -320,39 +330,31 @@ descriptor ready for reading and writing.<br />
 协议目前只支持HTTP和HTTPS，其它一律不合法。<br />
 因为一旦和服务器建立连接后，protocol和hostname就没用了，只需要path以及后面的query和fragment，为了方便起见，将/也放入path字段，因为其表示根目录，但是对于query和fragment，没有放?和#，因为找到请求内容的位置后，一些具体的搜索/片段直接用关键字即可，与?和#没关系，只有/特殊一些。</p>
 <h2 id="multiple-concurrent-requests">Multiple Concurrent Requests</h2>
-<p>对于Iterative Server，同时只能处理一个连接请求：<img
-src="https://img-blog.csdnimg.cn/20200821122702755.png"
+<p>对于Iterative Server，同时只能处理一个连接请求：<img src="2.png"
 alt="在这里插入图片描述" /><br />
 当第二个客户试图去连接：调用<code>connect</code>会正常返回，但Server不会<code>Accept</code>该请求，会用TCP
 Listen
 Backlog技术将该请求入队；调用<code>rio_writen</code>也会正常返回，Server会把写入的数据存入缓存；调用<code>rio_readlineb</code>会阻塞，因为Server没有发送任何的response。</p>
 <p>解决方法就是并发处理，我们的代理要能同时处理多个请求，具体的方法很多：多进程、I/O多路复用、预线程化（类似生产者-消费者问题，先创建n个线程，相当于n个缓冲区），最直接的方式就是专门有一个线程负责监听，每收到一个连接请求，就开一个新线程去进行读写。这里要采用<strong>可分离</strong>的线程模型：当其终止时，内存资源会被系统自动回收。</p>
-<p>这部分本来很简单，但是写完后测试发现挂了： <img
-src="https://img-blog.csdnimg.cn/20200811181713826.png"
+<p>这部分本来很简单，但是写完后测试发现挂了： <img src="3.png"
 alt="在这里插入图片描述" /><br />
-这很可能是NOP Server出了问题，这个Server是用Python写的，我去启动了一下：
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./nop-server.py <span class="number">15000</span></span><br></pre></td></tr></table></figure> 发现： <img
-src="https://img-blog.csdnimg.cn/20200811182155577.png"
-alt="在这里插入图片描述" /><br />
+这很可能是NOP
+Server出了问题，这个Server是用Python写的，我去启动了一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./nop-server.py <span class="number">15000</span></span><br></pre></td></tr></table></figure>
+<p>发现： <img src="4.png" alt="在这里插入图片描述" /><br />
 这个问题是Python的版本不匹配，把<code>nop-server.py</code>第一行的<code>#!/usr/bin/python</code>改为<code>#!/usr/bin/python3</code>即可，指定用python3的解释器执行脚本。</p>
-<p>并发这块也妥了： <img
-src="https://img-blog.csdnimg.cn/20200811182851976.png"
-alt="在这里插入图片描述" /><br />
+<p>并发这块也妥了： <img src="5.png" alt="在这里插入图片描述" /><br />
 这里的测试逻辑是这样的：Client1通过proxy连接到nop-server，这个服务器永远不会发送response，也就是这条连接一直保持；Client2通过proxy连接到Tiny，看看能不能从Tiny取个文件回来，如果能，说明并发是ok的，如果不能，说明不支持并发。之所以要用nop-server，是因为这东西可以一直连接，比较方便。如果Client1也是通过proxy连Tiny，那么可能很快就执行完了，这时Client2再去连接，很可能就不是并发的访问了，失去了测试的意义。</p>
 <p>做第三部分之前，先实际测试下proxy的健壮性。用FireFox浏览器试试，先升级到最新版本，然后设置浏览器的代理方式：
-<img src="https://img-blog.csdnimg.cn/20200811194820393.png"
-alt="在这里插入图片描述" /><br />
+<img src="6.png" alt="在这里插入图片描述" /><br />
 在8080端口运行proxy，然后找个HTTP网站<code>http://csrankings.org/</code>试一下，现在网站基本都是HTTPS，看来后续的Features要支持HTTPS了（先挖个坑）。</p>
-<p>运行proxy之前，画风是这样的： <img
-src="https://img-blog.csdnimg.cn/20200811200533477.png"
-alt="在这里插入图片描述" /> 运行proxy之后： <img
-src="https://img-blog.csdnimg.cn/20200821133459152.png"
+<p>运行proxy之前，画风是这样的： <img src="7.png"
+alt="在这里插入图片描述" /> 运行proxy之后： <img src="8.png"
 alt="在这里插入图片描述" /><br />
 通过代理访问该网页时，页面只能加载一部分，收到59420B数据后，会<code>segmentation fault</code>
 ，最后发现
 主要原因是<code>init_cache()</code>时空间分配写错了，但是修改后又出现了如下错误：
-<img src="https://img-blog.csdnimg.cn/20200824160910224.png"
-alt="在这里插入图片描述" /><br />
+<img src="9.png" alt="在这里插入图片描述" /><br />
 是<code>memcpy</code>时候数组越界，处理buffer时候要千万小心。</p>
 <p>这里要改下<code>csapp.c</code>中的错误处理，里面都是直接<code>exit(0)</code>，但是作为一个服务器，不能随便终止，所以我们注释掉所有Error-handling
 functions里的<code>exit()</code>，如果在读数据或者什么时候遇到错误，<code>return</code>即可：<code>exit()</code>是系统调用级别的，结束整个进程；<code>return</code>是函数级别的，返回给调用者，当然在<code>main()</code>里<code>return</code>也就是<code>exit(0)</code>。</p>
@@ -404,11 +406,11 @@ lab一样采用分级的思想，也可以直接均分所有空间，整体流�
 1KB * 24块 = 24KB<br />
 接着来构思下存储结构，<strong>设计数据结构</strong>和<strong>类（函数）接口</strong>是我认为做一个工程最难的部分，当然还有最后的效率优化问题：<br />
 一个cache
-line最基本的构成需要存储URI和OBJ，因为下次用户请求时代理需要知道请求的是哪个网站的什么内容（通过URI确定），进而如果查找到，将内容OBJ直接返回给用户。同时还需要一个时间戳以及用于同步的读写锁：
+line最基本的构成需要存储URI和OBJ，因为下次用户请求时代理需要知道请求的是哪个网站的什么内容（通过URI确定），进而如果查找到，将内容OBJ直接返回给用户。同时还需要一个时间戳以及用于同步的读写锁：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">char</span> *uri;</span><br><span class="line">    <span class="keyword">char</span> *obj;</span><br><span class="line">    <span class="keyword">int</span> objSize;</span><br><span class="line">    <span class="keyword">int64_t</span> time;</span><br><span class="line">    <span class="keyword">pthread_rwlock_t</span> rwlock; </span><br><span class="line">&#125; cache_line;</span><br></pre></td></tr></table></figure>
-一共有5种类型的cache，每种类型有一个number，还有一个指向该种cache第一块的指针p，p指向该种的第一小块，p+1指向该种的第二小块，以此类推：
+<p>一共有5种类型的cache，每种类型有一个number，还有一个指向该种cache第一块的指针p，p指向该种的第一小块，p+1指向该种的第二小块，以此类推：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> numOfLine;</span><br><span class="line">    cache_line *cachep;</span><br><span class="line">&#125; cache_type;</span><br></pre></td></tr></table></figure>
-数据结构设计完后，需要设计函数接口，cache的操作有初始化、查找、写入（替换）和释放：<br />
+<p>数据结构设计完后，需要设计函数接口，cache的操作有初始化、查找、写入（替换）和释放：<br />
 初始化需要为cache
 block分配空间，将每一块的时间戳置0，表示该块没有存储内容；<br />
 查找时需要遍历所有的type，再在该type中遍历所有的block，如果时间戳不为0，比对浏览器需要访问的URI与当前块的URI是否相等，相等则表示cache
@@ -422,31 +424,34 @@ block，没有需要替换，满足要求后存入cache，并且将结果返给�
 <p>测试的方式一共有3种：</p>
 <ul>
 <li>自动化测试
-利用课程提供的脚本<code>driver.sh</code>自动进行，执行之前，需要安装一些工具：
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install net-tools</span><br></pre></td></tr></table></figure>
-做完所有内容后，先用<code>driver.sh</code>进行测试，发现cache部分没分。。。得，开始debug吧！我觉得GDB好难用啊，所以都是通过<code>printf</code>de的。</li>
+利用课程提供的脚本<code>driver.sh</code>自动进行，执行之前，需要安装一些工具：</li>
 </ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install net-tools</span><br></pre></td></tr></table></figure>
+<p>做完所有内容后，先用<code>driver.sh</code>进行测试，发现cache部分没分。。。得，开始debug吧！我觉得GDB好难用啊，所以都是通过<code>printf</code>de的。</p>
 <p>用curl先通过proxy发个请求，然后看看proxy有没有缓存服务器返回的内容。<br />
 最后发现在<code>write_cache</code>时需要用到URI，但是之前解析时候把URI改了，一定注意URI最好不要改，设置为<code>const</code>比较保险。</p>
 <p>完了以后，cache满分了，basic又错了一个，fetch可执行对象文件tiny时：
-<img src="https://img-blog.csdnimg.cn/20200819212506210.png"
-alt="在这里插入图片描述" /><br />
+<img src="10.png" alt="在这里插入图片描述" /><br />
 一开始怀疑是tiny太大了，某个数组爆掉了。看了下tiny有36000+B，缓存空间足够，但是可能写入时候有些bug。tiny是二进制文件，可能比较特殊？很奇怪的是：明明<code>objSize</code>是36000+，但是<code>strlen(obj)</code>只有100，怀疑文件中可能有<code>\0</code>，提前终止了<code>strlen</code>的计数。</p>
 <p>解决方案是<code>write_cache</code>参数不仅要有<code>uri</code>和<code>obj</code>，还要有<code>obj</code>的长度<code>len</code>，否则直接用<code>strlen</code>获取长度可能就挂了。后来修改以后就满分了，一定要注意，如果用<code>char*</code>传参，一定要附带参数<code>len</code>，因为不一定读取的是字符串，还有可能是二进制文件，<code>\0</code>也就是<code>0</code>很容易出现，用<code>strlen</code>大概率会爆掉。</p>
-<p>最终测试结果如下： <img
-src="https://img-blog.csdnimg.cn/20200819221810760.png"
-alt="在这里插入图片描述" /> <img
-src="https://img-blog.csdnimg.cn/20200819221846500.png"
-alt="在这里插入图片描述" /> - 利用<code>curl</code>工具<br />
-<code>curl</code>可以用来生成HTTP请求：假设Sever在端口15213监听，代理在端口15214监听，那么可以通过下面命令经由代理发送请求：
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v --proxy http:<span class="comment">//localhost:15214 http://localhost:15213/home.html</span></span><br></pre></td></tr></table></figure> 我们用该工具测试下Sequential Web Proxy：<br />
-首先启动Tiny Web Server和Proxy： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./tiny 15213</span><br><span class="line">./proxy 15214</span><br></pre></td></tr></table></figure>
-然后执行<code>curl</code>命令： <img
-src="https://img-blog.csdnimg.cn/20200730162654329.png"
+<p>最终测试结果如下： <img src="11.png" alt="在这里插入图片描述" /> <img
+src="12.png" alt="在这里插入图片描述" /></p>
+<ul>
+<li>利用<code>curl</code>工具<br />
+<code>curl</code>可以用来生成HTTP请求：假设Sever在端口15213监听，代理在端口15214监听，那么可以通过下面命令经由代理发送请求：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v --proxy http:<span class="comment">//localhost:15214 http://localhost:15213/home.html</span></span><br></pre></td></tr></table></figure>
+<p>我们用该工具测试下Sequential Web Proxy：<br />
+首先启动Tiny Web Server和Proxy：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./tiny 15213</span><br><span class="line">./proxy 15214</span><br></pre></td></tr></table></figure>
+<p>然后执行<code>curl</code>命令： <img src="13.png"
 alt="在这里插入图片描述" /><br />
-说明基本功能是OK的！！ - 实际浏览器测试<br />
+说明基本功能是OK的！！</p>
+<ul>
+<li>实际浏览器测试<br />
 满分之后，万里长征走了一半吧，因为要在实际浏览器测试，不断增强程序的<strong>鲁棒性</strong>。
-测试之前，先禁用浏览器自带的cache，清空之前的缓存。 测下内存泄漏：</p>
+测试之前，先禁用浏览器自带的cache，清空之前的缓存。 测下内存泄漏：</li>
+</ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">valgrind --leak-check=full --show-leak-kinds=all ./proxy 8080</span><br></pre></td></tr></table></figure>
 <h2 id="code-reference">Code &amp; Reference</h2>
 <p><a
