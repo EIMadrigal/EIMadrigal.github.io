@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://eimadrigal.github.io/posts/git/1260581-20211229111609065-1819873752.png">
 <meta property="article:published_time" content="2018-05-18T16:14:32.000Z">
-<meta property="article:modified_time" content="2023-11-25T09:31:37.594Z">
+<meta property="article:modified_time" content="2024-04-06T05:49:19.298Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Tools">
 <meta name="twitter:card" content="summary">
@@ -229,7 +229,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-11-25 17:31:37" itemprop="dateModified" datetime="2023-11-25T17:31:37+08:00">2023-11-25</time>
+                <time title="Modified: 2024-04-06 13:49:19" itemprop="dateModified" datetime="2024-04-06T13:49:19+08:00">2024-04-06</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -237,7 +237,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
+                  <a href="/categories/CS/" itemprop="url" rel="index"><span itemprop="name">CS</span></a>
                 </span>
             </span>
 
@@ -279,13 +279,49 @@ src="1260581-20211229110354288-1305060165.png" alt="image" /></p>
 5L就再也找不到了...这里就需要<code>merge</code>操作来合并分支。</p>
 <p>更重要的是，程序员们可以随时随地借助云上的备份进行协作，完成超大项目的撕逼工作。<br />
 为了保证出bug有人背锅，还需要记录who/when/what，VCS里叫做<code>annotate/blame</code>。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">git init  # 将该目录用Git管理</span><br><span class="line">git add haha.txt kaka.txt  # 将haha.txt，kaka.txt添加到仓库</span><br><span class="line">git commit -m &quot;upload&quot;  # 将文件提交到仓库，本次提交说明是upload</span><br><span class="line">git remote add origin git@github.com:EIMadrigal/Leetcode.git  # 将本地仓库与远程仓库关联</span><br><span class="line">git push -u origin main  # 将本地库的内容第一次推送到远程仓库</span><br><span class="line">git push origin main  # 以后的推送</span><br><span class="line">git rm -r --cached haha  # 删除文件夹haha</span><br><span class="line">git status  # 查看仓库的状态</span><br><span class="line">git diff  # 查看具体修改的内容</span><br><span class="line">git log  # 查看提交历史纪录</span><br><span class="line">git show  # 提交详情</span><br><span class="line">git checkout -- [file]  # 回退</span><br><span class="line">git reset --hard HEAD^  # HEAD表示当前版本，HEAD^表示上一个版本</span><br><span class="line">git reflog  # 查看命令的历史纪录</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">git init  <span class="comment"># 将该目录用Git管理</span></span><br><span class="line"></span><br><span class="line">git add haha.txt kaka.txt  <span class="comment"># workspace to staging area</span></span><br><span class="line">git commit -m <span class="string">&quot;upload&quot;</span>  <span class="comment"># staging area to local repo</span></span><br><span class="line"></span><br><span class="line">git remote add origin git@github.com:EIMadrigal/Leetcode.git  <span class="comment"># 将本地仓库与远程仓库关联</span></span><br><span class="line">git push -u origin main  <span class="comment"># 将本地库的内容第一次推送到远程仓库</span></span><br><span class="line">git push origin main  <span class="comment"># local repo to remote repo</span></span><br><span class="line">git rm -r --cached haha  <span class="comment"># 删除文件夹haha</span></span><br><span class="line">git status  <span class="comment"># 查看仓库的状态</span></span><br><span class="line">git diff  <span class="comment"># 查看具体修改的内容</span></span><br><span class="line">git <span class="built_in">log</span>  <span class="comment"># 查看提交历史纪录</span></span><br><span class="line">git show  <span class="comment"># 提交详情</span></span><br><span class="line">git checkout -- [file]  <span class="comment"># 回退</span></span><br><span class="line">git reset --hard HEAD^  <span class="comment"># HEAD表示当前版本，HEAD^表示上一个版本</span></span><br><span class="line">git reflog  <span class="comment"># 查看命令的历史纪录</span></span><br><span class="line"></span><br><span class="line">git fetch origin  <span class="comment"># remote repo to local repo</span></span><br><span class="line">git merge  <span class="comment"># local repo to workspace</span></span><br><span class="line">git pull origin master  <span class="comment"># remote repo to workspace</span></span><br><span class="line">git rebase origin/master  <span class="comment"># </span></span><br><span class="line"></span><br><span class="line">git branch  <span class="comment"># show branches</span></span><br><span class="line">git branch my-truck  <span class="comment"># create my-truck branch</span></span><br><span class="line">git checkout my-truck  <span class="comment"># move into my-truck branch</span></span><br></pre></td></tr></table></figure>
+<h2 id="standard-workflow">Standard Workflow</h2>
+<ol type="1">
+<li>fork remote repo <code>truck</code> to personal remote repo
+<code>my-truck</code>, enable fork syncing to keep branches and tags
+automatically in sync with <code>truck</code></li>
+<li>clone <code>my-truck</code> to local, aka shadow repo, using
+<code>git clone https://xxx.git</code></li>
+<li>pull changes from <code>my-truck</code> to sync shadow repo on the
+branch you want, <code>git pull</code></li>
+<li>create and checkout a new branch <code>new-branch</code> in shadow
+repo</li>
+<li>make your changes on <code>new-branch</code>, test your code is
+ok</li>
+<li>add and commit your changes on <code>new-branch</code> in shadow
+repo</li>
+<li>checkout to <code>master</code>, push <code>new-branch</code> to
+<code>my-truck</code> using <code>git push origin new-branch</code></li>
+<li>submit PR to merge <code>new-branch</code> on <code>my-truck</code>
+to desired branch on <code>truck</code></li>
+</ol>
+<p>其他的workflow：</p>
+<ol type="1">
+<li>change name of truck repo from origin to upstream, origin points to
+personal remote repo</li>
+<li>switch to branch A, pull remote repo to sync up</li>
+<li>switch to branch B, merge it to branch A</li>
+<li>push it to personal remote repo</li>
+</ol>
+<p><a
+target="_blank" rel="noopener" href="https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow">Forking
+workflow</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://ruanyifeng.com/blog/2015/08/git-use-process.html">Git使用规范流程</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.bridgeli.cn/archives/200">Git开发最佳实践</a></p>
 <h2 id="代理配置">代理配置</h2>
 <h3 id="windows">Windows</h3>
 <p>Windows设置git bash走代理</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git config --global http.proxy http://127.0.0.1:22335</span><br><span class="line">git config --global https.proxy https://127.0.0.1:22335</span><br><span class="line">git config --global --<span class="built_in">unset</span> http.proxy</span><br><span class="line">git config --global --<span class="built_in">unset</span> https.proxy</span><br></pre></td></tr></table></figure>
-<p>Windows设置CMD走代理 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> http_proxy=http://127.0.0.1:22335 &amp; <span class="built_in">set</span> https_proxy=http://127.0.0.1:22335</span><br></pre></td></tr></table></figure></p>
-<p>Windows设置Power Shell走代理 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Env</span>:http_proxy=<span class="string">&quot;http://127.0.0.1:22335&quot;</span>;<span class="variable">$Env</span>:https_proxy=<span class="string">&quot;http://127.0.0.1:22335&quot;</span></span><br></pre></td></tr></table></figure></p>
+<p>Windows设置CMD走代理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> http_proxy=http://127.0.0.1:22335 &amp; <span class="built_in">set</span> https_proxy=http://127.0.0.1:22335</span><br></pre></td></tr></table></figure>
+<p>Windows设置Power Shell走代理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Env</span>:http_proxy=<span class="string">&quot;http://127.0.0.1:22335&quot;</span>;<span class="variable">$Env</span>:https_proxy=<span class="string">&quot;http://127.0.0.1:22335&quot;</span></span><br></pre></td></tr></table></figure>
 <h3 id="wsl">WSL</h3>
 <p>WSL2配置（以<code>Clash</code>为例）：</p>
 <ol type="1">
@@ -313,6 +349,8 @@ target="_blank" rel="noopener" href="https://web.mit.edu/6.031/www/fa21/classes/
 target="_blank" rel="noopener" href="https://keqingrong.cn/blog/2021-02-19-proxy-and-pac/">日常开发中用到的一些代理配置方式</a><br />
 <a
 target="_blank" rel="noopener" href="https://www.cnblogs.com/tuilk/p/16287472.html">WSL2配置代理</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.toptal.com/developers/gitignore">Create useful
+.gitignore files for your project</a></p>
 
     </div>
 
@@ -435,7 +473,7 @@ target="_blank" rel="noopener" href="https://www.cnblogs.com/tuilk/p/16287472.ht
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E9%85%8D%E7%BD%AE"><span class="nav-text">代理配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#windows"><span class="nav-text">Windows</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wsl"><span class="nav-text">WSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%85%8D%E7%BD%AE"><span class="nav-text">虚拟机配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#refs"><span class="nav-text">Refs</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#standard-workflow"><span class="nav-text">Standard Workflow</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E9%85%8D%E7%BD%AE"><span class="nav-text">代理配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#windows"><span class="nav-text">Windows</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wsl"><span class="nav-text">WSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%85%8D%E7%BD%AE"><span class="nav-text">虚拟机配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#refs"><span class="nav-text">Refs</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
