@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>LC-567 Permutation in String</title>
+      <link href="/posts/LC-567-Permutation-in-String/"/>
+      <url>/posts/LC-567-Permutation-in-String/</url>
+      
+        <content type="html"><![CDATA[<p>给两个字符串<code>s1</code>和<code>s2</code>，如果<code>s2</code>中包含<code>s1</code>的某个全排列，则返回<code>true</code>，否则返回<code>false</code>。</p><p>最直观的解法就是：</p><ol type="1"><li>枚举<code>s1</code>的所有全排列。递归算法的时间复杂度为<code>递归次数*单次递归的复杂度</code>，递归树上每个非叶结点都是一次递归，<ahref="https://leetcode.cn/problems/permutations/solutions/9914/hui-su-suan-fa-python-dai-ma-java-dai-ma-by-liweiw/">树上共有<spanclass="math inline">\(O(n!)\)</span>级别数目的非叶结点</a>，因此递归调用次数为<spanclass="math inline">\(O(n!)\)</span>。单次递归的复杂度为<spanclass="math inline">\(O(n)\)</span>。因此这一步的时间复杂度为<spanclass="math inline">\(O(n\times n!)\)</span>。递归调用的深度为<spanclass="math inline">\(O(n)\)</span>，即空间复杂度<spanclass="math inline">\(O(n)\)</span>。</li><li>对于每个全排列，check其是否为<code>s2</code>的子串。如果用KMP算法，时间复杂度为<spanclass="math inline">\(O((n_1+n_2)\timesn_1!)\)</span>，空间复杂度为<spanclass="math inline">\(O(n_1)\)</span>。</li></ol><p>综上，总的时间复杂度为<span class="math inline">\(O((2n_1+n_2)\timesn_1!)\)</span>，总的空间复杂度为<spanclass="math inline">\(O(n_1)\)</span>。</p><h2 id="approach-1">Approach 1</h2><p>我拿到此题的第一感觉是哈希表，首先统计<code>s1</code>中每种字符的频率，如果<code>s2</code>中存在一个长度为<spanclass="math inline">\(n_1\)</span>的连续区间窗口，完全符合<code>s1</code>的字符频率表，则返回<code>true</code>。</p><h2 id="approach-2">Approach 2</h2><h2 id="reference">Reference</h2><p><a href=""></a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Algorithm </category>
+          
+          <category> LeetCode </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Sliding Window </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>MISC</title>
       <link href="/posts/misc/"/>
       <url>/posts/misc/</url>
