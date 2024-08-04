@@ -29,7 +29,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://eimadrigal.github.io/posts/git/1260581-20211229111609065-1819873752.png">
 <meta property="article:published_time" content="2018-05-18T16:14:32.000Z">
-<meta property="article:modified_time" content="2024-05-02T03:30:37.699Z">
+<meta property="article:modified_time" content="2024-08-03T06:51:23.851Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Tools">
 <meta name="twitter:card" content="summary">
@@ -229,7 +229,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-05-02 11:30:37" itemprop="dateModified" datetime="2024-05-02T11:30:37+08:00">2024-05-02</time>
+                <time title="Modified: 2024-08-03 14:51:23" itemprop="dateModified" datetime="2024-08-03T14:51:23+08:00">2024-08-03</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -316,9 +316,9 @@ target="_blank" rel="noopener" href="https://ruanyifeng.com/blog/2015/08/git-use
 <p><a target="_blank" rel="noopener" href="http://www.bridgeli.cn/archives/200">Git开发最佳实践</a></p>
 <h2 id="use-case">Use Case</h2>
 <ol type="1">
-<li>在某个分支<code>test</code>上进行了修改，并提交了commit，push到个人的remote分支，提交了PR，但还没有被merge。此时需要再次修改<code>test</code>，但要合并两次commit，并且只保留前1次的commit信息。</li>
+<li>在某个分支<code>test</code>上进行了修改，并提交了commit，push到个人的remote分支，提交了PR，但还没有被merge。此时需要再次修改<code>test</code>，但要合并两次commit，并且需要保留前1次/后1次的commit信息。</li>
 </ol>
-<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git commit  <span class="comment">## second edit and commit</span></span><br><span class="line">git rebase -i HEAD~2  <span class="comment">## pick, fixup</span></span><br><span class="line">git push origin <span class="built_in">test</span> --force</span><br></pre></td></tr></table></figure></p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git commit  <span class="comment">## second edit and commit</span></span><br><span class="line">git rebase -i HEAD~2  <span class="comment">## pick, squash, then popup and edit the commit msg. if fixup, no popup and the msg will be the pick one</span></span><br><span class="line">git push origin <span class="built_in">test</span> --force</span><br></pre></td></tr></table></figure></p>
 <p><a
 target="_blank" rel="noopener" href="https://blog.csdn.net/u012586326/article/details/112985496">Git操作：多个commit合并，并修改提交信息</a></p>
 <ol start="2" type="1">
