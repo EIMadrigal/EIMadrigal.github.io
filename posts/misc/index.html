@@ -28,7 +28,7 @@
 <meta property="og:description" content="MISC">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-03-22T12:23:51.000Z">
-<meta property="article:modified_time" content="2024-06-22T09:17:29.422Z">
+<meta property="article:modified_time" content="2024-08-11T01:08:00.668Z">
 <meta property="article:author" content="EIMadrigal">
 <meta name="twitter:card" content="summary">
 
@@ -226,7 +226,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-06-22 17:17:29" itemprop="dateModified" datetime="2024-06-22T17:17:29+08:00">2024-06-22</time>
+                <time title="Modified: 2024-08-11 09:08:00" itemprop="dateModified" datetime="2024-08-11T09:08:00+08:00">2024-08-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -293,150 +293,6 @@ Difference Between Active Directory and LDAP</a></p>
 <p><a
 target="_blank" rel="noopener" href="https://www.reddit.com/r/sysadmin/comments/nd0w3g/what_is_the_difference_between_kerberos_and_ldap/">What
 is the difference between Kerberos and LDAP</a></p>
-<h2 id="authentication">Authentication</h2>
-<ul>
-<li>verify identity of user, device, system for access restricted data
-or resource</li>
-</ul>
-<h3 id="pw-based">pw-based</h3>
-<ul>
-<li>username + password</li>
-<li>enforce strong pw policy</li>
-</ul>
-<h3 id="multi-factor-mfa">Multi-factor (MFA)</h3>
-<p>combine 2 or more independent factors to verify identity</p>
-<ul>
-<li>knowledge: something user knows, pw, PIN</li>
-<li>possession: something user has, hardware token, mobile phone</li>
-<li>inherence: something user is, biometrics (fingerprints, facial
-recognition)</li>
-</ul>
-<h3 id="certificate-based">certificate based</h3>
-<ul>
-<li>digital cert (SSL/TLS cert), electronic documents, cryptographic
-public keys + subject</li>
-<li>authenticate user, device, server, domain itself, will exchange to
-another side in handshake process, for public key encrypted
-communication</li>
-<li>issued by CA</li>
-<li>types
-<ol type="1">
-<li>domain validation: only validate domain ownership but not
-organization info</li>
-<li>organization validation: both domain ownership and organization
-info</li>
-<li>extended validation: based on OV, check organization's legal status,
-physical location</li>
-</ol></li>
-</ul>
-<h3 id="sso">SSO</h3>
-<ul>
-<li>enable user access multiple systems by single credential</li>
-<li>centralize authentication process, simplify user mgt and reduce pw
-security breaches</li>
-<li>OAuth, SAML, OpenID Connect</li>
-<li>component: user, service provider (SP, application/website to
-access), identity provider (IdP, 3rd-party platform store and manage
-user identity)</li>
-<li>process
-<ol type="1">
-<li>user req access to a SP, SP check if user already authenticated to
-IdP</li>
-<li>user is redirected to IdP login page, user enters credentials to
-IdP</li>
-<li>IdP issues an encrypted token (security assertion) to SP</li>
-</ol></li>
-</ul>
-<h3 id="kerberos">kerberos</h3>
-<ul>
-<li>KDC, authentication server (AS) and TGS, a DB of secret keys for
-each user and service</li>
-<li>ticket, encrypted msg contain client identity, server identity,
-shared session key</li>
-<li>process
-<ol type="1">
-<li>client req a ticket from KDC provide username, KDC generates a
-ticket (encrypt by clients's secret key), client get session key from
-client</li>
-<li>client req a service ticket from KDC, req include client ticket and
-server's id</li>
-<li>KDC generate a service ticket (encrypt by server's secret key)</li>
-<li>client send service ticket and identity (encrypted by session key)
-to server</li>
-<li>server decrypts service ticket get session key, user session key to
-decrypt identity</li>
-<li>veirfy client's identity</li>
-</ol></li>
-<li>need synchronized clocks between client and server</li>
-</ul>
-<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Kerberos_(protocol)">Kerberos
-(protocol)</a></p>
-<h3 id="radius-remote-authentication-dial-in-user-service">RADIUS,
-remote authentication dial-in user service</h3>
-<ul>
-<li>C/S protocol, centralized authentication authorization, accounting
-(AAA) mgt, based on UDP</li>
-<li>muck like LDAP/LDAPS</li>
-</ul>
-<h3 id="oidc">OIDC</h3>
-<ul>
-<li></li>
-</ul>
-<p><a
-target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/629758071">IAM的主流身份验证方法之OIDC协议</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://www.pingidentity.com/en/resources/identity-fundamentals/authentication-authorization-standards/openid-connect.html">OpenID
-Connect (OIDC)</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://technospace.medium.com/secure-spring-boot-application-with-openid-connect-and-role-based-authorization-efaeceb014c7">Secure
-Spring Boot Application with OpenID Connect and Role Based
-Authorization</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://www.baeldung.com/spring-security-openid-connect">Spring
-Security and OpenID Connect</a></p>
-<ul>
-<li>pa redirect process: dest url -&gt; AAD login -&gt; credential
-(code, approval, etc) -&gt; dest url??
-<ol type="1">
-<li>dest url</li>
-<li>req with <code>client_id</code> as parameter to AAD
-https://login.microsoftonline.com/common/oauth2/v2.0/authorize</li>
-<li>AAD login</li>
-</ol></li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
-<li>req params
-<ol type="1">
-<li><code>redirect_uri</code>: URI that the response will be sent to
-when authorization is finished. Must be from a list of preregistred
-URI's for this client.</li>
-<li><code>client_id</code>: identifier of the client app</li>
-<li><code>response_type</code></li>
-<li></li>
-</ol></li>
-<li>response
-<ol type="1">
-<li>id token</li>
-<li>access token</li>
-<li></li>
-</ol></li>
-</ul>
-<p><a
-target="_blank" rel="noopener" href="https://blog.logto.io/redirect-uri-in-authorization-code-flow/">Understanding
-Redirect URIs in OIDC with Authorization Code Flow</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://stackoverflow.com/questions/55369805/what-is-the-real-purpose-of-redirect-uri-in-openidconnect">What
-is the real purpose of Redirect_Uri in OpenIdConnect</a></p>
-<h3 id="saml">SAML</h3>
-<ul>
-<li>IdP, such as PingFederate, AAD,</li>
-<li>SP,</li>
-</ul>
-<p><a
-target="_blank" rel="noopener" href="https://blog.logto.io/diferrences-between-saml-and-oidc/">What are
-differences between SAML and OIDC</a></p>
 <h2 id="network-basics">network basics</h2>
 <h3 id="ip-addr">IP addr</h3>
 <ul>
@@ -498,133 +354,7 @@ transfer protocol)</li>
 <li>HTTP: stateless (not retain session state from prev req, indepedent
 reqs between each other)</li>
 </ul>
-<h3 id="ssltls">SSL/TLS</h3>
-<ul>
-<li>TLS (&gt;=1.2) is updated version of SSL (deprecated)</li>
-<li>component
-<ol type="1">
-<li>encryption: powerful algo to encrypt data, unreadable unless correct
-decryption key</li>
-<li>authentication: digital cert</li>
-<li>integrity: msg auth codes ensure data not been tampered</li>
-</ol></li>
-<li>handshake
-<ol type="1">
-<li>client hello: send msg with supported cryptographic algos (cipher
-suites), client random, session info</li>
-<li>server hello: response with selected cryptographic algo, server
-random, digital cert. Request client's cert for mutual auth
-(optional)</li>
-<li>client verification: verify server's cert, send its own cert
-(optional), create pre-master secret, encrypts it with server's public
-key</li>
-<li>key generation and exchange: both client and server generate master
-secret (for derive session key) from client random, server random,
-pre-master secret</li>
-<li>secured connection: symmetric encryption with session key</li>
-</ol></li>
-<li>opportunistic TLS: if support then TLS, otherwise plain text</li>
-<li>SSL offloading</li>
-</ul>
-<p><a
-target="_blank" rel="noopener" href="https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/">What
-happens in a TLS handshake | SSL handshake</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://cabulous.medium.com/tls-1-2-andtls-1-3-handshake-walkthrough-4cfd0a798164">TLS
-1.2 and TLS 1.3 Handshake Walkthrough</a></p>
-<p><a target="_blank" rel="noopener" href="https://auth0.com/blog/the-tls-handshake-explained/">The TLS
-Handshake Explained</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://www.paolotagliaferri.com/an-overview-of-ssl-tls-secure-sockets-layer-transport-layer-security-tls-1-2/">A
-modern overview of SSL/TLS - TLS 1.2</a></p>
-<h3 id="ssli">SSLi</h3>
-<p><a
-target="_blank" rel="noopener" href="https://docs.netscaler.com/en-us/citrix-adc/current-release/forward-proxy/ssl-interception">SSL
-interception</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://www.secureworks.com/research/transitive-trust">TRANSITIVE
-TRUST: SSL/TLS INTERCEPTION PROXIES</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://support.riverbed.com/bin/support/static/dfuivh96v6bohvg8hh8iopk9gf/html/8j0j39igk25kcpisnvmnb6dbei/sh_saas_9.8_ug_html/index.html#page/sh_saas_9.8_ug_html/sca_proxy.09.03.html">Understanding
-chained interception</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://stackoverflow.com/questions/516323/https-connections-over-proxy-servers">HTTPS
-connections over proxy servers</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://stackoverflow.com/questions/5846652/can-proxy-change-ssl-certificate">Can
-proxy change SSL certificate</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://security.stackexchange.com/questions/49509/does-a-tls-interception-proxy-present-the-users-browser-with-the-end-servers-c">Does
-a TLS interception proxy present the user's browser with the end
-server's certificate</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://security.stackexchange.com/questions/133254/how-does-ssl-proxy-server-in-company-work">How
-does SSL Proxy server in company work</a></p>
-<p><a href=""></a></p>
-<p><a href=""></a></p>
-<p><a href=""></a></p>
 <h3 id="section"></h3>
-<h2 id="pki">PKI</h2>
-<ul>
-<li>provide framework for create, store, distribute, identify
-certificates</li>
-<li>component
-<ol type="1">
-<li>CA: verify entity identity, issue certificate</li>
-<li>RA (Registration Authority): assist CA verify entity identity</li>
-<li>Digital certificate: public key + entity info + digital signature,
-following X.509 protocol</li>
-<li>Certificate DB:</li>
-</ol></li>
-<li>secure email, web browser, etc</li>
-<li>cert components
-<ol type="1">
-<li>common name: website's name</li>
-<li>subject alternative name: other domain names tied</li>
-<li>organization: company owning the site</li>
-<li>organizational unit: department within company</li>
-<li>country: country of the company</li>
-<li>state/province</li>
-<li>locality: city</li>
-<li>validity period</li>
-<li>Issuing certificate authority: the organization create and signed
-the cert</li>
-<li>serial number</li>
-<li>public key:</li>
-<li></li>
-</ol></li>
-<li><a
-target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/30136885">5分钟让你知道什么是PKI</a></li>
-</ul>
-<h2 id="csr-certificate-signing-request">CSR certificate signing
-request</h2>
-<ul>
-<li></li>
-</ul>
-<h2 id="certificate-chain-verify-process">Certificate chain verify
-process</h2>
-<ul>
-<li></li>
-</ul>
-<p><a target="_blank" rel="noopener" href="https://security.stackexchange.com/questions/211749">Where
-do TLS clients fetch intermediate CA certificates from</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://knowledge.digicert.com/solution/how-certificate-chains-work">HOW
-CERTIFICATE CHAINS WORK</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://stackoverflow.com/questions/35374491/how-does-the-client-verify-servers-certificate-in-ssl">https://stackoverflow.com/questions/35374491/how-does-the-client-verify-servers-certificate-in-ssl</a></p>
-<h2 id="crl">CRL</h2>
-<p><a
-target="_blank" rel="noopener" href="https://www.techtarget.com/searchsecurity/definition/Certificate-Revocation-List">certificate
-revocation list (CRL)</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://www.cnblogs.com/flydean/p/16452165.html">密码学系列之:在线证书状态协议OCSP详解</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://www.thesslstore.com/blog/crl-explained-what-is-a-certificate-revocation-list/">CRL
-Explained: What Is a Certificate Revocation List</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://sectigostore.com/blog/what-is-a-crl-a-certificate-revocation-list-explained/">What
-Is a CRL A Certificate Revocation List Explained</a></p>
 <h2 id="spn">SPN</h2>
 <ul>
 <li><a
@@ -746,24 +476,6 @@ failure occurs to your last valid data backup. For example, if you
 experience a failure now and your last full data backup was 24 hours
 ago, the RPO is 24 hours.</li>
 </ul>
-<h2 id="dmarc-dkim-spf-for-email-authentication">DMARC, DKIM, SPF for
-email authentication</h2>
-<ul>
-<li>DKIM and SPF: authentication sender's domain
-<ol type="1">
-<li>DKIM: check message header <code>From:</code> address</li>
-<li>SPF: check sender's SMTP envelope <code>MAIL FROM:</code></li>
-</ol></li>
-<li>DMARC: tell mail server what to do when DKIM and SPF fail</li>
-</ul>
-<p><a
-target="_blank" rel="noopener" href="https://www.cloudflare.com/learning/email-security/dmarc-dkim-spf/">What
-are DMARC, DKIM, and SPF</a></p>
-<p>SMTP application layer, 25 telnet application layer, 23</p>
-<p><a
-target="_blank" rel="noopener" href="https://www.mailgun.com/resources/learn/glossary/email-envelope/">Email
-envelope</a> envelope from: for routing, return path, empty, header
-from: postmaster@</p>
 <p>location, domain, vDOM, zone, vlan, subnet</p>
 <h1 id="troubleshooting-tools">Troubleshooting tools</h1>
 <h2 id="nslookup">nslookup</h2>
@@ -834,48 +546,6 @@ intercept and DoS attacks</li>
 <ul>
 <li>combine traceroute and ping</li>
 </ul>
-<h1 id="virtualization">Virtualization</h1>
-<h2 id="hypervisorvirtual-machine-monitor">Hypervisor/virtual machine
-monitor</h2>
-<ul>
-<li>software, enable multiple isolated VMs to run on a single physical
-server, create, manage, monitor VMs</li>
-<li>types
-<ol type="1">
-<li>Type 1/bare-metal: run directly on host's hardware, no need for
-underlying OS, ESXi, Microsoft Hyper-V, Xen</li>
-<li>Type 2/hosted: run as app on existing OS, VirtualBox, VMWare
-Workstation</li>
-</ol></li>
-<li>manage resources (CPU, memo, storage, networking) among VMs,
-snapshotting for recovery and rollback, isolation, flexibility</li>
-</ul>
-<h2 id="vmware-esxi-iso">VMWare ESXi ISO</h2>
-<ul>
-<li>Type 1/bare-metal hypervisor (direct install on hardware, no need
-for a supporting OS)</li>
-<li>Bare-metal performance, execute directly on hardware (CPU,
-memory)</li>
-<li>provide env to run multiple VMs on single server</li>
-<li>one component of vSphere (entire cloud computing virtualization
-platform, deploy, manage and maintain large-scale virtual infra, such as
-HA, fault tolerance, distributed resource scheduling)</li>
-</ul>
-<h2 id="hci-hyper-converged-infrastructure">HCI Hyper-converged
-infrastructure</h2>
-<ul>
-<li>virtualized computing, virtualized storage, virtualized network via
-a native hypervisor</li>
-<li>purely software defined</li>
-<li>reduce DC complexity since all physical and virtual resources are
-managed via single hypervisor</li>
-</ul>
-<p><a
-target="_blank" rel="noopener" href="https://www.scalecomputing.com/resources/what-is-hyperconverged-infrastructure">What
-is Hyperconverged Infrastructure</a></p>
-<p>Linux, Win, OVF (no obvious OS, packaged as a whole VM image,
-pre-installed with custom software made to serve a specific purpose) VM:
-scale well BM: not scale well</p>
 <h1 id="network-based-attacks">Network-based attacks</h1>
 <h2 id="dosddos">DoS/DDoS</h2>
 <ul>
@@ -918,18 +588,6 @@ widely used to create and manage SAs</li>
 <li>exchange data with key</li>
 </ol></li>
 </ul>
-<h2 id="pac-proxy-auto-config">PAC (Proxy auto-config)</h2>
-<ul>
-<li>browser/app choose proxy server automatically for fetching given
-URL</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">FindProxyForURL</span>(<span class="params">url, host</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> () &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;DIRECT&quot;</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;PROXY w3proxy.mozilla.org:8080; DIRECT&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><a
-target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/web/http/proxy_servers_and_tunneling">Proxy
-servers and tunneling</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/web/http/proxy_servers_and_tunneling/proxy_auto-configuration_pac_file">Proxy
-Auto-Configuration (PAC) file</a></p>
 <h2 id="linux-systemd-service">Linux systemd service</h2>
 <ul>
 <li>system service: <code>/etc/systemd/system/xxx.service</code> -&gt;
@@ -993,8 +651,6 @@ target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/398601816">Web
 <h2 id="cors-cross-origin-resource-sharing">CORS, Cross-Origin Resource
 Sharing</h2>
 <p>https://ruanyifeng.com/blog/2016/04/cors.html</p>
-<h2 id="linux">Linux</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/passwd  <span class="comment"># list all users</span></span><br><span class="line">sudo -i  <span class="comment"># login with root</span></span><br><span class="line">sudo -i -u username  <span class="comment"># login another shell with user</span></span><br><span class="line">sudo yum update  <span class="comment"># update all existing packages</span></span><br><span class="line">sudo yum install firewalld</span><br><span class="line">systemctl --user restart httpd  <span class="comment"># allow user run service without pw</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ls /etc | wc -l</span><br><span class="line">ls -ld ta*</span><br><span class="line">ls -d *[0-9]*</span><br><span class="line">ls -l xxx 2&gt; files, standard error</span><br><span class="line">ls -ad .*</span><br><span class="line">ls -a | grep <span class="string">&#x27;^\.&#x27;</span></span><br><span class="line">cat file | more</span><br><span class="line">cat -n file | tail -8 | head -4</span><br><span class="line">grep <span class="string">&#x27;word&#x27;</span> file</span><br><span class="line">grep -rnw ./play -e <span class="string">&#x27;Lion&#x27;</span></span><br><span class="line"></span><br><span class="line">ls | egrep -o <span class="string">&#x27;^[a-zA-Z0-9.]*&#x27;</span></span><br><span class="line"></span><br><span class="line">ksh | tee | ksh</span><br></pre></td></tr></table></figure>
 <h2 id="systemidservice-account-vs-user-account">systemid/service
 account vs user account</h2>
 <ul>
@@ -1058,13 +714,6 @@ NGINX: Which Web Server Is Better</a></p>
 <p><a
 target="_blank" rel="noopener" href="https://softwareengineering.stackexchange.com/questions/384324/why-do-we-need-nginx-server-on-top-of-linux-server">Why
 do we need nginx server on top of linux server</a></p>
-<h2 id="commands">Commands</h2>
-<h3 id="win-powershell">Win Powershell</h3>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Test-NetConnection</span> example.com <span class="literal">-port</span> <span class="number">443</span></span><br><span class="line"><span class="built_in">Test-NetConnection</span> <span class="number">192.168</span>.<span class="number">38.7</span> <span class="literal">-port</span> <span class="number">443</span></span><br><span class="line"></span><br><span class="line">ssh username@<span class="number">192.168</span>.<span class="number">38.7</span></span><br></pre></td></tr></table></figure>
-<h3 id="win-cmd">Win CMD</h3>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ipconfig</span><br><span class="line">ipconfig /all</span><br><span class="line">ipconfig /flushdns  <span class="comment"># clear DNS cache, remove all stored DNS entries</span></span><br><span class="line"></span><br><span class="line">nslookup example.com  <span class="comment"># A record</span></span><br><span class="line">nslookup <span class="number">192.168</span>.<span class="number">38.7</span>  <span class="comment"># PTR record</span></span><br><span class="line"></span><br><span class="line">hostname</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="linux-1">Linux</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">nslookup example.com  <span class="comment"># A record</span></span><br><span class="line">nslookup 192.168.38.7  <span class="comment"># PTR record</span></span><br><span class="line"></span><br><span class="line">telnet 192.168.38.7 443</span><br><span class="line"></span><br><span class="line">sudo yum install bind-utils</span><br><span class="line">dig example.com A +short +trace</span><br><span class="line">dig +answer +noall example.com @8.8.8.8  <span class="comment"># custom DNS server</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h2 id="section-2"></h2>
 <h2 id="pagerduty">PagerDuty</h2>
 <ul>
@@ -1206,17 +855,11 @@ data-cites="jasurbek.go.dev/the-linux-filesystem-95673f4e3bd5">@jasurbek.go.dev/
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ad"><span class="nav-text">AD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ldapldaps"><span class="nav-text">LDAP&#x2F;LDAPS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#authentication"><span class="nav-text">Authentication</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pw-based"><span class="nav-text">pw-based</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multi-factor-mfa"><span class="nav-text">Multi-factor (MFA)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#certificate-based"><span class="nav-text">certificate based</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sso"><span class="nav-text">SSO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kerberos"><span class="nav-text">kerberos</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#radius-remote-authentication-dial-in-user-service"><span class="nav-text">RADIUS,
-remote authentication dial-in user service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#oidc"><span class="nav-text">OIDC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#saml"><span class="nav-text">SAML</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#network-basics"><span class="nav-text">network basics</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ip-addr"><span class="nav-text">IP addr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vrf---virtual-routing-and-forwarding"><span class="nav-text">VRF - virtual routing and
-forwarding</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#protocols"><span class="nav-text">protocols</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sshrdp"><span class="nav-text">SSH&#x2F;RDP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#httphttps"><span class="nav-text">HTTP&#x2F;HTTPS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ssltls"><span class="nav-text">SSL&#x2F;TLS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ssli"><span class="nav-text">SSLi</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#section"><span class="nav-text"></span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pki"><span class="nav-text">PKI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#csr-certificate-signing-request"><span class="nav-text">CSR certificate signing
-request</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#certificate-chain-verify-process"><span class="nav-text">Certificate chain verify
-process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#crl"><span class="nav-text">CRL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spn"><span class="nav-text">SPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#infoblox"><span class="nav-text">Infoblox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#layer-4-vs-layer-7-fw"><span class="nav-text">layer 4 vs layer 7 FW</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#load-balancer"><span class="nav-text">load balancer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bandwidth-mgt"><span class="nav-text">bandwidth mgt</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#icapsecure-icap"><span class="nav-text">ICAP&#x2F;Secure ICAP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dhcp"><span class="nav-text">DHCP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dns"><span class="nav-text">DNS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nat"><span class="nav-text">NAT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#arp"><span class="nav-text">ARP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bgp"><span class="nav-text">BGP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#snmp"><span class="nav-text">SNMP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rto-rpo"><span class="nav-text">RTO &#x2F; RPO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dmarc-dkim-spf-for-email-authentication"><span class="nav-text">DMARC, DKIM, SPF for
-email authentication</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#troubleshooting-tools"><span class="nav-text">Troubleshooting tools</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nslookup"><span class="nav-text">nslookup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dig---domain-info-groper"><span class="nav-text">dig - domain info groper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#port-scanner"><span class="nav-text">port scanner</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ping"><span class="nav-text">ping</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ipconfig"><span class="nav-text">ipconfig</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iptables"><span class="nav-text">iptables</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#arp-1"><span class="nav-text">ARP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#netstat"><span class="nav-text">netstat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcpdump"><span class="nav-text">tcpdump</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#route"><span class="nav-text">route</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tracerttraceroute"><span class="nav-text">tracert&#x2F;traceroute</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mtr"><span class="nav-text">mtr</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#virtualization"><span class="nav-text">Virtualization</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hypervisorvirtual-machine-monitor"><span class="nav-text">Hypervisor&#x2F;virtual machine
-monitor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vmware-esxi-iso"><span class="nav-text">VMWare ESXi ISO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hci-hyper-converged-infrastructure"><span class="nav-text">HCI Hyper-converged
-infrastructure</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#network-based-attacks"><span class="nav-text">Network-based attacks</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dosddos"><span class="nav-text">DoS&#x2F;DDoS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dns-1"><span class="nav-text">DNS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ipsec-vpn"><span class="nav-text">IPSec VPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pac-proxy-auto-config"><span class="nav-text">PAC (Proxy auto-config)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux-systemd-service"><span class="nav-text">Linux systemd service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#html-encode"><span class="nav-text">html encode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql-injection"><span class="nav-text">sql injection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cross-domain-attack"><span class="nav-text">cross-domain attack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#csrf-cross-site-request-forgery"><span class="nav-text">CSRF, Cross-Site Request
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ad"><span class="nav-text">AD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ldapldaps"><span class="nav-text">LDAP&#x2F;LDAPS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#network-basics"><span class="nav-text">network basics</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ip-addr"><span class="nav-text">IP addr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vrf---virtual-routing-and-forwarding"><span class="nav-text">VRF - virtual routing and
+forwarding</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#protocols"><span class="nav-text">protocols</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sshrdp"><span class="nav-text">SSH&#x2F;RDP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#httphttps"><span class="nav-text">HTTP&#x2F;HTTPS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#section"><span class="nav-text"></span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spn"><span class="nav-text">SPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#infoblox"><span class="nav-text">Infoblox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#layer-4-vs-layer-7-fw"><span class="nav-text">layer 4 vs layer 7 FW</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#load-balancer"><span class="nav-text">load balancer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bandwidth-mgt"><span class="nav-text">bandwidth mgt</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#icapsecure-icap"><span class="nav-text">ICAP&#x2F;Secure ICAP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dhcp"><span class="nav-text">DHCP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dns"><span class="nav-text">DNS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nat"><span class="nav-text">NAT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#arp"><span class="nav-text">ARP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bgp"><span class="nav-text">BGP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#snmp"><span class="nav-text">SNMP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rto-rpo"><span class="nav-text">RTO &#x2F; RPO</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#troubleshooting-tools"><span class="nav-text">Troubleshooting tools</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nslookup"><span class="nav-text">nslookup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dig---domain-info-groper"><span class="nav-text">dig - domain info groper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#port-scanner"><span class="nav-text">port scanner</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ping"><span class="nav-text">ping</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ipconfig"><span class="nav-text">ipconfig</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iptables"><span class="nav-text">iptables</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#arp-1"><span class="nav-text">ARP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#netstat"><span class="nav-text">netstat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcpdump"><span class="nav-text">tcpdump</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#route"><span class="nav-text">route</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tracerttraceroute"><span class="nav-text">tracert&#x2F;traceroute</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mtr"><span class="nav-text">mtr</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#network-based-attacks"><span class="nav-text">Network-based attacks</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dosddos"><span class="nav-text">DoS&#x2F;DDoS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dns-1"><span class="nav-text">DNS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ipsec-vpn"><span class="nav-text">IPSec VPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux-systemd-service"><span class="nav-text">Linux systemd service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#html-encode"><span class="nav-text">html encode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql-injection"><span class="nav-text">sql injection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cross-domain-attack"><span class="nav-text">cross-domain attack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#csrf-cross-site-request-forgery"><span class="nav-text">CSRF, Cross-Site Request
 Forgery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cors-cross-origin-resource-sharing"><span class="nav-text">CORS, Cross-Origin Resource
-Sharing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux"><span class="nav-text">Linux</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemidservice-account-vs-user-account"><span class="nav-text">systemid&#x2F;service
-account vs user account</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#storage"><span class="nav-text">storage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-1"><span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx-apache-tomcat"><span class="nav-text">nginx, apache, tomcat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#commands"><span class="nav-text">Commands</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#win-powershell"><span class="nav-text">Win Powershell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#win-cmd"><span class="nav-text">Win CMD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linux-1"><span class="nav-text">Linux</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-2"><span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pagerduty"><span class="nav-text">PagerDuty</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#prometheus-grafana-splunk"><span class="nav-text">Prometheus Grafana Splunk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spring-boot-swagger"><span class="nav-text">Spring Boot Swagger</span></a></li></ol></div>
+Sharing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemidservice-account-vs-user-account"><span class="nav-text">systemid&#x2F;service
+account vs user account</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#storage"><span class="nav-text">storage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-1"><span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx-apache-tomcat"><span class="nav-text">nginx, apache, tomcat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-2"><span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pagerduty"><span class="nav-text">PagerDuty</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#prometheus-grafana-splunk"><span class="nav-text">Prometheus Grafana Splunk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spring-boot-swagger"><span class="nav-text">Spring Boot Swagger</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
