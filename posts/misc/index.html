@@ -28,7 +28,7 @@
 <meta property="og:description" content="MISC">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-03-22T12:23:51.000Z">
-<meta property="article:modified_time" content="2024-08-11T01:08:00.668Z">
+<meta property="article:modified_time" content="2024-09-03T14:08:38.468Z">
 <meta property="article:author" content="EIMadrigal">
 <meta name="twitter:card" content="summary">
 
@@ -226,7 +226,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-08-11 09:08:00" itemprop="dateModified" datetime="2024-08-11T09:08:00+08:00">2024-08-11</time>
+                <time title="Modified: 2024-09-03 22:08:38" itemprop="dateModified" datetime="2024-09-03T22:08:38+08:00">2024-09-03</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -682,45 +682,7 @@ target="_blank" rel="noopener" href="https://serverfault.com/questions/973446/se
 signed ssl I created for localhost cannot be trusted even though I have
 already imported it to chrome</a></p>
 <p>root CA is self-signed</p>
-<h2 id="nginx-apache-tomcat">nginx, apache, tomcat</h2>
-<ul>
-<li>all HTTP server
-<ol type="1">
-<li>bind IP and listen a port</li>
-<li>accept socket connections</li>
-<li>resolve HTTP reqs</li>
-<li>use general or specific protocols to forward reqs</li>
-<li>accept response</li>
-<li>reframe response to HTTP response and write to socket</li>
-<li>close connection or keep-alive</li>
-</ol></li>
-<li>Apache HTTP Server
-<ol type="1">
-<li>same as Nginx</li>
-<li></li>
-</ol></li>
-<li>Nginx
-<ol type="1">
-<li>forward req to application (tomcat, django etc)</li>
-<li></li>
-</ol></li>
-<li>Tomcat: Java application container,
-<ol type="1">
-<li></li>
-</ol></li>
-</ul>
-<p><a target="_blank" rel="noopener" href="https://www.openlogic.com/blog/apache-vs-nginx">Apache vs.
-NGINX: Which Web Server Is Better</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://softwareengineering.stackexchange.com/questions/384324/why-do-we-need-nginx-server-on-top-of-linux-server">Why
-do we need nginx server on top of linux server</a></p>
-<h2 id="section-2"></h2>
-<h2 id="pagerduty">PagerDuty</h2>
-<ul>
-<li>监控告警系统</li>
-<li></li>
-</ul>
-<h2 id="prometheus-grafana-splunk">Prometheus Grafana Splunk</h2>
+<h2 id="splunk">Splunk</h2>
 <h2 id="spring-boot-swagger">Spring Boot Swagger</h2>
 <p><a
 target="_blank" rel="noopener" href="https://blog.bytebytego.com/p/why-do-we-need-a-message-queue">Why
@@ -859,7 +821,7 @@ data-cites="jasurbek.go.dev/the-linux-filesystem-95673f4e3bd5">@jasurbek.go.dev/
 forwarding</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#protocols"><span class="nav-text">protocols</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sshrdp"><span class="nav-text">SSH&#x2F;RDP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#httphttps"><span class="nav-text">HTTP&#x2F;HTTPS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#section"><span class="nav-text"></span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spn"><span class="nav-text">SPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#infoblox"><span class="nav-text">Infoblox</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#layer-4-vs-layer-7-fw"><span class="nav-text">layer 4 vs layer 7 FW</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#load-balancer"><span class="nav-text">load balancer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bandwidth-mgt"><span class="nav-text">bandwidth mgt</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#icapsecure-icap"><span class="nav-text">ICAP&#x2F;Secure ICAP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dhcp"><span class="nav-text">DHCP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dns"><span class="nav-text">DNS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nat"><span class="nav-text">NAT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#arp"><span class="nav-text">ARP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bgp"><span class="nav-text">BGP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#snmp"><span class="nav-text">SNMP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rto-rpo"><span class="nav-text">RTO &#x2F; RPO</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#troubleshooting-tools"><span class="nav-text">Troubleshooting tools</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nslookup"><span class="nav-text">nslookup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dig---domain-info-groper"><span class="nav-text">dig - domain info groper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#port-scanner"><span class="nav-text">port scanner</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ping"><span class="nav-text">ping</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ipconfig"><span class="nav-text">ipconfig</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iptables"><span class="nav-text">iptables</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#arp-1"><span class="nav-text">ARP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#netstat"><span class="nav-text">netstat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcpdump"><span class="nav-text">tcpdump</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#route"><span class="nav-text">route</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tracerttraceroute"><span class="nav-text">tracert&#x2F;traceroute</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mtr"><span class="nav-text">mtr</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#network-based-attacks"><span class="nav-text">Network-based attacks</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dosddos"><span class="nav-text">DoS&#x2F;DDoS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dns-1"><span class="nav-text">DNS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ipsec-vpn"><span class="nav-text">IPSec VPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux-systemd-service"><span class="nav-text">Linux systemd service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#html-encode"><span class="nav-text">html encode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql-injection"><span class="nav-text">sql injection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cross-domain-attack"><span class="nav-text">cross-domain attack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#csrf-cross-site-request-forgery"><span class="nav-text">CSRF, Cross-Site Request
 Forgery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cors-cross-origin-resource-sharing"><span class="nav-text">CORS, Cross-Origin Resource
 Sharing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemidservice-account-vs-user-account"><span class="nav-text">systemid&#x2F;service
-account vs user account</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#storage"><span class="nav-text">storage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-1"><span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx-apache-tomcat"><span class="nav-text">nginx, apache, tomcat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-2"><span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pagerduty"><span class="nav-text">PagerDuty</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#prometheus-grafana-splunk"><span class="nav-text">Prometheus Grafana Splunk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spring-boot-swagger"><span class="nav-text">Spring Boot Swagger</span></a></li></ol></div>
+account vs user account</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#storage"><span class="nav-text">storage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-1"><span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#splunk"><span class="nav-text">Splunk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spring-boot-swagger"><span class="nav-text">Spring Boot Swagger</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
