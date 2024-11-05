@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200526221325518.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200527120631653.png">
 <meta property="article:published_time" content="2020-05-27T07:10:00.000Z">
-<meta property="article:modified_time" content="2023-03-02T08:14:30.713Z">
+<meta property="article:modified_time" content="2023-03-02T08:14:32.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Linear Algebra">
 <meta name="twitter:card" content="summary">
@@ -231,7 +231,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-02 16:14:30" itemprop="dateModified" datetime="2023-03-02T16:14:30+08:00">2023-03-02</time>
+                <time title="Modified: 2023-03-02 16:14:32" itemprop="dateModified" datetime="2023-03-02T16:14:32+08:00">2023-03-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -274,7 +274,15 @@ class="math inline">\(S\)</span>中的每个向量都和子空间<span
 class="math inline">\(T\)</span>中每个向量正交。根据定义，任意两个子空间若相交于某非0向量，那么两者必然不正交。<br />
 将正交的概念应用于前面学过的四个基本子空间：<br />
 对于零空间<span class="math inline">\(Ax=0\)</span>，我们有<span
-class="math inline">\(\begin{bmatrix}  row1\\  ...\\  rowm  \end{bmatrix}x=\begin{bmatrix}  0\\  ...\\  0  \end{bmatrix}\)</span>，<span
+class="math inline">\(\begin{bmatrix}
+  row1\\
+  ...\\
+  rowm
+  \end{bmatrix}x=\begin{bmatrix}
+  0\\
+  ...\\
+  0
+  \end{bmatrix}\)</span>，<span
 class="math inline">\(x\)</span>和每一行都是正交的，那么<span
 class="math inline">\(x\)</span>和各行的线性组合也正交，由此可见<strong>零空间和行空间是正交的</strong>。<br />
 我们还知道：在<span class="math inline">\(R^n\)</span>中，需要<span
@@ -340,8 +348,9 @@ class="math inline">\(P^T=P,P^2=P\)</span>，从几何上解释即投影2次和�
 <p>接着看看<span class="math inline">\(R^3\)</span>的情况：<br />
 两个<strong>线性无关</strong>的列向量<span
 class="math inline">\(a_1,a_2\)</span>生成的列空间是一个平面，令<span
-class="math inline">\(A=\begin{bmatrix}  a_1 &amp;
-a_2\\  \end{bmatrix}\)</span>。类似地，<span
+class="math inline">\(A=\begin{bmatrix}
+   a_1 &amp; a_2\\
+  \end{bmatrix}\)</span>。类似地，<span
 class="math inline">\(p\)</span>是向量<span
 class="math inline">\(b\)</span>在平面上的投影，<span
 class="math inline">\(e=b-p\)</span>垂直于平面。<strong>因为<span
@@ -433,8 +442,10 @@ class="math inline">\(CD\)</span>，就要用到投影：
 清除outlier(离群值)后，定义每个点的误差：<span
 class="math inline">\(|e|^2=|Ax-b|^2\)</span>，那么优化目标变为最小化：<span
 class="math inline">\(e_1^2+e_2^2+e_3^2=(C+D-1)^2+(C+2D-2)^2+(C+3D-2)^2\)</span>，如何找到<span
-class="math inline">\(\hat
-x=\begin{bmatrix}  C\\  D\\  \end{bmatrix}\)</span>?<br />
+class="math inline">\(\hat x=\begin{bmatrix}
+  C\\
+D\\
+  \end{bmatrix}\)</span>?<br />
 求偏导当然是一种方法，从线性代数的角度，回顾下上节中<span
 class="math inline">\(A^TA\hat
 x=A^Tb\)</span>，我们已经证明，<strong>这样解得的<span
@@ -477,9 +488,9 @@ q_i^Tq_j=\begin{cases}
 0&amp; \text{$i\neq j$}\\
 1&amp; \text{$i=j$}\\
 \end{cases}
-\]</span> 正交矩阵写作<span class="math inline">\(Q=\begin{bmatrix}  q_1
-&amp; q_2 ... &amp; q_n\\  \end{bmatrix}\)</span>，很容易验证： <span
-class="math display">\[
+\]</span> 正交矩阵写作<span class="math inline">\(Q=\begin{bmatrix}
+   q_1 &amp; q_2 ... &amp; q_n\\
+  \end{bmatrix}\)</span>，很容易验证： <span class="math display">\[
 Q^TQ=\begin{bmatrix}
    q_1^T\\
    ...\\
@@ -489,14 +500,20 @@ Q^TQ=\begin{bmatrix}
   \end{bmatrix}=I
 \]</span> 如果<span class="math inline">\(Q\)</span>是方阵，那么<span
 class="math inline">\(Q^T=Q^{-1}\)</span>。正交矩阵的例子有很多：以前学习过的置换矩阵、<span
-class="math inline">\(\begin{bmatrix}  cos\theta &amp;
--sin\theta\\  sin\theta &amp;
-cos\theta\\  \end{bmatrix}\)</span>，还有一种叫做Adhemar的系列矩阵也是正交阵：<span
-class="math inline">\(\frac{1}{\sqrt{2}}\begin{bmatrix}  1 &amp; 1\\  1
-&amp; -1\\  \end{bmatrix}\)</span>、<span
-class="math inline">\(\frac{1}{2}\begin{bmatrix}  1 &amp; 1 &amp; 1
-&amp; 1\\  1 &amp; -1 &amp; 1 &amp; -1\\  1 &amp; 1 &amp; -1 &amp;
--1\\  1 &amp; -1 &amp; -1 &amp; 1\\  \end{bmatrix}\)</span>...<br />
+class="math inline">\(\begin{bmatrix}
+   cos\theta &amp; -sin\theta\\
+   sin\theta &amp; cos\theta\\
+  \end{bmatrix}\)</span>，还有一种叫做Adhemar的系列矩阵也是正交阵：<span
+class="math inline">\(\frac{1}{\sqrt{2}}\begin{bmatrix}
+   1 &amp; 1\\
+   1 &amp; -1\\
+  \end{bmatrix}\)</span>、<span
+class="math inline">\(\frac{1}{2}\begin{bmatrix}
+   1 &amp; 1 &amp; 1 &amp; 1\\
+   1 &amp; -1 &amp; 1 &amp; -1\\
+   1 &amp; 1 &amp; -1 &amp; -1\\
+   1 &amp; -1 &amp; -1 &amp; 1\\
+  \end{bmatrix}\)</span>...<br />
 有了这些了解后，就可以解答为什么需要正交矩阵：<br />
 还记得上一节中的投影矩阵<span
 class="math inline">\(P\)</span>吗？将矩阵<span

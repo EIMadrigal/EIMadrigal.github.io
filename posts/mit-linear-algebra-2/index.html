@@ -28,7 +28,7 @@
 <meta property="og:description" content="MIT 18.06">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-05-25T12:16:00.000Z">
-<meta property="article:modified_time" content="2023-03-02T08:14:26.039Z">
+<meta property="article:modified_time" content="2023-03-02T08:14:28.000Z">
 <meta property="article:author" content="EIMadrigal">
 <meta property="article:tag" content="Linear Algebra">
 <meta name="twitter:card" content="summary">
@@ -227,7 +227,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-02 16:14:26" itemprop="dateModified" datetime="2023-03-02T16:14:26+08:00">2023-03-02</time>
+                <time title="Modified: 2023-03-02 16:14:28" itemprop="dateModified" datetime="2023-03-02T16:14:28+08:00">2023-03-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -274,8 +274,11 @@ class="math inline">\(R^3\)</span>本身也是一个向量空间，它的子空�
 <li>零向量。</li>
 </ul>
 <p>从矩阵构造的角度来看，假设<span
-class="math inline">\(A=\begin{bmatrix}  1 &amp; 3\\  2 &amp; 3\\  4
-&amp; 1  \end{bmatrix}\)</span>，<span
+class="math inline">\(A=\begin{bmatrix}
+   1 &amp; 3\\
+   2 &amp; 3\\
+   4 &amp; 1
+  \end{bmatrix}\)</span>，<span
 class="math inline">\(A\)</span>的每一列属于<span
 class="math inline">\(R^3\)</span>，<span
 class="math inline">\(A\)</span>的col1和col2的所有线性组合构成了一个向量空间，称作<strong>列空间</strong>，记作<span
@@ -398,16 +401,23 @@ x=c\begin{bmatrix}
   1
   \end{bmatrix}\]</span> 其实矩阵<span
 class="math inline">\(U\)</span>还可以变得更加简单，可以化为简化行阶梯<span
-class="math inline">\(R=\begin{bmatrix}  1 &amp; 2 &amp; 0 &amp; -2\\  0
-&amp; 0 &amp; 1 &amp; 2\\  0 &amp; 0 &amp; 0 &amp;
-0  \end{bmatrix}\)</span>，即主元全部为1。<br />
+class="math inline">\(R=\begin{bmatrix}
+   1 &amp; 2 &amp; 0 &amp; -2\\
+   0 &amp; 0 &amp; 1 &amp; 2\\
+   0 &amp; 0 &amp; 0 &amp; 0
+  \end{bmatrix}\)</span>，即主元全部为1。<br />
 仔细观察矩阵<span class="math inline">\(R\)</span>，如果将pivot
 col全部移到左边，将free col移到右边，我们可以得到<span
 class="math inline">\(R\)</span>的一般形式：<span
-class="math inline">\(R=\begin{bmatrix}  I &amp; F\\  0 &amp;
-0\\  \end{bmatrix}\)</span>，由此得出<span
+class="math inline">\(R=\begin{bmatrix}
+   I &amp; F\\
+   0 &amp; 0\\
+  \end{bmatrix}\)</span>，由此得出<span
 class="math inline">\(x\)</span>的一般形式：<span
-class="math inline">\(x=\begin{bmatrix}  -F\\  I\\  \end{bmatrix}\)</span>。</p>
+class="math inline">\(x=\begin{bmatrix}
+   -F\\
+   I\\
+  \end{bmatrix}\)</span>。</p>
 <h2 id="求解axb">求解Ax=b</h2>
 <p>上一节中我们求解了<span
 class="math inline">\(Ax=0\)</span>，接着看看更加复杂的情况： <span
@@ -424,9 +434,11 @@ class="math display">\[
 \]</span> 我们知道，当<span class="math inline">\(b\)</span>属于<span
 class="math inline">\(C(A)\)</span>时方程组有解，不妨设<span
 class="math inline">\(b=(1,5,6)\)</span>，那么化简的矩阵为<span
-class="math inline">\(\begin{bmatrix}  1 &amp; 2 &amp; 2 &amp; 2 &amp;
-1\\  0 &amp; 0 &amp; 2 &amp; 4 &amp; 3\\  0 &amp; 0 &amp; 0 &amp; 0
-&amp; 0  \end{bmatrix}\)</span>，求解过程有3步：</p>
+class="math inline">\(\begin{bmatrix}
+   1 &amp; 2 &amp; 2 &amp; 2 &amp; 1\\
+   0 &amp; 0 &amp; 2 &amp; 4 &amp; 3\\
+   0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+  \end{bmatrix}\)</span>，求解过程有3步：</p>
 <ul>
 <li>特解：一般令自由变量取0，即<span
 class="math inline">\(x_2=x_4=0\)</span>，求主变量： <span
@@ -435,7 +447,12 @@ class="math display">\[
 x_1+2x_3=1&amp; \text{}\\
 2x_3=3&amp; \text{}
 \end{cases}\]</span> 所以特解<span
-class="math inline">\(x_p=\begin{bmatrix}  -2\\  0\\  1.5\\  0  \end{bmatrix}\)</span></li>
+class="math inline">\(x_p=\begin{bmatrix}
+  -2\\
+  0\\
+  1.5\\
+  0
+  \end{bmatrix}\)</span></li>
 <li>求零空间，即<span class="math inline">\(Ax=0\)</span>的解<span
 class="math inline">\(x_{null}\)</span>；</li>
 <li>所有解<span class="math inline">\(x=x_p+x_{null}\)</span>。<br />
@@ -492,8 +509,10 @@ class="math inline">\(r=m=n\)</span>，没有自由变量，零空间只有零�
 \]</span> 最后一种情况就是<strong>不满秩</strong>：<span
 class="math inline">\(r&lt;m\)</span>，<span
 class="math inline">\(r&lt;n\)</span>，<span
-class="math inline">\(R=\begin{bmatrix}  I &amp; F\\  0 &amp;
-0\\  \end{bmatrix}\)</span>，如果特解存在，就有无穷多解；否则无解。</p>
+class="math inline">\(R=\begin{bmatrix}
+   I &amp; F\\
+   0 &amp; 0\\
+  \end{bmatrix}\)</span>，如果特解存在，就有无穷多解；否则无解。</p>
 <h2 id="线性相关基维数">线性相关/基/维数</h2>
 <p>我们知道，对于矩阵<span
 class="math inline">\(A_{mn}(m&lt;n)\)</span>，因为有<span
@@ -574,8 +593,9 @@ EA=\begin{bmatrix}
 \]</span> <span
 class="math inline">\(dim(N(A^T))=m-r(A)=3-2=1\)</span>，左零空间中唯一一个基向量即<span
 class="math inline">\(E\)</span>的最后一行，因为<span
-class="math inline">\(\begin{bmatrix}  -1 &amp; 0 &amp;
-1  \end{bmatrix}A=0\)</span>。</p>
+class="math inline">\(\begin{bmatrix}
+   -1 &amp; 0 &amp; 1
+  \end{bmatrix}A=0\)</span>。</p>
 <h2 id="矩阵空间">矩阵空间</h2>
 <p>前面我们研究了若干向量生成的空间，上升一个高度，若干矩阵也可以构成一种特殊的向量空间，即矩阵空间。<br />
 所有的三阶矩阵构成矩阵空间<span
@@ -641,13 +661,19 @@ A=\begin{bmatrix}
   \end{bmatrix}=uv^T
 \]</span> 用一个例子作为结尾： 在<span
 class="math inline">\(R^4\)</span>中，<span
-class="math inline">\(v=\begin{bmatrix}  v_1\\  v_2\\  v_3\\  v_4  \end{bmatrix}\)</span>，<span
+class="math inline">\(v=\begin{bmatrix}
+   v_1\\
+   v_2\\
+   v_3\\
+   v_4
+  \end{bmatrix}\)</span>，<span
 class="math inline">\(s\)</span>是满足<span
 class="math inline">\(v_1+v_2+v_3+v_4=0\)</span>的所有<span
 class="math inline">\(v\)</span>，那么<span
 class="math inline">\(s\)</span>显然是子空间，并且可以写成矩阵形式<span
-class="math inline">\(Av=\begin{bmatrix}  1 &amp; 1 &amp; 1 &amp;
-1\\  \end{bmatrix}v=0\)</span>，接着看看<span
+class="math inline">\(Av=\begin{bmatrix}
+   1 &amp; 1 &amp; 1 &amp; 1\\
+  \end{bmatrix}v=0\)</span>，接着看看<span
 class="math inline">\(A\)</span>的四个基本子空间：</p>
 <ul>
 <li>零空间：<span
@@ -680,19 +706,28 @@ class="math inline">\(dim(N(A^T))=m-r=0\)</span>，基向量只有零向量。</
 <h2 id="作业">作业</h2>
 <p>Under what possible conditions is the matrix <span
 class="math inline">\(A=uv^T+wz^T\)</span> not of rank 2?<br />
-对于<span
-class="math inline">\(uv^T=\begin{bmatrix}  a\\  b\\  c\\  \end{bmatrix}\begin{bmatrix}  v_1&amp;v_2&amp;v_3\\  \end{bmatrix}\)</span>，结果就是<span
+对于<span class="math inline">\(uv^T=\begin{bmatrix}
+   a\\
+   b\\
+   c\\
+  \end{bmatrix}\begin{bmatrix}
+   v_1&amp;v_2&amp;v_3\\
+  \end{bmatrix}\)</span>，结果就是<span
 class="math inline">\(u\)</span>的线性组合<span
-class="math inline">\(\begin{bmatrix}  v_1u&amp;v_2u&amp;v_3u\\  \end{bmatrix}\)</span>，所以<span
-class="math inline">\(C(uv^T)\subset C(u)=xu,x\in
-R\)</span>；同样地，<span class="math inline">\(C(wz^T)\subset
-C(w)=yw,y\in R\)</span>，如果<span
+class="math inline">\(\begin{bmatrix}
+   v_1u&amp;v_2u&amp;v_3u\\
+  \end{bmatrix}\)</span>，所以<span class="math inline">\(C(uv^T)\subset
+C(u)=xu,x\in R\)</span>；同样地，<span
+class="math inline">\(C(wz^T)\subset C(w)=yw,y\in R\)</span>，如果<span
 class="math inline">\(u\)</span>和<span
 class="math inline">\(w\)</span>共线，那么<span
 class="math inline">\(C(A)=xu\)</span>，即<span
 class="math inline">\(r(A)\leq1\)</span>；<br />
-从行向量组合的角度：<span
-class="math inline">\(uv^T=\begin{bmatrix}  av^T\\  bv^T\\  cv^T\\  \end{bmatrix}\)</span>，故<span
+从行向量组合的角度：<span class="math inline">\(uv^T=\begin{bmatrix}
+   av^T\\
+   bv^T\\
+   cv^T\\
+  \end{bmatrix}\)</span>，故<span
 class="math inline">\(uv^T\)</span>的行空间<span
 class="math inline">\(\subset v^T\)</span>的行空间<span
 class="math inline">\(=xv^T\)</span>，<span
